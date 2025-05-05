@@ -139,3 +139,38 @@ export interface ILoginResponse {
 export interface IForgotPassword {
   email: string;
 }
+
+export interface AddUserModalProps {
+  isOpen: boolean;
+  formData: IAddUserValue;
+  onClose: () => void;
+  setFormData: (value: IAddUserValue) => void;
+  handleSubmit: () => void;
+}
+
+export interface IAddUser {
+  id: number;
+  username: string;
+  email: string;
+  role: "admin" | "parent";
+}
+
+export interface IAddUserValue {
+  name: string;
+  email: string;
+  role: string;
+  permissions: {
+    canRead: boolean;
+    canCreate: boolean;
+    canUpdate: boolean;
+    canDelete: boolean;
+  };
+}
+
+export interface IAllUserDetails {
+  id: string;
+  name: string;
+  email: string;
+  role: string;
+  status: string;
+}

@@ -1,7 +1,6 @@
+import { useDashboardController } from "./dashboard-controller";
 import Highcharts from "highcharts";
 import HighchartsReact from "highcharts-react-official";
-
-import { useDashboardController } from "./dashboard-controller";
 import {
   UserGroupIcon,
   UserIcon,

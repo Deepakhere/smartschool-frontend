@@ -12,12 +12,10 @@ import { USER_ACCESS_KEY } from "../utils";
 type User = {
   id?: string;
   email?: string;
-  role?: string;
+  role?: "admin" | "parent";
 } | null;
 
 interface IAuthContext {
-  isAuthenticated: boolean;
-  userRole: "admin" | "parent" | null;
   login: (token: string, role: "admin" | "parent") => void;
   logout: () => void;
   user: User;
@@ -26,23 +24,18 @@ interface IAuthContext {
 const AuthContext = createContext<IAuthContext | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [userRole, setUserRole] = useState<"admin" | "parent" | null>(null);
   const [user, setUser] = useState<User>(null);
   const getUserDetails = useGetUserDetails();
 
   const login = (token: string, role: "admin" | "parent") => {
     Cookies.set(USER_ACCESS_KEY.TOKEN, token);
     Cookies.set(USER_ACCESS_KEY.ROLE, role);
-    setIsAuthenticated(true);
-    setUserRole(role);
   };
 
   const logout = () => {
     Cookies.remove(USER_ACCESS_KEY.TOKEN);
     Cookies.remove(USER_ACCESS_KEY.ROLE);
-    setIsAuthenticated(false);
-    setUserRole(null);
+    window.location.href = "/login";
   };
 
   useEffect(() => {
@@ -76,9 +69,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   }, [getUserDetails.isError]);
 
   return (
-    <AuthContext.Provider
-      value={{ isAuthenticated, userRole, login, logout, user }}
-    >
+    <AuthContext.Provider value={{ login, logout, user }}>
       {children}
     </AuthContext.Provider>
   );

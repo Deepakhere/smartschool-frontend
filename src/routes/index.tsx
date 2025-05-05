@@ -9,6 +9,7 @@ import AdminHomework from "../pages/admin/homework";
 import AdminReports from "../pages/admin/reports";
 import AdminFees from "../pages/admin/fees";
 import AdminStudents from "../pages/admin/students";
+import AdminAddUser from "../pages/admin/add-user";
 
 // Parent Pages
 import ParentDashboard from "../pages/parent/dashboard";
@@ -100,6 +101,10 @@ export const router = createBrowserRouter([
       {
         path: "students",
         element: <AdminStudents />,
+      },
+      {
+        path: "add-user",
+        element: <AdminAddUser />,
       },
     ],
   },

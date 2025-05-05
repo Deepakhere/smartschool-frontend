@@ -3,17 +3,21 @@ export const APIS_ROUTES = {
   FORGOT_PASSWORD: "/auth/v1/user/forgot-password",
   RESET_PASSWORD: "/auth/v1/user/reset-password/:token",
   GET_USER_DETAILS: "/auth/v1/user/get-user-details",
+  ADD_USER: "/auth/v1/user/add-user",
+  GET_ALL_USER: "/auth/v1/user/get-all-users",
 };
 
 export const API_QUERY_KEY = {
   GET_MODEL_STATISTICS_PERSONALIZATION: "get-model-statistics-personalization",
   GET_USER_DETAILS: "get-user-details",
+  GET_ALL_USER: "get_all_user",
 };
 
 export const API_MUTATION_KEY = {
   SIGNIN: "signin",
   FORGOT_PASSWORD: "forgot-password",
   RESET_PASSWORD: "reset-password",
+  ADD_USER: "add_user",
 };
 
 export const PASSWORD_CIPHER_MESSAGE = "KID_SIGHT_KEY";
