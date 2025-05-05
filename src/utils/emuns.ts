@@ -2,10 +2,12 @@ export const APIS_ROUTES = {
   SIGNIN: "/auth/v1/user/signin",
   FORGOT_PASSWORD: "/auth/v1/user/forgot-password",
   RESET_PASSWORD: "/auth/v1/user/reset-password/:token",
+  GET_USER_DETAILS: "/auth/v1/user/get-user-details",
 };
 
 export const API_QUERY_KEY = {
   GET_MODEL_STATISTICS_PERSONALIZATION: "get-model-statistics-personalization",
+  GET_USER_DETAILS: "get-user-details",
 };
 
 export const API_MUTATION_KEY = {
@@ -23,5 +25,6 @@ export const EMAIL_REGEX_PATTERN = new RegExp(
 );
 
 export const USER_ACCESS_KEY = {
-  TOKEN: "accessToken",
+  TOKEN: "kidSightAccessToken",
+  ROLE: "kidSightUserRole",
 };

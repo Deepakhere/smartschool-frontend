@@ -1,5 +1,5 @@
 import { createBrowserRouter, Navigate } from "react-router-dom";
-import { useAuth } from "../context/auth-context";
+import Cookies from "js-cookie";
 import Layout from "../components/layout/layout";
 
 // Admin Pages
@@ -20,6 +20,7 @@ import ParentFees from "../pages/parent/fees";
 // Auth Pages
 import Login from "../pages/auth/login";
 import ForgotPassword from "../pages/auth/forgot-password";
+import { USER_ACCESS_KEY } from "../utils";
 
 // Protected Route Component
 const ProtectedRoute = ({
@@ -29,9 +30,10 @@ const ProtectedRoute = ({
   children: React.ReactNode;
   role: "admin" | "parent";
 }) => {
-  const { isAuthenticated, userRole } = useAuth();
+  const token = Cookies.get(USER_ACCESS_KEY.TOKEN);
+  const user_role = Cookies.get(USER_ACCESS_KEY.ROLE);
 
-  if (!isAuthenticated || userRole !== role) {
+  if (!token || user_role !== role) {
     return <Navigate to="/login" replace />;
   }
 
@@ -40,10 +42,11 @@ const ProtectedRoute = ({
 
 // Public Route Component
 const PublicRoute = ({ children }: { children: React.ReactNode }) => {
-  const { isAuthenticated, userRole } = useAuth();
+  const token = Cookies.get(USER_ACCESS_KEY.TOKEN);
+  const user_role = Cookies.get(USER_ACCESS_KEY.ROLE);
 
-  if (isAuthenticated) {
-    return <Navigate to={`/${userRole}`} replace />;
+  if (token && user_role) {
+    return <Navigate to={`/${user_role}`} replace />;
   }
 
   return <>{children}</>;

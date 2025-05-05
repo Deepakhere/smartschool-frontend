@@ -12,7 +12,7 @@ const apiClient = axios.create({
 // Request interceptor to add token to request headers
 apiClient.interceptors.request.use(
   async (config) => {
-    const accessToken = Cookies?.get(USER_ACCESS_KEY.TOKEN);
+    const accessToken = Cookies.get(USER_ACCESS_KEY.TOKEN);
 
     if (accessToken) {
       config.headers["accesstoken"] = `Bearer ${accessToken}`;
