@@ -1,0 +1,9 @@
+export { default as Dashboard } from './dashboard';
+export { default as Classes } from './classes';
+export { default as Students } from './students';
+export { default as Teachers } from './teachers';
+export { default as Fees } from './fees';
+export { default as Attendance } from './attendance';
+export { default as Exams } from './exams';
+export { default as Results } from './results';
+export { default as Settings } from './settings'; 
