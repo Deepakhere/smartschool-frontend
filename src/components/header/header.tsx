@@ -4,6 +4,7 @@ import { useEffect, useRef } from "react";
 
 import { useHeaderController } from "./header-controller";
 import Avatar from "../avatar";
+import KidSight from "../../icons/kidsight.png";
 
 const Header = () => {
   const {
@@ -70,7 +71,7 @@ const Header = () => {
                 className="text-xl font-bold text-gray-900"
               >
                 <img
-                  src="./kidsight.png"
+                  src={KidSight}
                   height={60}
                   width={160}
                   alt="Kidsight Logo"
