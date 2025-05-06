@@ -1,56 +1,20 @@
-import { Link, useLocation } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { Bars3Icon } from "@heroicons/react/24/outline";
-import { useEffect, useRef } from "react";
 
-import { useHeaderController } from "./header-controller";
 import Avatar from "../avatar";
 import KidSight from "../../icons/kidsight.png";
+import { useHeaderController } from "./header-controller";
 
 const Header = () => {
   const {
     user,
+    buttonRef,
+    menuRef,
     isUserMenuOpen,
     handleUserMenuToggle,
     handleLogout,
     toggleSidebar,
-    setIsUserMenuOpen,
   } = useHeaderController();
-
-  const menuRef = useRef<HTMLDivElement>(null);
-  const buttonRef = useRef<HTMLButtonElement>(null);
-  const location = useLocation();
-
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (
-        menuRef.current &&
-        !menuRef.current.contains(event.target as Node) &&
-        buttonRef.current &&
-        !buttonRef.current.contains(event.target as Node)
-      ) {
-        setIsUserMenuOpen(false);
-      }
-    };
-
-    const handleEscapeKey = (event: KeyboardEvent) => {
-      if (event.key === "Escape") {
-        setIsUserMenuOpen(false);
-      }
-    };
-
-    document.addEventListener("mousedown", handleClickOutside);
-    document.addEventListener("keydown", handleEscapeKey);
-
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-      document.removeEventListener("keydown", handleEscapeKey);
-    };
-  }, [setIsUserMenuOpen]);
-
-  // Close menu when route changes
-  useEffect(() => {
-    setIsUserMenuOpen(false);
-  }, [location.pathname, setIsUserMenuOpen]);
 
   return (
     <header className="bg-white shadow-md z-40">
@@ -113,13 +77,6 @@ const Header = () => {
                     role="menuitem"
                   >
                     Your Profile
-                  </Link>
-                  <Link
-                    to="/admin/settings"
-                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                    role="menuitem"
-                  >
-                    Settings
                   </Link>
                   <Link
                     to="/admin/add-user"

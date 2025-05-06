@@ -12,7 +12,7 @@ import {
 
 export const useSidebarController = () => {
   const navigation = [
-    { name: "Dashboard", href: "/admin", icon: HomeIcon },
+    { name: "Dashboard", href: "/admin/dashboard", icon: HomeIcon },
     { name: "Classes", href: "/admin/classes", icon: AcademicCapIcon },
     { name: "Students", href: "/admin/students", icon: UserGroupIcon },
     { name: "Teachers", href: "/admin/teachers", icon: UserIcon },

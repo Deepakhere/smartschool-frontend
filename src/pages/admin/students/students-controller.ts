@@ -1,6 +1,16 @@
 import { useState } from "react";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { createStudent } from "../../../services/students/create-student";
+import { getStudents } from "../../../services/students/get-students";
+
+interface IStudent {
+  id: string;
+  name: string;
+  classId: string;
+  rollNumber: string;
+  parentId: string;
+  dateOfBirth: string;
+}
 
 interface IStudentFormData {
   name: string;
@@ -11,12 +21,18 @@ interface IStudentFormData {
 }
 
 export const useStudentsController = () => {
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [formData, setFormData] = useState<IStudentFormData>({
     name: "",
     classId: "",
     rollNumber: "",
     parentId: "",
     dateOfBirth: "",
+  });
+
+  const { data: students, isLoading, error } = useQuery<IStudent[]>({
+    queryKey: ['students'],
+    queryFn: getStudents,
   });
 
   const { mutate } = useMutation({
@@ -29,6 +45,7 @@ export const useStudentsController = () => {
         parentId: "",
         dateOfBirth: "",
       });
+      setIsAddModalOpen(false);
       // TODO: Add success notification
     },
     onError: (error) => {
@@ -51,8 +68,13 @@ export const useStudentsController = () => {
   };
 
   return {
+    students,
+    isLoading,
+    error,
     formData,
     handleChange,
     handleSubmit,
+    isAddModalOpen,
+    setIsAddModalOpen,
   };
 };
