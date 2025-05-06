@@ -1,3 +1,5 @@
+import { ReactNode } from "react";
+
 // Notice Types
 export interface INotice {
   id: string;
@@ -133,19 +135,18 @@ export interface ILoginResponse {
   id: string;
   email: string;
   token: string;
+  name: string;
   role: "admin" | "parent";
+  permissions: {
+    canRead: boolean;
+    canCreate: boolean;
+    canUpdate: boolean;
+    canDelete: boolean;
+  };
 }
 
 export interface IForgotPassword {
   email: string;
-}
-
-export interface AddUserModalProps {
-  isOpen: boolean;
-  formData: IAddUserValue;
-  onClose: () => void;
-  setFormData: (value: IAddUserValue) => void;
-  handleSubmit: () => void;
 }
 
 export interface IAddUser {
@@ -173,4 +174,62 @@ export interface IAllUserDetails {
   email: string;
   role: string;
   status: string;
+}
+
+export interface FormData {
+  fullname: string;
+  email: string;
+  role: "admin" | "parent";
+  permissions: {
+    canRead: boolean;
+    canCreate: boolean;
+    canUpdate: boolean;
+    canDelete: boolean;
+  };
+}
+
+export interface RoleOption {
+  value: "admin" | "parent";
+  label: string;
+  description: string;
+  icon: ReactNode;
+}
+
+export interface PermissionOption {
+  id: keyof FormData["permissions"];
+  label: string;
+  description: string;
+  icon: ReactNode;
+}
+
+export interface AddUserModalProps {
+  isOpen: boolean;
+  formData: FormData;
+  isLoadingAddUserDetail: boolean;
+  roleOptions: RoleOption[];
+  permissionOptions: PermissionOption[];
+  onClose: () => void;
+  setFormData: React.Dispatch<React.SetStateAction<FormData>>;
+  handleSubmit: (e: React.FormEvent) => void;
+  handlePermissionChange: (permission: keyof FormData["permissions"]) => void;
+}
+
+export interface IUserDetailResponse {
+  id: string;
+  email: string;
+  token: string;
+  role: "admin" | "parent";
+  permissions: {
+    canRead: boolean;
+    canCreate: boolean;
+    canUpdate: boolean;
+    canDelete: boolean;
+  };
+}
+
+export interface IRoleOptionDropDown {
+  value: "all" | "admin" | "parent";
+  label: string;
+  description: string;
+  icon: React.ReactNode;
 }

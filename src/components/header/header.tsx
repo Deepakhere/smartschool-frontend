@@ -1,13 +1,55 @@
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { Bars3Icon } from "@heroicons/react/24/outline";
+import { useEffect, useRef } from "react";
 
 import { useHeaderController } from "./header-controller";
-import { useLayoutController } from "../layout/layout-controller";
+import Avatar from "../avatar";
 
 const Header = () => {
-  const { isUserMenuOpen, handleUserMenuToggle, handleLogout } =
-    useHeaderController();
-  const { toggleSidebar } = useLayoutController();
+  const {
+    user,
+    isUserMenuOpen,
+    handleUserMenuToggle,
+    handleLogout,
+    toggleSidebar,
+    setIsUserMenuOpen,
+  } = useHeaderController();
+
+  const menuRef = useRef<HTMLDivElement>(null);
+  const buttonRef = useRef<HTMLButtonElement>(null);
+  const location = useLocation();
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        menuRef.current &&
+        !menuRef.current.contains(event.target as Node) &&
+        buttonRef.current &&
+        !buttonRef.current.contains(event.target as Node)
+      ) {
+        setIsUserMenuOpen(false);
+      }
+    };
+
+    const handleEscapeKey = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setIsUserMenuOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    document.addEventListener("keydown", handleEscapeKey);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("keydown", handleEscapeKey);
+    };
+  }, [setIsUserMenuOpen]);
+
+  // Close menu when route changes
+  useEffect(() => {
+    setIsUserMenuOpen(false);
+  }, [location.pathname, setIsUserMenuOpen]);
 
   return (
     <header className="bg-white shadow-md z-40">
@@ -40,21 +82,20 @@ const Header = () => {
             <div className="ml-3 relative">
               <div>
                 <button
+                  ref={buttonRef}
                   type="button"
                   className="bg-white rounded-full flex text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                   id="user-menu-button"
                   onClick={handleUserMenuToggle}
+                  aria-expanded={isUserMenuOpen}
+                  aria-haspopup="true"
                 >
-                  <span className="sr-only">Open user menu</span>
-                  <img
-                    className="h-8 w-8 rounded-full"
-                    src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-                    alt="User profile"
-                  />
+                  {user && user?.name && <Avatar name={user?.name} />}
                 </button>
               </div>
               {isUserMenuOpen && (
                 <div
+                  ref={menuRef}
                   className="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none z-10"
                   role="menu"
                   aria-orientation="vertical"
@@ -62,8 +103,8 @@ const Header = () => {
                   tabIndex={-1}
                 >
                   <div className="px-4 py-2 text-sm text-gray-700 border-b">
-                    <div className="font-medium">John Doe</div>
-                    <div className="text-gray-500">john@example.com</div>
+                    <div className="font-medium">{user?.name}</div>
+                    <div className="text-gray-500">{user?.email}</div>
                   </div>
                   <Link
                     to="/admin/profile"

@@ -27,7 +27,7 @@ const useLoginController = () => {
 
   useEffect(() => {
     if (signIn.isSuccess && signIn.data) {
-      login(signIn.data?.token, signIn.data?.role);
+      login(signIn.data);
       navigate(`/${signIn.data.role}`);
     }
 

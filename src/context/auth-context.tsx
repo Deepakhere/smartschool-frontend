@@ -8,15 +8,23 @@ import {
 import Cookies from "js-cookie";
 import { useGetUserDetails } from "./service";
 import { USER_ACCESS_KEY } from "../utils";
+import { ILoginResponse } from "../types";
 
 type User = {
+  name?: string;
   id?: string;
   email?: string;
   role?: "admin" | "parent";
+  permissions?: {
+    canRead: boolean;
+    canCreate: boolean;
+    canUpdate: boolean;
+    canDelete: boolean;
+  };
 } | null;
 
 interface IAuthContext {
-  login: (token: string, role: "admin" | "parent") => void;
+  login: (data: ILoginResponse) => void;
   logout: () => void;
   user: User;
 }
@@ -27,9 +35,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User>(null);
   const getUserDetails = useGetUserDetails();
 
-  const login = (token: string, role: "admin" | "parent") => {
-    Cookies.set(USER_ACCESS_KEY.TOKEN, token);
-    Cookies.set(USER_ACCESS_KEY.ROLE, role);
+  const login = (data: ILoginResponse) => {
+    Cookies.set(USER_ACCESS_KEY.TOKEN, data.token);
+    Cookies.set(USER_ACCESS_KEY.ROLE, data.role);
+    setUser(data);
   };
 
   const logout = () => {

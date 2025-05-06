@@ -10,38 +10,58 @@ const AddUser = () => {
     isModalOpen,
     filteredUsers,
     isLoadingAddUserDetail,
+    roleOptions,
+    permissionOptions,
+    roleOptionsDropDown,
     setSortBy,
     setFormData,
     setIsModalOpen,
     handleSubmituserDetails,
+    handlePermissionChange,
   } = useAddUserController();
 
   return (
-    <div className="p-6">
+    <div className="px-4 sm:px-6 lg:px-8">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-semibold text-gray-900">Users</h1>
         <div className="flex items-center space-x-4">
-          <label
-            htmlFor="role"
-            className="block text-sm font-medium text-gray-700"
-          >
-            Role
-          </label>
-
-          <select
-            value={sortBy}
-            onChange={(e) =>
-              setSortBy(e.target.value as "all" | "admin" | "parent")
-            }
-            className="appearance-none text-center rounded-md py-3 border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-          >
-            <option value="all">All</option>
-            <option value="admin">Admin</option>
-            <option value="parent">Parent</option>
-          </select>
+          <div className="relative">
+            <select
+              value={sortBy}
+              onChange={(e) =>
+                setSortBy(e.target.value as "all" | "admin" | "parent")
+              }
+              className="appearance-none pl-10 pr-8 py-2.5 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm cursor-pointer"
+            >
+              {roleOptionsDropDown.map((option) => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
+            </select>
+            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              {
+                roleOptionsDropDown.find((option) => option.value === sortBy)
+                  ?.icon
+              }
+            </div>
+            <div className="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
+              <svg
+                className="h-5 w-5 text-gray-400"
+                viewBox="0 0 20 20"
+                fill="currentColor"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                  clipRule="evenodd"
+                />
+              </svg>
+            </div>
+          </div>
           <button
             onClick={() => setIsModalOpen(true)}
-            className="flex items-center px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+            className="inline-flex items-center px-4 py-2.5 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors duration-200"
           >
             <PlusIcon className="h-5 w-5 mr-2" />
             Add User
@@ -105,9 +125,12 @@ const AddUser = () => {
         isOpen={isModalOpen}
         formData={formData}
         isLoadingAddUserDetail={isLoadingAddUserDetail}
+        roleOptions={roleOptions}
+        permissionOptions={permissionOptions}
         setFormData={setFormData}
         onClose={() => setIsModalOpen(false)}
         handleSubmit={handleSubmituserDetails}
+        handlePermissionChange={handlePermissionChange}
       />
     </div>
   );
