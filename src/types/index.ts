@@ -266,3 +266,14 @@ export interface IRoleOptionDropDown {
   description: string;
   icon: React.ReactNode;
 }
+
+export interface IOrganization {
+  id: string;
+  name: string;
+  description: string;
+  country: string;
+  users: string[];
+  location: string;
+  pincode: string;
+  status: string;
+}

@@ -9,6 +9,7 @@ export const APIS_ROUTES = {
   GET_STUDENT_DETAILS: "/auth/v1/user/get-student-details",
   UPDATE_USER_DETAILS: "/auth/v1/user/update-user-details",
   DELETE_USER: "/auth/v1/user/delete-user",
+  ORGANIZATION_SERVICE: "/organization-service/v1/organization",
 };
 
 export const API_QUERY_KEY = {
@@ -16,6 +17,7 @@ export const API_QUERY_KEY = {
   GET_USER_DETAILS: "get-user-details",
   GET_ALL_USER: "get-all-user",
   GET_STUDENT_DETAILS: "get-student-details",
+  GET_ALL_ORGANIZATIONS: "get-all-organizations",
 };
 
 export const API_MUTATION_KEY = {
@@ -39,4 +41,6 @@ export const EMAIL_REGEX_PATTERN = new RegExp(
 export const USER_ACCESS_KEY = {
   TOKEN: "kidSightAccessToken",
   ROLE: "kidSightUserRole",
+  ORGANIZATION_ID: "kidSightOrganizationId",
+  ORGANIZATION_NAME: "kidSightOrganizationName",
 };

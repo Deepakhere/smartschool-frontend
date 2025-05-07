@@ -33,7 +33,7 @@ const useLoginController = () => {
   useEffect(() => {
     if (signIn.isSuccess && signIn.data) {
       login(signIn.data);
-      navigate(`/${signIn.data.role}`);
+      navigate(`/organization`);
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps

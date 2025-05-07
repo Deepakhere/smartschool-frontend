@@ -23,6 +23,7 @@ import Login from "../pages/auth/login";
 import ForgotPassword from "../pages/auth/forgot-password";
 import NotAccess from "../components/not-access";
 import useRoutesController from "./routes-controller";
+import Organization from "../pages/auth/organization/organization";
 
 const Routes = () => {
   const { PublicRoute, ProtectedRoute } = useRoutesController();
@@ -35,6 +36,10 @@ const Routes = () => {
           <Login />
         </PublicRoute>
       ),
+    },
+    {
+      path: "/organization",
+      element: <Organization />,
     },
     {
       path: "/forgot-password",
