@@ -1,11 +1,11 @@
 import { PlusIcon, MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 
 import AddUserModal from "./user-modal/add-user-modal";
-import useAddUserController from "./add-user-controller";
 import LogoSpinner from "../../../components/logo-spinner";
 import NoRecordIcon from "../../../icons/no-record-icon";
+import useUserManagementController from "./user-management-controller";
 
-const AddUser = () => {
+const UserManagement = () => {
   const {
     sortBy,
     formData,
@@ -26,7 +26,7 @@ const AddUser = () => {
     handleSubmituserDetails,
     handlePermissionChange,
     setSearchTerm,
-  } = useAddUserController();
+  } = useUserManagementController();
 
   return (
     <>
@@ -212,4 +212,4 @@ const AddUser = () => {
   );
 };
 
-export default AddUser;
+export default UserManagement;

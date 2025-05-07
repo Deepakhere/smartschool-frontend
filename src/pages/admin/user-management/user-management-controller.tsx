@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import debounce from "lodash.debounce";
+import { useParams } from "react-router-dom";
 
 import {
   IAddUserValue,
@@ -11,7 +12,8 @@ import {
 import { useAddUserDetail, useGetAllUserDetails } from "./service";
 import { useError } from "../../../hooks";
 
-const useAddUserController = () => {
+const useUserManagementController = () => {
+  const { organizationId } = useParams<{ organizationId: string }>();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [sortBy, setSortBy] = useState<"all" | "admin" | "parent">("all");
   const [formData, setFormData] = useState({
@@ -30,8 +32,12 @@ const useAddUserController = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [filterRole, setFilterRole] = useState("");
 
-  const addUserDetail = useAddUserDetail();
-  const getAllUserDetails = useGetAllUserDetails(searchTerm, filterRole);
+  const addUserDetail = useAddUserDetail(organizationId || "");
+  const getAllUserDetails = useGetAllUserDetails(
+    organizationId || "",
+    searchTerm,
+    filterRole
+  );
 
   useError({
     mutation: addUserDetail,
@@ -285,4 +291,4 @@ const useAddUserController = () => {
   };
 };
 
-export default useAddUserController;
+export default useUserManagementController;

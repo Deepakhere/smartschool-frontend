@@ -20,7 +20,7 @@ const Avatar = ({ name, src, size = 40 }: AvatarProps) => {
         height: `${size}px`,
         backgroundColor: src
           ? "transparent"
-          : `hsl(${(name.length * 30) % 360}, 70%, 50%)`,
+          : `hsl(${(name.length * 10) % 360}, 70%, 50%)`,
       }}
     >
       {src ? (

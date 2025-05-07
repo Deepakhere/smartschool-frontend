@@ -1,10 +1,13 @@
-import { useLocation, Routes, Route, Link, Navigate } from "react-router-dom";
-import AdminProfile from "../profile/profile";
-import AddUser from "../add-user/add-user";
+import { Tab } from "@headlessui/react";
+import { Outlet } from "react-router-dom";
+import useSettingController from "./setting-controller";
+
+function classNames(...classes: string[]) {
+  return classes.filter(Boolean).join(" ");
+}
 
 const Settings = () => {
-  const location = useLocation();
-  const path = location.pathname;
+  const { selectedIndex, handleTabChange } = useSettingController();
 
   return (
     <>
@@ -12,39 +15,43 @@ const Settings = () => {
         <h1 className="text-2xl font-semibold text-gray-900">Settings</h1>
       </div>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
-        <div className="">
-          {/* Tabs navigation */}
-          <div className="border-b border-gray-200 mb-6">
-            <nav className="-mb-px flex space-x-8">
-              <Link
-                to="/admin/settings/profile"
-                className={`${
-                  path.includes("/settings/profile")
-                    ? "border-indigo-500 text-indigo-600"
-                    : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
-                } whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm`}
+        <div className="py-4">
+          <Tab.Group selectedIndex={selectedIndex} onChange={handleTabChange}>
+            <Tab.List className="flex space-x-8 border-b border-gray-200">
+              <Tab
+                className={({ selected }) =>
+                  classNames(
+                    "whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm focus:outline-none",
+                    selected
+                      ? "border-indigo-500 text-indigo-600"
+                      : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                  )
+                }
               >
                 Profile
-              </Link>
-              <Link
-                to="/admin/settings/add-user"
-                className={`${
-                  path.includes("/settings/add-user")
-                    ? "border-indigo-500 text-indigo-600"
-                    : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
-                } whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm`}
+              </Tab>
+              <Tab
+                className={({ selected }) =>
+                  classNames(
+                    "whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm focus:outline-none",
+                    selected
+                      ? "border-indigo-500 text-indigo-600"
+                      : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                  )
+                }
               >
                 User Management
-              </Link>
-            </nav>
-          </div>
-
-          {/* Nested routes content */}
-          <Routes>
-            <Route path="/" element={<Navigate to="profile" replace />} />
-            <Route path="profile" element={<AdminProfile />} />
-            <Route path="add-user" element={<AddUser />} />
-          </Routes>
+              </Tab>
+            </Tab.List>
+            <Tab.Panels className="mt-6">
+              <Tab.Panel>
+                <Outlet />
+              </Tab.Panel>
+              <Tab.Panel>
+                <Outlet />
+              </Tab.Panel>
+            </Tab.Panels>
+          </Tab.Group>
         </div>
       </div>
     </>

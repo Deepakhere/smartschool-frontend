@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 
 import { useAuth } from "../../context/auth-context";
 
@@ -7,6 +7,7 @@ export const useHeaderController = () => {
   const menuRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
   const location = useLocation();
+  const { organizationId } = useParams();
 
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -66,6 +67,7 @@ export const useHeaderController = () => {
     isSidebarOpen,
     buttonRef,
     menuRef,
+    organizationId,
     handleUserMenuToggle,
     handleLogout,
     toggleSidebar,

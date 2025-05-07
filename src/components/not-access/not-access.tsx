@@ -5,11 +5,14 @@ import { USER_ACCESS_KEY } from "../../utils";
 
 const NotAccess: React.FC = () => {
   const navigate = useNavigate();
+
   const userRole = Cookies.get(USER_ACCESS_KEY.ROLE);
+  const token = Cookies.get(USER_ACCESS_KEY.TOKEN);
+  const organizationId = Cookies.get(USER_ACCESS_KEY.ORGANIZATION_ID);
 
   const handleGoToDashboard = () => {
-    if (userRole) {
-      navigate(`/${userRole}/dashboard`);
+    if (token) {
+      navigate(`/${organizationId}/${userRole}/dashboard`);
     } else {
       navigate("/login");
     }

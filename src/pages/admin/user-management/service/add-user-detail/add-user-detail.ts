@@ -4,14 +4,17 @@ import apiClient from "../../../../../config";
 import { IAPIError, IAddUserValue } from "../../../../../types";
 import { API_MUTATION_KEY, APIS_ROUTES } from "../../../../../utils";
 
-const addUser = async (addUserValue: IAddUserValue) => {
-  await apiClient.post(APIS_ROUTES.ADD_USER, addUserValue);
+const addUser = async (organizationId: string, addUserValue: IAddUserValue) => {
+  await apiClient.post(
+    `${APIS_ROUTES.ADD_USER}/${organizationId}`,
+    addUserValue
+  );
 };
 
-export const useAddUserDetail = () =>
+export const useAddUserDetail = (organizationId: string) =>
   useMutation<void, IAPIError, IAddUserValue>(
     [API_MUTATION_KEY.ADD_USER],
-    addUser
+    (addUserValue) => addUser(organizationId, addUserValue)
   );
 
 export default useAddUserDetail;

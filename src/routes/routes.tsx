@@ -10,6 +10,8 @@ import AdminReports from "../pages/admin/reports";
 import AdminFees from "../pages/admin/fees";
 import AdminStudents from "../pages/admin/students";
 import AdminSettings from "../pages/admin/settings";
+import AdminProfile from "../pages/admin/profile";
+import UserManagement from "../pages/admin/user-management";
 
 // Parent Pages
 import ParentDashboard from "../pages/parent/dashboard";
@@ -23,7 +25,7 @@ import Login from "../pages/auth/login";
 import ForgotPassword from "../pages/auth/forgot-password";
 import NotAccess from "../components/not-access";
 import useRoutesController from "./routes-controller";
-import Organization from "../pages/auth/organization/organization";
+import Organization from "../pages/auth/organization";
 
 const Routes = () => {
   const { PublicRoute, ProtectedRoute } = useRoutesController();
@@ -38,10 +40,6 @@ const Routes = () => {
       ),
     },
     {
-      path: "/organization",
-      element: <Organization />,
-    },
-    {
       path: "/forgot-password",
       element: (
         <PublicRoute>
@@ -50,11 +48,15 @@ const Routes = () => {
       ),
     },
     {
+      path: "/organization",
+      element: <Organization />,
+    },
+    {
       path: "/not-access",
       element: <NotAccess />,
     },
     {
-      path: "/admin",
+      path: "/:organizationId/admin",
       element: (
         <ProtectedRoute role="admin">
           <Layout />
@@ -95,22 +97,22 @@ const Routes = () => {
           children: [
             {
               index: true,
-              element: <Navigate to="profile" />,
+              element: <Navigate to="profile" replace />,
             },
             {
               path: "profile",
-              element: <></>,
+              element: <AdminProfile />,
             },
             {
               path: "add-user",
-              element: <></>,
+              element: <UserManagement />,
             },
           ],
         },
       ],
     },
     {
-      path: "/parent",
+      path: "/:organizationId/parent",
       element: (
         <ProtectedRoute role="parent">
           <Layout />

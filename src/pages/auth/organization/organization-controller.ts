@@ -7,20 +7,21 @@ import { USER_ACCESS_KEY } from "../../../utils";
 import { IOrganization } from "../../../types";
 
 const useOrganizationController = () => {
-  const { logout } = useAuth();
-  const getAllOrganization = useGetAllOrganizations();
-
-  const [workspaces, setWorkspaces] = useState<IOrganization[]>([]);
+  const { logout, user } = useAuth();
   const navigate = useNavigate();
 
-  const navigateHome = (workspaceId: string) => {
-    navigate(`/${workspaceId}`);
-    Cookies.set(USER_ACCESS_KEY.ORGANIZATION_ID, workspaceId, {
+  const getAllOrganization = useGetAllOrganizations();
+
+  const [organization, setOrganization] = useState<IOrganization[]>([]);
+
+  const navigateHome = (organizationId: string) => {
+    navigate(`/${organizationId}/${user?.role}`);
+    Cookies.set(USER_ACCESS_KEY.ORGANIZATION_ID, organizationId, {
       secure: true,
       sameSite: "lax",
     });
     const workspaceName =
-      workspaces.find((w) => w.id === workspaceId)?.name || "";
+      organization.find((w) => w.id === organizationId)?.name || "";
     Cookies.set(USER_ACCESS_KEY.ORGANIZATION_NAME, workspaceName, {
       secure: true,
       sameSite: "lax",
@@ -32,7 +33,7 @@ const useOrganizationController = () => {
       if (getAllOrganization.data.items.length === 1) {
         navigateHome(getAllOrganization.data.items[0].id);
       } else {
-        setWorkspaces(getAllOrganization.data.items);
+        setOrganization(getAllOrganization.data.items);
       }
     }
     //eslint-disable-next-line
@@ -43,7 +44,7 @@ const useOrganizationController = () => {
   };
   return {
     getAllOrganization,
-    workspaces,
+    organization,
     isLoading: getAllOrganization.isLoading,
     navigateHome,
     signOut,
