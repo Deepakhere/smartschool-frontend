@@ -72,18 +72,11 @@ const Header = () => {
                     <div className="text-gray-500">{user?.email}</div>
                   </div>
                   <Link
-                    to="/admin/profile"
+                    to="/admin/settings/profile"
                     className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                     role="menuitem"
                   >
                     Your Profile
-                  </Link>
-                  <Link
-                    to="/admin/add-user"
-                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                    role="menuitem"
-                  >
-                    Add user
                   </Link>
                   <button
                     onClick={handleLogout}

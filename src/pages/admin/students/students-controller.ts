@@ -1,16 +1,14 @@
 import { useState } from "react";
-import { useMutation, useQuery } from "@tanstack/react-query";
-import { createStudent } from "../../../services/students/create-student";
-import { getStudents } from "../../../services/students/get-students";
+import { useAddStudent, useGetStudentDetails } from "./service";
 
-interface IStudent {
-  id: string;
-  name: string;
-  classId: string;
-  rollNumber: string;
-  parentId: string;
-  dateOfBirth: string;
-}
+// interface IStudent {
+//   id: string;
+//   name: string;
+//   classId: string;
+//   rollNumber: string;
+//   parentId: string;
+//   dateOfBirth: string;
+// }
 
 interface IStudentFormData {
   name: string;
@@ -30,29 +28,9 @@ export const useStudentsController = () => {
     dateOfBirth: "",
   });
 
-  const { data: students, isLoading, error } = useQuery<IStudent[]>({
-    queryKey: ['students'],
-    queryFn: getStudents,
-  });
+  const getStudentDetails = useGetStudentDetails();
 
-  const { mutate } = useMutation({
-    mutationFn: createStudent,
-    onSuccess: () => {
-      setFormData({
-        name: "",
-        classId: "",
-        rollNumber: "",
-        parentId: "",
-        dateOfBirth: "",
-      });
-      setIsAddModalOpen(false);
-      // TODO: Add success notification
-    },
-    onError: (error) => {
-      // TODO: Add error notification
-      console.error("Error creating student:", error);
-    },
-  });
+  const addStudent = useAddStudent();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -64,17 +42,25 @@ export const useStudentsController = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    mutate(formData);
+    console.log(formData);
+    addStudent.mutate({
+      ...formData,
+    });
   };
 
+  // useEffect(() => {
+  //   if (getStudentDetails.isSuccess && getStudentDetails.data) {
+
+  //   }
+  // }, []);
+
   return {
-    students,
-    isLoading,
-    error,
     formData,
+    isAddModalOpen,
+    studentDetail: getStudentDetails?.data?.items,
+    isLoadingGetStudentDetails: getStudentDetails.isLoading,
     handleChange,
     handleSubmit,
-    isAddModalOpen,
     setIsAddModalOpen,
   };
 };

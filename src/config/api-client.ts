@@ -37,6 +37,7 @@ apiClient.interceptors.response.use(
       typeof window !== "undefined"
     ) {
       // Handle 401/403 errors
+      window.location.href = "/not-access";
     } else if (
       error.response &&
       (error?.response?.status === 400 || error?.response?.status === 404)

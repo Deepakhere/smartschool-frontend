@@ -1,4 +1,8 @@
+import { useEffect, useState } from "react";
+
 export const useDashboardController = () => {
+  const [isLoading, setIsLoading] = useState(true);
+
   // Stats data
   const stats = {
     totalStudents: 1250,
@@ -12,65 +16,65 @@ export const useDashboardController = () => {
 
   // Recent updates data
   const recentUpdates = [
-    { type: 'notice', title: 'Annual Sports Day', date: '2024-03-15' },
-    { type: 'fee', title: 'Fee Payment Received', date: '2024-03-14' },
-    { type: 'homework', title: 'Math Assignment', date: '2024-03-14' },
-    { type: 'notice', title: 'Parent-Teacher Meeting', date: '2024-03-13' },
-    { type: 'fee', title: 'Fee Payment Due', date: '2024-03-12' },
+    { type: "notice", title: "Annual Sports Day", date: "2024-03-15" },
+    { type: "fee", title: "Fee Payment Received", date: "2024-03-14" },
+    { type: "homework", title: "Math Assignment", date: "2024-03-14" },
+    { type: "notice", title: "Parent-Teacher Meeting", date: "2024-03-13" },
+    { type: "fee", title: "Fee Payment Due", date: "2024-03-12" },
   ];
 
   // Student Performance Chart Options
   const studentPerformanceOptions = {
     chart: {
-      type: 'line',
+      type: "line",
       height: 300,
       style: {
-        fontFamily: 'inherit',
+        fontFamily: "inherit",
       },
     },
     title: {
-      text: 'Student Performance Trend',
+      text: "Student Performance Trend",
       style: {
-        fontSize: '16px',
-        fontWeight: '500',
+        fontSize: "16px",
+        fontWeight: "500",
       },
     },
     xAxis: {
-      categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+      categories: ["Jan", "Feb", "Mar", "Apr", "May", "Jun"],
       labels: {
         style: {
-          color: '#6B7280',
+          color: "#6B7280",
         },
       },
     },
     yAxis: {
       title: {
-        text: 'Average Score',
+        text: "Average Score",
         style: {
-          color: '#6B7280',
+          color: "#6B7280",
         },
       },
       labels: {
         style: {
-          color: '#6B7280',
+          color: "#6B7280",
         },
       },
     },
     series: [
       {
-        name: 'Class A',
+        name: "Class A",
         data: [75, 78, 82, 85, 80, 88],
-        color: '#4F46E5',
+        color: "#4F46E5",
       },
       {
-        name: 'Class B',
+        name: "Class B",
         data: [70, 72, 75, 78, 80, 82],
-        color: '#818CF8',
+        color: "#818CF8",
       },
     ],
     legend: {
       itemStyle: {
-        color: '#4B5563',
+        color: "#4B5563",
       },
     },
   };
@@ -78,35 +82,35 @@ export const useDashboardController = () => {
   // Teacher-Student Ratio Chart Options
   const teacherStudentRatioOptions = {
     chart: {
-      type: 'pie',
+      type: "pie",
       height: 300,
       style: {
-        fontFamily: 'inherit',
+        fontFamily: "inherit",
       },
     },
     title: {
-      text: 'Teacher-Student Ratio',
+      text: "Teacher-Student Ratio",
       style: {
-        fontSize: '16px',
-        fontWeight: '500',
+        fontSize: "16px",
+        fontWeight: "500",
       },
     },
     series: [
       {
-        name: 'Ratio',
+        name: "Ratio",
         data: [
-          { name: 'Teachers', y: 45, color: '#4F46E5' },
-          { name: 'Students', y: 1250, color: '#818CF8' },
+          { name: "Teachers", y: 45, color: "#4F46E5" },
+          { name: "Students", y: 1250, color: "#818CF8" },
         ],
       },
     ],
     plotOptions: {
       pie: {
         allowPointSelect: true,
-        cursor: 'pointer',
+        cursor: "pointer",
         dataLabels: {
           enabled: true,
-          format: '{point.percentage:.1f}%',
+          format: "{point.percentage:.1f}%",
         },
       },
     },
@@ -115,45 +119,45 @@ export const useDashboardController = () => {
   // Monthly Attendance Chart Options
   const monthlyAttendanceOptions = {
     chart: {
-      type: 'column',
+      type: "column",
       height: 300,
       style: {
-        fontFamily: 'inherit',
+        fontFamily: "inherit",
       },
     },
     title: {
-      text: 'Monthly Attendance Summary',
+      text: "Monthly Attendance Summary",
       style: {
-        fontSize: '16px',
-        fontWeight: '500',
+        fontSize: "16px",
+        fontWeight: "500",
       },
     },
     xAxis: {
-      categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+      categories: ["Jan", "Feb", "Mar", "Apr", "May", "Jun"],
       labels: {
         style: {
-          color: '#6B7280',
+          color: "#6B7280",
         },
       },
     },
     yAxis: {
       title: {
-        text: 'Attendance %',
+        text: "Attendance %",
         style: {
-          color: '#6B7280',
+          color: "#6B7280",
         },
       },
       labels: {
         style: {
-          color: '#6B7280',
+          color: "#6B7280",
         },
       },
     },
     series: [
       {
-        name: 'Attendance',
+        name: "Attendance",
         data: [95, 92, 98, 96, 94, 97],
-        color: '#4F46E5',
+        color: "#4F46E5",
       },
     ],
     plotOptions: {
@@ -163,11 +167,22 @@ export const useDashboardController = () => {
     },
   };
 
+  const loading = () => {
+    setTimeout(() => {
+      setIsLoading(false);
+    }, 2000);
+  };
+
+  useEffect(() => {
+    loading();
+  }, []);
+
   return {
     stats,
     recentUpdates,
     studentPerformanceOptions,
     teacherStudentRatioOptions,
     monthlyAttendanceOptions,
+    isLoading,
   };
-}; 
+};

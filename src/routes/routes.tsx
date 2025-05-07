@@ -9,7 +9,7 @@ import AdminHomework from "../pages/admin/homework";
 import AdminReports from "../pages/admin/reports";
 import AdminFees from "../pages/admin/fees";
 import AdminStudents from "../pages/admin/students";
-import AdminAddUser from "../pages/admin/add-user";
+import AdminSettings from "../pages/admin/settings";
 
 // Parent Pages
 import ParentDashboard from "../pages/parent/dashboard";
@@ -21,9 +21,8 @@ import ParentFees from "../pages/parent/fees";
 // Auth Pages
 import Login from "../pages/auth/login";
 import ForgotPassword from "../pages/auth/forgot-password";
+import NotAccess from "../components/not-access";
 import useRoutesController from "./routes-controller";
-import AdminSettings from "../pages/admin/settings";
-import AdminProfile from "../pages/admin/profile";
 
 const Routes = () => {
   const { PublicRoute, ProtectedRoute } = useRoutesController();
@@ -44,6 +43,10 @@ const Routes = () => {
           <ForgotPassword />
         </PublicRoute>
       ),
+    },
+    {
+      path: "/not-access",
+      element: <NotAccess />,
     },
     {
       path: "/admin",
@@ -82,16 +85,22 @@ const Routes = () => {
           element: <AdminStudents />,
         },
         {
-          path: "add-user",
-          element: <AdminAddUser />,
-        },
-        {
           path: "settings",
           element: <AdminSettings />,
-        },
-        {
-          path: "profile",
-          element: <AdminProfile />,
+          children: [
+            {
+              index: true,
+              element: <Navigate to="profile" />,
+            },
+            {
+              path: "profile",
+              element: <></>,
+            },
+            {
+              path: "add-user",
+              element: <></>,
+            },
+          ],
         },
       ],
     },
@@ -131,7 +140,7 @@ const Routes = () => {
     },
     {
       path: "*",
-      element: <Navigate to="/login" replace />,
+      element: <Navigate to="/not-access" replace />,
     },
   ]);
 };

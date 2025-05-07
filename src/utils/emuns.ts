@@ -5,19 +5,27 @@ export const APIS_ROUTES = {
   GET_USER_DETAILS: "/auth/v1/user/get-user-details",
   ADD_USER: "/auth/v1/user/add-user",
   GET_ALL_USER: "/auth/v1/user/get-all-users",
+  ADD_STUDENT: "/auth/v1/user/add-student",
+  GET_STUDENT_DETAILS: "/auth/v1/user/get-student-details",
+  UPDATE_USER_DETAILS: "/auth/v1/user/update-user-details",
+  DELETE_USER: "/auth/v1/user/delete-user",
 };
 
 export const API_QUERY_KEY = {
   GET_MODEL_STATISTICS_PERSONALIZATION: "get-model-statistics-personalization",
   GET_USER_DETAILS: "get-user-details",
-  GET_ALL_USER: "get_all_user",
+  GET_ALL_USER: "get-all-user",
+  GET_STUDENT_DETAILS: "get-student-details",
 };
 
 export const API_MUTATION_KEY = {
   SIGNIN: "signin",
   FORGOT_PASSWORD: "forgot-password",
   RESET_PASSWORD: "reset-password",
-  ADD_USER: "add_user",
+  ADD_USER: "add-user",
+  ADD_STUDENT: "add-student",
+  UPDATE_USER_DETAILS: "update-user-details",
+  DELETE_USER: "delete-user",
 };
 
 export const PASSWORD_CIPHER_MESSAGE = "KID_SIGHT_KEY";

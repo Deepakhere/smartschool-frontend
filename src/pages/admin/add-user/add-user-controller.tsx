@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import debounce from "lodash.debounce";
 
 import {
   IAddUserValue,
@@ -26,17 +27,30 @@ const useAddUserController = () => {
   });
 
   const [users, setUsers] = useState<IAllUserDetails[]>([]);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filterRole, setFilterRole] = useState("");
 
   const addUserDetail = useAddUserDetail();
-  const getAllUserDetails = useGetAllUserDetails();
+  const getAllUserDetails = useGetAllUserDetails(searchTerm, filterRole);
 
   useError({
     mutation: addUserDetail,
   });
 
-  const filteredUsers = users.filter(
-    (user) => sortBy === "all" || user.role === sortBy
-  );
+  const onRoleChange = (role: string) => {
+    setSortBy(role as "all" | "admin" | "parent");
+    const roleVal = role === "all" ? "" : role;
+    setFilterRole(roleVal);
+  };
+
+  const onSearchInputChange = debounce((searchVal: string) => {
+    setSearchTerm(searchVal);
+  }, 500);
+
+  useEffect(() => {
+    getAllUserDetails.refetch();
+    //eslint-disable-next-line
+  }, [searchTerm, filterRole]);
 
   const roleOptionsDropDown: IRoleOptionDropDown[] = [
     {
@@ -252,11 +266,17 @@ const useAddUserController = () => {
     sortBy,
     formData,
     isModalOpen,
-    filteredUsers,
+    users,
     isLoadingAddUserDetail: addUserDetail.isLoading,
+    isLoadingGetAllUserDetails: getAllUserDetails.isLoading,
+    isFetchingGetAllUserDetails: getAllUserDetails.isFetching,
     roleOptions,
     permissionOptions,
     roleOptionsDropDown,
+    searchTerm,
+    onSearchInputChange,
+    onRoleChange,
+    setSearchTerm,
     setSortBy,
     setFormData,
     setIsModalOpen,

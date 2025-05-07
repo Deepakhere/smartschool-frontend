@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 
 import { useAuth } from "../../../context/auth-context";
 import { useSingIn } from "../service";
+import { useError } from "../../../hooks";
 
 const useLoginController = () => {
   const { t } = useTranslation();
@@ -17,6 +18,10 @@ const useLoginController = () => {
   const [error, setError] = useState("");
 
   const signIn = useSingIn();
+
+  useError({
+    mutation: signIn,
+  });
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

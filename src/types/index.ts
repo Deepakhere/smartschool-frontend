@@ -214,6 +214,39 @@ export interface AddUserModalProps {
   handlePermissionChange: (permission: keyof FormData["permissions"]) => void;
 }
 
+export interface EditUserModalProps {
+  isOpen: boolean;
+  formData: FormData;
+  isLoadingUpdateUserDetail: boolean;
+  roleOptions: RoleOption[];
+  permissionOptions: PermissionOption[];
+  onClose: () => void;
+  setFormData: React.Dispatch<React.SetStateAction<FormData>>;
+  handleSubmit: (e: React.FormEvent) => void;
+  handlePermissionChange: (permission: keyof FormData["permissions"]) => void;
+}
+
+export interface DeleteUserModalProps {
+  isOpen: boolean;
+  user: IAllUserDetails | null;
+  isLoadingDeleteUser: boolean;
+  onClose: () => void;
+  onConfirm: () => void;
+}
+
+export interface IUpdateUserValue {
+  id: string;
+  name: string;
+  email: string;
+  role: "admin" | "parent";
+  permissions: {
+    canRead: boolean;
+    canCreate: boolean;
+    canUpdate: boolean;
+    canDelete: boolean;
+  };
+}
+
 export interface IUserDetailResponse {
   id: string;
   email: string;

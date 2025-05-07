@@ -27,8 +27,10 @@ const useError = ({
 
       if (errorCode === "EX-00001" || errorCode === "EX-00006") {
         navigate("/login");
+      } else if (errorCode === "EX-00101") {
+        toast.error(t("messages.invalid_credentials"));
       } else {
-        toast.error(t("common.messages.something_went_wrong"));
+        toast.error(t("messages.something_went_wrong"));
       }
 
       // eslint-disable-next-line @typescript-eslint/no-unused-expressions

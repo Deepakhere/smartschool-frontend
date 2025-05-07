@@ -2,32 +2,31 @@ import { useStudentsController } from "./students-controller";
 
 const Students = () => {
   const {
-    students,
-    isLoading,
-    error,
     formData,
+    studentDetail,
+    isLoadingGetStudentDetails,
     handleChange,
     handleSubmit,
     isAddModalOpen,
     setIsAddModalOpen,
   } = useStudentsController();
 
-  if (error) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-md w-full space-y-8">
-          <div>
-            <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-              Error Loading Students
-            </h2>
-            <p className="mt-2 text-center text-sm text-gray-600">
-              {error.message}
-            </p>
-          </div>
-        </div>
-      </div>
-    );
-  }
+  // if (error) {
+  //   return (
+  //     <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+  //       <div className="max-w-md w-full space-y-8">
+  //         <div>
+  //           <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
+  //             Error Loading Students
+  //           </h2>
+  //           <p className="mt-2 text-center text-sm text-gray-600">
+  //             {error.message}
+  //           </p>
+  //         </div>
+  //       </div>
+  //     </div>
+  //   );
+  // }
 
   return (
     <div className="py-6">
@@ -44,41 +43,42 @@ const Students = () => {
       </div>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
         <div className="py-4">
-          {isLoading ? (
+          {isLoadingGetStudentDetails ? (
             <div className="flex justify-center items-center h-64">
               <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
             </div>
           ) : (
             <div className="bg-white shadow overflow-hidden sm:rounded-md">
               <ul className="divide-y divide-gray-200">
-                {students?.map((student) => (
-                  <li key={student.id}>
-                    <div className="px-4 py-4 sm:px-6">
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center">
-                          <div className="flex-shrink-0">
-                            <div className="h-10 w-10 rounded-full bg-indigo-100 flex items-center justify-center">
-                              <span className="text-indigo-600 font-medium">
-                                {student.name.charAt(0)}
-                              </span>
+                {studentDetail &&
+                  studentDetail?.map((student) => (
+                    <li key={student.id}>
+                      <div className="px-4 py-4 sm:px-6">
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center">
+                            <div className="flex-shrink-0">
+                              <div className="h-10 w-10 rounded-full bg-indigo-100 flex items-center justify-center">
+                                <span className="text-indigo-600 font-medium">
+                                  {student.name.charAt(0)}
+                                </span>
+                              </div>
+                            </div>
+                            <div className="ml-4">
+                              <div className="text-sm font-medium text-gray-900">
+                                {student.name}
+                              </div>
+                              <div className="text-sm text-gray-500">
+                                Roll Number: {student.rollNumber}
+                              </div>
                             </div>
                           </div>
-                          <div className="ml-4">
-                            <div className="text-sm font-medium text-gray-900">
-                              {student.name}
-                            </div>
-                            <div className="text-sm text-gray-500">
-                              Roll Number: {student.rollNumber}
-                            </div>
+                          <div className="text-sm text-gray-500">
+                            Class: {student.classId}
                           </div>
-                        </div>
-                        <div className="text-sm text-gray-500">
-                          Class: {student.classId}
                         </div>
                       </div>
-                    </div>
-                  </li>
-                ))}
+                    </li>
+                  ))}
               </ul>
             </div>
           )}

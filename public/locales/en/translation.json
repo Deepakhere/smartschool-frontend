@@ -17,7 +17,9 @@
     "password_reset_sent": "Password Sent ",
     "email_required": "Please provide valid information.",
     "email_invalid": "Please enter a valid email address.",
-    "invalid_captcha": "Invalid captcha."
+    "invalid_captcha": "Invalid captcha.",
+    "something_went_wrong": "Something went wrong",
+    "invalid_credentials": "Invalid credentials, please try again with valid credentials."
   },
   "links": {
     "return_to_login": "Return to Log in"
