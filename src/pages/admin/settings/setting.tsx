@@ -43,15 +43,11 @@ const Settings = () => {
                 User Management
               </Tab>
             </Tab.List>
-            <Tab.Panels className="mt-6">
-              <Tab.Panel>
-                <Outlet />
-              </Tab.Panel>
-              <Tab.Panel>
-                <Outlet />
-              </Tab.Panel>
-            </Tab.Panels>
           </Tab.Group>
+
+          <div className="mt-6">
+            <Outlet />
+          </div>
         </div>
       </div>
     </>

@@ -142,6 +142,7 @@ export interface ILoginResponse {
     canCreate: boolean;
     canUpdate: boolean;
     canDelete: boolean;
+    isGlobalAdmin: boolean;
   };
 }
 
@@ -269,6 +270,7 @@ export interface IUserDetailResponse {
     canCreate: boolean;
     canUpdate: boolean;
     canDelete: boolean;
+    isGlobalAdmin: boolean;
   };
 }
 

@@ -20,6 +20,7 @@ type User = {
     canCreate: boolean;
     canUpdate: boolean;
     canDelete: boolean;
+    isGlobalAdmin: boolean;
   };
 } | null;
 

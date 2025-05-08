@@ -30,7 +30,10 @@ const useOrganizationController = () => {
 
   useEffect(() => {
     if (getAllOrganization.isSuccess && getAllOrganization.data) {
-      if (getAllOrganization.data.items.length === 1) {
+      if (
+        getAllOrganization.data.items.length === 1 &&
+        !user?.permissions?.isGlobalAdmin
+      ) {
         navigateHome(getAllOrganization.data.items[0].id);
       } else {
         setOrganization(getAllOrganization.data.items);

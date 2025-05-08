@@ -4,9 +4,10 @@ import { useLocation, useNavigate, useParams } from "react-router-dom";
 const useSettingController = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const { organizationId } = useParams();
+  const { organizationId } = useParams<{ organizationId: string }>();
   const [selectedIndex, setSelectedIndex] = useState(0);
 
+  // Update the selected tab based on the current URL path
   useEffect(() => {
     if (location.pathname.includes("/settings/add-user")) {
       setSelectedIndex(1);
@@ -16,13 +17,17 @@ const useSettingController = () => {
   }, [location.pathname]);
 
   const handleTabChange = (index: number) => {
-    setSelectedIndex(index);
-    if (index === 0) {
-      navigate(`/${organizationId}/admin/settings/profile`);
-    } else {
-      navigate(`/${organizationId}/admin/settings/add-user`);
+    if (selectedIndex !== index) {
+      setSelectedIndex(index);
+
+      if (index === 0) {
+        navigate(`/${organizationId}/admin/settings/profile`);
+      } else {
+        navigate(`/${organizationId}/admin/settings/add-user`);
+      }
     }
   };
+
   return {
     selectedIndex,
     handleTabChange,
