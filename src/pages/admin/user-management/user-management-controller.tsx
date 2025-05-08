@@ -6,14 +6,23 @@ import {
   IAddUserValue,
   IAllUserDetails,
   IRoleOptionDropDown,
+  IUpdateUserValue,
   PermissionOption,
   RoleOption,
 } from "../../../types";
-import { useAddUserDetail, useGetAllUserDetails } from "./service";
+import {
+  useAddUserDetail,
+  useDeleteUser,
+  useGetAllUserDetails,
+  useUpdateUserDetail,
+} from "./service";
 import { useError } from "../../../hooks";
+import { useTranslation } from "react-i18next";
 
 const useUserManagementController = () => {
   const { organizationId } = useParams<{ organizationId: string }>();
+  const { t } = useTranslation();
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [sortBy, setSortBy] = useState<"all" | "admin" | "parent">("all");
   const [formData, setFormData] = useState({
@@ -29,8 +38,11 @@ const useUserManagementController = () => {
   });
 
   const [users, setUsers] = useState<IAllUserDetails[]>([]);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [filterRole, setFilterRole] = useState("");
+  const [searchTerm, setSearchTerm] = useState<string>("");
+  const [filterRole, setFilterRole] = useState<string>("");
+  const [isEditUser, setIsEditUser] = useState<boolean>(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [deleteUserId, setDeleteUserId] = useState<string>("");
 
   const addUserDetail = useAddUserDetail(organizationId || "");
   const getAllUserDetails = useGetAllUserDetails(
@@ -38,9 +50,22 @@ const useUserManagementController = () => {
     searchTerm,
     filterRole
   );
+  const deleteUser = useDeleteUser(organizationId || "");
+  const updateUserDetails = useUpdateUserDetail();
 
   useError({
     mutation: addUserDetail,
+  });
+
+  useError({
+    mutation: updateUserDetails,
+  });
+
+  useError({
+    mutation: deleteUser,
+    cb: () => {
+      setIsModalOpen(false);
+    },
   });
 
   const onRoleChange = (role: string) => {
@@ -52,11 +77,6 @@ const useUserManagementController = () => {
   const onSearchInputChange = debounce((searchVal: string) => {
     setSearchTerm(searchVal);
   }, 500);
-
-  useEffect(() => {
-    getAllUserDetails.refetch();
-    //eslint-disable-next-line
-  }, [searchTerm, filterRole]);
 
   const roleOptionsDropDown: IRoleOptionDropDown[] = [
     {
@@ -238,20 +258,109 @@ const useUserManagementController = () => {
 
   const handleSubmituserDetails = async (e: React.FormEvent) => {
     e.preventDefault();
-    const userDetails: IAddUserValue = {
-      name: formData.fullname,
-      email: formData.email,
-      role: formData.role,
-      permissions: {
-        canRead: formData.permissions.canRead,
-        canCreate: formData.permissions.canCreate,
-        canUpdate: formData.permissions.canUpdate,
-        canDelete: formData.permissions.canDelete,
-      },
-    };
 
-    addUserDetail.mutate({ ...userDetails });
+    if (isEditUser) {
+      const userDetails: IUpdateUserValue = {
+        id: users.find((user) => user.email === formData.email)?.id || "",
+        name: formData.fullname,
+        email: formData.email,
+        role: formData.role,
+        permissions: {
+          canRead: formData.permissions.canRead,
+          canCreate: formData.permissions.canCreate,
+          canUpdate: formData.permissions.canUpdate,
+          canDelete: formData.permissions.canDelete,
+        },
+      };
+
+      updateUserDetails.mutate({ ...userDetails });
+    } else {
+      const userDetails: IAddUserValue = {
+        name: formData.fullname,
+        email: formData.email,
+        role: formData.role,
+        permissions: {
+          canRead: formData.permissions.canRead,
+          canCreate: formData.permissions.canCreate,
+          canUpdate: formData.permissions.canUpdate,
+          canDelete: formData.permissions.canDelete,
+        },
+      };
+
+      addUserDetail.mutate({ ...userDetails });
+    }
   };
+
+  const handleEditUserDetails = async (userId: string, isEdit: boolean) => {
+    if (!isEdit) return;
+
+    const user = users.find((user) => user.id === userId);
+    if (!user) return;
+
+    setFormData({
+      fullname: user.name,
+      email: user.email,
+      role: user.role as "admin" | "parent",
+      permissions: {
+        canRead: user.permissions.canRead,
+        canCreate: user.permissions.canCreate,
+        canUpdate: user.permissions.canUpdate,
+        canDelete: user.permissions.canDelete,
+      },
+    });
+
+    setIsModalOpen(true);
+    setIsEditUser(true);
+  };
+
+  const onCancel = () => {
+    setIsModalOpen(false);
+    setIsEditUser(false);
+    setFormData({
+      fullname: "",
+      email: "",
+      role: "admin" as "admin" | "parent",
+      permissions: {
+        canRead: false,
+        canCreate: false,
+        canUpdate: false,
+        canDelete: false,
+      },
+    });
+  };
+
+  const onClickDeleteUser = (userId: string) => {
+    setDeleteUserId(userId);
+    setIsDeleteModalOpen(true);
+  };
+
+  const onCancelDeleteModal = () => {
+    setIsDeleteModalOpen(false);
+  };
+
+  const handleDeleteUser = async () => {
+    if (!deleteUserId) return;
+    deleteUser.mutate(deleteUserId);
+  };
+
+  useEffect(() => {
+    if (updateUserDetails.isSuccess) {
+      setIsModalOpen(false);
+      setIsEditUser(false);
+      getAllUserDetails.remove();
+    }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [updateUserDetails.isSuccess]);
+
+  useEffect(() => {
+    if (deleteUser.isSuccess) {
+      setIsDeleteModalOpen(false);
+      getAllUserDetails.remove();
+    }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [deleteUser.isSuccess]);
 
   useEffect(() => {
     if (addUserDetail.isSuccess) {
@@ -268,19 +377,31 @@ const useUserManagementController = () => {
     }
   }, [getAllUserDetails.isSuccess, getAllUserDetails.data]);
 
+  useEffect(() => {
+    getAllUserDetails.refetch();
+    //eslint-disable-next-line
+  }, [searchTerm, filterRole]);
+
   return {
+    t,
     sortBy,
     formData,
     isModalOpen,
     users,
-    isLoadingAddUserDetail: addUserDetail.isLoading,
-    isLoadingGetAllUserDetails: getAllUserDetails.isLoading,
-    isFetchingGetAllUserDetails: getAllUserDetails.isFetching,
     roleOptions,
     permissionOptions,
     roleOptionsDropDown,
     searchTerm,
     onSearchInputChange,
+    isEditUser,
+    isDeleteModalOpen,
+    deleteUserId,
+    isLoadingAddUserDetail: addUserDetail.isLoading,
+    isLoadingGetAllUserDetails: getAllUserDetails.isLoading,
+    isFetchingGetAllUserDetails: getAllUserDetails.isFetching,
+    isLoadingUpdateUserDetail: updateUserDetails.isLoading,
+    isLoadingDeleteUser: deleteUser.isLoading,
+    onCancel,
     onRoleChange,
     setSearchTerm,
     setSortBy,
@@ -288,6 +409,10 @@ const useUserManagementController = () => {
     setIsModalOpen,
     handleSubmituserDetails,
     handlePermissionChange,
+    handleEditUserDetails,
+    handleDeleteUser,
+    onClickDeleteUser,
+    onCancelDeleteModal,
   };
 };
 

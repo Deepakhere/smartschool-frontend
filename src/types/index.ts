@@ -174,6 +174,12 @@ export interface IAllUserDetails {
   email: string;
   role: string;
   status: string;
+  permissions: {
+    canRead: boolean;
+    canCreate: boolean;
+    canUpdate: boolean;
+    canDelete: boolean;
+  };
 }
 
 export interface FormData {
@@ -202,12 +208,15 @@ export interface PermissionOption {
   icon: ReactNode;
 }
 
-export interface AddUserModalProps {
+export interface ICreateUpdateUserModalProps {
+  t: (key: string) => string;
   isOpen: boolean;
   formData: FormData;
-  isLoadingAddUserDetail: boolean;
   roleOptions: RoleOption[];
   permissionOptions: PermissionOption[];
+  isEditUser: boolean;
+  isLoadingAddUserDetail: boolean;
+  isLoadingUpdateUserDetail?: boolean;
   onClose: () => void;
   setFormData: React.Dispatch<React.SetStateAction<FormData>>;
   handleSubmit: (e: React.FormEvent) => void;
@@ -215,6 +224,7 @@ export interface AddUserModalProps {
 }
 
 export interface EditUserModalProps {
+  t: (t: string) => string;
   isOpen: boolean;
   formData: FormData;
   isLoadingUpdateUserDetail: boolean;
@@ -227,8 +237,10 @@ export interface EditUserModalProps {
 }
 
 export interface DeleteUserModalProps {
+  t: (t: string) => string;
   isOpen: boolean;
-  user: IAllUserDetails | null;
+  user: IAllUserDetails[];
+  userId: string;
   isLoadingDeleteUser: boolean;
   onClose: () => void;
   onConfirm: () => void;

@@ -1,10 +1,16 @@
-import { XMarkIcon, ExclamationTriangleIcon } from "@heroicons/react/24/outline";
-import { DeleteUserModalProps } from "../../../../types";
-import ButtonSpinner from "../../../../icons/button-spinner";
+import {
+  XMarkIcon,
+  ExclamationTriangleIcon,
+} from "@heroicons/react/24/outline";
+import { DeleteUserModalProps } from "../../../../../types";
+import ButtonSpinner from "../../../../../icons/button-spinner";
+import { Trans } from "react-i18next";
 
 const DeleteUserModal = ({
+  t,
   isOpen,
   user,
+  userId,
   isLoadingDeleteUser,
   onClose,
   onConfirm,
@@ -28,23 +34,40 @@ const DeleteUserModal = ({
               className="rounded-md bg-white text-gray-400 hover:text-gray-500 focus:outline-none"
               onClick={onClose}
             >
-              <span className="sr-only">Close</span>
+              <span className="sr-only">{t("labels.close")}</span>
               <XMarkIcon className="h-6 w-6" aria-hidden="true" />
             </button>
           </div>
 
           <div className="sm:flex sm:items-start">
             <div className="mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-red-100 sm:mx-0 sm:h-10 sm:w-10">
-              <ExclamationTriangleIcon className="h-6 w-6 text-red-600" aria-hidden="true" />
+              <ExclamationTriangleIcon
+                className="h-6 w-6 text-red-600"
+                aria-hidden="true"
+              />
             </div>
             <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
               <h3 className="text-lg font-medium leading-6 text-gray-900">
-                Delete User
+                {t("labels.delete_user")}
               </h3>
               <div className="mt-2">
-                <p className="text-sm text-gray-500">
-                  Are you sure you want to delete the user <span className="font-medium text-gray-700">{user.name}</span>? This action cannot be undone.
-                </p>
+                {/* <p className="text-sm text-gray-500">
+                  Are you sure you want to delete the user{" "}
+                  <span className="font-medium text-gray-700">{}</span>? This
+                  action cannot be undone.
+                </p> */}
+                <Trans
+                  i18nKey={t("messages.delete_user_description")}
+                  values={{
+                    name: user.find((user) => user.id === userId)?.name,
+                  }}
+                  components={[
+                    <span
+                      key="entity"
+                      className="text-gray-700 font-medium italic"
+                    />,
+                  ]}
+                />
               </div>
             </div>
           </div>
@@ -56,14 +79,14 @@ const DeleteUserModal = ({
               className="inline-flex w-full justify-center rounded-md border border-transparent bg-red-600 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 sm:ml-3 sm:w-auto sm:text-sm disabled:opacity-50 disabled:cursor-not-allowed"
               onClick={onConfirm}
             >
-              {isLoadingDeleteUser ? <ButtonSpinner /> : "Delete"}
+              {isLoadingDeleteUser ? <ButtonSpinner /> : t("buttons.delete")}
             </button>
             <button
               type="button"
               className="mt-3 inline-flex w-full justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-base font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 sm:mt-0 sm:w-auto sm:text-sm"
               onClick={onClose}
             >
-              Cancel
+              {t("buttons.cancel")}
             </button>
           </div>
         </div>

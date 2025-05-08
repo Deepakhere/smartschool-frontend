@@ -3,11 +3,12 @@ import { EditUserModalProps } from "../../../../types";
 import ButtonSpinner from "../../../../icons/button-spinner";
 
 const EditUserModal = ({
+  t,
   isOpen,
   formData,
-  isLoadingUpdateUserDetail,
   roleOptions,
   permissionOptions,
+  isLoadingUpdateUserDetail,
   onClose,
   setFormData,
   handleSubmit,
@@ -32,7 +33,7 @@ const EditUserModal = ({
               className="rounded-md bg-white text-gray-400 hover:text-gray-500 focus:outline-none"
               onClick={onClose}
             >
-              <span className="sr-only">Close</span>
+              <span className="sr-only">{t("labels.close")}</span>
               <XMarkIcon className="h-6 w-6" aria-hidden="true" />
             </button>
           </div>
@@ -40,7 +41,7 @@ const EditUserModal = ({
           <div className="sm:flex sm:items-start">
             <div className="mt-3 text-center sm:mt-0 sm:text-left w-full">
               <h3 className="text-lg font-medium leading-6 text-gray-900 mb-6">
-                Edit User
+                {t("labels.edit_user")}
               </h3>
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div>
@@ -48,7 +49,7 @@ const EditUserModal = ({
                     htmlFor="fullname"
                     className="block text-sm font-medium text-gray-700 mb-1"
                   >
-                    Full Name
+                    {t("labels.fullname")}
                   </label>
                   <input
                     type="text"
@@ -68,7 +69,7 @@ const EditUserModal = ({
                     htmlFor="email"
                     className="block text-sm font-medium text-gray-700 mb-1"
                   >
-                    Email Address
+                    {t("labels.email_address")}
                   </label>
                   <input
                     type="email"
@@ -88,7 +89,7 @@ const EditUserModal = ({
                     htmlFor="role"
                     className="block text-sm font-medium text-gray-700 mb-1"
                   >
-                    User Role
+                    {t("labels.user_role")}
                   </label>
                   <div className="grid grid-cols-2 gap-4">
                     {roleOptions.map((role) => (
@@ -140,7 +141,7 @@ const EditUserModal = ({
                 {formData.role !== "parent" ? (
                   <div className="bg-gray-50 p-4 rounded-md">
                     <label className="block text-sm font-medium text-gray-700 mb-3">
-                      Permissions
+                      {t("labels.permissions")}
                     </label>
                     <div className="grid grid-cols-2 gap-4">
                       {permissionOptions.map((permission) => (
@@ -209,13 +210,10 @@ const EditUserModal = ({
                       </div>
                       <div className="ml-3">
                         <h3 className="text-sm font-medium text-yellow-800">
-                          Parent Role Notice
+                          {t("labels.parent_role_notice")}
                         </h3>
                         <div className="mt-2 text-sm text-yellow-700">
-                          <p>
-                            Parents have read-only access by default. They can
-                            view content but cannot modify it.
-                          </p>
+                          <p>{t("messages.parent_role_notice")}</p>
                         </div>
                       </div>
                     </div>
@@ -231,7 +229,7 @@ const EditUserModal = ({
                     {isLoadingUpdateUserDetail ? (
                       <ButtonSpinner />
                     ) : (
-                      "Update User"
+                      t("buttons.update_user")
                     )}
                   </button>
                   <button
@@ -239,7 +237,7 @@ const EditUserModal = ({
                     onClick={onClose}
                     className="mt-3 inline-flex w-full justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-base font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 sm:mt-0 sm:w-auto sm:text-sm"
                   >
-                    Cancel
+                    {t("buttons.close")}
                   </button>
                 </div>
               </form>

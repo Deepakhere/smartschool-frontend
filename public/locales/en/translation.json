@@ -10,7 +10,27 @@
     "check_spam_if_email_not_found": "If the email does not arrive soon, check your spam folder. It was sent from no-reply@kidsight.",
     "sent_email_notification_initial": "We have sent ",
     "forgot_email_placeholder": "Enter your email",
-    "sign_in_to_your_account": "Sign in to your kidsight account."
+    "sign_in_to_your_account": "Sign in to your kidsight account.",
+    "add_user": "Add user",
+    "username": "Username",
+    "email": "Email",
+    "role": "Role",
+    "actions": "Actions",
+    "edit": "Edit",
+    "delete": "Delete",
+    "no_records_found": "No Records Found",
+    "clear_filters": "Clear Filters",
+    "close": "Close",
+    "delete_user": "Delete User",
+    "edit_user": "Edit User",
+    "fullname": "Full Name",
+    "email_address": "Email Address",
+    "user_role": "User Role",
+    "permissions": "Permissions",
+    "read": "Read",
+    "create": "Create",
+    "update": "Update",
+    "parent_role_notice": "Parent Role Notice"
   },
   "messages": {
     "enter_email_associate_with_account": "Don’t worry! It happens. Please enter your email address associated with your account.",
@@ -19,7 +39,13 @@
     "email_invalid": "Please enter a valid email address.",
     "invalid_captcha": "Invalid captcha.",
     "something_went_wrong": "Something went wrong",
-    "invalid_credentials": "Invalid credentials, please try again with valid credentials."
+    "invalid_credentials": "Invalid credentials, please try again with valid credentials.",
+    "delete_user_description": "Are you sure you want to delete the user <0>{{name}}</0>? This action cannot be undone.",
+    "parent_role_notice": "Parents have read-only access by default. They can view content but cannot modify it.",
+    "enter_your_full_name": "Enter your full name.",
+    "enter_your_email": "Enter your email address.",
+    "you_dont_have_permission_to_edit_user": "You don't have permision to edit user.",
+    "you_dont_have_permission_to_delete_user": "You don't have permision to delete user."
   },
   "links": {
     "return_to_login": "Return to Log in"
@@ -28,6 +54,11 @@
     "sending": "Sending",
     "reset_password": "Reset Password",
     "return_to_login_forget_password": "Return to Log in",
-    "sign_in": "Sign in"
+    "sign_in": "Sign in",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "update_user": "Update User",
+    "close": "Close",
+    "save_user": "Save User"
   }
 }

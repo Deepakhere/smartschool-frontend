@@ -1,24 +1,31 @@
 import { PlusIcon, MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 
-import AddUserModal from "./user-modal/add-user-modal";
 import LogoSpinner from "../../../components/logo-spinner";
 import NoRecordIcon from "../../../icons/no-record-icon";
+import { CreateUpdateUserModal, DeleteUserModal } from "./user-modal";
 import useUserManagementController from "./user-management-controller";
 
 const UserManagement = () => {
   const {
+    t,
     sortBy,
     formData,
     isModalOpen,
     users,
-    isLoadingAddUserDetail,
-    isLoadingGetAllUserDetails,
+    isEditUser,
     roleOptions,
     permissionOptions,
     roleOptionsDropDown,
     searchTerm,
+    isDeleteModalOpen,
     onSearchInputChange,
+    deleteUserId,
     isFetchingGetAllUserDetails,
+    isLoadingUpdateUserDetail,
+    isLoadingAddUserDetail,
+    isLoadingGetAllUserDetails,
+    isLoadingDeleteUser,
+    onCancel,
     onRoleChange,
     setSortBy,
     setFormData,
@@ -26,6 +33,10 @@ const UserManagement = () => {
     handleSubmituserDetails,
     handlePermissionChange,
     setSearchTerm,
+    handleDeleteUser,
+    handleEditUserDetails,
+    onClickDeleteUser,
+    onCancelDeleteModal,
   } = useUserManagementController();
 
   return (
@@ -35,7 +46,7 @@ const UserManagement = () => {
       ) : (
         <div className="px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col sm:flex-row justify-between items-center mb-6 gap-4">
-            {/* Search field with controlled value */}
+            {/* Search field */}
             <div className="relative w-full sm:w-64">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                 <MagnifyingGlassIcon className="h-5 w-5 text-gray-400" />
@@ -93,7 +104,7 @@ const UserManagement = () => {
                 className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors duration-200"
               >
                 <PlusIcon className="h-5 w-5 mr-2" />
-                Add User
+                {t("labels.add_user")}
               </button>
             </div>
           </div>
@@ -104,16 +115,16 @@ const UserManagement = () => {
               <thead className="bg-gray-50">
                 <tr>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Username
+                    {t("labels.username")}
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Email
+                    {t("labels.email")}
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Role
+                    {t("labels.role")}
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Actions
+                    {t("labels.actions")}
                   </th>
                 </tr>
               </thead>
@@ -123,9 +134,6 @@ const UserManagement = () => {
                     <td colSpan={4} className="px-6 py-10 text-center">
                       <div className="flex justify-center items-center">
                         <div className="h-8 w-8 border-t-2 border-b-2 border-indigo-500 rounded-full animate-spin"></div>
-                        <span className="ml-2 text-gray-600">
-                          Loading users...
-                        </span>
                       </div>
                     </td>
                   </tr>
@@ -152,11 +160,31 @@ const UserManagement = () => {
                         </span>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        <button className="text-indigo-600 hover:text-indigo-900 mr-4">
-                          Edit
+                        <button
+                          className={`text-indigo-600 mr-4 ${
+                            user.permissions?.canUpdate
+                              ? ""
+                              : "cursor-not-allowed opacity-50"
+                          }`}
+                          title={t(
+                            "messages.you_dont_have_permission_to_edit_user"
+                          )}
+                          onClick={() => handleEditUserDetails(user.id, true)}
+                        >
+                          {t("labels.edit")}
                         </button>
-                        <button className="text-red-600 hover:text-red-900">
-                          Delete
+                        <button
+                          className={`text-red-600 ${
+                            user.permissions?.canDelete
+                              ? ""
+                              : "cursor-not-allowed opacity-50"
+                          }`}
+                          title={t(
+                            "messages.you_dont_have_permission_to_delete_user"
+                          )}
+                          onClick={() => onClickDeleteUser(user.id)}
+                        >
+                          {t("labels.delete")}
                         </button>
                       </td>
                     </tr>
@@ -171,9 +199,9 @@ const UserManagement = () => {
                           <NoRecordIcon />
                         </div>
                         <h3 className="text-lg font-medium text-gray-900 mb-1">
-                          No Records Found
+                          {t("labels.no_records_found")}
                         </h3>
-                        <p className="text-sm text-gray-500 mb-6 text-center max-w-md">
+                        <p className="text-xs text-gray-500 mb-6 text-center max-w-md">
                           {searchTerm
                             ? `No users found matching "${searchTerm}". Try a different search term or clear the search.`
                             : `No users found with the selected filter. Try changing the filter or add a new user.`}
@@ -185,7 +213,7 @@ const UserManagement = () => {
                           }}
                           className="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                         >
-                          Clear Filters
+                          {t("labels.clear_filters")}
                         </button>
                       </div>
                     </td>
@@ -195,16 +223,29 @@ const UserManagement = () => {
             </table>
           </div>
 
-          <AddUserModal
+          <CreateUpdateUserModal
+            t={t}
             isOpen={isModalOpen}
             formData={formData}
-            isLoadingAddUserDetail={isLoadingAddUserDetail}
             roleOptions={roleOptions}
             permissionOptions={permissionOptions}
+            isEditUser={isEditUser}
+            isLoadingAddUserDetail={isLoadingAddUserDetail}
+            isLoadingUpdateUserDetail={isLoadingUpdateUserDetail}
             setFormData={setFormData}
-            onClose={() => setIsModalOpen(false)}
-            handleSubmit={handleSubmituserDetails}
+            onClose={onCancel}
+            handleSubmit={(e) => handleSubmituserDetails(e)}
             handlePermissionChange={handlePermissionChange}
+          />
+
+          <DeleteUserModal
+            t={t}
+            user={users}
+            userId={deleteUserId}
+            isOpen={isDeleteModalOpen}
+            isLoadingDeleteUser={isLoadingDeleteUser}
+            onClose={onCancelDeleteModal}
+            onConfirm={handleDeleteUser}
           />
         </div>
       )}
