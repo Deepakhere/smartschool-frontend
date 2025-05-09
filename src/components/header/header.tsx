@@ -27,12 +27,11 @@ const Header = () => {
               className="lg:hidden p-2 rounded-md text-gray-500 hover:text-gray-600 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500"
               onClick={toggleSidebar}
             >
-              <span className="sr-only">Open sidebar</span>
               <Bars3Icon className="h-6 w-6" aria-hidden="true" />
             </button>
             <div className="flex-shrink-0 flex items-center lg:pl-3">
               <Link
-                to="/admin/dashboard"
+                to={`/${organizationId}/admin/dashboard`}
                 className="text-xl font-bold text-gray-900"
               >
                 <img
