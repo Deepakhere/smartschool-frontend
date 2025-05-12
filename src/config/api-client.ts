@@ -42,14 +42,13 @@ apiClient.interceptors.response.use(
       error.response &&
       (error?.response?.status === 400 || error?.response?.status === 404)
     ) {
-      window.location.href = "/not-access";
+      // window.location.href = "/not-access";
     } else if (
       error?.response?.status === 405 ||
       (window.location.href !== "/login" &&
         window.location.href !== "/forgot-password")
     ) {
       toast.error("token is expired please login and continue");
-      // setUser(null);
       Cookies.remove(USER_ACCESS_KEY.TOKEN);
       window.location.href = "/login";
     } else if (

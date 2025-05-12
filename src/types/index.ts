@@ -291,3 +291,45 @@ export interface IOrganization {
   pincode: string;
   status: string;
 }
+
+export interface IStudentDetails {
+  id: string;
+  name: string;
+  classId: string;
+  rollNumber: string;
+  parentEmail: string;
+  dateOfBirth: string;
+}
+
+export interface IStudentFormData {
+  admissionId: string;
+  admissionDate: string;
+  name: string;
+  classId: string;
+  rollNumber: string;
+  dateOfBirth: string;
+  parentEmail: string;
+  city: string;
+  state: string;
+  address: string;
+  parentName?: string;
+  phoneNumber?: string;
+}
+
+export interface ICreateUpdateStudentModalProps {
+  t: (key: string) => string;
+  isOpen: boolean;
+  formData: IStudentFormData;
+  isEditStudent: boolean;
+  currentStep: number;
+  isParentExist: boolean;
+  isLoadingAddStudent: boolean;
+  isLoadingUpdateStudent: boolean;
+  onClose: () => void;
+  nextStep: () => void;
+  prevStep: () => void;
+  handleSubmit: (e: React.FormEvent) => void;
+  setFormData: React.Dispatch<React.SetStateAction<IStudentFormData>>;
+  setCurrentStep: React.Dispatch<React.SetStateAction<number>>;
+  handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+}

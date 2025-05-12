@@ -13,19 +13,21 @@ interface IStudentResponse {
   dateOfBirth: string;
 }
 
-const getStudentDetails = async (): Promise<{ items: IStudentResponse[] }> => {
+const getStudentDetails = async (
+  organizationId: string
+): Promise<{ items: IStudentResponse[]; total_count: number }> => {
   const result = await apiClient.get<
     null,
-    IAxiosResponse<{ items: IStudentResponse[] }>
-  >(APIS_ROUTES.GET_STUDENT_DETAILS);
+    IAxiosResponse<{ items: IStudentResponse[]; total_count: number }>
+  >(`${APIS_ROUTES.STUDENT_PROFILE}/${organizationId}/get-student-profile`);
 
   return result.data.Data;
 };
 
-const useGetStudentDetails = () =>
-  useQuery<{ items: IStudentResponse[] }, IAPIError>(
-    [API_QUERY_KEY.GET_STUDENT_DETAILS],
-    getStudentDetails,
+const useGetStudentDetails = (organizationId: string) =>
+  useQuery<{ items: IStudentResponse[]; total_count: number }, IAPIError>(
+    [API_QUERY_KEY.GET_STUDENT_PROFILE],
+    () => getStudentDetails(organizationId),
     {
       cacheTime: 0,
     }
