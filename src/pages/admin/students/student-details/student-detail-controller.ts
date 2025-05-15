@@ -1,8 +1,13 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { useGetStudentById, useUpdateStudentDetail } from "../service";
+import {
+  useDeleteStudent,
+  useGetStudentById,
+  useUpdateStudentDetail,
+} from "../service";
 import { IStudentFormData } from "../../../../types";
+import { useError } from "../../../../hooks";
 
 const useStudentDetailController = () => {
   const { t } = useTranslation();
@@ -20,7 +25,16 @@ const useStudentDetailController = () => {
     studentId || ""
   );
 
-  const updateStudent = useUpdateStudentDetail();
+  const updateStudent = useUpdateStudentDetail(organizationId || "");
+
+  const deleteStudent = useDeleteStudent(organizationId || "");
+
+  useError({
+    mutation: deleteStudent,
+    cb: () => {
+      setIsDeleteModalOpen(false);
+    },
+  });
 
   useEffect(() => {
     if (getStudentDetailById.isSuccess && getStudentDetailById.data) {
@@ -38,21 +52,13 @@ const useStudentDetailController = () => {
     }));
   };
 
-  // const handleSubmit = (e: React.FormEvent) => {
-  //   e.preventDefault();
-  //   updateStudent.mutate(formData, {
-  //     onSuccess: () => {
-  //       setIsEditModalOpen(false);
-  //       refetch();
-  //     },
-  //   });
-  // };
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    updateStudent.mutate(formData);
+  };
 
   const handleDeleteStudent = () => {
-    // Implement delete functionality
-    console.log("Deleting student", studentId);
-    setIsDeleteModalOpen(false);
-    navigate(`/${organizationId}/admin/students`);
+    deleteStudent.mutate(studentId || "");
   };
 
   const nextStep = () => {
@@ -67,6 +73,23 @@ const useStudentDetailController = () => {
     navigate(`/${organizationId}/admin/students`);
   };
 
+  useEffect(() => {
+    if (updateStudent.isSuccess) {
+      setIsEditModalOpen(false);
+      getStudentDetailById.refetch();
+      setCurrentStep(1);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [updateStudent.isSuccess]);
+
+  useEffect(() => {
+    if (deleteStudent.isSuccess) {
+      setIsDeleteModalOpen(false);
+      navigate(`/${organizationId}/admin/students`);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [deleteStudent.isSuccess]);
+
   return {
     t,
     formData,
@@ -79,7 +102,7 @@ const useStudentDetailController = () => {
     isErrorStudentDetail: getStudentDetailById.isError,
     setFormData,
     handleChange,
-    // handleSubmit,
+    handleSubmit,
     nextStep,
     prevStep,
     onBackClick,

@@ -14,10 +14,10 @@ interface IParentResponse {
 const getParentByEmail = async (
   organizationId: string,
   email: string
-): Promise<{ item: IParentResponse; is_parent_exist: boolean }> => {
+): Promise<{ item: IParentResponse; is_parent_exists: boolean }> => {
   const result = await apiClient.get<
     null,
-    IAxiosResponse<{ item: IParentResponse; is_parent_exist: boolean }>
+    IAxiosResponse<{ item: IParentResponse; is_parent_exists: boolean }>
   >(
     `${APIS_ROUTES.STUDENT_PROFILE}/${organizationId}/get-parent-profile/${email}`
   );
@@ -26,7 +26,7 @@ const getParentByEmail = async (
 };
 
 const useGetParentByEmail = (organizationId: string, email: string) =>
-  useQuery<{ item: IParentResponse; is_parent_exist: boolean }, IAPIError>(
+  useQuery<{ item: IParentResponse; is_parent_exists: boolean }, IAPIError>(
     [API_QUERY_KEY.GET_PARENT_DETAILS],
     () => getParentByEmail(organizationId, email),
     {

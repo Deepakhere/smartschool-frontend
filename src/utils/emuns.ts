@@ -6,11 +6,9 @@ export const APIS_ROUTES = {
   ADD_USER: "/auth/v1/user/add-user",
   GET_ALL_USER: "/auth/v1/user/get-all-users",
   STUDENT_PROFILE: "/student-service/v1/profile",
-  GET_STUDENT_DETAILS: "/auth/v1/user/get-student-details",
   UPDATE_USER_DETAILS: "/auth/v1/user/update-user-details",
   DELETE_USER: "/auth/v1/user/delete-user",
   ORGANIZATION_SERVICE: "/organization-service/v1/organization",
-  UPDATE_STUDENT_DETAILS: "/auth/v1/user/update-student-details",
 };
 
 export const API_QUERY_KEY = {

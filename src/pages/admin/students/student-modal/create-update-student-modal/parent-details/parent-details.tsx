@@ -68,6 +68,7 @@ const ParentDetailsForm = ({
           name="phoneNumber"
           placeholder={t("messages.enter_phone_number")}
           value={formData.phoneNumber}
+          disabled={isParentExist}
           onChange={handleChange}
           className="mt-1 block w-full p-3 rounded-md border border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
           required

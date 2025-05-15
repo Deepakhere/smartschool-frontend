@@ -6,7 +6,7 @@ import { APIS_ROUTES, API_QUERY_KEY } from "../../../../../utils";
 interface IStudentDetailResponse {
   id: string;
   name: string;
-  admissionId: string;
+  admissionNumber: string;
   admissionDate: string;
   classId: string;
   rollNumber: string;
@@ -40,7 +40,7 @@ const useGetStudentById = (organizationId: string, studentId: string) =>
     () => getStudentById(organizationId, studentId),
     {
       enabled: !!studentId,
-      refetchOnWindowFocus: false,
+      cacheTime: 0,
     }
   );
 

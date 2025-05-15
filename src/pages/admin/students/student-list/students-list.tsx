@@ -34,6 +34,7 @@ const StudentsList = () => {
     isLoadingAddStudent,
     isLoadingGetStudentDetails,
     isLoadingUpdateStudent,
+    isFetchingStudentList,
     handleChange,
     handleSubmit,
     setFormData,
@@ -79,8 +80,10 @@ const StudentsList = () => {
               <input
                 type="text"
                 placeholder="Search students..."
-                value={searchTerm}
-                onChange={handleSearchChange}
+                onChange={(e) => {
+                  e.preventDefault();
+                  handleSearchChange(e.target.value);
+                }}
                 className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
               />
             </div>
@@ -122,7 +125,7 @@ const StudentsList = () => {
           ) : (
             <>
               {/* Students Table */}
-              <div className="bg-white shadow  sm:rounded-lg">
+              <div className="bg-white shadow-md rounded-lg">
                 <table className="min-w-full divide-y divide-gray-200">
                   <thead className="bg-gray-50">
                     <tr>
@@ -143,9 +146,19 @@ const StudentsList = () => {
                       </th>
                     </tr>
                   </thead>
-                  <tbody className="bg-white divide-y divide-gray-200">
-                    {studentDetail && studentDetail.length > 0 ? (
-                      studentDetail.map((student) => (
+                  {isFetchingStudentList ? (
+                    <tbody>
+                      <tr>
+                        <td colSpan={4} className="px-6 py-10 text-center">
+                          <div className="flex justify-center items-center">
+                            <div className="h-8 w-8 border-t-2 border-b-2 border-indigo-500 rounded-full animate-spin"></div>
+                          </div>
+                        </td>
+                      </tr>
+                    </tbody>
+                  ) : studentDetail && studentDetail.length > 0 ? (
+                    <tbody className="bg-white divide-y divide-gray-200">
+                      {studentDetail.map((student) => (
                         <tr key={student.id}>
                           <td className="px-6 py-4 whitespace-nowrap">
                             <div className="flex items-center">
@@ -181,7 +194,9 @@ const StudentsList = () => {
                               ref={dropdownRef}
                             >
                               <button
-                                onClick={() => toggleDropdown(student.id)}
+                                onClick={() => {
+                                  toggleDropdown(student.id);
+                                }}
                                 className="text-gray-500 hover:text-gray-700 focus:outline-none"
                                 aria-expanded={activeDropdown === student.id}
                                 aria-haspopup="true"
@@ -192,17 +207,16 @@ const StudentsList = () => {
                               {/* Dropdown menu with improved positioning */}
                               {activeDropdown === student.id && (
                                 <div
-                                  className="absolute right-0 top-100 w-32 bg-white border rounded-lg shadow-lg overflow-hidden z-50"
+                                  className="absolute right-0 top-full mt-1 w-32 bg-white border rounded-lg shadow-lg overflow-hidden z-50"
                                   role="menu"
                                   aria-orientation="vertical"
                                   aria-labelledby="options-menu"
                                 >
-                                  <div className="" role="none">
+                                  <div role="none">
                                     <button
                                       className="w-full text-left block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
                                       role="menuitem"
-                                      onClick={() => {
-                                        // Handle edit action
+                                      onMouseDown={() => {
                                         console.log("Edit student", student.id);
                                         setActiveDropdown(null);
                                       }}
@@ -212,8 +226,7 @@ const StudentsList = () => {
                                     <button
                                       className="w-full text-left block px-4 py-2 text-sm text-red-600 hover:bg-gray-50"
                                       role="menuitem"
-                                      onClick={() => {
-                                        // Handle delete action
+                                      onMouseDown={() => {
                                         handleDeleteAction(student.id);
                                         setActiveDropdown(null);
                                       }}
@@ -226,38 +239,38 @@ const StudentsList = () => {
                             </div>
                           </td>
                         </tr>
-                      ))
-                    ) : (
-                      <tbody>
-                        <tr>
-                          <td colSpan={4}>
-                            <div className="flex flex-col items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
-                              <div className="mb-4">
-                                <NoRecordIcon />
-                              </div>
-                              <h3 className="text-lg font-medium text-gray-900 mb-1">
-                                {t("labels.no_records_found")}
-                              </h3>
-                              <p className="text-xs text-gray-500 mb-6 text-center max-w-md">
-                                {searchTerm
-                                  ? `No student found matching "${searchTerm}". Try a different search term or clear the search.`
-                                  : `No student found with the selected filter. Try changing the filter or add a new user.`}
-                              </p>
-                              <button
-                                onClick={() => {
-                                  setSearchTerm("");
-                                  // setSortBy("all");
-                                }}
-                                className="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                              >
-                                {t("labels.clear_filters")}
-                              </button>
+                      ))}
+                    </tbody>
+                  ) : (
+                    <tbody>
+                      <tr>
+                        <td colSpan={4}>
+                          <div className="flex flex-col items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+                            <div className="mb-4">
+                              <NoRecordIcon />
                             </div>
-                          </td>
-                        </tr>
-                      </tbody>
-                    )}
-                  </tbody>
+                            <h3 className="text-lg font-medium text-gray-900 mb-1">
+                              {t("labels.no_records_found")}
+                            </h3>
+                            <p className="text-xs text-gray-500 mb-6 text-center max-w-md">
+                              {searchTerm
+                                ? `No student found matching "${searchTerm}". Try a different search term or clear the search.`
+                                : `No student found with the selected filter. Try changing the filter or add a new user.`}
+                            </p>
+                            <button
+                              onClick={() => {
+                                setSearchTerm("");
+                                // setSortBy("all");
+                              }}
+                              className="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                            >
+                              {t("labels.clear_filters")}
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    </tbody>
+                  )}
                 </table>
               </div>
 

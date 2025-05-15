@@ -58,7 +58,7 @@ const DeleteModal = ({
                 </p> */}
                 <Trans
                   i18nKey={t("messages.delete_user_description")}
-                  values={name}
+                  values={{ name }}
                   components={[
                     <span
                       key="entity"

@@ -5,6 +5,7 @@ import debounce from "lodash.debounce";
 
 import {
   useAddStudent,
+  useDeleteStudent,
   useGetStudentDetails,
   useUpdateStudentDetail,
 } from "../service";
@@ -12,6 +13,7 @@ import { IStudentFormData } from "../../../../types";
 import { EMAIL_REGEX_PATTERN, TOTAL_STEPS } from "../../../../utils";
 import { useNavigate, useParams } from "react-router-dom";
 import useGetParentByEmail from "../service/get-parent-by-email";
+import { useError } from "../../../../hooks";
 
 const useStudentsListController = () => {
   const { t } = useTranslation();
@@ -39,13 +41,9 @@ const useStudentsListController = () => {
     navigate(`/${organizationId}/admin/students/detail/${studentId}`);
   };
 
-  // Handle search input change
-  const handleSearchChange = debounce(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      setSearchTerm(e.target.value);
-      setCurrentPage(1);
-    }
-  );
+  const handleSearchChange = debounce((searchVal: string) => {
+    setSearchTerm(searchVal);
+  }, 500);
 
   // Handle class filter change
   const handleClassFilterChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -86,7 +84,6 @@ const useStudentsListController = () => {
   const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
 
   const nextStep = () => {
-    setFormData(JSON.parse(localStorage.getItem("formData") || "{}"));
     const isValidDetail = validateStudentDetails();
 
     if (isValidDetail) {
@@ -105,16 +102,32 @@ const useStudentsListController = () => {
     setCurrentStep((prev) => Math.max(prev - 1, 1));
   };
 
-  const getStudentDetails = useGetStudentDetails(organizationId || "");
+  const getStudentDetails = useGetStudentDetails(
+    organizationId || "",
+    classFilter,
+    searchTerm,
+    itemsPerPage,
+    currentPage
+  );
 
   const addStudentProfile = useAddStudent(organizationId || "");
 
-  const updateStudentDetail = useUpdateStudentDetail();
+  const updateStudentDetail = useUpdateStudentDetail(organizationId || "");
 
   const getParentDetails = useGetParentByEmail(
     organizationId || "",
     formData.parentEmail
   );
+
+  const deleteStudent = useDeleteStudent(organizationId || "");
+
+  useError({
+    mutation: deleteStudent,
+    cb: () => {
+      setIsDeleteModalOpen(false);
+      setDeleteStudentId("");
+    },
+  });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -143,7 +156,7 @@ const useStudentsListController = () => {
   };
 
   const validateStudentDetails = () => {
-    if (!formData.admissionId?.trim()) return false;
+    if (!formData.admissionNumber?.trim()) return false;
     if (!formData.admissionDate) return false;
     if (!formData.name?.trim()) return false;
     if (!formData.classId?.trim()) return false;
@@ -173,23 +186,19 @@ const useStudentsListController = () => {
   };
 
   const handleDeleteStudent = () => {
-    console.log(deleteStudentId);
-    // if (!deleteStudentId) return;
-    // updateStudentDetail.mutate({
-    //   id: deleteStudentId,
-    //   is_active: false,
-    // });
+    if (!deleteStudentId) return;
+    deleteStudent.mutate(deleteStudentId);
   };
 
   useEffect(() => {
     if (getParentDetails.isSuccess && getParentDetails.data) {
-      const { item: parent, is_parent_exist } = getParentDetails.data;
+      const { item: parent, is_parent_exists } = getParentDetails.data;
       setFormData((prev) => ({
         ...prev,
         parentName: parent.name,
         phoneNumber: parent.phoneNumber,
       }));
-      setIsParentExist(is_parent_exist);
+      setIsParentExist(is_parent_exists);
     }
   }, [getParentDetails.isSuccess, getParentDetails.data]);
 
@@ -235,6 +244,22 @@ const useStudentsListController = () => {
     };
   }, []);
 
+  useEffect(() => {
+    getStudentDetails.refetch();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [classFilter, searchTerm]);
+
+  useEffect(() => {
+    if (deleteStudent.isSuccess) {
+      setIsDeleteModalOpen(false);
+      setDeleteStudentId("");
+      setSearchTerm("");
+      setClassFilter("all");
+      getStudentDetails.remove();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [deleteStudent.isSuccess]);
+
   return {
     t,
     formData,
@@ -258,6 +283,7 @@ const useStudentsListController = () => {
     isLoadingGetStudentDetails: getStudentDetails.isLoading,
     isLoadingAddStudent: addStudentProfile.isLoading,
     isLoadingUpdateStudent: updateStudentDetail.isLoading,
+    isFetchingStudentList: getStudentDetails.isFetching,
     handleChange,
     handleSubmit,
     setFormData,

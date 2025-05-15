@@ -311,7 +311,8 @@ export interface IStudentDetails {
 }
 
 export interface IStudentFormData {
-  admissionId: string;
+  id: string;
+  admissionNumber: string;
   admissionDate: string;
   name: string;
   classId: string;

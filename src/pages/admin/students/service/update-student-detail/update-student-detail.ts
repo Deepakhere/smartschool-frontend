@@ -1,20 +1,23 @@
 import { useMutation } from "react-query";
 
 import apiClient from "../../../../../config";
-import { IAPIError, IStudentDetails } from "../../../../../types";
+import { IAPIError, IStudentFormData } from "../../../../../types";
 import { API_MUTATION_KEY, APIS_ROUTES } from "../../../../../utils";
 
-const updateStudent = async (studentDetails: IStudentDetails) => {
+const updateStudent = async (
+  organizationId: string,
+  studentDetails: IStudentFormData
+) => {
   await apiClient.put(
-    `${APIS_ROUTES.UPDATE_STUDENT_DETAILS}/${studentDetails.id}`,
+    `${APIS_ROUTES.STUDENT_PROFILE}/${organizationId}/edit-student-profile/${studentDetails.id}`,
     studentDetails
   );
 };
 
-export const useUpdateStudentDetail = () =>
-  useMutation<void, IAPIError, IStudentDetails>(
+export const useUpdateStudentDetail = (organizationId: string) =>
+  useMutation<void, IAPIError, IStudentFormData>(
     [API_MUTATION_KEY.UPDATE_STUDENT_DETAILS],
-    updateStudent
+    (values) => updateStudent(organizationId, values)
   );
 
 export default useUpdateStudentDetail;
