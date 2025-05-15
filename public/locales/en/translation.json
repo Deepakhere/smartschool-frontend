@@ -44,7 +44,8 @@
     "admission_date": "Admission Date",
     "city": "City",
     "state": "State",
-    "address": "Address"
+    "address": "Address",
+    "edit_student": "Edit Student"
   },
   "messages": {
     "enter_email_associate_with_account": "Don’t worry! It happens. Please enter your email address associated with your account.",

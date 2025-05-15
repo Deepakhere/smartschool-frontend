@@ -1,3 +1,16 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Global focus styles */
+@layer base {
+  *:focus-visible {
+    @apply outline-none ring-2 ring-indigo-500 ring-offset-2;
+  }
+  
+  input:focus, 
+  textarea:focus, 
+  select:focus {
+    @apply border-indigo-500 ring-1 ring-indigo-500;
+  }
+}

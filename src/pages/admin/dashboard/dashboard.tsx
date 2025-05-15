@@ -15,6 +15,8 @@ import {
   UserPlusIcon,
 } from "@heroicons/react/24/outline";
 import LogoSpinner from "../../../components/logo-spinner";
+import NoticeModal from "../../../components/notice-modal";
+import UserTypeSelectionModal from "../../../components/user-type-selection-modal";
 
 const Dashboard = () => {
   const {
@@ -24,6 +26,15 @@ const Dashboard = () => {
     teacherStudentRatioOptions,
     monthlyAttendanceOptions,
     isLoading,
+    isNoticeModalOpen,
+    openNoticeModal,
+    closeNoticeModal,
+    handleAddNotice,
+    isUserTypeModalOpen,
+    openUserTypeModal,
+    closeUserTypeModal,
+    handleSelectStudent,
+    handleSelectTeacher,
   } = useDashboardController();
 
   const statCards = [
@@ -57,9 +68,21 @@ const Dashboard = () => {
   ];
 
   const quickActions = [
-    { title: "Add New Notice", icon: PlusIcon, action: () => {} },
-    { title: "Upload Homework", icon: DocumentPlusIcon, action: () => {} },
-    { title: "Add Student/Teacher", icon: UserPlusIcon, action: () => {} },
+    {
+      title: "Add New Notice",
+      icon: PlusIcon,
+      action: openNoticeModal,
+    },
+    {
+      title: "Upload Homework",
+      icon: DocumentPlusIcon,
+      action: () => {},
+    },
+    {
+      title: "Add Student/Teacher",
+      icon: UserPlusIcon,
+      action: openUserTypeModal,
+    },
   ];
 
   return (
@@ -167,6 +190,20 @@ const Dashboard = () => {
               </div>
             </div>
           </div>
+
+          {/* Notice Modal */}
+          <NoticeModal
+            isOpen={isNoticeModalOpen}
+            onClose={closeNoticeModal}
+            onSubmit={handleAddNotice}
+          />
+
+          <UserTypeSelectionModal
+            isOpen={isUserTypeModalOpen}
+            onClose={closeUserTypeModal}
+            onSelectStudent={handleSelectStudent}
+            onSelectTeacher={handleSelectTeacher}
+          />
         </div>
       )}
     </>

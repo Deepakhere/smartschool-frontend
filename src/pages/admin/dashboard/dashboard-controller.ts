@@ -1,7 +1,15 @@
 import { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import { adminApi } from "../../../services/api";
+import { ICreateNoticeRequest } from "../../../types";
+import toast from "react-hot-toast";
 
 export const useDashboardController = () => {
+  const navigate = useNavigate();
+  const { organizationId } = useParams();
   const [isLoading, setIsLoading] = useState(true);
+  const [isNoticeModalOpen, setIsNoticeModalOpen] = useState(false);
+  const [isUserTypeModalOpen, setIsUserTypeModalOpen] = useState(false);
 
   // Stats data
   const stats = {
@@ -177,6 +185,58 @@ export const useDashboardController = () => {
     loading();
   }, []);
 
+  // Notice modal handlers
+  const openNoticeModal = () => {
+    setIsNoticeModalOpen(true);
+  };
+
+  const closeNoticeModal = () => {
+    setIsNoticeModalOpen(false);
+  };
+
+  const handleAddNotice = async (formData: ICreateNoticeRequest) => {
+    try {
+      await adminApi.notices.create(formData);
+      toast.success("Notice added successfully!");
+      // Update the recent updates list
+      const newUpdate = {
+        type: "notice",
+        title: formData.title,
+        date: formData.date,
+      };
+      // This is just for UI update, in a real app you'd refetch the data
+      recentUpdates.unshift(newUpdate);
+      stats.activeNotices += 1;
+    } catch (error) {
+      toast.error("Failed to add notice");
+      console.error("Error adding notice:", error);
+    }
+  };
+
+  // User type selection modal handlers
+  const openUserTypeModal = () => {
+    setIsUserTypeModalOpen(true);
+  };
+
+  const closeUserTypeModal = () => {
+    setIsUserTypeModalOpen(false);
+  };
+
+  const handleSelectStudent = () => {
+    closeUserTypeModal();
+    // Navigate to add student page
+    navigate(`/${organizationId}/admin/students`);
+    // You might want to open the add student modal directly
+    // This would require passing state through navigation or using a global state manager
+  };
+
+  const handleSelectTeacher = () => {
+    closeUserTypeModal();
+    // Navigate to add teacher page
+    navigate(`/${organizationId}/admin/teachers`);
+    // Similarly, you might want to open the add teacher modal directly
+  };
+
   return {
     stats,
     recentUpdates,
@@ -184,5 +244,14 @@ export const useDashboardController = () => {
     teacherStudentRatioOptions,
     monthlyAttendanceOptions,
     isLoading,
+    isNoticeModalOpen,
+    openNoticeModal,
+    closeNoticeModal,
+    handleAddNotice,
+    isUserTypeModalOpen,
+    openUserTypeModal,
+    closeUserTypeModal,
+    handleSelectStudent,
+    handleSelectTeacher,
   };
 };

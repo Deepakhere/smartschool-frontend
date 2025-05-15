@@ -247,6 +247,15 @@ export interface DeleteUserModalProps {
   onConfirm: () => void;
 }
 
+export interface DeleteModalProps {
+  t: (t: string) => string;
+  isOpen: boolean;
+  name: string;
+  isLoading: boolean;
+  onClose: () => void;
+  onConfirm: () => void;
+}
+
 export interface IUpdateUserValue {
   id: string;
   name: string;
@@ -332,4 +341,21 @@ export interface ICreateUpdateStudentModalProps {
   setFormData: React.Dispatch<React.SetStateAction<IStudentFormData>>;
   setCurrentStep: React.Dispatch<React.SetStateAction<number>>;
   handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+}
+
+export interface SelectOption {
+  id: string | number;
+  name: string;
+  description?: string;
+  icon?: React.ReactNode;
+}
+
+export interface SelectDropdownProps {
+  options: SelectOption[];
+  value: SelectOption | null;
+  onChange: (value: SelectOption) => void;
+  label?: string;
+  placeholder?: string;
+  className?: string;
+  disabled?: boolean;
 }

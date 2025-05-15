@@ -20,6 +20,7 @@ export const API_QUERY_KEY = {
   GET_STUDENT_PROFILE: "get-student-profile",
   GET_ALL_ORGANIZATIONS: "get-all-organizations",
   GET_PARENT_DETAILS: "get-parent-details",
+  GET_STUDENT_BY_ID: "get-student-by-id",
 };
 
 export const API_MUTATION_KEY = {

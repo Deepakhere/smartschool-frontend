@@ -10,8 +10,6 @@ import AdminReports from "../pages/admin/reports";
 import AdminFees from "../pages/admin/fees";
 import AdminStudents from "../pages/admin/students";
 import AdminSettings from "../pages/admin/settings";
-import AdminProfile from "../pages/admin/profile";
-import UserManagement from "../pages/admin/user-management";
 
 // Parent Pages
 import ParentDashboard from "../pages/parent/dashboard";
@@ -88,26 +86,12 @@ const Routes = () => {
           element: <AdminFees />,
         },
         {
-          path: "students",
+          path: "students/*",
           element: <AdminStudents />,
         },
         {
-          path: "settings",
+          path: "settings/*",
           element: <AdminSettings />,
-          children: [
-            {
-              index: true,
-              element: <Navigate to="profile" replace />,
-            },
-            {
-              path: "profile",
-              element: <AdminProfile />,
-            },
-            {
-              path: "add-user",
-              element: <UserManagement />,
-            },
-          ],
         },
       ],
     },
