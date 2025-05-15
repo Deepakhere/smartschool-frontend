@@ -1,8 +1,10 @@
 import React, { useState } from "react";
 import { useAuth } from "../../../../context/auth-context";
+import { useTranslation } from "react-i18next";
 
 const useProfileController = () => {
   const { user } = useAuth();
+  const { t } = useTranslation();
 
   const [editMode, setEditMode] = useState(false);
   const [imageUrl, setImageUrl] = useState<string>();
@@ -17,6 +19,7 @@ const useProfileController = () => {
     }
   };
   return {
+    t,
     user,
     editMode,
     imageUrl,

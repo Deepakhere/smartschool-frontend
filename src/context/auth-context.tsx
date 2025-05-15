@@ -15,6 +15,7 @@ type User = {
   id?: string;
   email?: string;
   role?: "admin" | "parent";
+  phoneNumber?: string;
   permissions?: {
     canRead: boolean;
     canCreate: boolean;

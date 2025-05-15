@@ -1,9 +1,12 @@
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 
 const useUserManagementController = () => {
   const location = useLocation();
   const navigate = useNavigate();
+  const { t } = useTranslation();
+
   const { organizationId } = useParams<{ organizationId: string }>();
   const [selectedIndex, setSelectedIndex] = useState(0);
 
@@ -33,6 +36,7 @@ const useUserManagementController = () => {
   };
 
   return {
+    t,
     selectedIndex,
     handleTabChange,
   };

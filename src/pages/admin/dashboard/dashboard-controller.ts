@@ -3,9 +3,12 @@ import { useNavigate, useParams } from "react-router-dom";
 import { adminApi } from "../../../services/api";
 import { ICreateNoticeRequest } from "../../../types";
 import toast from "react-hot-toast";
+import { useTranslation } from "react-i18next";
 
 export const useDashboardController = () => {
   const navigate = useNavigate();
+  const { t } = useTranslation();
+
   const { organizationId } = useParams();
   const [isLoading, setIsLoading] = useState(true);
   const [isNoticeModalOpen, setIsNoticeModalOpen] = useState(false);
@@ -238,6 +241,7 @@ export const useDashboardController = () => {
   };
 
   return {
+    t,
     stats,
     recentUpdates,
     studentPerformanceOptions,
@@ -245,10 +249,10 @@ export const useDashboardController = () => {
     monthlyAttendanceOptions,
     isLoading,
     isNoticeModalOpen,
+    isUserTypeModalOpen,
     openNoticeModal,
     closeNoticeModal,
     handleAddNotice,
-    isUserTypeModalOpen,
     openUserTypeModal,
     closeUserTypeModal,
     handleSelectStudent,

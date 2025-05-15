@@ -1,6 +1,10 @@
-import { Fragment } from 'react';
-import { Dialog, Transition } from '@headlessui/react';
-import { XMarkIcon, UserGroupIcon, UserIcon } from '@heroicons/react/24/outline';
+import { Fragment } from "react";
+import { Dialog, Transition } from "@headlessui/react";
+import {
+  XMarkIcon,
+  UserGroupIcon,
+  UserIcon,
+} from "@heroicons/react/24/outline";
 
 interface UserTypeSelectionModalProps {
   isOpen: boolean;
@@ -17,7 +21,11 @@ const UserTypeSelectionModal = ({
 }: UserTypeSelectionModalProps) => {
   return (
     <Transition.Root show={isOpen} as={Fragment}>
-      <Dialog as="div" className="fixed z-10 inset-0 overflow-y-auto" onClose={onClose}>
+      <Dialog
+        as="div"
+        className="fixed z-10 inset-0 overflow-y-auto"
+        onClose={onClose}
+      >
         <div className="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
           <Transition.Child
             as={Fragment}
@@ -32,7 +40,10 @@ const UserTypeSelectionModal = ({
           </Transition.Child>
 
           {/* This element is to trick the browser into centering the modal contents. */}
-          <span className="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">
+          <span
+            className="hidden sm:inline-block sm:align-middle sm:h-screen"
+            aria-hidden="true"
+          >
             &#8203;
           </span>
           <Transition.Child
@@ -57,13 +68,17 @@ const UserTypeSelectionModal = ({
               </div>
               <div>
                 <div className="mt-3 text-center sm:mt-0 sm:text-left">
-                  <Dialog.Title as="h3" className="text-lg leading-6 font-medium text-gray-900 mb-4">
+                  <Dialog.Title
+                    as="h3"
+                    className="text-lg leading-6 font-medium text-gray-900 mb-4"
+                  >
                     Select User Type
                   </Dialog.Title>
                   <p className="text-sm text-gray-500 mb-6">
-                    Please select the type of user you want to add to the system.
+                    Please select the type of user you want to add to the
+                    system.
                   </p>
-                  
+
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     {/* Student Option */}
                     <button
@@ -73,12 +88,14 @@ const UserTypeSelectionModal = ({
                       <div className="p-4 bg-indigo-100 rounded-full mb-4 group-hover:bg-indigo-200 transition-colors">
                         <UserGroupIcon className="h-8 w-8 text-indigo-600" />
                       </div>
-                      <h4 className="text-lg font-medium text-gray-900 mb-2">Student</h4>
+                      <h4 className="text-lg font-medium text-gray-900 mb-2">
+                        Student
+                      </h4>
                       <p className="text-sm text-gray-500 text-center">
                         Add a new student to the system
                       </p>
                     </button>
-                    
+
                     {/* Teacher Option */}
                     <button
                       onClick={onSelectTeacher}
@@ -87,7 +104,9 @@ const UserTypeSelectionModal = ({
                       <div className="p-4 bg-indigo-100 rounded-full mb-4 group-hover:bg-indigo-200 transition-colors">
                         <UserIcon className="h-8 w-8 text-indigo-600" />
                       </div>
-                      <h4 className="text-lg font-medium text-gray-900 mb-2">Teacher</h4>
+                      <h4 className="text-lg font-medium text-gray-900 mb-2">
+                        Teacher
+                      </h4>
                       <p className="text-sm text-gray-500 text-center">
                         Add a new teacher to the system
                       </p>

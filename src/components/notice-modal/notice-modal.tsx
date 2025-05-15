@@ -2,6 +2,7 @@ import { Fragment, useState } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 import { BellIcon, CalendarDaysIcon } from "@heroicons/react/24/outline";
+import { useTranslation } from "react-i18next";
 
 import DatePicker from "../date-picker";
 import SelectDropdown from "../custom-select";
@@ -14,6 +15,7 @@ interface NoticeModalProps {
 }
 
 const NoticeModal = ({ isOpen, onClose, onSubmit }: NoticeModalProps) => {
+  const { t } = useTranslation();
   const [formData, setFormData] = useState<ICreateNoticeRequest>({
     title: "",
     content: "",
@@ -26,14 +28,14 @@ const NoticeModal = ({ isOpen, onClose, onSubmit }: NoticeModalProps) => {
   const noticeTypeOptions: SelectOption[] = [
     {
       id: "announcement",
-      name: "Announcement",
-      description: "General announcements for everyone",
+      name: t("common.notice_types.announcement"),
+      description: t("common.notice_types.announcement_description"),
       icon: <BellIcon className="h-5 w-5 text-indigo-500" />,
     },
     {
       id: "holiday",
-      name: "Holiday",
-      description: "Holiday notifications and schedules",
+      name: t("common.notice_types.holiday"),
+      description: t("common.notice_types.holiday_description"),
       icon: <CalendarDaysIcon className="h-5 w-5 text-green-500" />,
     },
   ];
@@ -80,7 +82,7 @@ const NoticeModal = ({ isOpen, onClose, onSubmit }: NoticeModalProps) => {
       setFile(null);
       onClose();
     } catch (error) {
-      console.error("Error submitting notice:", error);
+      console.error(t("messages.error_adding_notice"), error);
     } finally {
       setIsSubmitting(false);
     }
@@ -129,7 +131,7 @@ const NoticeModal = ({ isOpen, onClose, onSubmit }: NoticeModalProps) => {
                   className="bg-white rounded-md text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                   onClick={onClose}
                 >
-                  <span className="sr-only">Close</span>
+                  <span className="sr-only">{t("labels.close")}</span>
                   <XMarkIcon className="h-6 w-6" aria-hidden="true" />
                 </button>
               </div>
@@ -139,7 +141,7 @@ const NoticeModal = ({ isOpen, onClose, onSubmit }: NoticeModalProps) => {
                     as="h3"
                     className="text-lg leading-6 font-medium text-gray-900"
                   >
-                    Add New Notice
+                    {t("labels.add_new_notice")}
                   </Dialog.Title>
                   <div className="mt-4">
                     <form onSubmit={handleSubmit} className="space-y-4">
@@ -148,13 +150,13 @@ const NoticeModal = ({ isOpen, onClose, onSubmit }: NoticeModalProps) => {
                           htmlFor="title"
                           className="block text-sm font-medium text-gray-700 mb-1"
                         >
-                          Title
+                          {t("labels.title")}
                         </label>
                         <input
                           type="text"
                           id="title"
                           name="title"
-                          placeholder="Enter title"
+                          placeholder={t("messages.enter_title")}
                           value={formData.title}
                           onChange={handleChange}
                           className="mt-1 block w-full p-2 rounded-md border border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 sm:text-sm"
@@ -167,12 +169,12 @@ const NoticeModal = ({ isOpen, onClose, onSubmit }: NoticeModalProps) => {
                           htmlFor="content"
                           className="block text-sm font-medium text-gray-700 mb-1"
                         >
-                          Content
+                          {t("labels.content")}
                         </label>
                         <textarea
                           id="content"
                           name="content"
-                          placeholder="Enter content"
+                          placeholder={t("messages.enter_content")}
                           value={formData.content}
                           onChange={handleChange}
                           rows={4}
@@ -183,15 +185,16 @@ const NoticeModal = ({ isOpen, onClose, onSubmit }: NoticeModalProps) => {
 
                       <div>
                         <DatePicker
-                          label="Date"
+                          label={t("labels.date")}
                           value={formData.date}
                           onChange={handleDateChange}
+                          placeholder={t("messages.select_date")}
                         />
                       </div>
 
                       <div>
                         <SelectDropdown
-                          label="Type"
+                          label={t("labels.type")}
                           options={noticeTypeOptions}
                           value={selectedNoticeType}
                           onChange={handleNoticeTypeChange}
@@ -203,7 +206,7 @@ const NoticeModal = ({ isOpen, onClose, onSubmit }: NoticeModalProps) => {
                           htmlFor="attachment"
                           className="block text-sm font-medium text-gray-700 mb-1"
                         >
-                          Attachment (PDF, DOC, etc.)
+                          {t("labels.attachment")}
                         </label>
                         <input
                           type="file"
@@ -214,7 +217,7 @@ const NoticeModal = ({ isOpen, onClose, onSubmit }: NoticeModalProps) => {
                         />
                         {file && (
                           <p className="mt-2 text-sm text-gray-500">
-                            Selected file: {file.name}
+                            {t("labels.selected_file")}: {file.name}
                           </p>
                         )}
                       </div>
@@ -225,14 +228,14 @@ const NoticeModal = ({ isOpen, onClose, onSubmit }: NoticeModalProps) => {
                           disabled={isSubmitting}
                           className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-indigo-600 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:ml-3 sm:w-auto sm:text-sm disabled:opacity-50"
                         >
-                          {isSubmitting ? "Submitting..." : "Add Notice"}
+                          {isSubmitting ? t("buttons.submitting") : t("buttons.add_notice")}
                         </button>
                         <button
                           type="button"
                           className="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:w-auto sm:text-sm"
                           onClick={onClose}
                         >
-                          Cancel
+                          {t("buttons.cancel")}
                         </button>
                       </div>
                     </form>

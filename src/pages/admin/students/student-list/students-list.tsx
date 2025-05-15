@@ -63,7 +63,7 @@ const StudentsList = () => {
             onClick={onClickAddStudent}
             className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
           >
-            Add Student
+            {t("labels.add_new_student")}
           </button>
         </div>
       </div>
@@ -79,7 +79,7 @@ const StudentsList = () => {
               </div>
               <input
                 type="text"
-                placeholder="Search students..."
+                placeholder={t("messages.search")}
                 onChange={(e) => {
                   e.preventDefault();
                   handleSearchChange(e.target.value);
@@ -91,11 +91,11 @@ const StudentsList = () => {
               {studentTotalCount !== undefined && studentTotalCount > 0 ? (
                 studentTotalCount > 1 ? (
                   <span className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-                    {studentTotalCount} record(s)
+                    {studentTotalCount} {t("labels.records")}
                   </span>
                 ) : (
                   <span className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-                    {studentTotalCount} record(s)
+                    {studentTotalCount} {t("labels.record")}
                   </span>
                 )
               ) : null}
@@ -103,19 +103,27 @@ const StudentsList = () => {
           </div>
 
           {/* Class filter */}
-          <div className="relative w-full sm:w-48">
-            <select
-              value={classFilter}
-              onChange={handleClassFilterChange}
-              className="block w-full pl-3 pr-10 py-2 text-base border border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
+          <div className="flex items-center space-x-4">
+            <label
+              htmlFor="class-filter"
+              className="block text-sm font-medium text-gray-700"
             >
-              <option value="all">All Classes</option>
-              {CLASS_OPTIONS.map((classId) => (
-                <option key={classId} value={classId}>
-                  Class {classId}
-                </option>
-              ))}
-            </select>
+              {t("labels.filter_by_class")}
+            </label>
+            <div className="relative w-full sm:w-48">
+              <select
+                value={classFilter}
+                onChange={handleClassFilterChange}
+                className="block w-full pl-3 pr-10 py-2 text-base border border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
+              >
+                <option value="all">{t("labels.all_classes")}</option>
+                {CLASS_OPTIONS.map((classId) => (
+                  <option key={classId} value={classId}>
+                    {t("labels.class")} {classId}
+                  </option>
+                ))}
+              </select>
+            </div>
           </div>
         </div>
 
@@ -130,19 +138,19 @@ const StudentsList = () => {
                   <thead className="bg-gray-50">
                     <tr>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Student Name
+                        {t("labels.student_name")}
                       </th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Roll Number
+                        {t("labels.roll_number")}
                       </th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Class
+                        {t("labels.class_id")}
                       </th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Date of Birth
+                        {t("labels.date_of_birth")}
                       </th>
                       <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Actions
+                        {t("labels.actions")}
                       </th>
                     </tr>
                   </thead>
@@ -221,7 +229,7 @@ const StudentsList = () => {
                                         setActiveDropdown(null);
                                       }}
                                     >
-                                      Edit
+                                      {t("buttons.edit")}
                                     </button>
                                     <button
                                       className="w-full text-left block px-4 py-2 text-sm text-red-600 hover:bg-gray-50"
@@ -231,7 +239,7 @@ const StudentsList = () => {
                                         setActiveDropdown(null);
                                       }}
                                     >
-                                      Delete
+                                      {t("buttons.delete")}
                                     </button>
                                   </div>
                                 </div>
@@ -280,19 +288,19 @@ const StudentsList = () => {
                   <div className="hidden sm:flex sm:flex-1 sm:items-center sm:justify-between">
                     <div>
                       <p className="text-sm text-gray-700">
-                        Showing{" "}
+                        {t("labels.showing")}
                         <span className="font-medium">
                           {indexOfFirstItem + 1}
-                        </span>{" "}
-                        to{" "}
+                        </span>
+                        {t("labels.to")}
                         <span className="font-medium">
                           {Math.min(indexOfLastItem, studentDetail.length)}
-                        </span>{" "}
-                        of{" "}
+                        </span>
+                        {t("labels.of")}
                         <span className="font-medium">
                           {studentDetail.length}
-                        </span>{" "}
-                        results
+                        </span>
+                        {t("labels.results")}
                       </p>
                     </div>
                     <div>
@@ -309,7 +317,9 @@ const StudentsList = () => {
                               : "hover:bg-gray-50"
                           }`}
                         >
-                          <span className="sr-only">Previous</span>
+                          <span className="sr-only">
+                            {t("labels.previous")}
+                          </span>
                           <svg
                             className="h-5 w-5"
                             viewBox="0 0 20 20"
@@ -363,7 +373,7 @@ const StudentsList = () => {
                               : "hover:bg-gray-50"
                           }`}
                         >
-                          <span className="sr-only">Next</span>
+                          <span className="sr-only">{t("labels.next")}</span>
                           <svg
                             className="h-5 w-5"
                             viewBox="0 0 20 20"

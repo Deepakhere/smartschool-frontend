@@ -1,13 +1,14 @@
 import { Tab } from "@headlessui/react";
-import useUserManagementController from "./user-management-controller";
 import { Outlet } from "react-router-dom";
+
+import useUserManagementController from "./user-management-controller";
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ");
 }
 
 const UserManagement = () => {
-  const { selectedIndex, handleTabChange } = useUserManagementController();
+  const { t, selectedIndex, handleTabChange } = useUserManagementController();
 
   return (
     <>
@@ -28,7 +29,7 @@ const UserManagement = () => {
                   )
                 }
               >
-                Profile
+                {t("labels.profile")}
               </Tab>
               <Tab
                 className={({ selected }) =>
@@ -40,7 +41,7 @@ const UserManagement = () => {
                   )
                 }
               >
-                User Management
+                {t("labels.user_management")}
               </Tab>
             </Tab.List>
           </Tab.Group>

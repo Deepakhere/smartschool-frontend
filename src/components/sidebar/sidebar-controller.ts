@@ -58,10 +58,10 @@ export const useSidebarController = () => {
       current: isActive("/attendance"),
     },
     {
-      name: "Exams",
-      href: `/${organizationId}/admin/exams`,
+      name: "Notices",
+      href: `/${organizationId}/admin/notices`,
       icon: ClipboardDocumentListIcon,
-      current: isActive("/exams"),
+      current: isActive("/notices"),
     },
     {
       name: "Results",

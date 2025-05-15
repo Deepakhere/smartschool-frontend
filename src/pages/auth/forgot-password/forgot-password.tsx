@@ -115,7 +115,7 @@ const ForgotPassword: React.FC = () => {
 
           <div className="text-center">
             <Link to="/login" className="text-xs text-gray-600">
-              {t("links.return_to_login")}
+              {t("labels.return_to_login")}
             </Link>
           </div>
         </form>

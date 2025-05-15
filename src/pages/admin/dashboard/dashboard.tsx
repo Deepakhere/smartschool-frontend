@@ -20,6 +20,7 @@ import UserTypeSelectionModal from "../../../components/user-type-selection-moda
 
 const Dashboard = () => {
   const {
+    t,
     stats,
     recentUpdates,
     studentPerformanceOptions,
@@ -27,10 +28,10 @@ const Dashboard = () => {
     monthlyAttendanceOptions,
     isLoading,
     isNoticeModalOpen,
+    isUserTypeModalOpen,
     openNoticeModal,
     closeNoticeModal,
     handleAddNotice,
-    isUserTypeModalOpen,
     openUserTypeModal,
     closeUserTypeModal,
     handleSelectStudent,
@@ -119,7 +120,7 @@ const Dashboard = () => {
           {/* Quick Actions */}
           <div className="bg-white rounded-xl shadow-xl p-6">
             <h2 className="text-xl font-semibold text-gray-900 mb-6">
-              Quick Actions
+              {t("labels.quick_actions")}
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {quickActions.map((action, index) => {
@@ -168,7 +169,7 @@ const Dashboard = () => {
             {/* Recent Updates */}
             <div className="bg-white rounded-xl shadow-xl p-6">
               <h2 className="text-xl font-semibold text-gray-900 mb-6">
-                Recent Updates
+                {t("labels.recent_updates")}
               </h2>
               <div className="space-y-4">
                 {recentUpdates.map((update, index) => (
@@ -191,7 +192,6 @@ const Dashboard = () => {
             </div>
           </div>
 
-          {/* Notice Modal */}
           <NoticeModal
             isOpen={isNoticeModalOpen}
             onClose={closeNoticeModal}
