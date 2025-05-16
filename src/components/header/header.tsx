@@ -7,6 +7,7 @@ import { useHeaderController } from "./header-controller";
 
 const Header = () => {
   const {
+    t,
     user,
     buttonRef,
     menuRef,
@@ -72,18 +73,18 @@ const Header = () => {
                     <div className="text-gray-500">{user?.email}</div>
                   </div>
                   <Link
-                    to={`${organizationId}/admin/settings/profile`}
+                    to={`/${organizationId}/admin/settings`}
                     className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                     role="menuitem"
                   >
-                    Your Profile
+                    {t("labels.your_profile")}
                   </Link>
                   <button
                     onClick={handleLogout}
                     className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                     role="menuitem"
                   >
-                    Sign out
+                    {t("labels.sign_out")}
                   </button>
                 </div>
               )}

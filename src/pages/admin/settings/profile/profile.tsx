@@ -14,8 +14,18 @@ import useProfileController from "./profile-controller";
 import LogoSpinner from "../../../../components/logo-spinner";
 
 const AdminProfile = () => {
-  const { t, user, editMode, imageUrl, setEditMode, handleAvatarChange } =
-    useProfileController();
+  const {
+    t,
+    user,
+    editMode,
+    imageUrl,
+    currentLanguage,
+    theme,
+    setEditMode,
+    handleAvatarChange,
+    changeLanguage,
+    changeTheme,
+  } = useProfileController();
   return (
     <>
       {/* <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
@@ -280,10 +290,15 @@ const AdminProfile = () => {
                         <select
                           id="language"
                           className="mt-1 block w-full pl-3 pr-10 py-2 text-base border border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
-                          defaultValue="en"
+                          value={currentLanguage}
+                          onChange={(e) => changeLanguage(e.target.value)}
                         >
-                          <option value="en">{t("labels.english")}</option>
-                          <option value="hi">{t("labels.hindi")}</option>
+                          <option value="en">
+                            {t("common.languages.english")}
+                          </option>
+                          <option value="hn">
+                            {t("common.languages.hindi")}
+                          </option>
                         </select>
                       </div>
                       <div>
@@ -297,10 +312,17 @@ const AdminProfile = () => {
                         <select
                           id="theme"
                           className="mt-1 block w-full pl-3 pr-10 py-2 text-base border border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
-                          defaultValue="light"
+                          value={theme}
+                          onChange={(e) =>
+                            changeTheme(e.target.value as "light" | "dark")
+                          }
                         >
-                          <option value="light">{t("labels.light")}</option>
-                          <option value="dark">{t("labels.dark")}</option>
+                          <option value="light">
+                            {t("common.themes.light")}
+                          </option>
+                          <option value="dark">
+                            {t("common.themes.dark")}
+                          </option>
                         </select>
                       </div>
                       <div className="flex items-center justify-between">

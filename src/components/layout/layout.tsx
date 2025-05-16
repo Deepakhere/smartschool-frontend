@@ -6,11 +6,6 @@ import Sidebar from "../sidebar";
 // import Footer from "../footer";
 import { useLayoutController } from "./layout-controller";
 
-// interface LayoutProps {
-//   children: ReactNode;
-// }
-
-// ... existing code ...
 const Layout = () => {
   const { isSidebarOpen } = useLayoutController();
 
@@ -28,6 +23,5 @@ const Layout = () => {
     </div>
   );
 };
-// ... existing code ...
 
 export default Layout;

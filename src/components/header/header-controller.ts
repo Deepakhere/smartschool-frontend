@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useLocation, useParams } from "react-router-dom";
 
 import { useAuth } from "../../context/auth-context";
@@ -8,6 +9,7 @@ export const useHeaderController = () => {
   const buttonRef = useRef<HTMLButtonElement>(null);
   const location = useLocation();
   const { organizationId } = useParams();
+  const { t } = useTranslation();
 
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -62,6 +64,7 @@ export const useHeaderController = () => {
   }, [location.pathname, setIsUserMenuOpen]);
 
   return {
+    t,
     user,
     isUserMenuOpen,
     isSidebarOpen,

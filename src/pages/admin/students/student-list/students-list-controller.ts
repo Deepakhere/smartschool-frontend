@@ -43,6 +43,7 @@ const useStudentsListController = () => {
 
   const handleSearchChange = debounce((searchVal: string) => {
     setSearchTerm(searchVal);
+    setCurrentPage(1);
   }, 500);
 
   // Handle class filter change
@@ -300,6 +301,7 @@ const useStudentsListController = () => {
     handleDeleteAction,
     handleDeleteStudent,
     onCancelDeleteModal,
+    setClassFilter,
     navigateToStudentDetails,
   };
 };

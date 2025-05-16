@@ -2,6 +2,7 @@ import { RouterProvider } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
 
 import { AuthProvider } from "./context/auth-context";
+import { ThemeProvider } from "./context/theme-context";
 import Routes from "./routes";
 
 function App() {
@@ -9,8 +10,10 @@ function App() {
 
   return (
     <AuthProvider>
-      <RouterProvider router={routes} />
-      <Toaster />
+      <ThemeProvider>
+        <RouterProvider router={routes} />
+        <Toaster />
+      </ThemeProvider>
     </AuthProvider>
   );
 }

@@ -94,7 +94,9 @@
     "previous": "Previous",
     "next": "Next",
     "filter_by_class": "Filter by class",
-    "all_classes": "All Classes"
+    "all_classes": "All Classes",
+    "your_profile": "Your Profile",
+    "sign_out": "Sign Out"
   },
   "messages": {
     "enter_email_associate_with_account": "Don't worry! It happens. Please enter your email address associated with your account.",
