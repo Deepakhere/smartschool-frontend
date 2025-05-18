@@ -191,20 +191,270 @@ const StudentDetails = () => {
             </div>
           </div>
 
-          {/* Academic Records section (can be expanded) */}
+          {/* Academic Records section */}
           <div className="bg-white shadow overflow-hidden sm:rounded-lg">
             <div className="px-4 py-5 sm:px-6">
               <h3 className="text-lg leading-6 font-medium text-gray-900">
                 Academic Records
               </h3>
               <p className="mt-1 max-w-2xl text-sm text-gray-500">
-                Attendance, grades, and other academic information.
+                Performance, attendance, and achievements.
               </p>
             </div>
             <div className="border-t border-gray-200 px-4 py-5">
-              <p className="text-sm text-gray-500 italic">
-                Academic records will be displayed here.
-              </p>
+              {/* Current Academic Year Overview */}
+              <div className="mb-6">
+                <h4 className="text-md font-medium text-gray-900 mb-3">
+                  Current Academic Year Overview
+                </h4>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                  <div className="bg-gray-50 p-3 rounded">
+                    <p className="text-xs text-gray-500">Class</p>
+                    <p className="font-medium">
+                      {studentDetails?.classId || "VI"}
+                    </p>
+                  </div>
+                  <div className="bg-gray-50 p-3 rounded">
+                    <p className="text-xs text-gray-500">Current Term</p>
+                    <p className="font-medium">Term 1</p>
+                  </div>
+                  <div className="bg-gray-50 p-3 rounded">
+                    <p className="text-xs text-gray-500">Session</p>
+                    <p className="font-medium">2024-2025</p>
+                  </div>
+                  <div className="bg-gray-50 p-3 rounded">
+                    <p className="text-xs text-gray-500">Total Subjects</p>
+                    <p className="font-medium">6</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Subject-wise Performance */}
+              <div className="mb-6">
+                <h4 className="text-md font-medium text-gray-900 mb-3">
+                  Subject-wise Performance
+                </h4>
+                <div className="overflow-x-auto">
+                  <table className="min-w-full divide-y divide-gray-200">
+                    <thead className="bg-gray-50">
+                      <tr>
+                        <th
+                          scope="col"
+                          className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                        >
+                          Subject
+                        </th>
+                        <th
+                          scope="col"
+                          className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                        >
+                          Marks Obtained
+                        </th>
+                        <th
+                          scope="col"
+                          className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                        >
+                          Total Marks
+                        </th>
+                        <th
+                          scope="col"
+                          className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                        >
+                          Grade
+                        </th>
+                        <th
+                          scope="col"
+                          className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                        >
+                          Remarks
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody className="bg-white divide-y divide-gray-200">
+                      <tr>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                          English
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                          85
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                          100
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                          A
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                          Good progress
+                        </td>
+                      </tr>
+                      <tr>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                          Mathematics
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                          78
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                          100
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                          B+
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                          Needs practice
+                        </td>
+                      </tr>
+                      <tr>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                          Science
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                          92
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                          100
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                          A+
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                          Excellent
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              {/* Exam History */}
+              <div className="mb-6">
+                <h4 className="text-md font-medium text-gray-900 mb-3">
+                  Exam History
+                </h4>
+                <div className="overflow-x-auto">
+                  <table className="min-w-full divide-y divide-gray-200">
+                    <thead className="bg-gray-50">
+                      <tr>
+                        <th
+                          scope="col"
+                          className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                        >
+                          Exam Name
+                        </th>
+                        <th
+                          scope="col"
+                          className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                        >
+                          Date
+                        </th>
+                        <th
+                          scope="col"
+                          className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                        >
+                          Result Status
+                        </th>
+                        <th
+                          scope="col"
+                          className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                        >
+                          Total Marks
+                        </th>
+                        <th
+                          scope="col"
+                          className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                        >
+                          Marks Scored
+                        </th>
+                        <th
+                          scope="col"
+                          className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                        >
+                          Percentage
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody className="bg-white divide-y divide-gray-200">
+                      <tr>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                          Mid-Term
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                          10/01/2025
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                          Passed
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                          600
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                          470
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                          78.33%
+                        </td>
+                      </tr>
+                      <tr>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                          Final Exam
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                          25/03/2025
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                          Passed
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                          600
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                          510
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                          85.00%
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              {/* Attendance Summary */}
+              <div className="mb-6">
+                <h4 className="text-md font-medium text-gray-900 mb-3">
+                  Attendance Summary
+                </h4>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                  <div className="bg-gray-50 p-3 rounded">
+                    <p className="text-xs text-gray-500">Total Working Days</p>
+                    <p className="font-medium">180</p>
+                  </div>
+                  <div className="bg-gray-50 p-3 rounded">
+                    <p className="text-xs text-gray-500">Present Days</p>
+                    <p className="font-medium">160</p>
+                  </div>
+                  <div className="bg-gray-50 p-3 rounded">
+                    <p className="text-xs text-gray-500">Absent Days</p>
+                    <p className="font-medium">20</p>
+                  </div>
+                  <div className="bg-gray-50 p-3 rounded">
+                    <p className="text-xs text-gray-500">Attendance %</p>
+                    <p className="font-medium">88.88%</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Achievements / Awards */}
+              <div>
+                <h4 className="text-md font-medium text-gray-900 mb-3">
+                  Achievements / Awards
+                </h4>
+                <ul className="list-disc pl-5 space-y-2 text-sm text-gray-700">
+                  <li>Participated in Science Olympiad – Gold Medal</li>
+                  <li>Won 2nd Prize in School Debate Competition</li>
+                </ul>
+              </div>
             </div>
           </div>
 

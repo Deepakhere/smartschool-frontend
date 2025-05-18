@@ -1,24 +1,24 @@
 import { ReactNode } from "react";
 
-// Notice Types
 export interface INotice {
   id: string;
   title: string;
   content: string;
   date: string;
-  type: "holiday" | "announcement";
+  type: string;
   createdAt: string;
   updatedAt: string;
+  attachments?: string[];
 }
 
 export interface ICreateNoticeRequest {
   title: string;
   content: string;
   date: string;
-  type: "holiday" | "announcement";
+  type: string;
+  attachments?: string[];
 }
 
-// Homework Types
 export interface IHomework {
   id: string;
   title: string;

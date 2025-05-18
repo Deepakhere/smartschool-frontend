@@ -9,6 +9,8 @@ export const APIS_ROUTES = {
   UPDATE_USER_DETAILS: "/auth/v1/user/update-user-details",
   DELETE_USER: "/auth/v1/user/delete-user",
   ORGANIZATION_SERVICE: "/organization-service/v1/organization",
+  SCHOOL_SERVICE: "/school-service/v1/school",
+  AI_SERVICE: "/ai-service/v1/generate-content",
 };
 
 export const API_QUERY_KEY = {
@@ -19,6 +21,8 @@ export const API_QUERY_KEY = {
   GET_ALL_ORGANIZATIONS: "get-all-organizations",
   GET_PARENT_DETAILS: "get-parent-details",
   GET_STUDENT_BY_ID: "get-student-by-id",
+  GET_NOTICE_LIST: "get-notice-list",
+  AI_CONTENT: "get-ai-content",
 };
 
 export const API_MUTATION_KEY = {

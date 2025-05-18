@@ -78,7 +78,7 @@ const Routes = () => {
           element: <AdminHomework />,
         },
         {
-          path: "reports",
+          path: "results",
           element: <AdminReports />,
         },
         {

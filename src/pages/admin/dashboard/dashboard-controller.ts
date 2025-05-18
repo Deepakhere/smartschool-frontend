@@ -1,8 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { adminApi } from "../../../services/api";
 import { ICreateNoticeRequest } from "../../../types";
-import toast from "react-hot-toast";
 import { useTranslation } from "react-i18next";
 
 export const useDashboardController = () => {
@@ -198,22 +196,7 @@ export const useDashboardController = () => {
   };
 
   const handleAddNotice = async (formData: ICreateNoticeRequest) => {
-    try {
-      await adminApi.notices.create(formData);
-      toast.success("Notice added successfully!");
-      // Update the recent updates list
-      const newUpdate = {
-        type: "notice",
-        title: formData.title,
-        date: formData.date,
-      };
-      // This is just for UI update, in a real app you'd refetch the data
-      recentUpdates.unshift(newUpdate);
-      stats.activeNotices += 1;
-    } catch (error) {
-      toast.error("Failed to add notice");
-      console.error("Error adding notice:", error);
-    }
+    console.log(formData);
   };
 
   // User type selection modal handlers

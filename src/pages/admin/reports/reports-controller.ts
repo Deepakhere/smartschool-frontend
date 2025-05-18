@@ -1,28 +1,34 @@
-import { useState, ChangeEvent, FormEvent } from 'react';
-import { adminApi } from '../../../services/api';
-import { ICreateReportRequest } from '../../../types';
+import { useState, ChangeEvent, FormEvent } from "react";
+import { adminApi } from "../../../services/api";
+import { ICreateReportRequest } from "../../../types";
 
 export const useReportsController = () => {
   const [formData, setFormData] = useState<ICreateReportRequest>({
-    studentId: '',
-    academicYear: '',
-    term: '',
+    studentId: "",
+    academicYear: "",
+    term: "",
     subjects: [
       {
-        name: '',
-        grade: '',
-        remarks: '',
+        name: "",
+        grade: "",
+        remarks: "",
       },
     ],
-    overallRemarks: '',
+    overallRemarks: "",
   });
 
-  const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChange = (
+    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubjectChange = (index: number, field: 'name' | 'grade' | 'remarks', value: string) => {
+  const handleSubjectChange = (
+    index: number,
+    field: "name" | "grade" | "remarks",
+    value: string
+  ) => {
     setFormData((prev) => {
       const newSubjects = [...prev.subjects];
       newSubjects[index] = { ...newSubjects[index], [field]: value };
@@ -36,17 +42,17 @@ export const useReportsController = () => {
       await adminApi.reports.create(formData);
       // Reset form
       setFormData({
-        studentId: '',
-        academicYear: '',
-        term: '',
+        studentId: "",
+        academicYear: "",
+        term: "",
         subjects: [
           {
-            name: '',
-            grade: '',
-            remarks: '',
+            name: "",
+            grade: "",
+            remarks: "",
           },
         ],
-        overallRemarks: '',
+        overallRemarks: "",
       });
       // TODO: Add success message
     } catch {
@@ -60,4 +66,4 @@ export const useReportsController = () => {
     handleSubjectChange,
     handleSubmit,
   };
-}; 
+};

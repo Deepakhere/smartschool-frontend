@@ -96,7 +96,9 @@
     "filter_by_class": "Filter by class",
     "all_classes": "All Classes",
     "your_profile": "Your Profile",
-    "sign_out": "Sign Out"
+    "sign_out": "Sign Out",
+    "manage_notices": "Manage Notices",
+    "create_notice": "Create Notice"
   },
   "messages": {
     "enter_email_associate_with_account": "Don't worry! It happens. Please enter your email address associated with your account.",
@@ -131,7 +133,10 @@
     "notice_added_success": "Notice added successfully!",
     "failed_to_add_notice": "Failed to add notice",
     "error_adding_notice": "Error adding notice:",
-    "search": "Search"
+    "search": "Search",
+    "no_record_found": "No record found. Try changing the filter or add a new user.",
+    "no_search_term_found": "No record found matching {{entity}}. Try a different search term or clear the search.",
+    "notice_created_successfully": "Notice created successfully."
   },
   "buttons": {
     "sending": "Sending",

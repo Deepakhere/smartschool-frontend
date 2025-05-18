@@ -194,6 +194,7 @@ const Dashboard = () => {
 
           <NoticeModal
             isOpen={isNoticeModalOpen}
+            isLoading={false}
             onClose={closeNoticeModal}
             onSubmit={handleAddNotice}
           />
