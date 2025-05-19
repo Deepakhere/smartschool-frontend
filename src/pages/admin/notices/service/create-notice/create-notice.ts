@@ -18,7 +18,7 @@ interface ICreatNoticeResponse {
 
 const createNotice = async (
   organizationId: string,
-  data: ICreateNoticeRequest
+  data: FormData | ICreateNoticeRequest
 ) => {
   const response = await apiClient.post<
     ICreateNoticeRequest,
@@ -32,9 +32,12 @@ const createNotice = async (
 };
 
 const useCreateNotice = (organizationId: string) => {
-  return useMutation<ICreatNoticeResponse, IAPIError, ICreateNoticeRequest>(
-    [API_MUTATION_KEY.CREATE_NOTICE],
-    (data: ICreateNoticeRequest) => createNotice(organizationId, data)
+  return useMutation<
+    ICreatNoticeResponse,
+    IAPIError,
+    FormData | ICreateNoticeRequest
+  >([API_MUTATION_KEY.CREATE_NOTICE], (data: FormData | ICreateNoticeRequest) =>
+    createNotice(organizationId, data)
   );
 };
 

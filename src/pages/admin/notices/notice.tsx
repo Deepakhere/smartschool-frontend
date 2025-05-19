@@ -89,7 +89,7 @@ const AdminNotices = () => {
                       </th>
                     </tr>
                   </thead>
-                  {isFetchingNoticeList ? (
+                  {!isFetchingNoticeList ? (
                     <tbody className="bg-white divide-y divide-gray-200">
                       {notices.map((notice) => (
                         <tr key={notice.id}>

@@ -16,6 +16,9 @@ apiClient.interceptors.request.use(
 
     if (accessToken) {
       config.headers["accesstoken"] = `Bearer ${accessToken}`;
+    }
+
+    if (!(config.data instanceof FormData)) {
       config.headers["content-type"] = "application/json";
     }
 

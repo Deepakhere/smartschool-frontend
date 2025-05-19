@@ -38,11 +38,21 @@ const useNoticeController = () => {
   };
 
   const handleCreateNotice = (formData: ICreateNoticeRequest) => {
-    const noticeData = {
-      ...formData,
-    };
-    console.log(noticeData);
-    createNotice.mutate(noticeData);
+    const noticeFormData = new FormData();
+
+    noticeFormData.append("title", formData.title);
+    noticeFormData.append("content", formData.content);
+    noticeFormData.append("type", formData.type);
+
+    if (formData.date) {
+      noticeFormData.append("date", formData.date);
+    }
+
+    if (formData.attachment instanceof File) {
+      noticeFormData.append("attachment", formData.attachment);
+    }
+
+    createNotice.mutate(noticeFormData);
   };
 
   const onClickCreateNotice = () => {
@@ -65,7 +75,8 @@ const useNoticeController = () => {
       getNoticeList.refetch();
       setIsNoticeModalOpen(false);
     }
-  }, [createNotice.isSuccess, getNoticeList, t]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [createNotice.isSuccess]);
 
   return {
     t,
