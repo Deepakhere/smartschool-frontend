@@ -13,7 +13,7 @@ interface ICreatNoticeResponse {
   content: string;
   date: string;
   type: string;
-  attachments: string[];
+  attachment?: File | null;
 }
 
 const createNotice = async (
@@ -23,14 +23,17 @@ const createNotice = async (
   const response = await apiClient.post<
     ICreateNoticeRequest,
     IAxiosResponse<ICreatNoticeResponse>
-  >(`${APIS_ROUTES.SCHOOL_SERVICE}/${organizationId}/create-notice`, data);
+  >(
+    `${APIS_ROUTES.SCHOOL_SERVICE}/notice/${organizationId}/create-notice`,
+    data
+  );
 
   return response.data.Data;
 };
 
 const useCreateNotice = (organizationId: string) => {
   return useMutation<ICreatNoticeResponse, IAPIError, ICreateNoticeRequest>(
-    [API_MUTATION_KEY.ADD_STUDENT_PROFILE],
+    [API_MUTATION_KEY.CREATE_NOTICE],
     (data: ICreateNoticeRequest) => createNotice(organizationId, data)
   );
 };

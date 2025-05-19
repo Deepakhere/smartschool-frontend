@@ -8,7 +8,7 @@ export interface INotice {
   type: string;
   createdAt: string;
   updatedAt: string;
-  attachments?: string[];
+  attachmentURL: string;
 }
 
 export interface ICreateNoticeRequest {
@@ -16,7 +16,7 @@ export interface ICreateNoticeRequest {
   content: string;
   type: string;
   date?: string;
-  attachments?: string[];
+  attachment?: File | null;
 }
 
 export interface IHomework {

@@ -180,7 +180,11 @@ const NoticeModal = ({
                         <div>
                           <DatePicker
                             label={t("labels.date")}
-                            value={formData.date}
+                            value={
+                              formData.date
+                                ? new Date(formData.date).toISOString()
+                                : ""
+                            }
                             onChange={handleDateChange}
                             placeholder={t("messages.select_date")}
                           />

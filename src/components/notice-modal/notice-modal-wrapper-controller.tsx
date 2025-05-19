@@ -23,7 +23,7 @@ const useNoticeModalWrapperController = (
     content: "",
     date: "",
     type: "announcement",
-    attachments: [],
+    attachment: null,
   });
 
   const [isGeneratingContent, setIsGeneratingContent] = useState(false);
@@ -78,7 +78,7 @@ const useNoticeModalWrapperController = (
       setFile(e.target.files[0]);
       setFormData({
         ...formData,
-        attachments: e.target.files[0] ? [e.target.files[0].name] : [],
+        attachment: e.target.files[0] ? e.target.files[0] : null,
       });
     }
   };
@@ -89,7 +89,7 @@ const useNoticeModalWrapperController = (
       content: "",
       date: "",
       type: "announcement",
-      attachments: [],
+      attachment: null,
     });
     setFile(null);
 

@@ -120,34 +120,33 @@ const AdminNotices = () => {
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                             <div className="flex space-x-2">
-                              {notice.attachments &&
-                                notice.attachments.length > 0 && (
-                                  <>
-                                    <button
-                                      onClick={() =>
-                                        handleViewAttachment(
-                                          notice.attachments![0]
-                                        )
-                                      }
-                                      className="text-indigo-600 hover:text-indigo-900"
-                                      title="View attachment"
-                                    >
-                                      <EyeIcon className="h-5 w-5" />
-                                    </button>
-                                    <button
-                                      onClick={() =>
-                                        handleDownloadAttachment(
-                                          notice.attachments![0],
-                                          `notice-${notice.id}`
-                                        )
-                                      }
-                                      className="text-indigo-600 hover:text-indigo-900"
-                                      title="Download attachment"
-                                    >
-                                      <DocumentArrowDownIcon className="h-5 w-5" />
-                                    </button>
-                                  </>
-                                )}
+                              {notice.attachmentURL && (
+                                <>
+                                  <button
+                                    onClick={() =>
+                                      handleViewAttachment(
+                                        notice.attachmentURL!
+                                      )
+                                    }
+                                    className="text-indigo-600 hover:text-indigo-900"
+                                    title="View attachment"
+                                  >
+                                    <EyeIcon className="h-5 w-5" />
+                                  </button>
+                                  <button
+                                    onClick={() =>
+                                      handleDownloadAttachment(
+                                        notice.attachmentURL!,
+                                        `notice-${notice.id}`
+                                      )
+                                    }
+                                    className="text-indigo-600 hover:text-indigo-900"
+                                    title="Download attachment"
+                                  >
+                                    <DocumentArrowDownIcon className="h-5 w-5" />
+                                  </button>
+                                </>
+                              )}
                               <button
                                 className="text-red-600 hover:text-red-900"
                                 title="Delete notice"

@@ -35,6 +35,7 @@ export const API_MUTATION_KEY = {
   DELETE_USER: "delete-user",
   UPDATE_STUDENT_DETAILS: "update-student-details",
   DELETE_STUDENT: "delete-student",
+  CREATE_NOTICE: "create-notice",
 };
 
 export const PASSWORD_CIPHER_MESSAGE = "KID_SIGHT_KEY";

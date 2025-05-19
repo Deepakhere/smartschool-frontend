@@ -12,7 +12,7 @@ interface INoticeResponse {
   type: "holiday" | "announcement";
   createdAt: string;
   updatedAt: string;
-  attachments?: string[];
+  attachmentURL: string;
 }
 
 const getNoticeList = async (
@@ -29,7 +29,7 @@ const getNoticeList = async (
   const result = await apiClient.get<
     null,
     IAxiosResponse<{ items: INoticeResponse[]; total_count: number }>
-  >(`${APIS_ROUTES.SCHOOL_SERVICE}/${organizationId}/get-notice-list`, {
+  >(`${APIS_ROUTES.SCHOOL_SERVICE}/notice/${organizationId}/get-notice-list`, {
     params: {
       search_term: searchTerm,
       type: type,
