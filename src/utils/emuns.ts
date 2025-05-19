@@ -9,7 +9,7 @@ export const APIS_ROUTES = {
   UPDATE_USER_DETAILS: "/auth/v1/user/update-user-details",
   DELETE_USER: "/auth/v1/user/delete-user",
   ORGANIZATION_SERVICE: "/organization-service/v1/organization",
-  SCHOOL_SERVICE: "/school-service/v1/school",
+  SCHOOL_SERVICE: "/school-service/v1",
   AI_SERVICE: "/ai-service/v1/generate-content",
 };
 
