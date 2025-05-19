@@ -98,7 +98,8 @@
     "your_profile": "Your Profile",
     "sign_out": "Sign Out",
     "manage_notices": "Manage Notices",
-    "create_notice": "Create Notice"
+    "create_notice": "Create Notice",
+    "generate_notice_with_ai": "Create Notice with AI"
   },
   "messages": {
     "enter_email_associate_with_account": "Don't worry! It happens. Please enter your email address associated with your account.",

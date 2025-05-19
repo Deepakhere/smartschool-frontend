@@ -1,10 +1,11 @@
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-// import toast from "react-hot-toast";
+import toast from "react-hot-toast";
 import { useTranslation } from "react-i18next";
 
-import { useGetNoticeList } from "./service";
+import { useCreateNotice, useGetNoticeList } from "./service";
 import { ICreateNoticeRequest, INotice } from "../../../types";
+import { useError } from "../../../hooks";
 
 const useNoticeController = () => {
   const { t } = useTranslation();
@@ -14,25 +15,11 @@ const useNoticeController = () => {
   const [isNoticeModalOpen, setIsNoticeModalOpen] = useState(false);
 
   const getNoticeList = useGetNoticeList(organizationId, "", "", 10, 1);
+  const createNotice = useCreateNotice(organizationId || "");
 
-  const handleSubmit = async (formData: ICreateNoticeRequest) => {
-    // createNotice.mutate(formData);
-    console.log(formData);
-  };
-
-  useEffect(() => {
-    if (getNoticeList.isSuccess && getNoticeList.data) {
-      setNotices(getNoticeList.data.items);
-    }
-  }, [getNoticeList.isSuccess, getNoticeList.data]);
-
-  // useEffect(() => {
-  //   if (createNotice.isSuccess) {
-  //     toast.success(t("messages.notice_created_successfully"));
-  //     getNoticeList.refetch();
-  //     setIsNoticeModalOpen(false);
-  //   }
-  // }, [createNotice.isSuccess]);
+  useError({
+    mutation: createNotice,
+  });
 
   const handleViewAttachment = (attachmentUrl: string) => {
     window.open(attachmentUrl, "_blank");
@@ -50,6 +37,14 @@ const useNoticeController = () => {
     document.body.removeChild(link);
   };
 
+  const handleCreateNotice = (formData: ICreateNoticeRequest) => {
+    const noticeData = {
+      ...formData,
+    };
+    console.log(noticeData);
+    createNotice.mutate(noticeData);
+  };
+
   const onClickCreateNotice = () => {
     setIsNoticeModalOpen(true);
   };
@@ -58,14 +53,30 @@ const useNoticeController = () => {
     setIsNoticeModalOpen(false);
   };
 
+  useEffect(() => {
+    if (getNoticeList.isSuccess && getNoticeList.data) {
+      setNotices(getNoticeList.data.items);
+    }
+  }, [getNoticeList.isSuccess, getNoticeList.data]);
+
+  useEffect(() => {
+    if (createNotice.isSuccess) {
+      toast.success(t("messages.notice_created_successfully"));
+      getNoticeList.refetch();
+      setIsNoticeModalOpen(false);
+    }
+  }, [createNotice.isSuccess, getNoticeList, t]);
+
   return {
     t,
     notices,
     isNoticeModalOpen,
     isLoadingNoticeList: getNoticeList.isLoading,
     isFetchingNoticeList: getNoticeList.isFetching,
+    isCreatingNotice: createNotice.isLoading,
+    isSuccessNoticeCreation: createNotice.isSuccess,
     onCancel,
-    handleSubmit,
+    handleCreateNotice,
     handleViewAttachment,
     handleDownloadAttachment,
     onClickCreateNotice,

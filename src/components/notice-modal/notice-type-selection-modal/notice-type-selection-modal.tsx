@@ -16,6 +16,8 @@ const NoticeTypeSelectionModal = ({
   onSelectAI,
   onSelectCustom,
 }: NoticeTypeSelectionModalProps) => {
+  if (!isOpen) return;
+
   return (
     <Transition.Root show={isOpen} as={Fragment}>
       <Dialog
@@ -71,7 +73,7 @@ const NoticeTypeSelectionModal = ({
                   >
                     Create Notice
                   </Dialog.Title>
-                  <div className="mt-6">
+                  <div className="mt-0">
                     <p className="text-sm text-gray-500 mb-6">
                       Choose how you would like to create your notice:
                     </p>

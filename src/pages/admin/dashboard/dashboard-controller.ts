@@ -1,7 +1,21 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { ICreateNoticeRequest } from "../../../types";
 import { useTranslation } from "react-i18next";
+
+import {
+  UserGroupIcon,
+  UserIcon,
+  AcademicCapIcon,
+  BellIcon,
+  CurrencyDollarIcon,
+  ClipboardDocumentCheckIcon,
+  BookOpenIcon,
+  PlusIcon,
+  DocumentPlusIcon,
+  UserPlusIcon,
+} from "@heroicons/react/24/outline";
+
+import { ICreateNoticeRequest } from "../../../types";
 
 export const useDashboardController = () => {
   const navigate = useNavigate();
@@ -195,7 +209,7 @@ export const useDashboardController = () => {
     setIsNoticeModalOpen(false);
   };
 
-  const handleAddNotice = async (formData: ICreateNoticeRequest) => {
+  const handleCreateNotice = async (formData: ICreateNoticeRequest) => {
     console.log(formData);
   };
 
@@ -223,6 +237,54 @@ export const useDashboardController = () => {
     // Similarly, you might want to open the add teacher modal directly
   };
 
+  const statCards = [
+    {
+      title: "Total Students",
+      value: stats.totalStudents,
+      icon: UserGroupIcon,
+    },
+    { title: "Total Teachers", value: stats.totalTeachers, icon: UserIcon },
+    {
+      title: "Total Classes",
+      value: stats.totalClasses,
+      icon: AcademicCapIcon,
+    },
+    { title: "Active Notices", value: stats.activeNotices, icon: BellIcon },
+    {
+      title: "Pending Payments",
+      value: stats.pendingPayments,
+      icon: CurrencyDollarIcon,
+    },
+    {
+      title: "Attendance Today",
+      value: stats.attendanceSubmitted,
+      icon: ClipboardDocumentCheckIcon,
+    },
+    {
+      title: "Homeworks Today",
+      value: stats.homeworksIssued,
+      icon: BookOpenIcon,
+    },
+  ];
+
+  const quickActions = [
+    {
+      title: "Add New Notice",
+      icon: PlusIcon,
+      action: openNoticeModal,
+    },
+    {
+      title: "Upload Homework",
+      icon: DocumentPlusIcon,
+      action: () => {},
+    },
+    {
+      title: "Add Student/Teacher",
+      icon: UserPlusIcon,
+      action: openUserTypeModal,
+    },
+  ];
+
   return {
     t,
     stats,
@@ -233,9 +295,11 @@ export const useDashboardController = () => {
     isLoading,
     isNoticeModalOpen,
     isUserTypeModalOpen,
+    statCards,
+    quickActions,
     openNoticeModal,
     closeNoticeModal,
-    handleAddNotice,
+    handleCreateNotice,
     openUserTypeModal,
     closeUserTypeModal,
     handleSelectStudent,

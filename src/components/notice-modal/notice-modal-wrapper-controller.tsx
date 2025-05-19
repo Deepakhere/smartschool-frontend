@@ -2,16 +2,21 @@ import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { BellIcon, CalendarDaysIcon } from "@heroicons/react/24/outline";
 
-import { ICreateNoticeRequest, SelectOption } from "../../types";
 import useGetAiGeneratedContent from "./service";
+import { ICreateNoticeRequest, SelectOption } from "../../types";
+import { useError } from "../../hooks";
 
-const useNoticeModalController = (
+const useNoticeModalWrapperController = (
+  isSuccessNoticeCreation: boolean,
+  onCancel: () => void,
   onSubmit: (formData: ICreateNoticeRequest) => void
 ) => {
   const { t } = useTranslation();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [file, setFile] = useState<File | null>(null);
+  const [isNoticeModalOpen, setIsNoticeModalOpen] = useState(false);
+  const [isAIModalOpen, setIsAIModalOpen] = useState(false);
 
   const [formData, setFormData] = useState<ICreateNoticeRequest>({
     title: "",
@@ -24,6 +29,13 @@ const useNoticeModalController = (
   const [isGeneratingContent, setIsGeneratingContent] = useState(false);
 
   const getAiGeneratedContent = useGetAiGeneratedContent();
+
+  useError({
+    mutation: getAiGeneratedContent,
+    cb: () => {
+      setIsGeneratingContent(false);
+    },
+  });
 
   const noticeTypeOptions: SelectOption[] = [
     {
@@ -89,7 +101,6 @@ const useNoticeModalController = (
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     onSubmit(formData);
-    resetForm();
   };
 
   const generateContentWithAI = async () => {
@@ -105,6 +116,28 @@ const useNoticeModalController = (
     getAiGeneratedContent.mutate(values);
 
     setIsGeneratingContent(true);
+  };
+
+  const handleSelectAI = () => {
+    setIsAIModalOpen(true);
+    openNoticeModal();
+    onCancel();
+  };
+
+  const handleSelectCustom = () => {
+    setIsAIModalOpen(false);
+    openNoticeModal();
+    onCancel();
+  };
+
+  // Notice modal handlers
+  const openNoticeModal = () => {
+    setIsNoticeModalOpen(true);
+  };
+
+  const closeNoticeModal = () => {
+    setIsNoticeModalOpen(false);
+    resetForm();
   };
 
   useEffect(() => {
@@ -125,24 +158,33 @@ const useNoticeModalController = (
     }
   }, [getAiGeneratedContent.isError]);
 
+  useEffect(() => {
+    if (isSuccessNoticeCreation) {
+      closeNoticeModal();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isSuccessNoticeCreation]);
+
   return {
     t,
     file,
     formData,
     fileInputRef,
+    isAIModalOpen,
+    isNoticeModalOpen,
     noticeTypeOptions,
     selectedNoticeType,
     isGeneratingContent,
-    setFile,
-    setFormData,
-    resetForm,
     handleChange,
     handleDateChange,
     handleNoticeTypeChange,
     handleFileChange,
     handleSubmit,
     generateContentWithAI,
+    handleSelectAI,
+    handleSelectCustom,
+    closeNoticeModal,
   };
 };
 
-export default useNoticeModalController;
+export default useNoticeModalWrapperController;

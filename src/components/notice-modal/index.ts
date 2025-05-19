@@ -1,1 +1,1 @@
-export { default } from "./notice-modal";
+export { default } from "./notice-modal-wrapper";

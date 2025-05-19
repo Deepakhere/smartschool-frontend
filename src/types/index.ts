@@ -14,8 +14,8 @@ export interface INotice {
 export interface ICreateNoticeRequest {
   title: string;
   content: string;
-  date: string;
   type: string;
+  date?: string;
   attachments?: string[];
 }
 

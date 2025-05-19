@@ -1,70 +1,79 @@
-// import { ICreateNoticeRequest } from "../../types";
-// import useNoticeModalController from "./notice-modal-controller";
-// import NoticeModal from "./notice-modal";
-// import NoticeTypeSelectionModal from "./notice-type-selection-modal";
+import NoticeModal from "./notice-modal";
 
-// interface NoticeModalWrapperProps {
-//   isLoading: boolean;
-//   onSubmit: (formData: ICreateNoticeRequest) => void;
-// }
+import NoticeTypeSelectionModal from "./notice-type-selection-modal";
+import useNoticeModalWrapperController from "./notice-modal-wrapper-controller";
+import { ICreateNoticeRequest } from "../../types";
 
-// const NoticeModalWrapper = ({
-//   isLoading,
-//   onSubmit,
-// }: NoticeModalWrapperProps) => {
-//   const {
-//     t,
-//     isSelectionModalOpen,
-//     isNoticeModalOpen,
-//     useAIGeneration,
-//     closeSelectionModal,
-//     handleSelectAI,
-//     handleSelectCustom,
-//     closeNoticeModal,
-//     file,
-//     formData,
-//     fileInputRef,
-//     noticeTypeOptions,
-//     selectedNoticeType,
-//     isGeneratingContent,
-//     handleChange,
-//     handleDateChange,
-//     handleNoticeTypeChange,
-//     handleFileChange,
-//     handleSubmit,
-//     generateContentWithAI,
-//   } = useNoticeModalController(onSubmit);
+interface NoticeModalWrapperProps {
+  isOpen: boolean;
+  onCancel: () => void;
+  isLoading: boolean;
+  onSubmit: (formData: ICreateNoticeRequest) => void;
+  isSuccessNoticeCreation: boolean;
+}
 
-//   return (
-//     <>
-//       <NoticeTypeSelectionModal
-//         isOpen={isSelectionModalOpen}
-//         onClose={closeSelectionModal}
-//         onSelectAI={handleSelectAI}
-//         onSelectCustom={handleSelectCustom}
-//       />
+const NoticeModalWrapper = ({
+  isOpen,
+  onCancel,
+  isLoading,
+  onSubmit,
+  isSuccessNoticeCreation,
+}: NoticeModalWrapperProps) => {
+  const {
+    t,
+    file,
+    formData,
+    fileInputRef,
+    isAIModalOpen,
+    isNoticeModalOpen,
+    noticeTypeOptions,
+    selectedNoticeType,
+    isGeneratingContent,
+    handleSelectAI,
+    handleSelectCustom,
+    closeNoticeModal,
+    handleChange,
+    handleDateChange,
+    handleNoticeTypeChange,
+    handleFileChange,
+    handleSubmit,
+    generateContentWithAI,
+  } = useNoticeModalWrapperController(
+    isSuccessNoticeCreation,
+    onCancel,
+    onSubmit
+  );
 
-//       {/* <NoticeModal
-//         t={t}
-//         isOpen={isNoticeModalOpen}
-//         isLoading={isLoading}
-//         onClose={closeNoticeModal}
-//         onSubmit={handleSubmit}
-//         file={file}
-//         formData={formData}
-//         fileInputRef={fileInputRef}
-//         noticeTypeOptions={noticeTypeOptions}
-//         selectedNoticeType={selectedNoticeType}
-//         isGeneratingContent={isGeneratingContent}
-//         useAIGeneration={useAIGeneration}
-//         handleChange={handleChange}
-//         handleDateChange={handleDateChange}
-//         handleNoticeTypeChange={handleNoticeTypeChange}
-//         handleFileChange={handleFileChange}
-//         generateContentWithAI={generateContentWithAI}
-//       /> */}
-//     </>
-//   );
-// };
+  return (
+    <>
+      <NoticeTypeSelectionModal
+        isOpen={isOpen}
+        onClose={onCancel}
+        onSelectAI={handleSelectAI}
+        onSelectCustom={handleSelectCustom}
+      />
 
-// export default NoticeModalWrapper;
+      <NoticeModal
+        t={t}
+        file={file}
+        formData={formData}
+        isLoading={isLoading}
+        fileInputRef={fileInputRef}
+        isOpen={isNoticeModalOpen}
+        noticeTypeOptions={noticeTypeOptions}
+        selectedNoticeType={selectedNoticeType}
+        isGeneratingContent={isGeneratingContent}
+        isAIModalOpen={isAIModalOpen}
+        onClose={closeNoticeModal}
+        onSubmit={handleSubmit}
+        handleChange={handleChange}
+        handleDateChange={handleDateChange}
+        handleNoticeTypeChange={handleNoticeTypeChange}
+        handleFileChange={handleFileChange}
+        generateContentWithAI={generateContentWithAI}
+      />
+    </>
+  );
+};
+
+export default NoticeModalWrapper;

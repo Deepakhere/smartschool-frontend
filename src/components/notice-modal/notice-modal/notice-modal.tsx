@@ -3,41 +3,54 @@ import { Dialog, Transition } from "@headlessui/react";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 import { SparklesIcon } from "@heroicons/react/24/solid";
 
-import DatePicker from "../date-picker";
-import SelectDropdown from "../custom-select";
-import ButtonSpinner from "../../icons/button-spinner";
-import useNoticeModalController from "./notice-modal-controller";
-import { ICreateNoticeRequest } from "../../types";
+import DatePicker from "../../date-picker";
+import SelectDropdown from "../../custom-select";
+import ButtonSpinner from "../../../icons/button-spinner";
+import { ICreateNoticeRequest, SelectOption } from "../../../types";
 
 interface NoticeModalProps {
+  t: (key: string) => string;
   isOpen: boolean;
   isLoading: boolean;
   onClose: () => void;
-  onSubmit: (formData: ICreateNoticeRequest) => void;
+  onSubmit: (e: React.FormEvent) => void;
+  file: File | null;
+  formData: ICreateNoticeRequest;
+  fileInputRef: React.RefObject<HTMLInputElement>;
+  noticeTypeOptions: SelectOption[];
+  selectedNoticeType: SelectOption;
+  isGeneratingContent: boolean;
+  isAIModalOpen: boolean;
+  handleChange: (
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >
+  ) => void;
+  handleDateChange: (date: string) => void;
+  handleNoticeTypeChange: (option: SelectOption) => void;
+  handleFileChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  generateContentWithAI: () => void;
 }
 
 const NoticeModal = ({
+  t,
   isOpen,
   isLoading,
   onClose,
   onSubmit,
+  file,
+  formData,
+  fileInputRef,
+  noticeTypeOptions,
+  selectedNoticeType,
+  isGeneratingContent,
+  isAIModalOpen,
+  handleChange,
+  handleDateChange,
+  handleNoticeTypeChange,
+  handleFileChange,
+  generateContentWithAI,
 }: NoticeModalProps) => {
-  const {
-    t,
-    formData,
-    file,
-    fileInputRef,
-    isGeneratingContent,
-    noticeTypeOptions,
-    selectedNoticeType,
-    handleSubmit,
-    handleChange,
-    handleDateChange,
-    handleNoticeTypeChange,
-    handleFileChange,
-    generateContentWithAI,
-  } = useNoticeModalController(onSubmit);
-
   return (
     <Transition.Root show={isOpen} as={Fragment}>
       <Dialog
@@ -91,10 +104,12 @@ const NoticeModal = ({
                     as="h3"
                     className="text-lg leading-6 font-medium text-gray-900"
                   >
-                    {t("labels.add_new_notice")}
+                    {isAIModalOpen
+                      ? t("labels.generate_notice_with_ai")
+                      : t("labels.add_new_notice")}
                   </Dialog.Title>
                   <div className="mt-4">
-                    <form onSubmit={handleSubmit} className="space-y-4">
+                    <form onSubmit={onSubmit} className="space-y-4">
                       <div>
                         <label
                           htmlFor="title"
@@ -113,22 +128,33 @@ const NoticeModal = ({
                             className="mt-1 block w-full p-2 rounded-md border border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 sm:text-sm"
                             required
                           />
-                          <button
-                            type="button"
-                            onClick={generateContentWithAI}
-                            disabled={
-                              !formData.title.trim() || isGeneratingContent
-                            }
-                            className="mt-1 inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed"
-                            title="Generate content with AI"
-                          >
-                            {isGeneratingContent ? (
-                              <ButtonSpinner />
-                            ) : (
-                              <SparklesIcon className="h-4 w-4" />
-                            )}
-                          </button>
+                          {isAIModalOpen && (
+                            <button
+                              type="button"
+                              onClick={generateContentWithAI}
+                              disabled={
+                                !formData.title.trim() || isGeneratingContent
+                              }
+                              className="mt-1 inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed"
+                              title="Generate content with AI"
+                            >
+                              {isGeneratingContent ? (
+                                <ButtonSpinner />
+                              ) : (
+                                <SparklesIcon className="h-4 w-4" />
+                              )}
+                            </button>
+                          )}
                         </div>
+                      </div>
+
+                      <div>
+                        <SelectDropdown
+                          label={t("labels.type")}
+                          options={noticeTypeOptions}
+                          value={selectedNoticeType}
+                          onChange={handleNoticeTypeChange}
+                        />
                       </div>
 
                       <div>
@@ -150,45 +176,40 @@ const NoticeModal = ({
                         />
                       </div>
 
-                      <div>
-                        <DatePicker
-                          label={t("labels.date")}
-                          value={formData.date}
-                          onChange={handleDateChange}
-                          placeholder={t("messages.select_date")}
-                        />
-                      </div>
+                      {isAIModalOpen ? null : (
+                        <div>
+                          <DatePicker
+                            label={t("labels.date")}
+                            value={formData.date}
+                            onChange={handleDateChange}
+                            placeholder={t("messages.select_date")}
+                          />
+                        </div>
+                      )}
 
-                      <div>
-                        <SelectDropdown
-                          label={t("labels.type")}
-                          options={noticeTypeOptions}
-                          value={selectedNoticeType}
-                          onChange={handleNoticeTypeChange}
-                        />
-                      </div>
-
-                      <div>
-                        <label
-                          htmlFor="attachment"
-                          className="block text-sm font-medium text-gray-700 mb-1"
-                        >
-                          {t("labels.attachment")}
-                        </label>
-                        <input
-                          type="file"
-                          id="attachment"
-                          name="attachment"
-                          ref={fileInputRef}
-                          onChange={handleFileChange}
-                          className="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-                        />
-                        {file && (
-                          <p className="mt-2 text-sm text-gray-500">
-                            {t("labels.selected_file")}: {file.name}
-                          </p>
-                        )}
-                      </div>
+                      {isAIModalOpen ? null : (
+                        <div>
+                          <label
+                            htmlFor="attachment"
+                            className="block text-sm font-medium text-gray-700 mb-1"
+                          >
+                            {t("labels.attachment")}
+                          </label>
+                          <input
+                            type="file"
+                            id="attachment"
+                            name="attachment"
+                            ref={fileInputRef}
+                            onChange={handleFileChange}
+                            className="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                          />
+                          {file && (
+                            <p className="mt-2 text-sm text-gray-500">
+                              {t("labels.selected_file")}: {file.name}
+                            </p>
+                          )}
+                        </div>
+                      )}
 
                       <div className="mt-5 sm:mt-4 sm:flex sm:flex-row-reverse">
                         <button

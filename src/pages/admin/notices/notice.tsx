@@ -13,8 +13,10 @@ const AdminNotices = () => {
     isNoticeModalOpen,
     isLoadingNoticeList,
     isFetchingNoticeList,
+    isCreatingNotice,
+    isSuccessNoticeCreation,
     onCancel,
-    handleSubmit,
+    handleCreateNotice,
     handleViewAttachment,
     handleDownloadAttachment,
     onClickCreateNotice,
@@ -169,9 +171,10 @@ const AdminNotices = () => {
 
       <NoticeModal
         isOpen={isNoticeModalOpen}
-        isLoading={isLoadingNoticeList}
-        onClose={onCancel}
-        onSubmit={handleSubmit}
+        onCancel={onCancel}
+        isLoading={isCreatingNotice}
+        onSubmit={handleCreateNotice}
+        isSuccessNoticeCreation={isSuccessNoticeCreation}
       />
     </>
   );

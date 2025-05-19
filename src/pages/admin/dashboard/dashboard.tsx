@@ -1,27 +1,16 @@
 import Highcharts from "highcharts";
 import HighchartsReact from "highcharts-react-official";
 
-import { useDashboardController } from "./dashboard-controller";
-import {
-  UserGroupIcon,
-  UserIcon,
-  AcademicCapIcon,
-  BellIcon,
-  CurrencyDollarIcon,
-  ClipboardDocumentCheckIcon,
-  BookOpenIcon,
-  PlusIcon,
-  DocumentPlusIcon,
-  UserPlusIcon,
-} from "@heroicons/react/24/outline";
 import LogoSpinner from "../../../components/logo-spinner";
 import NoticeModal from "../../../components/notice-modal";
+import { useDashboardController } from "./dashboard-controller";
 import UserTypeSelectionModal from "../../../components/user-type-selection-modal";
 
 const Dashboard = () => {
   const {
     t,
-    stats,
+    statCards,
+    quickActions,
     recentUpdates,
     studentPerformanceOptions,
     teacherStudentRatioOptions,
@@ -29,62 +18,12 @@ const Dashboard = () => {
     isLoading,
     isNoticeModalOpen,
     isUserTypeModalOpen,
-    openNoticeModal,
     closeNoticeModal,
-    handleAddNotice,
-    openUserTypeModal,
+    handleCreateNotice,
     closeUserTypeModal,
     handleSelectStudent,
     handleSelectTeacher,
   } = useDashboardController();
-
-  const statCards = [
-    {
-      title: "Total Students",
-      value: stats.totalStudents,
-      icon: UserGroupIcon,
-    },
-    { title: "Total Teachers", value: stats.totalTeachers, icon: UserIcon },
-    {
-      title: "Total Classes",
-      value: stats.totalClasses,
-      icon: AcademicCapIcon,
-    },
-    { title: "Active Notices", value: stats.activeNotices, icon: BellIcon },
-    {
-      title: "Pending Payments",
-      value: stats.pendingPayments,
-      icon: CurrencyDollarIcon,
-    },
-    {
-      title: "Attendance Today",
-      value: stats.attendanceSubmitted,
-      icon: ClipboardDocumentCheckIcon,
-    },
-    {
-      title: "Homeworks Today",
-      value: stats.homeworksIssued,
-      icon: BookOpenIcon,
-    },
-  ];
-
-  const quickActions = [
-    {
-      title: "Add New Notice",
-      icon: PlusIcon,
-      action: openNoticeModal,
-    },
-    {
-      title: "Upload Homework",
-      icon: DocumentPlusIcon,
-      action: () => {},
-    },
-    {
-      title: "Add Student/Teacher",
-      icon: UserPlusIcon,
-      action: openUserTypeModal,
-    },
-  ];
 
   return (
     <>
@@ -194,9 +133,10 @@ const Dashboard = () => {
 
           <NoticeModal
             isOpen={isNoticeModalOpen}
+            onCancel={closeNoticeModal}
             isLoading={false}
-            onClose={closeNoticeModal}
-            onSubmit={handleAddNotice}
+            onSubmit={handleCreateNotice}
+            isSuccessNoticeCreation={false}
           />
 
           <UserTypeSelectionModal
