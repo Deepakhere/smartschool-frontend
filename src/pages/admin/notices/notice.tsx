@@ -5,6 +5,7 @@ import NoRecordFound from "../../../components/no-record-found";
 import useNoticeController from "./notice-controller";
 import Spinner from "../../../components/spinner";
 import LogoSpinner from "../../../components/logo-spinner";
+import AttachmentPreviewModal from "./preview-modal";
 
 const AdminNotices = () => {
   const {
@@ -15,11 +16,16 @@ const AdminNotices = () => {
     isFetchingNoticeList,
     isCreatingNotice,
     isSuccessNoticeCreation,
+    previewModalOpen,
+    previewAttachmentURL,
+    previewFileName,
     onCancel,
     handleCreateNotice,
     handleViewAttachment,
     handleDownloadAttachment,
     onClickCreateNotice,
+    handleDeleteNotice,
+    setPreviewModalOpen,
   } = useNoticeController();
 
   return (
@@ -113,7 +119,9 @@ const AdminNotices = () => {
                             </span>
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                            {new Date(notice.date).toLocaleDateString()}
+                            {notice.date
+                              ? new Date(notice.date).toLocaleDateString()
+                              : "-"}
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                             {new Date(notice.createdAt).toLocaleDateString()}
@@ -125,7 +133,8 @@ const AdminNotices = () => {
                                   <button
                                     onClick={() =>
                                       handleViewAttachment(
-                                        notice.attachmentURL!
+                                        notice.attachmentURL!,
+                                        notice.title
                                       )
                                     }
                                     className="text-indigo-600 hover:text-indigo-900"
@@ -150,6 +159,7 @@ const AdminNotices = () => {
                               <button
                                 className="text-red-600 hover:text-red-900"
                                 title="Delete notice"
+                                onClick={() => handleDeleteNotice(notice.id)}
                               >
                                 Delete
                               </button>
@@ -174,6 +184,13 @@ const AdminNotices = () => {
         isLoading={isCreatingNotice}
         onSubmit={handleCreateNotice}
         isSuccessNoticeCreation={isSuccessNoticeCreation}
+      />
+
+      <AttachmentPreviewModal
+        isOpen={previewModalOpen}
+        onClose={() => setPreviewModalOpen(false)}
+        attachmentURL={previewAttachmentURL}
+        fileName={previewFileName}
       />
     </>
   );
