@@ -29,6 +29,7 @@ const NoticeModalWrapper = ({
     noticeTypeOptions,
     selectedNoticeType,
     isGeneratingContent,
+    isAIPreviewModalOpen,
     handleSelectAI,
     handleSelectCustom,
     closeNoticeModal,
@@ -38,6 +39,8 @@ const NoticeModalWrapper = ({
     handleFileChange,
     handleSubmit,
     generateContentWithAI,
+    onClickAIPreviewButton,
+    onCloseAIPreviewModal,
   } = useNoticeModalWrapperController(
     isSuccessNoticeCreation,
     onCancel,
@@ -64,6 +67,9 @@ const NoticeModalWrapper = ({
         selectedNoticeType={selectedNoticeType}
         isGeneratingContent={isGeneratingContent}
         isAIModalOpen={isAIModalOpen}
+        isAIPreviewModalOpen={isAIPreviewModalOpen}
+        onClickAIPreviewButton={onClickAIPreviewButton}
+        onCloseAIPreviewModal={onCloseAIPreviewModal}
         onClose={closeNoticeModal}
         onSubmit={handleSubmit}
         handleChange={handleChange}

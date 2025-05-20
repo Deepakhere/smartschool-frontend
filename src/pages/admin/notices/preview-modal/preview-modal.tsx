@@ -45,7 +45,7 @@ const AttachmentPreviewModal = ({
           leaveFrom="opacity-100"
           leaveTo="opacity-0"
         >
-          <div className="fixed inset-0" />
+          <div className="fixed inset-0 bg-gray-500 bg-opacity-75" />
         </Transition.Child>
 
         <div className="fixed inset-0 overflow-y-auto">
@@ -76,7 +76,7 @@ const AttachmentPreviewModal = ({
                   </button>
                 </div>
 
-                <div className="relative h-[70vh] bg-gray-100 rounded-md overflow-hidden">
+                <div className="relative h-[70vh] bg-white rounded-md overflow-hidden">
                   {isLoading && (
                     <div className="absolute inset-0 flex items-center justify-center">
                       <Spinner />

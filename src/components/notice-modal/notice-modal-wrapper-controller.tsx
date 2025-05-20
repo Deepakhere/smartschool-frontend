@@ -18,6 +18,8 @@ const useNoticeModalWrapperController = (
   const [isNoticeModalOpen, setIsNoticeModalOpen] = useState(false);
   const [isAIModalOpen, setIsAIModalOpen] = useState(false);
 
+  const [isAIPreviewModalOpen, setIsAIPreviewModalOpen] = useState(false);
+
   const [formData, setFormData] = useState<ICreateNoticeRequest>({
     title: "",
     content: "",
@@ -140,6 +142,14 @@ const useNoticeModalWrapperController = (
     resetForm();
   };
 
+  const onClickAIPreviewButton = () => {
+    setIsAIPreviewModalOpen(true);
+  };
+
+  const onCloseAIPreviewModal = () => {
+    setIsAIPreviewModalOpen(false);
+  };
+
   useEffect(() => {
     if (getAiGeneratedContent.isSuccess && getAiGeneratedContent.data) {
       setFormData({
@@ -175,6 +185,7 @@ const useNoticeModalWrapperController = (
     noticeTypeOptions,
     selectedNoticeType,
     isGeneratingContent,
+    isAIPreviewModalOpen,
     handleChange,
     handleDateChange,
     handleNoticeTypeChange,
@@ -184,6 +195,8 @@ const useNoticeModalWrapperController = (
     handleSelectAI,
     handleSelectCustom,
     closeNoticeModal,
+    onClickAIPreviewButton,
+    onCloseAIPreviewModal,
   };
 };
 

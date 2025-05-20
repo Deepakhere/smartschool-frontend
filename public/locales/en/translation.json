@@ -161,7 +161,8 @@
     "today": "Today",
     "clear_selection": "Clear selection",
     "edit": "Edit",
-    "save": "Save"
+    "save": "Save",
+    "preview": "Preview"
   },
   "common": {
     "notice_types": {
