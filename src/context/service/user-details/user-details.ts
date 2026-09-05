@@ -7,10 +7,6 @@ import { APIS_ROUTES, API_QUERY_KEY, USER_ACCESS_KEY } from "../../../utils";
 import apiClient from "../../../config/api-client";
 
 const getUserDetails = async (): Promise<IUserDetailResponse> => {
-  const token = Cookies.get(USER_ACCESS_KEY.TOKEN);
-  if (!token) {
-    throw new Error("No token found");
-  }
   const result = await apiClient.get<null, IAxiosResponse<IUserDetailResponse>>(
     APIS_ROUTES.GET_USER_DETAILS
   );
@@ -24,6 +20,8 @@ const useGetUserDetails = () =>
     getUserDetails,
     {
       cacheTime: 0,
+      // no token means logged out; don't fire the request at all, just leave user as null
+      enabled: !!Cookies.get(USER_ACCESS_KEY.TOKEN),
     }
   );
 

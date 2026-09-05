@@ -401,6 +401,62 @@ export interface IPTMBooking {
   teacherNote?: string;
 }
 
+export interface IFeeHead {
+  id: string;
+  name: string;
+  code: string;
+  category: string;
+  isRefundable: boolean;
+}
+
+export interface IFeeStructure {
+  id: string;
+  academicYearId: string;
+  name: string;
+  classIds: { id: string; name: string }[];
+  sectionIds: { id: string; name: string }[];
+  items: { feeHeadId: { id: string; name: string; code: string }; amount: number }[];
+  installments: { label: string; dueDate: string; amount: number }[];
+  version: number;
+  status: string;
+}
+
+export interface IFeeInstallmentBalance {
+  label: string;
+  dueDate: string;
+  netAmount: number;
+  paidAmount: number;
+  balance: number;
+}
+
+export interface IPayment {
+  id: string;
+  academicYearId: string;
+  studentId: { id: string; name: string; admissionNumber: string } | string;
+  studentFeeId: string;
+  entryType: "payment" | "reversal";
+  amount: number;
+  allocations: { installmentLabel: string; amount: number }[];
+  method: string;
+  instrumentRef?: string;
+  receiptNumber: string;
+  reversalOfPaymentId?: string;
+  paidAt: string;
+  remarks?: string;
+}
+
+export interface IStudentFeeSummary {
+  studentFeeId: string;
+  academicYearId: string;
+  studentId?: string;
+  studentName?: string;
+  installments: IFeeInstallmentBalance[];
+  totalNet: number;
+  totalPaid: number;
+  totalBalance: number;
+  payments: IPayment[];
+}
+
 export interface IStudentDetails {
   id: string;
   name: string;

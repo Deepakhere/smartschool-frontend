@@ -17,6 +17,7 @@ export const APIS_ROUTES = {
   ATTENDANCE_SERVICE: "/attendance-service/v1",
   HOMEWORK_SERVICE: "/homework-service/v1",
   PTM_SERVICE: "/ptm-service/v1",
+  FEE_SERVICE: "/fee-service/v1",
 };
 
 export const API_QUERY_KEY = {
@@ -46,6 +47,11 @@ export const API_QUERY_KEY = {
   GET_PTM_SLOTS: "get-ptm-slots",
   GET_MY_PTM_BOOKINGS: "get-my-ptm-bookings",
   GET_MY_PTM_AGENDA: "get-my-ptm-agenda",
+  GET_FEE_HEADS: "get-fee-heads",
+  GET_FEE_STRUCTURES: "get-fee-structures",
+  GET_STUDENT_FEE_SUMMARY: "get-student-fee-summary",
+  GET_MY_FEES: "get-my-fees",
+  GET_PAYMENT_LEDGER: "get-payment-ledger",
 };
 
 export const API_MUTATION_KEY = {
@@ -74,6 +80,11 @@ export const API_MUTATION_KEY = {
   GENERATE_PTM_SLOTS: "generate-ptm-slots",
   BOOK_PTM_SLOT: "book-ptm-slot",
   CANCEL_PTM_BOOKING: "cancel-ptm-booking",
+  CREATE_FEE_HEAD: "create-fee-head",
+  CREATE_FEE_STRUCTURE: "create-fee-structure",
+  ASSIGN_FEE_STRUCTURE: "assign-fee-structure",
+  RECORD_PAYMENT: "record-payment",
+  REVERSE_PAYMENT: "reverse-payment",
 };
 
 export const PASSWORD_CIPHER_MESSAGE = "KID_SIGHT_KEY";
