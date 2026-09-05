@@ -1,14 +1,13 @@
 import { useQuery } from "react-query";
 
-import { IAPIError, IAxiosResponse } from "../../../../../types";
+import { IAPIError, IAxiosResponse, IStudentEnrollment } from "../../../../../types";
 import { APIS_ROUTES, API_QUERY_KEY } from "../../../../../utils";
 import apiClient from "../../../../../config";
 
 interface IStudentResponse {
   id: string;
   name: string;
-  classId: string;
-  rollNumber: string;
+  currentEnrollment: IStudentEnrollment | null;
   parentId: string;
   dateOfBirth: string;
 }

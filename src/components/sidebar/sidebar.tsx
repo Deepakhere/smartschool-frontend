@@ -5,7 +5,7 @@ const Sidebar = () => {
   const { navigation } = useSidebarController();
 
   return (
-    <div className="w-52 bg-white shadow-xl z-10">
+    <div className="w-52 bg-white border-r border-gray-200 shadow-[2px_0_8px_-2px_rgba(0,0,0,0.08)] z-10">
       <div className="flex flex-col h-full">
         <div className="flex-1 flex flex-col pt-5 pb-4 overflow-y-auto">
           <nav className="flex-1 px-2 space-y-1">

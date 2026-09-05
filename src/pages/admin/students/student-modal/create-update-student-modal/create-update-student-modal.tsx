@@ -8,6 +8,7 @@ import Spinner from "../../../../../components/spinner";
 const CreateUpdateStudentModal = ({
   t,
   isOpen,
+  organizationId,
   formData,
   isEditStudent,
   currentStep,
@@ -41,7 +42,9 @@ const CreateUpdateStudentModal = ({
           {currentStep === 1 && (
             <StudentDetailsForm
               t={t}
+              organizationId={organizationId}
               formData={formData}
+              isEditStudent={isEditStudent}
               handleChange={handleChange}
             />
           )}

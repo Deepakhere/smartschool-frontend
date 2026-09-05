@@ -38,17 +38,24 @@ const useStudentDetailController = () => {
 
   useEffect(() => {
     if (getStudentDetailById.isSuccess && getStudentDetailById.data) {
+      const item = getStudentDetailById.data.item;
       setFormData({
-        ...getStudentDetailById.data.item,
-      });
+        ...item,
+        academicYearId: item.currentEnrollment?.academicYearId || "",
+        classId: item.currentEnrollment?.classId?.id || "",
+        sectionId: item.currentEnrollment?.sectionId?.id || "",
+        rollNumber: item.currentEnrollment?.rollNumber || "",
+      } as IStudentFormData);
     }
   }, [getStudentDetailById.isSuccess, getStudentDetailById.data]);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
       [name]: value,
+      ...(name === "academicYearId" ? { classId: "", sectionId: "" } : {}),
+      ...(name === "classId" ? { sectionId: "" } : {}),
     }));
   };
 
@@ -92,6 +99,7 @@ const useStudentDetailController = () => {
 
   return {
     t,
+    organizationId: organizationId || "",
     formData,
     currentStep,
     updateStudent,

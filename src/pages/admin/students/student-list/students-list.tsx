@@ -4,18 +4,24 @@ import {
 } from "@heroicons/react/24/outline";
 
 import LogoSpinner from "../../../../components/logo-spinner";
-import NoRecordIcon from "../../../../icons/no-record-icon";
+import NoRecordFound from "../../../../components/no-record-found";
 
 import useStudentsListController from "./students-list-controller";
 import DeleteModal from "../../../../components/delete-modal";
 import CreateUpdateStudentModal from "../student-modal/create-update-student-modal";
+import BulkUploadModal from "../student-modal/bulk-upload-modal";
 
 const StudentsList = () => {
   const {
     t,
+    organizationId,
     formData,
     studentDetail,
     isAddModalOpen,
+    isBulkModalOpen,
+    onClickBulkUpload,
+    onCloseBulkModal,
+    onBulkImported,
     currentStep,
     isParentExist,
     studentTotalCount,
@@ -60,12 +66,20 @@ const StudentsList = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
         <div className="flex justify-between items-center">
           <h1 className="text-2xl font-semibold text-gray-900">Students</h1>
-          <button
-            onClick={onClickAddStudent}
-            className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-          >
-            {t("labels.add_new_student")}
-          </button>
+          <div className="flex gap-3">
+            <button
+              onClick={onClickBulkUpload}
+              className="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+            >
+              Bulk Upload (CSV)
+            </button>
+            <button
+              onClick={onClickAddStudent}
+              className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+            >
+              {t("labels.add_new_student")}
+            </button>
+          </div>
         </div>
       </div>
 
@@ -118,9 +132,9 @@ const StudentsList = () => {
                 className="block w-full pl-3 pr-10 py-2 text-base border border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
               >
                 <option value="all">{t("labels.all_classes")}</option>
-                {CLASS_OPTIONS.map((classId) => (
-                  <option key={classId} value={classId}>
-                    {t("labels.class")} {classId}
+                {CLASS_OPTIONS.map((klass) => (
+                  <option key={klass.id} value={klass.id}>
+                    {klass.name}
                   </option>
                 ))}
               </select>
@@ -130,7 +144,7 @@ const StudentsList = () => {
 
         <div className="py-4">
           {isLoadingGetStudentDetails ? (
-            <LogoSpinner />
+            <LogoSpinner offsetSidebar />
           ) : (
             <>
               {/* Students Table */}
@@ -158,7 +172,7 @@ const StudentsList = () => {
                   {isFetchingStudentList ? (
                     <tbody>
                       <tr>
-                        <td colSpan={4} className="px-6 py-10 text-center">
+                        <td colSpan={5} className="px-6 py-10 text-center">
                           <div className="flex justify-center items-center">
                             <div className="h-8 w-8 border-t-2 border-b-2 border-indigo-500 rounded-full animate-spin"></div>
                           </div>
@@ -189,10 +203,13 @@ const StudentsList = () => {
                             </div>
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                            {student.rollNumber}
+                            {student.currentEnrollment?.rollNumber}
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                            {student.classId}
+                            {student.currentEnrollment?.classId?.name}
+                            {student.currentEnrollment?.sectionId?.name
+                              ? ` - ${student.currentEnrollment.sectionId.name}`
+                              : ""}
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                             {new Date(student.dateOfBirth).toLocaleDateString()}
@@ -253,29 +270,15 @@ const StudentsList = () => {
                   ) : (
                     <tbody>
                       <tr>
-                        <td colSpan={4}>
-                          <div className="flex flex-col items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
-                            <div className="mb-4">
-                              <NoRecordIcon />
-                            </div>
-                            <h3 className="text-lg font-medium text-gray-900 mb-1">
-                              {t("labels.no_records_found")}
-                            </h3>
-                            <p className="text-xs text-gray-500 mb-6 text-center max-w-md">
-                              {searchTerm
-                                ? `No student found matching "${searchTerm}". Try a different search term or clear the search.`
-                                : `No student found with the selected filter. Try changing the filter or add a new user.`}
-                            </p>
-                            <button
-                              onClick={() => {
-                                setSearchTerm("");
-                                setClassFilter("all");
-                              }}
-                              className="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                            >
-                              {t("labels.clear_filters")}
-                            </button>
-                          </div>
+                        <td colSpan={5}>
+                          <NoRecordFound
+                            t={t}
+                            searchTerm={searchTerm}
+                            clearFilters={() => {
+                              setSearchTerm("");
+                              setClassFilter("all");
+                            }}
+                          />
                         </td>
                       </tr>
                     </tbody>
@@ -402,6 +405,7 @@ const StudentsList = () => {
       <CreateUpdateStudentModal
         t={t}
         isOpen={isAddModalOpen}
+        organizationId={organizationId}
         formData={formData}
         isEditStudent={false}
         currentStep={currentStep}
@@ -415,6 +419,13 @@ const StudentsList = () => {
         handleSubmit={handleSubmit}
         handleChange={handleChange}
         setCurrentStep={setCurrentStep}
+      />
+
+      <BulkUploadModal
+        isOpen={isBulkModalOpen}
+        organizationId={organizationId}
+        onClose={onCloseBulkModal}
+        onImported={onBulkImported}
       />
 
       <DeleteModal

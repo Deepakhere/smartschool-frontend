@@ -13,6 +13,7 @@ import Avatar from "../../../../components/avatar";
 const StudentDetails = () => {
   const {
     t,
+    organizationId,
     formData,
     currentStep,
     updateStudent,
@@ -37,7 +38,7 @@ const StudentDetails = () => {
     <>
       {isLoadingStudentDetail ? (
         <div className="flex justify-center items-center h-screen">
-          <LogoSpinner />
+          <LogoSpinner offsetSidebar />
         </div>
       ) : isErrorStudentDetail ? (
         <div className="text-center py-12">
@@ -118,7 +119,10 @@ const StudentDetails = () => {
                 <div className="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                   <dt className="text-sm font-medium text-gray-500">Class</dt>
                   <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                    {studentDetails?.classId}
+                    {studentDetails?.currentEnrollment?.classId?.name}
+                    {studentDetails?.currentEnrollment?.sectionId?.name
+                      ? ` - ${studentDetails.currentEnrollment.sectionId.name}`
+                      : ""}
                   </dd>
                 </div>
                 <div className="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
@@ -126,7 +130,7 @@ const StudentDetails = () => {
                     Roll Number
                   </dt>
                   <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                    {studentDetails?.rollNumber}
+                    {studentDetails?.currentEnrollment?.rollNumber}
                   </dd>
                 </div>
                 <div className="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
@@ -211,7 +215,7 @@ const StudentDetails = () => {
                   <div className="bg-gray-50 p-3 rounded">
                     <p className="text-xs text-gray-500">Class</p>
                     <p className="font-medium">
-                      {studentDetails?.classId || "VI"}
+                      {studentDetails?.currentEnrollment?.classId?.name || "-"}
                     </p>
                   </div>
                   <div className="bg-gray-50 p-3 rounded">
@@ -462,6 +466,7 @@ const StudentDetails = () => {
           <CreateUpdateStudentModal
             t={t}
             isOpen={isEditModalOpen}
+            organizationId={organizationId}
             formData={formData}
             isEditStudent={true}
             currentStep={currentStep}

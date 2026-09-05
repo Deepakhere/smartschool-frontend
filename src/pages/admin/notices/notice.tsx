@@ -55,7 +55,7 @@ const AdminNotices = () => {
           </div>
           <div className="border-t border-gray-200">
             {isLoadingNoticeList ? (
-              <LogoSpinner />
+              <LogoSpinner offsetSidebar />
             ) : notices.length === 0 ? (
               <NoRecordFound t={t} searchTerm="" clearFilters={() => {}} />
             ) : (

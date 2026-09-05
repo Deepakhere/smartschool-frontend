@@ -14,6 +14,7 @@ import { EMAIL_REGEX_PATTERN, TOTAL_STEPS } from "../../../../utils";
 import { useNavigate, useParams } from "react-router-dom";
 import useGetParentByEmail from "../service/get-parent-by-email";
 import { useError } from "../../../../hooks";
+import { useGetAcademicYears, useGetClasses } from "../../classes/service/academics-service";
 
 const useStudentsListController = () => {
   const { t } = useTranslation();
@@ -22,6 +23,7 @@ const useStudentsListController = () => {
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [isBulkModalOpen, setIsBulkModalOpen] = useState(false);
   const [formData, setFormData] = useState<IStudentFormData>(
     {} as IStudentFormData
   );
@@ -57,21 +59,11 @@ const useStudentsListController = () => {
     setActiveDropdown(activeDropdown === studentId ? null : studentId);
   };
 
-  // Get unique class IDs for filter dropdown
-  const CLASS_OPTIONS = [
-    "I",
-    "II",
-    "III",
-    "IV",
-    "V",
-    "VI",
-    "VII",
-    "VIII",
-    "IX",
-    "X",
-    "XI",
-    "XII",
-  ];
+  const academicYears = useGetAcademicYears(organizationId || "");
+  const currentAcademicYearId =
+    academicYears.data?.items.find((y) => y.isCurrent)?.id || academicYears.data?.items[0]?.id || "";
+  const classesForFilter = useGetClasses(organizationId || "", currentAcademicYearId);
+  const CLASS_OPTIONS = classesForFilter.data?.items || [];
 
   // Get current students for pagination
   const indexOfLastItem = currentPage * itemsPerPage;
@@ -130,11 +122,13 @@ const useStudentsListController = () => {
     },
   });
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
       [name]: value,
+      ...(name === "academicYearId" ? { classId: "", sectionId: "" } : {}),
+      ...(name === "classId" ? { sectionId: "" } : {}),
     }));
   };
 
@@ -150,6 +144,18 @@ const useStudentsListController = () => {
     setIsAddModalOpen(true);
   };
 
+  const onClickBulkUpload = () => {
+    setIsBulkModalOpen(true);
+  };
+
+  const onCloseBulkModal = () => {
+    setIsBulkModalOpen(false);
+  };
+
+  const onBulkImported = () => {
+    getStudentDetails.refetch();
+  };
+
   const onCloseModal = () => {
     setIsAddModalOpen(false);
     setFormData({} as IStudentFormData);
@@ -160,7 +166,9 @@ const useStudentsListController = () => {
     if (!formData.admissionNumber?.trim()) return false;
     if (!formData.admissionDate) return false;
     if (!formData.name?.trim()) return false;
+    if (!formData.academicYearId?.trim()) return false;
     if (!formData.classId?.trim()) return false;
+    if (!formData.sectionId?.trim()) return false;
     if (!formData.rollNumber?.trim()) return false;
     if (!formData.dateOfBirth) return false;
     if (!formData.city?.trim()) return false;
@@ -263,8 +271,13 @@ const useStudentsListController = () => {
 
   return {
     t,
+    organizationId: organizationId || "",
     formData,
     isAddModalOpen,
+    isBulkModalOpen,
+    onClickBulkUpload,
+    onCloseBulkModal,
+    onBulkImported,
     currentStep,
     isParentExist,
     handleSearchChange,

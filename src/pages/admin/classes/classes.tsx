@@ -89,7 +89,7 @@ const AdminClasses = () => {
             )}
 
             {c.isLoadingYears ? (
-              <LogoSpinner />
+              <LogoSpinner offsetSidebar />
             ) : c.academicYears.length === 0 ? (
               <NoRecordFound t={t} searchTerm="" clearFilters={() => {}} />
             ) : (
@@ -159,7 +159,7 @@ const AdminClasses = () => {
             )}
 
             {c.isLoadingClasses ? (
-              <LogoSpinner />
+              <LogoSpinner offsetSidebar />
             ) : c.classes.length === 0 ? (
               <NoRecordFound t={t} searchTerm="" clearFilters={() => {}} />
             ) : (
@@ -223,7 +223,7 @@ const AdminClasses = () => {
             )}
 
             {c.isLoadingSections ? (
-              <LogoSpinner />
+              <LogoSpinner offsetSidebar />
             ) : c.sections.length === 0 ? (
               <NoRecordFound t={t} searchTerm="" clearFilters={() => {}} />
             ) : (
@@ -287,7 +287,7 @@ const AdminClasses = () => {
             )}
 
             {c.isLoadingSubjects ? (
-              <LogoSpinner />
+              <LogoSpinner offsetSidebar />
             ) : c.subjects.length === 0 ? (
               <NoRecordFound t={t} searchTerm="" clearFilters={() => {}} />
             ) : (
@@ -385,7 +385,7 @@ const AdminClasses = () => {
             )}
 
             {c.isLoadingAssignments ? (
-              <LogoSpinner />
+              <LogoSpinner offsetSidebar />
             ) : c.teacherAssignments.length === 0 ? (
               <NoRecordFound t={t} searchTerm="" clearFilters={() => {}} />
             ) : (

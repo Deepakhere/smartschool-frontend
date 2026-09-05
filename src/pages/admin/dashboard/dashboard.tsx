@@ -28,7 +28,7 @@ const Dashboard = () => {
   return (
     <>
       {isLoading ? (
-        <LogoSpinner />
+        <LogoSpinner offsetSidebar />
       ) : (
         <div className="px-4 space-y-8 min-h-screen">
           {/* Stats Grid */}

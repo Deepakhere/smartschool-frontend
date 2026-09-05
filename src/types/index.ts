@@ -371,7 +371,9 @@ export interface IStudentFormData {
   admissionNumber: string;
   admissionDate: string;
   name: string;
+  academicYearId: string;
   classId: string;
+  sectionId: string;
   rollNumber: string;
   dateOfBirth: string;
   parentEmail: string;
@@ -382,9 +384,17 @@ export interface IStudentFormData {
   phoneNumber?: string;
 }
 
+export interface IStudentEnrollment {
+  academicYearId: string;
+  classId: { id: string; name: string } | null;
+  sectionId: { id: string; name: string } | null;
+  rollNumber: string;
+}
+
 export interface ICreateUpdateStudentModalProps {
   t: (key: string) => string;
   isOpen: boolean;
+  organizationId: string;
   formData: IStudentFormData;
   isEditStudent: boolean;
   currentStep: number;
@@ -397,7 +407,7 @@ export interface ICreateUpdateStudentModalProps {
   handleSubmit: (e: React.FormEvent) => void;
   setFormData: React.Dispatch<React.SetStateAction<IStudentFormData>>;
   setCurrentStep: React.Dispatch<React.SetStateAction<number>>;
-  handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  handleChange: (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => void;
 }
 
 export interface SelectOption {

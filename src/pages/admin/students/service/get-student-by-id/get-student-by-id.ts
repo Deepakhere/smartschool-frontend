@@ -1,6 +1,6 @@
 import { useQuery } from "react-query";
 import apiClient from "../../../../../config";
-import { IAPIError, IAxiosResponse } from "../../../../../types";
+import { IAPIError, IAxiosResponse, IStudentEnrollment } from "../../../../../types";
 import { APIS_ROUTES, API_QUERY_KEY } from "../../../../../utils";
 
 interface IStudentDetailResponse {
@@ -8,8 +8,7 @@ interface IStudentDetailResponse {
   name: string;
   admissionNumber: string;
   admissionDate: string;
-  classId: string;
-  rollNumber: string;
+  currentEnrollment: IStudentEnrollment | null;
   dateOfBirth: string;
   address: string;
   city: string;
