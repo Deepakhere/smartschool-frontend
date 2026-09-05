@@ -133,6 +133,10 @@ const Routes = () => {
           path: "attendance",
           element: <AdminAttendance />,
         },
+        {
+          path: "homework",
+          element: <AdminHomework />,
+        },
       ],
     },
     {

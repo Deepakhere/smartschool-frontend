@@ -23,21 +23,14 @@ export interface IHomework {
   id: string;
   title: string;
   description: string;
+  classId: { id: string; name: string } | string;
+  sectionId: { id: string; name: string } | string;
+  subjectId: { id: string; name: string; code: string } | string;
+  assignedDate: string;
   dueDate: string;
-  classId: string;
-  subject: string;
-  attachments?: string[];
+  status: string;
+  attachmentURL: string | null;
   createdAt: string;
-  updatedAt: string;
-}
-
-export interface ICreateHomeworkRequest {
-  title: string;
-  description: string;
-  dueDate: string;
-  classId: string;
-  subject: string;
-  attachments?: string[];
 }
 
 // Report Types

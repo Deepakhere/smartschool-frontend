@@ -3,7 +3,6 @@ import {
   INotice,
   ICreateNoticeRequest,
   IHomework,
-  ICreateHomeworkRequest,
   IReport,
   ICreateReportRequest,
   IFee,
@@ -11,6 +10,16 @@ import {
   IStudent,
   ICreateStudentRequest,
 } from "../types";
+
+// local copy kept only so the still-stubbed fees/reports pages using this dead client keep compiling
+interface ICreateHomeworkRequest {
+  title: string;
+  description: string;
+  dueDate: string;
+  classId: string;
+  subject: string;
+  attachments?: string[];
+}
 
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000/api";
 

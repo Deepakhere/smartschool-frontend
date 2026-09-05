@@ -10,6 +10,7 @@ import {
   ClipboardDocumentListIcon,
   ChartBarIcon,
   Cog6ToothIcon,
+  BookOpenIcon,
 } from "@heroicons/react/24/outline";
 import { useAuth } from "../../context/auth-context";
 
@@ -29,6 +30,7 @@ export const useSidebarController = () => {
     { name: "Teachers", href: `/${organizationId}/admin/teachers`, icon: UserIcon, current: isActive("/teachers") },
     { name: "Fees", href: `/${organizationId}/admin/fees`, icon: CurrencyDollarIcon, current: isActive("/fees") },
     { name: "Attendance", href: `/${organizationId}/admin/attendance`, icon: ClipboardDocumentCheckIcon, current: isActive("/attendance") },
+    { name: "Homework", href: `/${organizationId}/admin/homework`, icon: BookOpenIcon, current: isActive("/homework") },
     { name: "Notices", href: `/${organizationId}/admin/notices`, icon: ClipboardDocumentListIcon, current: isActive("/notices") },
     { name: "Results", href: `/${organizationId}/admin/results`, icon: ChartBarIcon, current: isActive("/results") },
     { name: "Settings", href: `/${organizationId}/admin/settings`, icon: Cog6ToothIcon, current: isActive("/settings") },
@@ -45,6 +47,7 @@ export const useSidebarController = () => {
   const teacherNavigation = [
     { name: "Dashboard", href: `/${organizationId}/teacher/dashboard`, icon: HomeIcon, current: isActive("/dashboard") },
     { name: "Attendance", href: `/${organizationId}/teacher/attendance`, icon: ClipboardDocumentCheckIcon, current: isActive("/attendance") },
+    { name: "Homework", href: `/${organizationId}/teacher/homework`, icon: BookOpenIcon, current: isActive("/homework") },
   ];
 
   const navigation =

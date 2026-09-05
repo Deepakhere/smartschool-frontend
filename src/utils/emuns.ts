@@ -15,6 +15,7 @@ export const APIS_ROUTES = {
   DASHBOARD_SERVICE: "/dashboard-service/v1",
   STAFF_SERVICE: "/staff-service/v1",
   ATTENDANCE_SERVICE: "/attendance-service/v1",
+  HOMEWORK_SERVICE: "/homework-service/v1",
 };
 
 export const API_QUERY_KEY = {
@@ -36,6 +37,7 @@ export const API_QUERY_KEY = {
   GET_DASHBOARD_STATS: "get-dashboard-stats",
   GET_TEACHER_DIRECTORY: "get-teacher-directory",
   GET_SECTION_ATTENDANCE: "get-section-attendance",
+  GET_HOMEWORK_LIST: "get-homework-list",
   GET_MY_TEACHING_LOAD: "get-my-teaching-load",
 };
 
@@ -50,6 +52,8 @@ export const API_MUTATION_KEY = {
   UPDATE_STUDENT_DETAILS: "update-student-details",
   DELETE_STUDENT: "delete-student",
   CREATE_NOTICE: "create-notice",
+  CREATE_HOMEWORK: "create-homework",
+  DELETE_HOMEWORK: "delete-homework",
   DELETE_NOTICE: "delete-notice",
   CREATE_ORGANIZATION: "create-organization",
   CREATE_ACADEMIC_YEAR: "create-academic-year",
