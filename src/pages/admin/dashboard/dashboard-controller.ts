@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 
@@ -16,35 +16,37 @@ import {
 } from "@heroicons/react/24/outline";
 
 import { ICreateNoticeRequest } from "../../../types";
+import { useGetNoticeList } from "../notices/service";
+import useGetDashboardStats from "./service/get-dashboard-stats";
 
 export const useDashboardController = () => {
   const navigate = useNavigate();
   const { t } = useTranslation();
 
   const { organizationId } = useParams();
-  const [isLoading, setIsLoading] = useState(true);
   const [isNoticeModalOpen, setIsNoticeModalOpen] = useState(false);
   const [isUserTypeModalOpen, setIsUserTypeModalOpen] = useState(false);
 
-  // Stats data
-  const stats = {
-    totalStudents: 1250,
-    totalTeachers: 45,
-    totalClasses: 25,
-    activeNotices: 8,
-    pendingPayments: 12,
-    attendanceSubmitted: 18,
-    homeworksIssued: 5,
-  };
+  const recentNotices = useGetNoticeList(organizationId, "", "", 5, 1);
+  const dashboardStats = useGetDashboardStats(organizationId || "");
 
-  // Recent updates data
-  const recentUpdates = [
-    { type: "notice", title: "Annual Sports Day", date: "2024-03-15" },
-    { type: "fee", title: "Fee Payment Received", date: "2024-03-14" },
-    { type: "homework", title: "Math Assignment", date: "2024-03-14" },
-    { type: "notice", title: "Parent-Teacher Meeting", date: "2024-03-13" },
-    { type: "fee", title: "Fee Payment Due", date: "2024-03-12" },
-  ];
+  const recentUpdates = (recentNotices.data?.items || []).map((notice) => ({
+    type: notice.type,
+    title: notice.title,
+    date: new Date(notice.createdAt).toLocaleDateString(),
+  }));
+
+  // real counts from the backend; fee/attendance/homework modules don't exist
+  // yet so those come back null and render as "—" rather than a fake number
+  const stats = {
+    totalStudents: dashboardStats.data?.totalStudents ?? 0,
+    totalTeachers: dashboardStats.data?.totalTeachers ?? 0,
+    totalClasses: dashboardStats.data?.totalClasses ?? 0,
+    activeNotices: dashboardStats.data?.activeNotices ?? 0,
+    pendingPayments: dashboardStats.data?.pendingPayments ?? null,
+    attendanceSubmitted: dashboardStats.data?.attendanceToday ?? null,
+    homeworksIssued: dashboardStats.data?.homeworksToday ?? null,
+  };
 
   // Student Performance Chart Options
   const studentPerformanceOptions = {
@@ -190,15 +192,7 @@ export const useDashboardController = () => {
     },
   };
 
-  const loading = () => {
-    setTimeout(() => {
-      setIsLoading(false);
-    }, 2000);
-  };
-
-  useEffect(() => {
-    loading();
-  }, []);
+  const isLoading = recentNotices.isLoading || dashboardStats.isLoading;
 
   // Notice modal handlers
   const openNoticeModal = () => {
@@ -237,32 +231,34 @@ export const useDashboardController = () => {
     // Similarly, you might want to open the add teacher modal directly
   };
 
+  const display = (value: number | null) => (value === null ? "—" : value);
+
   const statCards = [
     {
       title: "Total Students",
-      value: stats.totalStudents,
+      value: display(stats.totalStudents),
       icon: UserGroupIcon,
     },
-    { title: "Total Teachers", value: stats.totalTeachers, icon: UserIcon },
+    { title: "Total Teachers", value: display(stats.totalTeachers), icon: UserIcon },
     {
       title: "Total Classes",
-      value: stats.totalClasses,
+      value: display(stats.totalClasses),
       icon: AcademicCapIcon,
     },
-    { title: "Active Notices", value: stats.activeNotices, icon: BellIcon },
+    { title: "Active Notices", value: display(stats.activeNotices), icon: BellIcon },
     {
       title: "Pending Payments",
-      value: stats.pendingPayments,
+      value: display(stats.pendingPayments),
       icon: CurrencyDollarIcon,
     },
     {
       title: "Attendance Today",
-      value: stats.attendanceSubmitted,
+      value: display(stats.attendanceSubmitted),
       icon: ClipboardDocumentCheckIcon,
     },
     {
       title: "Homeworks Today",
-      value: stats.homeworksIssued,
+      value: display(stats.homeworksIssued),
       icon: BookOpenIcon,
     },
   ];

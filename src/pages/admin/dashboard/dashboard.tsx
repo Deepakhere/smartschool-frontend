@@ -110,24 +110,28 @@ const Dashboard = () => {
               <h2 className="text-xl font-semibold text-gray-900 mb-6">
                 {t("labels.recent_updates")}
               </h2>
-              <div className="space-y-4">
-                {recentUpdates.map((update, index) => (
-                  <div
-                    key={index}
-                    className="flex items-center justify-between py-4 border-b border-gray-100 last:border-0"
-                  >
-                    <div>
-                      <p className="text-sm font-semibold text-gray-900">
-                        {update.title}
-                      </p>
-                      <p className="text-sm text-gray-500 capitalize">
-                        {update.type}
-                      </p>
+              {recentUpdates.length === 0 ? (
+                <p className="text-sm text-gray-500 py-4">No notices yet.</p>
+              ) : (
+                <div className="space-y-4">
+                  {recentUpdates.map((update, index) => (
+                    <div
+                      key={index}
+                      className="flex items-center justify-between py-4 border-b border-gray-100 last:border-0"
+                    >
+                      <div>
+                        <p className="text-sm font-semibold text-gray-900">
+                          {update.title}
+                        </p>
+                        <p className="text-sm text-gray-500 capitalize">
+                          {update.type}
+                        </p>
+                      </div>
+                      <p className="text-sm text-gray-500">{update.date}</p>
                     </div>
-                    <p className="text-sm text-gray-500">{update.date}</p>
-                  </div>
-                ))}
-              </div>
+                  ))}
+                </div>
+              )}
             </div>
           </div>
 

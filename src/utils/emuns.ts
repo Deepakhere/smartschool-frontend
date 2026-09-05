@@ -12,6 +12,7 @@ export const APIS_ROUTES = {
   SCHOOL_SERVICE: "/school-service/v1",
   AI_SERVICE: "/ai-service/v1/generate-content",
   ACADEMIC_SERVICE: "/academic-service/v1",
+  DASHBOARD_SERVICE: "/dashboard-service/v1",
 };
 
 export const API_QUERY_KEY = {
@@ -30,6 +31,7 @@ export const API_QUERY_KEY = {
   GET_SUBJECTS: "get-subjects",
   GET_TEACHER_ASSIGNMENTS: "get-teacher-assignments",
   GET_ALL_TEACHERS: "get-all-teachers",
+  GET_DASHBOARD_STATS: "get-dashboard-stats",
 };
 
 export const API_MUTATION_KEY = {
