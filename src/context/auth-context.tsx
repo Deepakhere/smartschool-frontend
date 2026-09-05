@@ -17,6 +17,7 @@ type User = {
   email?: string;
   role?: "admin" | "parent" | "teacher";
   phoneNumber?: string;
+  isPlatformAdmin?: boolean;
   permissions?: {
     canRead: boolean;
     canCreate: boolean;

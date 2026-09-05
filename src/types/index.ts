@@ -142,6 +142,7 @@ export interface ILoginResponse {
   token: string;
   name: string;
   role: "admin" | "parent" | "teacher";
+  isPlatformAdmin?: boolean;
   permissions: {
     canRead: boolean;
     canCreate: boolean;
@@ -280,6 +281,7 @@ export interface IUserDetailResponse {
   email: string;
   token: string;
   role: "admin" | "parent" | "teacher";
+  isPlatformAdmin?: boolean;
   permissions: {
     canRead: boolean;
     canCreate: boolean;

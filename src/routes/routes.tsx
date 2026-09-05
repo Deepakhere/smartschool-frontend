@@ -27,6 +27,9 @@ import ParentReports from "../pages/parent/reports";
 import ParentFees from "../pages/parent/fees";
 import ParentPTM from "../pages/parent/ptm";
 
+// shared — same profile page for every role, just mounted under each role's own path
+import Profile from "../pages/admin/settings/profile";
+
 // Auth Pages
 import Login from "../pages/auth/login";
 import ForgotPassword from "../pages/auth/forgot-password";
@@ -148,6 +151,10 @@ const Routes = () => {
           path: "ptm",
           element: <TeacherPTM />,
         },
+        {
+          path: "profile",
+          element: <Profile />,
+        },
       ],
     },
     {
@@ -185,6 +192,10 @@ const Routes = () => {
         {
           path: "ptm",
           element: <ParentPTM />,
+        },
+        {
+          path: "profile",
+          element: <Profile />,
         },
       ],
     },

@@ -18,8 +18,9 @@ const Header = ({ onToggleSidebar, isCollapsed, onToggleCollapse }: HeaderProps)
     buttonRef,
     menuRef,
     isUserMenuOpen,
-    organizationId,
     pageHeaderConfig,
+    profilePath,
+    homePath,
     handleUserMenuToggle,
     handleLogout,
   } = useHeaderController();
@@ -41,7 +42,7 @@ const Header = ({ onToggleSidebar, isCollapsed, onToggleCollapse }: HeaderProps)
             <Bars3Icon className="h-6 w-6" aria-hidden="true" />
           </button>
           <Link
-            to={`/${organizationId}/admin/dashboard`}
+            to={homePath}
             className={`flex-1 items-center justify-center ${isCollapsed ? "hidden" : "hidden lg:flex"}`}
           >
             <img src={KidSight} className="h-12 w-auto" alt="Kidsight Logo" />
@@ -107,12 +108,21 @@ const Header = ({ onToggleSidebar, isCollapsed, onToggleCollapse }: HeaderProps)
                     <div className="text-gray-500">{user?.email}</div>
                   </div>
                   <Link
-                    to={`/${organizationId}/admin/settings`}
+                    to={profilePath}
                     className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                     role="menuitem"
                   >
                     {t("labels.your_profile")}
                   </Link>
+                  {user?.isPlatformAdmin && (
+                    <Link
+                      to="/organization"
+                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                      role="menuitem"
+                    >
+                      Switch Organization
+                    </Link>
+                  )}
                   <button
                     onClick={handleLogout}
                     className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"

@@ -16,6 +16,14 @@ export const useHeaderController = () => {
   const { user, logout } = useAuth();
   const { config: pageHeaderConfig } = usePageHeaderContext();
 
+  // admin's own profile lives inside the tabbed Settings area; teacher/parent get a direct page
+  const profilePath =
+    user?.role === "admin"
+      ? `/${organizationId}/admin/settings`
+      : `/${organizationId}/${user?.role}/profile`;
+
+  const homePath = `/${organizationId}/${user?.role}/dashboard`;
+
   const handleUserMenuToggle = () => {
     setIsUserMenuOpen(!isUserMenuOpen);
   };
@@ -68,6 +76,8 @@ export const useHeaderController = () => {
     menuRef,
     organizationId,
     pageHeaderConfig,
+    profilePath,
+    homePath,
     handleUserMenuToggle,
     handleLogout,
     setIsUserMenuOpen,

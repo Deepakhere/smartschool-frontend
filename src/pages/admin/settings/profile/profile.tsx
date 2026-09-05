@@ -12,6 +12,7 @@ import {
 
 import useProfileController from "./profile-controller";
 import PageLoader from "../../../../components/page-loader";
+import SectionHeader from "../../../../components/section-header";
 
 const AdminProfile = () => {
   const {
@@ -26,15 +27,14 @@ const AdminProfile = () => {
     changeLanguage,
     changeTheme,
   } = useProfileController();
+
   return (
     <>
-      {/* <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
-        <h1 className="text-2xl font-semibold text-gray-900">{t("labels.profile")}</h1>
-      </div> */}
       {!user ? (
         <PageLoader />
       ) : (
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
+        <div className="max-w-7xl mx-auto">
+          <SectionHeader title="Profile" description="Your account details and preferences" />
           <div className="">
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
               {/* Left column - 2/3 width */}
