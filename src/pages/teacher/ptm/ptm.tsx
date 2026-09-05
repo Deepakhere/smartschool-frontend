@@ -1,5 +1,9 @@
-import LogoSpinner from "../../../components/logo-spinner";
+import Spinner from "../../../components/spinner";
 import NoRecordFound from "../../../components/no-record-found";
+import CustomSelectDropdown from "../../../components/custom-select";
+import { Table, TableHeader, TableHead, TableBody, TableRow, TableCell } from "../../../components/table";
+import { SelectOption } from "../../../types";
+import SectionHeader from "../../../components/section-header";
 import useTeacherPTMController from "./ptm-controller";
 
 const inputClass =
@@ -20,33 +24,33 @@ const TeacherPTM = () => {
     handleGenerateSlots,
   } = useTeacherPTMController();
 
-  return (
-    <div className="max-w-4xl mx-auto">
-      <h1 className="text-2xl font-semibold text-gray-900 mb-6">Parent-Teacher Meetings</h1>
+  const eventOptions: SelectOption[] = events.map((event) => ({
+    id: event.id,
+    name: `${event.title} (${new Date(event.date).toLocaleDateString()})`,
+  }));
+  const sectionOptions: SelectOption[] = eventSectionOptions.map((s) => ({ id: s.id, name: s.name }));
 
+  return (
+    <div className="max-w-7xl mx-auto">
+      <SectionHeader
+        title="Parent-Teacher Meetings"
+        description="Open your availability for parents to book, and track your agenda"
+      />
       <div className="bg-white rounded-lg shadow p-6 mb-6">
         <h2 className="text-lg font-medium text-gray-900 mb-4">Open my availability</h2>
         <div className="grid grid-cols-1 sm:grid-cols-4 gap-3">
-          <select className={inputClass} value={selectedEventId} onChange={(e) => setSelectedEventId(e.target.value)}>
-            <option value="">Select PTM event</option>
-            {events.map((event) => (
-              <option key={event.id} value={event.id}>
-                {event.title} ({new Date(event.date).toLocaleDateString()})
-              </option>
-            ))}
-          </select>
-          <select
-            className={inputClass}
-            value={slotForm.sectionId}
-            onChange={(e) => handleSlotFormChange("sectionId", e.target.value)}
-          >
-            <option value="">Section</option>
-            {eventSectionOptions.map((s) => (
-              <option key={s.id} value={s.id}>
-                {s.name}
-              </option>
-            ))}
-          </select>
+          <CustomSelectDropdown
+            options={eventOptions}
+            placeholder="Select PTM event"
+            value={eventOptions.find((o) => o.id === selectedEventId) || null}
+            onChange={(o) => setSelectedEventId(String(o.id))}
+          />
+          <CustomSelectDropdown
+            options={sectionOptions}
+            placeholder="Section"
+            value={sectionOptions.find((o) => o.id === slotForm.sectionId) || null}
+            onChange={(o) => handleSlotFormChange("sectionId", String(o.id))}
+          />
           <input
             type="datetime-local"
             className={inputClass}
@@ -72,26 +76,32 @@ const TeacherPTM = () => {
       <div className="bg-white rounded-lg shadow p-6">
         <h2 className="text-lg font-medium text-gray-900 mb-4">My agenda</h2>
         {isLoadingAgenda ? (
-          <LogoSpinner offsetSidebar />
+          <Spinner />
         ) : agenda.length === 0 ? (
           <NoRecordFound t={t} searchTerm="" clearFilters={() => {}} />
         ) : (
-          <div className="space-y-2">
-            {agenda.map(({ slot, booking }) => (
-              <div key={slot.id} className="flex justify-between items-center border-b pb-2">
-                <span className="text-sm text-gray-700">
-                  {new Date(slot.startAt).toLocaleString()}
-                </span>
-                {booking ? (
-                  <span className="text-sm font-medium text-gray-900">
-                    {typeof booking.studentId === "object" ? booking.studentId.name : "Booked"}
-                  </span>
-                ) : (
-                  <span className="text-xs text-gray-400">Open</span>
-                )}
-              </div>
-            ))}
-          </div>
+          <Table>
+            <TableHeader>
+              <TableHead>Time</TableHead>
+              <TableHead className="text-center">Student</TableHead>
+              <TableHead className="text-center">Status</TableHead>
+            </TableHeader>
+            <TableBody>
+              {agenda.map(({ slot, booking }) => (
+                <TableRow key={slot.id}>
+                  <TableCell className="font-medium text-gray-900">{new Date(slot.startAt).toLocaleString()}</TableCell>
+                  <TableCell className="text-center">{booking && typeof booking.studentId === "object" ? booking.studentId.name : "—"}</TableCell>
+                  <TableCell className="text-center">
+                    {booking ? (
+                      <span className="px-2 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">Booked</span>
+                    ) : (
+                      <span className="px-2 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-600">Open</span>
+                    )}
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
         )}
       </div>
     </div>

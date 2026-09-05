@@ -1,11 +1,17 @@
 import { Link } from "react-router-dom";
-import { Bars3Icon } from "@heroicons/react/24/outline";
+import { Bars3Icon, ChevronLeftIcon, ChevronRightIcon, ArrowLeftIcon } from "@heroicons/react/24/outline";
 
 import Avatar from "../avatar";
 import KidSight from "../../icons/kidsight.png";
 import { useHeaderController } from "./header-controller";
 
-const Header = () => {
+interface HeaderProps {
+  onToggleSidebar: () => void;
+  isCollapsed: boolean;
+  onToggleCollapse: () => void;
+}
+
+const Header = ({ onToggleSidebar, isCollapsed, onToggleCollapse }: HeaderProps) => {
   const {
     t,
     user,
@@ -13,52 +19,80 @@ const Header = () => {
     menuRef,
     isUserMenuOpen,
     organizationId,
+    pageHeaderConfig,
     handleUserMenuToggle,
     handleLogout,
-    toggleSidebar,
   } = useHeaderController();
 
   return (
-    <header className="bg-white shadow-md z-40">
-      <div className="w-full px-4">
-        <div className="flex justify-between h-16">
-          <div className="flex items-center">
-            <button
-              type="button"
-              className="lg:hidden p-2 rounded-md text-gray-500 hover:text-gray-600 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500"
-              onClick={toggleSidebar}
-            >
-              <Bars3Icon className="h-6 w-6" aria-hidden="true" />
-            </button>
-            <div className="flex-shrink-0 flex items-center lg:pl-3">
-              <Link
-                to={`/${organizationId}/admin/dashboard`}
-                className="text-xl font-bold text-gray-900"
+    <header className="bg-white z-40">
+      <div className="flex h-16">
+        {/* App brand segment — width matches the sidebar so the divider lines up with it */}
+        <div
+          className={`flex items-center ${isCollapsed ? "justify-center" : "justify-between"} shrink-0 px-3 border-r border-gray-200 ${
+            isCollapsed ? "lg:w-16" : "lg:w-56"
+          } w-auto`}
+        >
+          <button
+            type="button"
+            className="lg:hidden p-2 -ml-1 rounded-md text-gray-500 hover:text-gray-600 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500"
+            onClick={onToggleSidebar}
+          >
+            <Bars3Icon className="h-6 w-6" aria-hidden="true" />
+          </button>
+          <Link
+            to={`/${organizationId}/admin/dashboard`}
+            className={`flex-1 items-center justify-center ${isCollapsed ? "hidden" : "hidden lg:flex"}`}
+          >
+            <img src={KidSight} className="h-12 w-auto" alt="Kidsight Logo" />
+          </Link>
+          <button
+            type="button"
+            onClick={onToggleCollapse}
+            className="hidden lg:flex p-1.5 rounded-md text-gray-400 hover:text-indigo-600 hover:bg-gray-100"
+            title={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
+          >
+            {isCollapsed ? (
+              <ChevronRightIcon className="h-4 w-4" aria-hidden="true" />
+            ) : (
+              <ChevronLeftIcon className="h-4 w-4" aria-hidden="true" />
+            )}
+          </button>
+        </div>
+
+        {/* Page header segment — each page registers its own title/back/actions via usePageHeader() */}
+        <div className="flex-1 flex items-center justify-between px-4 min-w-0 border-b border-gray-200">
+          <div className="flex items-center gap-2 min-w-0">
+            {pageHeaderConfig?.onBack && (
+              <button
+                type="button"
+                onClick={pageHeaderConfig.onBack}
+                className="p-1 rounded-md text-gray-500 hover:text-gray-700 hover:bg-gray-100"
+                title="Back"
               >
-                <img
-                  src={KidSight}
-                  height={60}
-                  width={160}
-                  alt="Kidsight Logo"
-                />
-              </Link>
-            </div>
+                <ArrowLeftIcon className="h-4 w-4" aria-hidden="true" />
+              </button>
+            )}
+            <h1 className="text-base font-semibold text-gray-900 truncate">
+              {pageHeaderConfig?.title || ""}
+            </h1>
           </div>
-          <div className="flex items-center">
-            <div className="ml-3 relative">
-              <div>
-                <button
-                  ref={buttonRef}
-                  type="button"
-                  className="bg-white rounded-full flex text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                  id="user-menu-button"
-                  onClick={handleUserMenuToggle}
-                  aria-expanded={isUserMenuOpen}
-                  aria-haspopup="true"
-                >
-                  {user && user?.name && <Avatar name={user?.name} />}
-                </button>
-              </div>
+
+          <div className="flex items-center gap-3 shrink-0">
+            {pageHeaderConfig?.actions}
+
+            <div className="relative">
+              <button
+                ref={buttonRef}
+                type="button"
+                className="bg-white rounded-full flex text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                id="user-menu-button"
+                onClick={handleUserMenuToggle}
+                aria-expanded={isUserMenuOpen}
+                aria-haspopup="true"
+              >
+                {user && user?.name && <Avatar name={user?.name} />}
+              </button>
               {isUserMenuOpen && (
                 <div
                   ref={menuRef}

@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import { useLocation, useParams } from "react-router-dom";
 
 import { useAuth } from "../../context/auth-context";
+import { usePageHeaderContext } from "../../context/page-header-context";
 
 export const useHeaderController = () => {
   const menuRef = useRef<HTMLDivElement>(null);
@@ -12,15 +13,11 @@ export const useHeaderController = () => {
   const { t } = useTranslation();
 
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const { user, logout } = useAuth();
+  const { config: pageHeaderConfig } = usePageHeaderContext();
 
   const handleUserMenuToggle = () => {
     setIsUserMenuOpen(!isUserMenuOpen);
-  };
-
-  const toggleSidebar = () => {
-    setIsSidebarOpen(!isSidebarOpen);
   };
 
   const handleLogout = async () => {
@@ -67,13 +64,12 @@ export const useHeaderController = () => {
     t,
     user,
     isUserMenuOpen,
-    isSidebarOpen,
     buttonRef,
     menuRef,
     organizationId,
+    pageHeaderConfig,
     handleUserMenuToggle,
     handleLogout,
-    toggleSidebar,
     setIsUserMenuOpen,
   };
 };

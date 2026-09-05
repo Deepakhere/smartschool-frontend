@@ -9,6 +9,7 @@ import Cookies from "js-cookie";
 import { useGetUserDetails } from "./service";
 import { USER_ACCESS_KEY } from "../utils";
 import { ILoginResponse } from "../types";
+import LogoSpinner from "../components/logo-spinner";
 
 type User = {
   name?: string;
@@ -78,6 +79,15 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       }
     }
   }, [getUserDetails.isError]);
+
+  // a token cookie exists but we haven't yet confirmed it's still valid (page load / hard refresh) —
+  // this is the ONLY place the full-page logo loader should show; every other loading state
+  // in the app is a normal in-page spinner, not this one
+  const isCheckingSession = !!Cookies.get(USER_ACCESS_KEY.TOKEN) && getUserDetails.isLoading;
+
+  if (isCheckingSession) {
+    return <LogoSpinner />;
+  }
 
   return (
     <AuthContext.Provider value={{ login, logout, user }}>

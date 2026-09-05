@@ -1,9 +1,10 @@
-import LogoSpinner from "../../../components/logo-spinner";
+import Spinner from "../../../components/spinner";
 import NoRecordFound from "../../../components/no-record-found";
+import CustomSelectDropdown from "../../../components/custom-select";
+import { Table, TableHeader, TableHead, TableBody, TableRow, TableCell } from "../../../components/table";
+import { SelectOption } from "../../../types";
+import SectionHeader from "../../../components/section-header";
 import useParentPTMController from "./ptm-controller";
-
-const inputClass =
-  "mt-1 block w-full p-2 rounded-md border border-gray-300 bg-white text-gray-900 shadow-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 sm:text-sm";
 
 const ParentPTM = () => {
   const {
@@ -26,71 +27,80 @@ const ParentPTM = () => {
     handleCancelBooking,
   } = useParentPTMController();
 
-  return (
-    <div className="max-w-4xl mx-auto">
-      <h1 className="text-2xl font-semibold text-gray-900 mb-6">Parent-Teacher Meetings</h1>
+  const eventOptions: SelectOption[] = events.map((event) => ({
+    id: event.id,
+    name: `${event.title} (${new Date(event.date).toLocaleDateString()})`,
+  }));
+  const childOptions: SelectOption[] = children.map((c) => ({ id: c.studentId.id, name: c.studentId.name }));
 
+  return (
+    <div className="max-w-7xl mx-auto">
+      <SectionHeader
+        title="Parent-Teacher Meetings"
+        description="Book a slot with your child's teacher and track your bookings"
+      />
       <div className="bg-white rounded-lg shadow p-6 mb-6">
         <h2 className="text-lg font-medium text-gray-900 mb-4">My bookings</h2>
         {bookings.length === 0 ? (
           <p className="text-sm text-gray-500">No bookings yet.</p>
         ) : (
-          <div className="space-y-3">
-            {bookings.map((b) => {
-              const slot = typeof b.slotId === "object" ? b.slotId : null;
-              return (
-                <div key={b.id} className="flex justify-between items-center border-b pb-2">
-                  <div>
-                    <p className="text-sm font-medium text-gray-900">
+          <Table>
+            <TableHeader>
+              <TableHead>Student</TableHead>
+              <TableHead className="text-center">Time</TableHead>
+              <TableHead className="text-center">Join</TableHead>
+              <TableHead className="text-center">Action</TableHead>
+            </TableHeader>
+            <TableBody>
+              {bookings.map((b) => {
+                const slot = typeof b.slotId === "object" ? b.slotId : null;
+                return (
+                  <TableRow key={b.id}>
+                    <TableCell className="font-medium text-gray-900">
                       {typeof b.studentId === "object" ? b.studentId.name : ""}
-                    </p>
-                    <p className="text-xs text-gray-500">
-                      {slot ? new Date(slot.startAt).toLocaleString() : ""}
-                      {slot?.meetingLink && (
-                        <>
-                          {" "}
-                          ·{" "}
-                          <a href={slot.meetingLink} target="_blank" rel="noreferrer" className="text-indigo-600">
-                            Join link
-                          </a>
-                        </>
+                    </TableCell>
+                    <TableCell className="text-center">{slot ? new Date(slot.startAt).toLocaleString() : ""}</TableCell>
+                    <TableCell className="text-center">
+                      {slot?.meetingLink ? (
+                        <a href={slot.meetingLink} target="_blank" rel="noreferrer" className="text-indigo-600 hover:underline">
+                          Join link
+                        </a>
+                      ) : (
+                        "—"
                       )}
-                    </p>
-                  </div>
-                  <button
-                    onClick={() => handleCancelBooking(b.id)}
-                    className="text-sm text-red-600 hover:text-red-800"
-                  >
-                    Cancel
-                  </button>
-                </div>
-              );
-            })}
-          </div>
+                    </TableCell>
+                    <TableCell className="text-center">
+                      <button onClick={() => handleCancelBooking(b.id)} className="text-sm text-red-600 hover:text-red-800">
+                        Cancel
+                      </button>
+                    </TableCell>
+                  </TableRow>
+                );
+              })}
+            </TableBody>
+          </Table>
         )}
       </div>
 
       <div className="bg-white rounded-lg shadow p-6">
         <h2 className="text-lg font-medium text-gray-900 mb-4">Book a slot</h2>
         {isLoadingEvents ? (
-          <LogoSpinner offsetSidebar />
+          <Spinner />
         ) : events.length === 0 ? (
           <NoRecordFound t={t} searchTerm="" clearFilters={() => {}} />
         ) : (
           <>
-            <select className={inputClass} value={selectedEventId} onChange={(e) => setSelectedEventId(e.target.value)}>
-              <option value="">Select PTM event</option>
-              {events.map((event) => (
-                <option key={event.id} value={event.id}>
-                  {event.title} ({new Date(event.date).toLocaleDateString()})
-                </option>
-              ))}
-            </select>
+            <CustomSelectDropdown
+              options={eventOptions}
+              placeholder="Select PTM event"
+              value={eventOptions.find((o) => o.id === selectedEventId) || null}
+              onChange={(o) => setSelectedEventId(String(o.id))}
+            />
 
             {selectedEventId && (
               <div className="mt-4">
                 {isLoadingSlots ? (
-                  <LogoSpinner offsetSidebar />
+                  <Spinner />
                 ) : slots.length === 0 ? (
                   <p className="text-sm text-gray-500 mt-2">No open slots for your child's section yet.</p>
                 ) : (
@@ -126,18 +136,12 @@ const ParentPTM = () => {
         <div className="fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center z-10">
           <div className="bg-white rounded-lg shadow-xl p-6 max-w-sm w-full">
             <h3 className="text-lg font-medium text-gray-900 mb-4">Confirm booking</h3>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Booking for</label>
-            <select
-              className={inputClass}
-              value={selectedStudentId}
-              onChange={(e) => setSelectedStudentId(e.target.value)}
-            >
-              {children.map((c) => (
-                <option key={c.studentId.id} value={c.studentId.id}>
-                  {c.studentId.name}
-                </option>
-              ))}
-            </select>
+            <CustomSelectDropdown
+              label="Booking for"
+              options={childOptions}
+              value={childOptions.find((o) => o.id === selectedStudentId) || childOptions[0] || null}
+              onChange={(o) => setSelectedStudentId(String(o.id))}
+            />
             <div className="mt-5 flex gap-2">
               <button
                 onClick={confirmBooking}

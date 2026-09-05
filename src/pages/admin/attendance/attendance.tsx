@@ -1,4 +1,5 @@
-import LogoSpinner from "../../../components/logo-spinner";
+import Spinner from "../../../components/spinner";
+import SectionHeader from "../../../components/section-header";
 import useAttendanceController from "./attendance-controller";
 import { AttendanceStatus } from "../../../types";
 
@@ -20,11 +21,8 @@ const AdminAttendance = () => {
   const c = useAttendanceController();
 
   return (
-    <div className="max-w-5xl mx-auto px-4 sm:px-6 md:px-8 space-y-6">
-      <div>
-        <h1 className="text-2xl font-semibold text-gray-900">Attendance</h1>
-        <p className="mt-1 text-sm text-gray-500">Mark and review daily attendance for a class section</p>
-      </div>
+    <div className="max-w-7xl mx-auto space-y-6">
+      <SectionHeader title="Attendance" description="Mark and review daily attendance for a class section" />
 
       <div className="bg-white shadow rounded-lg p-4">
         <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
@@ -75,7 +73,7 @@ const AdminAttendance = () => {
           </div>
 
           {c.isLoadingRoster ? (
-            <LogoSpinner offsetSidebar />
+            <Spinner />
           ) : c.students.length === 0 ? (
             <p className="px-4 py-5 text-sm text-gray-500">No students in this section.</p>
           ) : (

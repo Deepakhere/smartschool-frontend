@@ -1,14 +1,10 @@
 import { useState, useEffect } from "react";
 import logo from "../../icons/logo.png";
 
-interface LogoSpinnerProps {
-  // true when rendered inside the admin layout, so it centers in the
-  // content area to the right of the sidebar and below the header,
-  // instead of the full viewport
-  offsetSidebar?: boolean;
-}
-
-const LogoSpinner = ({ offsetSidebar = false }: LogoSpinnerProps) => {
+// full-viewport loading overlay — reserved for the app's own boot-time session
+// check (AuthProvider) and the org picker's initial load. Every other loading
+// state in the app is a normal in-page Spinner, never this one.
+const LogoSpinner = () => {
   const [isLoaded, setIsLoaded] = useState(false);
 
   useEffect(() => {
@@ -16,11 +12,7 @@ const LogoSpinner = ({ offsetSidebar = false }: LogoSpinnerProps) => {
   }, []);
 
   return (
-    <div
-      className={`fixed bottom-0 right-0 ${
-        offsetSidebar ? "top-16 left-52" : "top-0 left-0"
-      } flex items-center justify-center bg-white z-10`}
-    >
+    <div className="fixed inset-0 flex items-center justify-center bg-white z-10">
       <div className="relative w-32 h-32">
         {/* Spinning border */}
         <div className="absolute inset-0 border-4 border-gray-200 rounded-full border-t-indigo-600 animate-spin"></div>

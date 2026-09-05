@@ -1,5 +1,6 @@
-import LogoSpinner from "../../../components/logo-spinner";
+import Spinner from "../../../components/spinner";
 import NoRecordFound from "../../../components/no-record-found";
+import SectionHeader from "../../../components/section-header";
 import { useTranslation } from "react-i18next";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 import ButtonSpinner from "../../../icons/button-spinner";
@@ -13,16 +14,13 @@ const AdminTeachers = () => {
   const c = useTeachersController();
 
   return (
-    <div className="max-w-6xl mx-auto">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8 mb-6">
-        <h1 className="text-2xl font-semibold text-gray-900">Teachers</h1>
-        <p className="mt-1 text-sm text-gray-500">Teacher directory and staff profiles</p>
-      </div>
+    <div className="max-w-7xl mx-auto">
+      <SectionHeader title="Teachers" description="Teacher directory and staff profiles" />
 
-      <div className="px-4 sm:px-6 md:px-8">
+      <div>
         <div className="bg-white shadow rounded-lg">
           {c.isLoading ? (
-            <LogoSpinner offsetSidebar />
+            <Spinner />
           ) : c.teachers.length === 0 ? (
             <NoRecordFound t={t} searchTerm="" clearFilters={() => {}} />
           ) : (

@@ -1,3 +1,8 @@
+import CustomSelectDropdown from "../../../components/custom-select";
+import DatePicker from "../../../components/date-picker";
+import { Table, TableHeader, TableHead, TableBody, TableRow, TableCell, TableEmpty } from "../../../components/table";
+import { SelectOption } from "../../../types";
+import SectionHeader from "../../../components/section-header";
 import useFeesController from "./fees-controller";
 
 const inputClass =
@@ -5,12 +10,38 @@ const inputClass =
 
 const formatMoney = (paise: number) => `${(paise / 100).toFixed(2)}`;
 
+const categoryOptions: SelectOption[] = [
+  { id: "tuition", name: "Tuition" },
+  { id: "transport", name: "Transport" },
+  { id: "hostel", name: "Hostel" },
+  { id: "exam", name: "Exam" },
+  { id: "misc", name: "Misc" },
+];
+
+const methodOptions: SelectOption[] = [
+  { id: "cash", name: "Cash" },
+  { id: "cheque", name: "Cheque" },
+  { id: "bank_transfer", name: "Bank transfer" },
+  { id: "upi", name: "UPI" },
+  { id: "card", name: "Card" },
+];
+
 const tabs: { key: "heads" | "structures" | "students" | "ledger"; label: string }[] = [
   { key: "structures", label: "Fee Structures" },
   { key: "heads", label: "Fee Heads" },
   { key: "students", label: "Student Fees & Payments" },
   { key: "ledger", label: "Payment Ledger" },
 ];
+
+const Badge = ({ tone, children }: { tone: "green" | "red" | "gray"; children: React.ReactNode }) => {
+  const toneClass =
+    tone === "green"
+      ? "bg-green-100 text-green-800"
+      : tone === "red"
+      ? "bg-red-100 text-red-800"
+      : "bg-gray-100 text-gray-700";
+  return <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${toneClass}`}>{children}</span>;
+};
 
 const AdminFees = () => {
   const {
@@ -59,10 +90,12 @@ const AdminFees = () => {
   } = useFeesController();
 
   return (
-    <div className="max-w-6xl mx-auto">
-      <h1 className="text-2xl font-semibold text-gray-900 mb-6">Fees</h1>
-
-      <div className="flex gap-2 mb-6 border-b border-gray-200">
+    <div className="max-w-7xl mx-auto">
+      <SectionHeader
+        title="Fees"
+        description="Manage fee heads, structures, student assignments and payment collection"
+      />
+      <div className="flex gap-2 mb-6">
         {tabs.map((tab) => (
           <button
             key={tab.key}
@@ -79,7 +112,7 @@ const AdminFees = () => {
       {activeTab === "heads" && (
         <div className="bg-white rounded-lg shadow p-6">
           <h2 className="text-lg font-medium text-gray-900 mb-4">Create Fee Head</h2>
-          <div className="grid grid-cols-1 sm:grid-cols-4 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-4 gap-3 items-end">
             <input
               className={inputClass}
               placeholder="Name"
@@ -92,35 +125,41 @@ const AdminFees = () => {
               value={headForm.code}
               onChange={(e) => handleHeadFormChange("code", e.target.value)}
             />
-            <select
-              className={inputClass}
-              value={headForm.category}
-              onChange={(e) => handleHeadFormChange("category", e.target.value)}
-            >
-              <option value="tuition">Tuition</option>
-              <option value="transport">Transport</option>
-              <option value="hostel">Hostel</option>
-              <option value="exam">Exam</option>
-              <option value="misc">Misc</option>
-            </select>
+            <CustomSelectDropdown
+              options={categoryOptions}
+              value={categoryOptions.find((o) => o.id === headForm.category) || null}
+              onChange={(o) => handleHeadFormChange("category", String(o.id))}
+            />
             <button
               onClick={handleCreateFeeHead}
               disabled={isCreatingHead}
-              className="px-4 py-2 rounded-md text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 mt-1"
+              className="px-4 py-2 rounded-md text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50"
             >
               Add
             </button>
           </div>
 
-          <div className="mt-6 divide-y divide-gray-200">
-            {feeHeads.map((h) => (
-              <div key={h.id} className="py-2 flex justify-between text-sm">
-                <span className="text-gray-900">{h.name}</span>
-                <span className="text-gray-500">
-                  {h.code} · {h.category}
-                </span>
-              </div>
-            ))}
+          <div className="mt-6">
+            <Table>
+              <TableHeader>
+                <TableHead>Name</TableHead>
+                <TableHead className="text-center">Code</TableHead>
+                <TableHead className="text-center">Category</TableHead>
+              </TableHeader>
+              <TableBody>
+                {feeHeads.length === 0 ? (
+                  <TableEmpty colSpan={3} message="No fee heads yet — add one above." />
+                ) : (
+                  feeHeads.map((h) => (
+                    <TableRow key={h.id}>
+                      <TableCell className="font-medium text-gray-900">{h.name}</TableCell>
+                      <TableCell className="text-center">{h.code}</TableCell>
+                      <TableCell className="text-center capitalize">{h.category}</TableCell>
+                    </TableRow>
+                  ))
+                )}
+              </TableBody>
+            </Table>
           </div>
         </div>
       )}
@@ -179,32 +218,29 @@ const AdminFees = () => {
                   + Add item
                 </button>
               </div>
-              {items.map((item, idx) => (
-                <div key={idx} className="grid grid-cols-3 gap-2 mb-2">
-                  <select
-                    className={inputClass}
-                    value={item.feeHeadId}
-                    onChange={(e) => updateItemRow(idx, "feeHeadId", e.target.value)}
-                  >
-                    <option value="">Fee head</option>
-                    {feeHeads.map((h) => (
-                      <option key={h.id} value={h.id}>
-                        {h.name}
-                      </option>
-                    ))}
-                  </select>
-                  <input
-                    type="number"
-                    className={inputClass}
-                    placeholder="Amount"
-                    value={item.amount}
-                    onChange={(e) => updateItemRow(idx, "amount", e.target.value)}
-                  />
-                  <button type="button" onClick={() => removeItemRow(idx)} className="text-sm text-red-600">
-                    Remove
-                  </button>
-                </div>
-              ))}
+              {items.map((item, idx) => {
+                const feeHeadOptions: SelectOption[] = feeHeads.map((h) => ({ id: h.id, name: h.name }));
+                return (
+                  <div key={idx} className="grid grid-cols-3 gap-2 mb-2 items-center">
+                    <CustomSelectDropdown
+                      options={feeHeadOptions}
+                      value={feeHeadOptions.find((o) => o.id === item.feeHeadId) || null}
+                      placeholder="Fee head"
+                      onChange={(o) => updateItemRow(idx, "feeHeadId", String(o.id))}
+                    />
+                    <input
+                      type="number"
+                      className={inputClass}
+                      placeholder="Amount"
+                      value={item.amount}
+                      onChange={(e) => updateItemRow(idx, "amount", e.target.value)}
+                    />
+                    <button type="button" onClick={() => removeItemRow(idx)} className="text-sm text-red-600 justify-self-start">
+                      Remove
+                    </button>
+                  </div>
+                );
+              })}
               <p className="text-xs text-gray-500">Total: {itemsTotal}</p>
             </div>
 
@@ -216,19 +252,14 @@ const AdminFees = () => {
                 </button>
               </div>
               {installments.map((inst, idx) => (
-                <div key={idx} className="grid grid-cols-4 gap-2 mb-2">
+                <div key={idx} className="grid grid-cols-4 gap-2 mb-2 items-center">
                   <input
                     className={inputClass}
                     placeholder="Label"
                     value={inst.label}
                     onChange={(e) => updateInstallmentRow(idx, "label", e.target.value)}
                   />
-                  <input
-                    type="date"
-                    className={inputClass}
-                    value={inst.dueDate}
-                    onChange={(e) => updateInstallmentRow(idx, "dueDate", e.target.value)}
-                  />
+                  <DatePicker value={inst.dueDate} onChange={(value) => updateInstallmentRow(idx, "dueDate", value)} />
                   <input
                     type="number"
                     className={inputClass}
@@ -236,7 +267,7 @@ const AdminFees = () => {
                     value={inst.amount}
                     onChange={(e) => updateInstallmentRow(idx, "amount", e.target.value)}
                   />
-                  <button type="button" onClick={() => removeInstallmentRow(idx)} className="text-sm text-red-600">
+                  <button type="button" onClick={() => removeInstallmentRow(idx)} className="text-sm text-red-600 justify-self-start">
                     Remove
                   </button>
                 </div>
@@ -257,25 +288,36 @@ const AdminFees = () => {
 
           <div className="bg-white rounded-lg shadow p-6">
             <h2 className="text-lg font-medium text-gray-900 mb-4">Existing structures</h2>
-            <div className="divide-y divide-gray-200">
-              {feeStructures.map((s) => (
-                <div key={s.id} className="py-3 flex justify-between items-center">
-                  <div>
-                    <p className="text-sm font-medium text-gray-900">{s.name}</p>
-                    <p className="text-xs text-gray-500">
-                      {s.classIds.map((c) => c.name).join(", ")} · {s.installments.length} installment(s)
-                    </p>
-                  </div>
-                  <button
-                    onClick={() => handleAssignStructure(s.id)}
-                    disabled={isAssigning}
-                    className="text-sm text-indigo-600 hover:text-indigo-800 disabled:opacity-50"
-                  >
-                    Assign to students
-                  </button>
-                </div>
-              ))}
-            </div>
+            <Table>
+              <TableHeader>
+                <TableHead>Name</TableHead>
+                <TableHead className="text-center">Classes</TableHead>
+                <TableHead className="text-center">Installments</TableHead>
+                <TableHead className="text-center">Action</TableHead>
+              </TableHeader>
+              <TableBody>
+                {feeStructures.length === 0 ? (
+                  <TableEmpty colSpan={4} message="No fee structures yet — create one above." />
+                ) : (
+                  feeStructures.map((s) => (
+                    <TableRow key={s.id}>
+                      <TableCell className="font-medium text-gray-900">{s.name}</TableCell>
+                      <TableCell className="text-center">{s.classIds.map((c) => c.name).join(", ")}</TableCell>
+                      <TableCell className="text-center">{s.installments.length}</TableCell>
+                      <TableCell className="text-center">
+                        <button
+                          onClick={() => handleAssignStructure(s.id)}
+                          disabled={isAssigning}
+                          className="text-sm text-indigo-600 hover:text-indigo-800 disabled:opacity-50"
+                        >
+                          Assign to students
+                        </button>
+                      </TableCell>
+                    </TableRow>
+                  ))
+                )}
+              </TableBody>
+            </Table>
           </div>
         </div>
       )}
@@ -311,33 +353,39 @@ const AdminFees = () => {
                 <h3 className="text-md font-medium text-gray-900">
                   Balance: {formatMoney(summary.totalBalance)} of {formatMoney(summary.totalNet)}
                 </h3>
+                <Badge tone={summary.totalBalance > 0 ? "red" : "green"}>
+                  {summary.totalBalance > 0 ? "Due" : "Fully paid"}
+                </Badge>
               </div>
-              <table className="min-w-full text-sm mb-4">
-                <thead>
-                  <tr className="text-left text-gray-500">
-                    <th className="pb-2">Installment</th>
-                    <th className="pb-2">Due</th>
-                    <th className="pb-2">Net</th>
-                    <th className="pb-2">Paid</th>
-                    <th className="pb-2">Balance</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {summary.installments.map((i) => (
-                    <tr key={i.label} className="border-t">
-                      <td className="py-2">{i.label}</td>
-                      <td className="py-2">{new Date(i.dueDate).toLocaleDateString()}</td>
-                      <td className="py-2">{formatMoney(i.netAmount)}</td>
-                      <td className="py-2">{formatMoney(i.paidAmount)}</td>
-                      <td className="py-2">{formatMoney(i.balance)}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+
+              <div className="mb-4">
+                <Table>
+                  <TableHeader>
+                    <TableHead>Installment</TableHead>
+                    <TableHead className="text-center">Due</TableHead>
+                    <TableHead className="text-center">Net</TableHead>
+                    <TableHead className="text-center">Paid</TableHead>
+                    <TableHead className="text-center">Balance</TableHead>
+                  </TableHeader>
+                  <TableBody>
+                    {summary.installments.map((i) => (
+                      <TableRow key={i.label}>
+                        <TableCell className="font-medium text-gray-900">{i.label}</TableCell>
+                        <TableCell className="text-center">{new Date(i.dueDate).toLocaleDateString()}</TableCell>
+                        <TableCell className="text-center">{formatMoney(i.netAmount)}</TableCell>
+                        <TableCell className="text-center">{formatMoney(i.paidAmount)}</TableCell>
+                        <TableCell className={`text-center ${i.balance > 0 ? "text-red-600" : "text-green-600"}`}>
+                          {formatMoney(i.balance)}
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
 
               <div className="bg-gray-50 rounded-md p-4">
                 <p className="text-sm font-medium text-gray-700 mb-2">Record a payment</p>
-                <div className="grid grid-cols-1 sm:grid-cols-4 gap-2">
+                <div className="grid grid-cols-1 sm:grid-cols-4 gap-2 items-center">
                   <input
                     type="number"
                     className={inputClass}
@@ -348,20 +396,18 @@ const AdminFees = () => {
                       handlePaymentFormChange("amount", e.target.value);
                     }}
                   />
-                  <select
-                    className={inputClass}
-                    value={paymentForm.studentFeeId === summary.studentFeeId ? paymentForm.method : "cash"}
-                    onChange={(e) => {
+                  <CustomSelectDropdown
+                    options={methodOptions}
+                    value={
+                      methodOptions.find(
+                        (o) => o.id === (paymentForm.studentFeeId === summary.studentFeeId ? paymentForm.method : "cash")
+                      ) || methodOptions[0]
+                    }
+                    onChange={(o) => {
                       handlePaymentFormChange("studentFeeId", summary.studentFeeId);
-                      handlePaymentFormChange("method", e.target.value);
+                      handlePaymentFormChange("method", String(o.id));
                     }}
-                  >
-                    <option value="cash">Cash</option>
-                    <option value="cheque">Cheque</option>
-                    <option value="bank_transfer">Bank transfer</option>
-                    <option value="upi">UPI</option>
-                    <option value="card">Card</option>
-                  </select>
+                  />
                   <input
                     className={inputClass}
                     placeholder="Reference (cheque no. / UTR)"
@@ -384,19 +430,36 @@ const AdminFees = () => {
               {summary.payments.length > 0 && (
                 <div className="mt-4">
                   <p className="text-sm font-medium text-gray-700 mb-2">Payment history</p>
-                  {summary.payments.map((p) => (
-                    <div key={p.id} className="flex justify-between text-sm border-t py-2">
-                      <span>
-                        {p.receiptNumber} · {p.entryType === "reversal" ? "Reversal" : "Payment"} · {formatMoney(p.amount)} ·{" "}
-                        {p.method}
-                      </span>
-                      {p.entryType === "payment" && (
-                        <button onClick={() => handleReversePayment(p.id)} className="text-red-600 hover:text-red-800">
-                          Reverse
-                        </button>
-                      )}
-                    </div>
-                  ))}
+                  <Table>
+                    <TableHeader>
+                      <TableHead>Receipt</TableHead>
+                      <TableHead className="text-center">Type</TableHead>
+                      <TableHead className="text-center">Amount</TableHead>
+                      <TableHead className="text-center">Method</TableHead>
+                      <TableHead className="text-center">Action</TableHead>
+                    </TableHeader>
+                    <TableBody>
+                      {summary.payments.map((p) => (
+                        <TableRow key={p.id}>
+                          <TableCell>{p.receiptNumber}</TableCell>
+                          <TableCell className="text-center">
+                            <Badge tone={p.entryType === "reversal" ? "red" : "green"}>
+                              {p.entryType === "reversal" ? "Reversal" : "Payment"}
+                            </Badge>
+                          </TableCell>
+                          <TableCell className="text-center">{formatMoney(p.amount)}</TableCell>
+                          <TableCell className="text-center capitalize">{p.method.replace("_", " ")}</TableCell>
+                          <TableCell className="text-center">
+                            {p.entryType === "payment" && (
+                              <button onClick={() => handleReversePayment(p.id)} className="text-red-600 hover:text-red-800">
+                                Reverse
+                              </button>
+                            )}
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
                 </div>
               )}
             </div>
@@ -407,30 +470,38 @@ const AdminFees = () => {
       {activeTab === "ledger" && (
         <div className="bg-white rounded-lg shadow p-6">
           <h2 className="text-lg font-medium text-gray-900 mb-4">Payment Ledger</h2>
-          <table className="min-w-full text-sm">
-            <thead>
-              <tr className="text-left text-gray-500">
-                <th className="pb-2">Receipt</th>
-                <th className="pb-2">Student</th>
-                <th className="pb-2">Type</th>
-                <th className="pb-2">Amount</th>
-                <th className="pb-2">Method</th>
-                <th className="pb-2">Date</th>
-              </tr>
-            </thead>
-            <tbody>
-              {paymentLedger.map((p) => (
-                <tr key={p.id} className="border-t">
-                  <td className="py-2">{p.receiptNumber}</td>
-                  <td className="py-2">{typeof p.studentId === "object" ? p.studentId.name : ""}</td>
-                  <td className="py-2">{p.entryType}</td>
-                  <td className="py-2">{formatMoney(p.amount)}</td>
-                  <td className="py-2">{p.method}</td>
-                  <td className="py-2">{new Date(p.paidAt).toLocaleDateString()}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+          <Table>
+            <TableHeader>
+              <TableHead>Receipt</TableHead>
+              <TableHead className="text-center">Student</TableHead>
+              <TableHead className="text-center">Type</TableHead>
+              <TableHead className="text-center">Amount</TableHead>
+              <TableHead className="text-center">Method</TableHead>
+              <TableHead className="text-center">Date</TableHead>
+            </TableHeader>
+            <TableBody>
+              {paymentLedger.length === 0 ? (
+                <TableEmpty colSpan={6} message="No payments recorded yet." />
+              ) : (
+                paymentLedger.map((p) => (
+                  <TableRow key={p.id}>
+                    <TableCell>{p.receiptNumber}</TableCell>
+                    <TableCell className="text-center font-medium text-gray-900">
+                      {typeof p.studentId === "object" ? p.studentId.name : ""}
+                    </TableCell>
+                    <TableCell className="text-center">
+                      <Badge tone={p.entryType === "reversal" ? "red" : "green"}>
+                        {p.entryType === "reversal" ? "Reversal" : "Payment"}
+                      </Badge>
+                    </TableCell>
+                    <TableCell className="text-center">{formatMoney(p.amount)}</TableCell>
+                    <TableCell className="text-center capitalize">{p.method.replace("_", " ")}</TableCell>
+                    <TableCell className="text-center">{new Date(p.paidAt).toLocaleDateString()}</TableCell>
+                  </TableRow>
+                ))
+              )}
+            </TableBody>
+          </Table>
         </div>
       )}
     </div>

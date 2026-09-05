@@ -1,5 +1,6 @@
-import LogoSpinner from "../../../components/logo-spinner";
+import Spinner from "../../../components/spinner";
 import NoRecordFound from "../../../components/no-record-found";
+import SectionHeader from "../../../components/section-header";
 import { useTranslation } from "react-i18next";
 import useClassesController from "./classes-controller";
 
@@ -23,14 +24,14 @@ const AdminClasses = () => {
   const c = useClassesController();
 
   return (
-    <div className="max-w-6xl mx-auto">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8 mb-6">
-        <h1 className="text-2xl font-semibold text-gray-900">Academics</h1>
-        <p className="mt-1 text-sm text-gray-500">Manage academic years, classes, sections, subjects and teacher assignments</p>
-      </div>
+    <div className="max-w-7xl mx-auto">
+      <SectionHeader
+        title="Academics"
+        description="Manage academic years, classes, sections, subjects and teacher assignments"
+      />
 
-      <div className="border-b border-gray-200 mb-6 px-4 sm:px-6 md:px-8">
-        <nav className="-mb-px flex gap-6">
+      <div className="mb-6">
+        <nav className="flex gap-6">
           {tabs.map((tab) => (
             <button
               key={tab.key}
@@ -38,7 +39,7 @@ const AdminClasses = () => {
               className={`whitespace-nowrap border-b-2 py-3 px-1 text-sm font-medium ${
                 c.activeTab === tab.key
                   ? "border-indigo-500 text-indigo-600"
-                  : "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700"
+                  : "border-transparent text-gray-500 hover:text-gray-700"
               }`}
             >
               {tab.label}
@@ -47,7 +48,7 @@ const AdminClasses = () => {
         </nav>
       </div>
 
-      <div className="px-4 sm:px-6 md:px-8">
+      <div>
         {c.activeTab === "years" && (
           <div className="bg-white shadow rounded-lg">
             <div className="px-4 py-4 flex justify-between items-center border-b border-gray-200">
@@ -89,7 +90,7 @@ const AdminClasses = () => {
             )}
 
             {c.isLoadingYears ? (
-              <LogoSpinner offsetSidebar />
+              <Spinner />
             ) : c.academicYears.length === 0 ? (
               <NoRecordFound t={t} searchTerm="" clearFilters={() => {}} />
             ) : (
@@ -159,7 +160,7 @@ const AdminClasses = () => {
             )}
 
             {c.isLoadingClasses ? (
-              <LogoSpinner offsetSidebar />
+              <Spinner />
             ) : c.classes.length === 0 ? (
               <NoRecordFound t={t} searchTerm="" clearFilters={() => {}} />
             ) : (
@@ -223,7 +224,7 @@ const AdminClasses = () => {
             )}
 
             {c.isLoadingSections ? (
-              <LogoSpinner offsetSidebar />
+              <Spinner />
             ) : c.sections.length === 0 ? (
               <NoRecordFound t={t} searchTerm="" clearFilters={() => {}} />
             ) : (
@@ -287,7 +288,7 @@ const AdminClasses = () => {
             )}
 
             {c.isLoadingSubjects ? (
-              <LogoSpinner offsetSidebar />
+              <Spinner />
             ) : c.subjects.length === 0 ? (
               <NoRecordFound t={t} searchTerm="" clearFilters={() => {}} />
             ) : (
@@ -385,7 +386,7 @@ const AdminClasses = () => {
             )}
 
             {c.isLoadingAssignments ? (
-              <LogoSpinner offsetSidebar />
+              <Spinner />
             ) : c.teacherAssignments.length === 0 ? (
               <NoRecordFound t={t} searchTerm="" clearFilters={() => {}} />
             ) : (

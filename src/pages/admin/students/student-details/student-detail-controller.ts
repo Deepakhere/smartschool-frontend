@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import toast from "react-hot-toast";
 import {
@@ -14,6 +14,7 @@ import { useError } from "../../../../hooks";
 const useStudentDetailController = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const location = useLocation();
 
   const { studentId, organizationId } = useParams();
 
@@ -53,7 +54,16 @@ const useStudentDetailController = () => {
         sectionId: item.currentEnrollment?.sectionId?.id || "",
         rollNumber: item.currentEnrollment?.rollNumber || "",
       } as IStudentFormData);
+
+      // arrived here via the list page's "Edit" action — open the edit modal
+      // once the full student data is in, then clear the flag so a refresh/back doesn't reopen it
+      const state = location.state as { openEdit?: boolean } | null;
+      if (state?.openEdit) {
+        setIsEditModalOpen(true);
+        navigate(location.pathname, { replace: true });
+      }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [getStudentDetailById.isSuccess, getStudentDetailById.data]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {

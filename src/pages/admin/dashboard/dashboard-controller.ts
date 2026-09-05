@@ -50,6 +50,7 @@ export const useDashboardController = () => {
 
   // Student Performance Chart Options
   const studentPerformanceOptions = {
+    credits: { enabled: false },
     chart: {
       type: "line",
       height: 300,
@@ -106,6 +107,7 @@ export const useDashboardController = () => {
 
   // Teacher-Student Ratio Chart Options
   const teacherStudentRatioOptions = {
+    credits: { enabled: false },
     chart: {
       type: "pie",
       height: 300,
@@ -143,6 +145,7 @@ export const useDashboardController = () => {
 
   // Monthly Attendance Chart Options
   const monthlyAttendanceOptions = {
+    credits: { enabled: false },
     chart: {
       type: "column",
       height: 300,

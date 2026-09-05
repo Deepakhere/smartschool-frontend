@@ -1,9 +1,19 @@
-import LogoSpinner from "../../../components/logo-spinner";
+import Spinner from "../../../components/spinner";
 import NoRecordFound from "../../../components/no-record-found";
+import CustomSelectDropdown from "../../../components/custom-select";
+import DatePicker from "../../../components/date-picker";
+import { SelectOption } from "../../../types";
+import { usePageHeader } from "../../../hooks";
+import SectionHeader from "../../../components/section-header";
 import usePTMController from "./ptm-controller";
 
 const inputClass =
   "mt-1 block w-full p-2 rounded-md border border-gray-300 bg-white text-gray-900 shadow-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 sm:text-sm";
+
+const modeOptions: SelectOption[] = [
+  { id: "onsite", name: "Onsite" },
+  { id: "online", name: "Online" },
+];
 
 const AdminPTM = () => {
   const {
@@ -30,17 +40,23 @@ const AdminPTM = () => {
     handleGenerateSlots,
   } = usePTMController();
 
+  usePageHeader({
+    actions: (
+      <button
+        onClick={() => setIsCreateModalOpen(true)}
+        className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700"
+      >
+        Schedule PTM
+      </button>
+    ),
+  });
+
   return (
-    <div className="max-w-6xl mx-auto">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-semibold text-gray-900">Parent-Teacher Meetings</h1>
-        <button
-          onClick={() => setIsCreateModalOpen(true)}
-          className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700"
-        >
-          Schedule PTM
-        </button>
-      </div>
+    <div className="max-w-7xl mx-auto">
+      <SectionHeader
+        title="Parent-Teacher Meetings"
+        description="Schedule PTM events, open teacher availability, and track parent bookings"
+      />
 
       {isCreateModalOpen && (
         <div className="bg-white rounded-lg shadow p-6 mb-6 border border-indigo-100">
@@ -54,22 +70,13 @@ const AdminPTM = () => {
                 onChange={(e) => handleFormChange("title", e.target.value)}
               />
             </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700">Date</label>
-              <input
-                type="date"
-                className={inputClass}
-                value={form.date}
-                onChange={(e) => handleFormChange("date", e.target.value)}
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700">Mode</label>
-              <select className={inputClass} value={form.mode} onChange={(e) => handleFormChange("mode", e.target.value)}>
-                <option value="onsite">Onsite</option>
-                <option value="online">Online</option>
-              </select>
-            </div>
+            <DatePicker label="Date" value={form.date} onChange={(value) => handleFormChange("date", value)} />
+            <CustomSelectDropdown
+              label="Mode"
+              options={modeOptions}
+              value={modeOptions.find((o) => o.id === form.mode) || modeOptions[0]}
+              onChange={(o) => handleFormChange("mode", String(o.id))}
+            />
             <div>
               <label className="block text-sm font-medium text-gray-700">Slot duration (mins)</label>
               <input
@@ -139,7 +146,7 @@ const AdminPTM = () => {
 
       <div className="bg-white shadow rounded-lg">
         {isLoadingEvents ? (
-          <LogoSpinner offsetSidebar />
+          <Spinner />
         ) : events.length === 0 ? (
           <NoRecordFound t={t} searchTerm="" clearFilters={() => {}} />
         ) : (
@@ -160,34 +167,30 @@ const AdminPTM = () => {
                   <div className="mt-4 bg-gray-50 rounded-md p-4">
                     <p className="text-sm font-medium text-gray-700 mb-2">Generate slots for a teacher</p>
                     <div className="grid grid-cols-1 sm:grid-cols-4 gap-2">
-                      <select
-                        className={inputClass}
-                        value={slotForm.teacherUserId}
-                        onChange={(e) => handleSlotFormChange("teacherUserId", e.target.value)}
-                      >
-                        <option value="">Teacher</option>
-                        {teacherAssignments
+                      {(() => {
+                        const teacherOptions: SelectOption[] = teacherAssignments
                           .filter((a) => event.sectionIds.includes(a.sectionId.id))
-                          .map((a) => (
-                            <option key={a.id} value={a.teacherUserId.id}>
-                              {a.teacherUserId.name} ({a.sectionId.name})
-                            </option>
-                          ))}
-                      </select>
-                      <select
-                        className={inputClass}
-                        value={slotForm.sectionId}
-                        onChange={(e) => handleSlotFormChange("sectionId", e.target.value)}
-                      >
-                        <option value="">Section</option>
-                        {sectionOptions
+                          .map((a) => ({ id: a.teacherUserId.id, name: `${a.teacherUserId.name} (${a.sectionId.name})` }));
+                        const eventSectionOptions: SelectOption[] = sectionOptions
                           .filter((s) => event.sectionIds.includes(s.id))
-                          .map((s) => (
-                            <option key={s.id} value={s.id}>
-                              {s.name}
-                            </option>
-                          ))}
-                      </select>
+                          .map((s) => ({ id: s.id, name: s.name }));
+                        return (
+                          <>
+                            <CustomSelectDropdown
+                              options={teacherOptions}
+                              placeholder="Teacher"
+                              value={teacherOptions.find((o) => o.id === slotForm.teacherUserId) || null}
+                              onChange={(o) => handleSlotFormChange("teacherUserId", String(o.id))}
+                            />
+                            <CustomSelectDropdown
+                              options={eventSectionOptions}
+                              placeholder="Section"
+                              value={eventSectionOptions.find((o) => o.id === slotForm.sectionId) || null}
+                              onChange={(o) => handleSlotFormChange("sectionId", String(o.id))}
+                            />
+                          </>
+                        );
+                      })()}
                       <input
                         type="datetime-local"
                         className={inputClass}

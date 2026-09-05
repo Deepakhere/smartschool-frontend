@@ -1,19 +1,17 @@
-import LogoSpinner from "../../../components/logo-spinner";
+import PageLoader from "../../../components/page-loader";
+import SectionHeader from "../../../components/section-header";
 import useTeacherDashboardController from "./dashboard-controller";
 
 const TeacherDashboard = () => {
   const c = useTeacherDashboardController();
 
   if (c.isLoading) {
-    return <LogoSpinner offsetSidebar />;
+    return <PageLoader />;
   }
 
   return (
-    <div className="max-w-6xl mx-auto px-4 sm:px-6 md:px-8 space-y-8">
-      <div>
-        <h1 className="text-2xl font-semibold text-gray-900">Welcome, {c.name}</h1>
-        <p className="mt-1 text-sm text-gray-500">Here's your teaching overview for today.</p>
-      </div>
+    <div className="max-w-7xl mx-auto space-y-8">
+      <SectionHeader title={`Welcome, ${c.name}`} description="Here's your teaching overview for today" />
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Today's Timetable */}

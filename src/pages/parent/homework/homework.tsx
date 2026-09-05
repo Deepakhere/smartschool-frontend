@@ -1,7 +1,9 @@
+import SectionHeader from "../../../components/section-header";
+
 const ParentHomework = () => {
   return (
-    <div>
-      <h1 className="text-2xl font-bold mb-4">Homework</h1>
+    <div className="max-w-7xl mx-auto">
+      <SectionHeader title="Homework" description="Assignments given to your child" />
       <div className="bg-white rounded-lg shadow p-6">
         <div className="space-y-4">
           <div className="border-b pb-4">
@@ -25,4 +27,4 @@ const ParentHomework = () => {
   );
 };
 
-export default ParentHomework; 
+export default ParentHomework;

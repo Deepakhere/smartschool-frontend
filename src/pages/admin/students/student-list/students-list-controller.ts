@@ -43,14 +43,22 @@ const useStudentsListController = () => {
     navigate(`/${organizationId}/admin/students/detail/${studentId}`);
   };
 
+  // the detail page owns the full edit flow (fetches complete student data, prefills the form);
+  // jump straight there with a flag so it opens the edit modal instead of just viewing
+  const onClickEditStudent = (studentId: string) => {
+    navigate(`/${organizationId}/admin/students/detail/${studentId}`, {
+      state: { openEdit: true },
+    });
+  };
+
   const handleSearchChange = debounce((searchVal: string) => {
     setSearchTerm(searchVal);
     setCurrentPage(1);
   }, 500);
 
   // Handle class filter change
-  const handleClassFilterChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setClassFilter(e.target.value);
+  const handleClassFilterChange = (classId: string) => {
+    setClassFilter(classId);
     setCurrentPage(1);
   };
 
@@ -316,6 +324,7 @@ const useStudentsListController = () => {
     onCancelDeleteModal,
     setClassFilter,
     navigateToStudentDetails,
+    onClickEditStudent,
   };
 };
 

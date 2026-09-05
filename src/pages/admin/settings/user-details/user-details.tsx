@@ -1,6 +1,6 @@
 import { PlusIcon, MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 
-import LogoSpinner from "../../../../components/logo-spinner";
+import PageLoader from "../../../../components/page-loader";
 import NoRecordIcon from "../../../../icons/no-record-icon";
 import { CreateUpdateUserModal, DeleteUserModal } from "./user-modal";
 import useUserDetailsController from "./user-details-controller";
@@ -43,7 +43,7 @@ const UserDetails = () => {
   return (
     <>
       {isLoadingGetAllUserDetails ? (
-        <LogoSpinner offsetSidebar />
+        <PageLoader />
       ) : (
         <div className="px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col sm:flex-row justify-between items-center mb-6 gap-4">

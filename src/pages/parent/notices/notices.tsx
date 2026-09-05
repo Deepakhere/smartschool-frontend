@@ -1,18 +1,19 @@
 import { BellIcon, CalendarDaysIcon } from "@heroicons/react/24/outline";
 
-import LogoSpinner from "../../../components/logo-spinner";
+import Spinner from "../../../components/spinner";
 import NoRecordFound from "../../../components/no-record-found";
+import SectionHeader from "../../../components/section-header";
 import useNoticesController from "./notices-controller";
 
 const ParentNotices = () => {
   const { t, notices, isLoading, handleMarkRead } = useNoticesController();
 
   return (
-    <div>
-      <h1 className="text-2xl font-bold mb-4 text-gray-900">Notices</h1>
+    <div className="max-w-7xl mx-auto">
+      <SectionHeader title="Notices" description="School announcements and holidays relevant to you" />
       <div className="bg-white rounded-lg shadow p-6">
         {isLoading ? (
-          <LogoSpinner offsetSidebar />
+          <Spinner />
         ) : notices.length === 0 ? (
           <NoRecordFound t={t} searchTerm="" clearFilters={() => {}} />
         ) : (

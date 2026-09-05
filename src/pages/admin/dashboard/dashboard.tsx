@@ -1,8 +1,9 @@
 import Highcharts from "highcharts";
 import HighchartsReact from "highcharts-react-official";
 
-import LogoSpinner from "../../../components/logo-spinner";
+import PageLoader from "../../../components/page-loader";
 import NoticeModal from "../../../components/notice-modal";
+import SectionHeader from "../../../components/section-header";
 import { useDashboardController } from "./dashboard-controller";
 import UserTypeSelectionModal from "../../../components/user-type-selection-modal";
 
@@ -28,9 +29,11 @@ const Dashboard = () => {
   return (
     <>
       {isLoading ? (
-        <LogoSpinner offsetSidebar />
+        <PageLoader />
       ) : (
-        <div className="px-4 space-y-8 min-h-screen">
+        <div className="max-w-7xl mx-auto space-y-8 min-h-screen">
+          <SectionHeader title="Dashboard" description="An overview of your school's activity" />
+
           {/* Stats Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {statCards.map((stat, index) => {

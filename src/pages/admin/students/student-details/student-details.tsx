@@ -1,5 +1,4 @@
 import {
-  ArrowLeftIcon,
   PencilIcon,
   TrashIcon,
 } from "@heroicons/react/24/outline";
@@ -7,9 +6,10 @@ import {
 import DeleteModal from "../../../../components/delete-modal";
 import CreateUpdateStudentModal from "../student-modal/create-update-student-modal";
 import useStudentDetailController from "./student-detail-controller";
-import LogoSpinner from "../../../../components/logo-spinner";
+import PageLoader from "../../../../components/page-loader";
 import Avatar from "../../../../components/avatar";
 import GuardianModal from "./guardian-modal";
+import { usePageHeader } from "../../../../hooks";
 
 const StudentDetails = () => {
   const {
@@ -40,12 +40,13 @@ const StudentDetails = () => {
     handleRemoveGuardian,
   } = useStudentDetailController();
 
+  // no title here — the page below already shows "Student Profile" and the student's name
+  usePageHeader({ onBack: onBackClick });
+
   return (
     <>
       {isLoadingStudentDetail ? (
-        <div className="flex justify-center items-center h-screen">
-          <LogoSpinner offsetSidebar />
-        </div>
+        <PageLoader />
       ) : isErrorStudentDetail ? (
         <div className="text-center py-12">
           <h2 className="text-xl font-semibold text-gray-900">
@@ -60,17 +61,6 @@ const StudentDetails = () => {
         </div>
       ) : (
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          {/* Header with back button */}
-          <div className="mb-8">
-            <button
-              onClick={onBackClick}
-              className="inline-flex items-center text-sm text-gray-500 hover:text-gray-700"
-            >
-              <ArrowLeftIcon className="h-4 w-4 mr-1" />
-              Back to Students List
-            </button>
-          </div>
-
           {/* Student profile header */}
           <div className="bg-white shadow overflow-hidden sm:rounded-lg mb-6">
             <div className="px-4 py-5 sm:px-6 flex justify-between items-center">

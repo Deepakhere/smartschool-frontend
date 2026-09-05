@@ -1,5 +1,6 @@
-import LogoSpinner from "../../../components/logo-spinner";
+import Spinner from "../../../components/spinner";
 import NoRecordFound from "../../../components/no-record-found";
+import SectionHeader from "../../../components/section-header";
 import { useTranslation } from "react-i18next";
 import { useHomeworkController } from "./homework-controller";
 
@@ -15,11 +16,8 @@ const Homework = () => {
   const c = useHomeworkController();
 
   return (
-    <div className="max-w-5xl mx-auto px-4 sm:px-6 md:px-8 space-y-6">
-      <div>
-        <h1 className="text-2xl font-semibold text-gray-900">Homework</h1>
-        <p className="mt-1 text-sm text-gray-500">Assign and manage homework for a class section</p>
-      </div>
+    <div className="max-w-7xl mx-auto space-y-6">
+      <SectionHeader title="Homework" description="Assign and manage homework for a class section" />
 
       <div className="bg-white shadow rounded-lg p-4">
         <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
@@ -113,7 +111,7 @@ const Homework = () => {
             <h2 className="text-lg font-medium text-gray-900">Assigned Homework</h2>
           </div>
           {c.isLoadingHomework ? (
-            <LogoSpinner offsetSidebar />
+            <Spinner />
           ) : c.homeworkList.length === 0 ? (
             <NoRecordFound t={t} searchTerm="" clearFilters={() => {}} />
           ) : (

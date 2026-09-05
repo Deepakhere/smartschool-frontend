@@ -1,5 +1,7 @@
-import LogoSpinner from "../../../components/logo-spinner";
+import PageLoader from "../../../components/page-loader";
 import NoRecordFound from "../../../components/no-record-found";
+import { Table, TableHeader, TableHead, TableBody, TableRow, TableCell } from "../../../components/table";
+import SectionHeader from "../../../components/section-header";
 import useParentFeesController from "./fees-controller";
 
 const formatMoney = (paise: number) => `${(paise / 100).toFixed(2)}`;
@@ -8,11 +10,10 @@ const ParentFees = () => {
   const { t, fees, isLoading } = useParentFeesController();
 
   return (
-    <div className="max-w-4xl mx-auto">
-      <h1 className="text-2xl font-bold mb-6 text-gray-900">Fees</h1>
-
+    <div className="max-w-7xl mx-auto">
+      <SectionHeader title="Fees" description="View dues, installments and payment history for your children" />
       {isLoading ? (
-        <LogoSpinner offsetSidebar />
+        <PageLoader />
       ) : fees.length === 0 ? (
         <div className="bg-white rounded-lg shadow p-6">
           <NoRecordFound t={t} searchTerm="" clearFilters={() => {}} />
@@ -32,42 +33,54 @@ const ParentFees = () => {
                 </span>
               </div>
 
-              <table className="min-w-full text-sm mb-4">
-                <thead>
-                  <tr className="text-left text-gray-500">
-                    <th className="pb-2">Installment</th>
-                    <th className="pb-2">Due date</th>
-                    <th className="pb-2">Amount</th>
-                    <th className="pb-2">Paid</th>
-                    <th className="pb-2">Balance</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {fee.installments.map((i) => (
-                    <tr key={i.label} className="border-t">
-                      <td className="py-2 text-gray-900">{i.label}</td>
-                      <td className="py-2 text-gray-500">{new Date(i.dueDate).toLocaleDateString()}</td>
-                      <td className="py-2 text-gray-900">{formatMoney(i.netAmount)}</td>
-                      <td className="py-2 text-gray-900">{formatMoney(i.paidAmount)}</td>
-                      <td className="py-2 text-gray-900">{formatMoney(i.balance)}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+              <div className="mb-4">
+                <Table>
+                  <TableHeader>
+                    <TableHead>Installment</TableHead>
+                    <TableHead className="text-center">Due date</TableHead>
+                    <TableHead className="text-center">Amount</TableHead>
+                    <TableHead className="text-center">Paid</TableHead>
+                    <TableHead className="text-center">Balance</TableHead>
+                  </TableHeader>
+                  <TableBody>
+                    {fee.installments.map((i) => (
+                      <TableRow key={i.label}>
+                        <TableCell className="font-medium text-gray-900">{i.label}</TableCell>
+                        <TableCell className="text-center">{new Date(i.dueDate).toLocaleDateString()}</TableCell>
+                        <TableCell className="text-center">{formatMoney(i.netAmount)}</TableCell>
+                        <TableCell className="text-center">{formatMoney(i.paidAmount)}</TableCell>
+                        <TableCell className={`text-center ${i.balance > 0 ? "text-red-600" : "text-green-600"}`}>
+                          {formatMoney(i.balance)}
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
 
               {fee.payments.filter((p) => p.entryType === "payment").length > 0 && (
                 <div>
                   <p className="text-sm font-medium text-gray-700 mb-2">Payment history</p>
-                  {fee.payments
-                    .filter((p) => p.entryType === "payment")
-                    .map((p) => (
-                      <div key={p.id} className="flex justify-between text-sm border-t py-2 text-gray-700">
-                        <span>{p.receiptNumber}</span>
-                        <span>{formatMoney(p.amount)}</span>
-                        <span className="text-gray-500">{p.method}</span>
-                        <span className="text-gray-500">{new Date(p.paidAt).toLocaleDateString()}</span>
-                      </div>
-                    ))}
+                  <Table>
+                    <TableHeader>
+                      <TableHead>Receipt</TableHead>
+                      <TableHead className="text-center">Amount</TableHead>
+                      <TableHead className="text-center">Method</TableHead>
+                      <TableHead className="text-center">Date</TableHead>
+                    </TableHeader>
+                    <TableBody>
+                      {fee.payments
+                        .filter((p) => p.entryType === "payment")
+                        .map((p) => (
+                          <TableRow key={p.id}>
+                            <TableCell className="font-medium text-gray-900">{p.receiptNumber}</TableCell>
+                            <TableCell className="text-center">{formatMoney(p.amount)}</TableCell>
+                            <TableCell className="text-center capitalize">{p.method.replace("_", " ")}</TableCell>
+                            <TableCell className="text-center">{new Date(p.paidAt).toLocaleDateString()}</TableCell>
+                          </TableRow>
+                        ))}
+                    </TableBody>
+                  </Table>
                 </div>
               )}
             </div>

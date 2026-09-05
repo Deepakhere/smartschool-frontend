@@ -3,8 +3,13 @@ import {
   MagnifyingGlassIcon,
 } from "@heroicons/react/24/outline";
 
-import LogoSpinner from "../../../../components/logo-spinner";
+import Spinner from "../../../../components/spinner";
 import NoRecordFound from "../../../../components/no-record-found";
+import CustomSelectDropdown from "../../../../components/custom-select";
+import { Table, TableHeader, TableHead, TableBody, TableRow, TableCell } from "../../../../components/table";
+import { SelectOption } from "../../../../types";
+import { usePageHeader } from "../../../../hooks";
+import SectionHeader from "../../../../components/section-header";
 
 import useStudentsListController from "./students-list-controller";
 import DeleteModal from "../../../../components/delete-modal";
@@ -59,35 +64,36 @@ const StudentsList = () => {
     handleDeleteStudent,
     onCancelDeleteModal,
     navigateToStudentDetails,
+    onClickEditStudent,
   } = useStudentsListController();
 
-  return (
-    <div className="px-4 sm:px-6 lg:px-8">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
-        <div className="flex justify-between items-center">
-          <h1 className="text-2xl font-semibold text-gray-900">Students</h1>
-          <div className="flex gap-3">
-            <button
-              onClick={onClickBulkUpload}
-              className="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-            >
-              Bulk Upload (CSV)
-            </button>
-            <button
-              onClick={onClickAddStudent}
-              className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-            >
-              {t("labels.add_new_student")}
-            </button>
-          </div>
-        </div>
-      </div>
+  usePageHeader({
+    actions: (
+      <>
+        <button
+          onClick={onClickBulkUpload}
+          className="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+        >
+          Bulk Upload (CSV)
+        </button>
+        <button
+          onClick={onClickAddStudent}
+          className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+        >
+          {t("labels.add_new_student")}
+        </button>
+      </>
+    ),
+  });
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8 mt-6">
-        {/* Search and Filter Controls */}
-        <div className="flex flex-col sm:flex-row justify-between items-center mb-6 gap-4">
-          {/* Search field */}
-          <div className="flex">
+  return (
+    <div className="max-w-7xl mx-auto">
+      <SectionHeader title="Students" description="View, search and manage every enrolled student" />
+
+      {/* Search and Filter Controls */}
+        <div className="flex flex-row flex-wrap justify-between items-center mb-6 gap-4">
+          {/* Search field + result count */}
+          <div className="flex items-center gap-3">
             <div className="relative w-full sm:w-64">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                 <MagnifyingGlassIcon className="h-5 w-5 text-gray-400" />
@@ -102,189 +108,164 @@ const StudentsList = () => {
                 className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
               />
             </div>
-            <div className="relative w-full sm:w-24">
-              {studentTotalCount !== undefined && studentTotalCount > 0 ? (
-                studentTotalCount > 1 ? (
-                  <span className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-                    {studentTotalCount} {t("labels.records")}
-                  </span>
-                ) : (
-                  <span className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-                    {studentTotalCount} {t("labels.record")}
-                  </span>
-                )
-              ) : null}
-            </div>
+            {studentTotalCount !== undefined && studentTotalCount > 0 && (
+              <span className="text-sm text-gray-500 whitespace-nowrap">
+                {studentTotalCount} {t("labels.records")}
+              </span>
+            )}
           </div>
 
           {/* Class filter */}
-          <div className="flex items-center space-x-4">
-            <label
-              htmlFor="class-filter"
-              className="block text-sm font-medium text-gray-700"
-            >
+          <div className="flex items-center gap-3">
+            <label htmlFor="class-filter" className="block text-sm font-medium text-gray-700 whitespace-nowrap">
               {t("labels.filter_by_class")}
             </label>
-            <div className="relative w-full sm:w-48">
-              <select
-                value={classFilter}
-                onChange={handleClassFilterChange}
-                className="block w-full pl-3 pr-10 py-2 text-base bg-white text-gray-900 border border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
-              >
-                <option value="all">{t("labels.all_classes")}</option>
-                {CLASS_OPTIONS.map((klass) => (
-                  <option key={klass.id} value={klass.id}>
-                    {klass.name}
-                  </option>
-                ))}
-              </select>
+            <div className="w-full sm:w-48">
+              <CustomSelectDropdown
+                options={[
+                  { id: "all", name: t("labels.all_classes") } as SelectOption,
+                  ...CLASS_OPTIONS.map((klass) => ({ id: klass.id, name: klass.name })),
+                ]}
+                value={
+                  classFilter === "all"
+                    ? { id: "all", name: t("labels.all_classes") }
+                    : CLASS_OPTIONS.find((k) => k.id === classFilter)
+                    ? { id: classFilter, name: CLASS_OPTIONS.find((k) => k.id === classFilter)!.name }
+                    : { id: "all", name: t("labels.all_classes") }
+                }
+                onChange={(o) => handleClassFilterChange(String(o.id))}
+              />
             </div>
           </div>
         </div>
 
         <div className="py-4">
           {isLoadingGetStudentDetails ? (
-            <LogoSpinner offsetSidebar />
+            <div className="bg-white shadow rounded-lg border border-gray-200">
+              <Spinner />
+            </div>
           ) : (
             <>
               {/* Students Table */}
-              <div className="bg-white shadow-md rounded-lg">
-                <table className="min-w-full divide-y divide-gray-200">
-                  <thead className="bg-gray-50">
+              <Table>
+                <TableHeader>
+                  <TableHead>{t("labels.student_name")}</TableHead>
+                  <TableHead className="text-center">{t("labels.roll_number")}</TableHead>
+                  <TableHead className="text-center">{t("labels.class_id")}</TableHead>
+                  <TableHead className="text-center">{t("labels.date_of_birth")}</TableHead>
+                  <TableHead className="text-center">{t("labels.actions")}</TableHead>
+                </TableHeader>
+                {isFetchingStudentList ? (
+                  <TableBody>
                     <tr>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        {t("labels.student_name")}
-                      </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        {t("labels.roll_number")}
-                      </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        {t("labels.class_id")}
-                      </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        {t("labels.date_of_birth")}
-                      </th>
-                      <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        {t("labels.actions")}
-                      </th>
+                      <td colSpan={5} className="px-6 py-10 text-center">
+                        <div className="flex justify-center items-center">
+                          <div className="h-8 w-8 border-t-2 border-b-2 border-indigo-500 rounded-full animate-spin"></div>
+                        </div>
+                      </td>
                     </tr>
-                  </thead>
-                  {isFetchingStudentList ? (
-                    <tbody>
-                      <tr>
-                        <td colSpan={5} className="px-6 py-10 text-center">
-                          <div className="flex justify-center items-center">
-                            <div className="h-8 w-8 border-t-2 border-b-2 border-indigo-500 rounded-full animate-spin"></div>
-                          </div>
-                        </td>
-                      </tr>
-                    </tbody>
-                  ) : studentDetail && studentDetail.length > 0 ? (
-                    <tbody className="bg-white divide-y divide-gray-200">
-                      {studentDetail.map((student) => (
-                        <tr key={student.id}>
-                          <td className="px-6 py-4 whitespace-nowrap">
-                            <div className="flex items-center">
-                              <div className="flex-shrink-0 h-10 w-10 rounded-full bg-indigo-100 flex items-center justify-center">
-                                <span className="text-indigo-600 font-medium">
-                                  {student.name.charAt(0)}
-                                </span>
-                              </div>
-                              <div className="ml-4">
-                                <div
-                                  className="text-sm font-medium text-gray-900 hover:text-indigo-600 cursor-pointer"
-                                  onClick={() =>
-                                    navigateToStudentDetails(student.id)
-                                  }
-                                >
-                                  {student.name}
-                                </div>
-                              </div>
+                  </TableBody>
+                ) : studentDetail && studentDetail.length > 0 ? (
+                  <TableBody>
+                    {studentDetail.map((student) => (
+                      <TableRow key={student.id}>
+                        <TableCell>
+                          <div className="flex items-center">
+                            <div className="flex-shrink-0 h-10 w-10 rounded-full bg-indigo-100 flex items-center justify-center">
+                              <span className="text-indigo-600 font-medium">
+                                {student.name.charAt(0)}
+                              </span>
                             </div>
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                            {student.currentEnrollment?.rollNumber}
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                            {student.currentEnrollment?.classId?.name}
-                            {student.currentEnrollment?.sectionId?.name
-                              ? ` - ${student.currentEnrollment.sectionId.name}`
-                              : ""}
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                            {new Date(student.dateOfBirth).toLocaleDateString()}
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                            <div
-                              className="relative block text-center"
-                              ref={dropdownRef}
-                            >
-                              <button
-                                onClick={() => {
-                                  toggleDropdown(student.id);
-                                }}
-                                className="text-gray-500 hover:text-gray-700 focus:outline-none"
-                                aria-expanded={activeDropdown === student.id}
-                                aria-haspopup="true"
+                            <div className="ml-4">
+                              <div
+                                className="text-sm font-medium text-gray-900 hover:text-indigo-600 cursor-pointer"
+                                onClick={() =>
+                                  navigateToStudentDetails(student.id)
+                                }
                               >
-                                <EllipsisHorizontalIcon className="h-5 w-5" />
-                              </button>
-
-                              {/* Dropdown menu with improved positioning */}
-                              {activeDropdown === student.id && (
-                                <div
-                                  className="absolute right-0 top-full mt-1 w-32 bg-white border rounded-lg shadow-lg overflow-hidden z-50"
-                                  role="menu"
-                                  aria-orientation="vertical"
-                                  aria-labelledby="options-menu"
-                                >
-                                  <div role="none">
-                                    <button
-                                      className="w-full text-left block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
-                                      role="menuitem"
-                                      onMouseDown={() => {
-                                        console.log("Edit student", student.id);
-                                        setActiveDropdown(null);
-                                      }}
-                                    >
-                                      {t("buttons.edit")}
-                                    </button>
-                                    <button
-                                      className="w-full text-left block px-4 py-2 text-sm text-red-600 hover:bg-gray-50"
-                                      role="menuitem"
-                                      onMouseDown={() => {
-                                        handleDeleteAction(student.id);
-                                        setActiveDropdown(null);
-                                      }}
-                                    >
-                                      {t("buttons.delete")}
-                                    </button>
-                                  </div>
-                                </div>
-                              )}
+                                {student.name}
+                              </div>
                             </div>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  ) : (
-                    <tbody>
-                      <tr>
-                        <td colSpan={5}>
-                          <NoRecordFound
-                            t={t}
-                            searchTerm={searchTerm}
-                            clearFilters={() => {
-                              setSearchTerm("");
-                              setClassFilter("all");
-                            }}
-                          />
-                        </td>
-                      </tr>
-                    </tbody>
-                  )}
-                </table>
-              </div>
+                          </div>
+                        </TableCell>
+                        <TableCell className="text-center">{student.currentEnrollment?.rollNumber}</TableCell>
+                        <TableCell className="text-center">
+                          {student.currentEnrollment?.classId?.name}
+                          {student.currentEnrollment?.sectionId?.name
+                            ? ` - ${student.currentEnrollment.sectionId.name}`
+                            : ""}
+                        </TableCell>
+                        <TableCell className="text-center">{new Date(student.dateOfBirth).toLocaleDateString()}</TableCell>
+                        <TableCell className="text-center">
+                          <div
+                            className="relative inline-block text-center"
+                            ref={dropdownRef}
+                          >
+                            <button
+                              onClick={() => {
+                                toggleDropdown(student.id);
+                              }}
+                              className="text-gray-500 hover:text-gray-700 focus:outline-none"
+                              aria-expanded={activeDropdown === student.id}
+                              aria-haspopup="true"
+                            >
+                              <EllipsisHorizontalIcon className="h-5 w-5" />
+                            </button>
+
+                            {/* Dropdown menu with improved positioning */}
+                            {activeDropdown === student.id && (
+                              <div
+                                className="absolute right-0 top-full mt-1 w-32 bg-white border rounded-lg shadow-lg overflow-hidden z-50"
+                                role="menu"
+                                aria-orientation="vertical"
+                                aria-labelledby="options-menu"
+                              >
+                                <div role="none">
+                                  <button
+                                    className="w-full text-left block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+                                    role="menuitem"
+                                    onMouseDown={() => {
+                                      onClickEditStudent(student.id);
+                                      setActiveDropdown(null);
+                                    }}
+                                  >
+                                    {t("buttons.edit")}
+                                  </button>
+                                  <button
+                                    className="w-full text-left block px-4 py-2 text-sm text-red-600 hover:bg-gray-50"
+                                    role="menuitem"
+                                    onMouseDown={() => {
+                                      handleDeleteAction(student.id);
+                                      setActiveDropdown(null);
+                                    }}
+                                  >
+                                    {t("buttons.delete")}
+                                  </button>
+                                </div>
+                              </div>
+                            )}
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                ) : (
+                  <TableBody>
+                    <tr>
+                      <td colSpan={5}>
+                        <NoRecordFound
+                          t={t}
+                          searchTerm={searchTerm}
+                          clearFilters={() => {
+                            setSearchTerm("");
+                            setClassFilter("all");
+                          }}
+                        />
+                      </td>
+                    </tr>
+                  </TableBody>
+                )}
+              </Table>
 
               {/* Pagination */}
               {studentDetail && studentDetail.length > 10 && (
@@ -399,7 +380,6 @@ const StudentsList = () => {
             </>
           )}
         </div>
-      </div>
 
       {/* Add Student Modal */}
       <CreateUpdateStudentModal

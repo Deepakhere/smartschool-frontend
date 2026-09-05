@@ -11,7 +11,7 @@ import {
 } from "@heroicons/react/24/outline";
 
 import useProfileController from "./profile-controller";
-import LogoSpinner from "../../../../components/logo-spinner";
+import PageLoader from "../../../../components/page-loader";
 
 const AdminProfile = () => {
   const {
@@ -32,7 +32,7 @@ const AdminProfile = () => {
         <h1 className="text-2xl font-semibold text-gray-900">{t("labels.profile")}</h1>
       </div> */}
       {!user ? (
-        <LogoSpinner offsetSidebar />
+        <PageLoader />
       ) : (
         <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
           <div className="">
