@@ -44,6 +44,7 @@ export const useSidebarController = () => {
 
   const teacherNavigation = [
     { name: "Dashboard", href: `/${organizationId}/teacher/dashboard`, icon: HomeIcon, current: isActive("/dashboard") },
+    { name: "Attendance", href: `/${organizationId}/teacher/attendance`, icon: ClipboardDocumentCheckIcon, current: isActive("/attendance") },
   ];
 
   const navigation =

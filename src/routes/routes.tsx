@@ -11,6 +11,7 @@ import AdminFees from "../pages/admin/fees";
 import AdminStudents from "../pages/admin/students";
 import AdminClasses from "../pages/admin/classes";
 import AdminTeachers from "../pages/admin/teachers";
+import AdminAttendance from "../pages/admin/attendance";
 import AdminSettings from "../pages/admin/settings";
 
 // Teacher Pages
@@ -103,6 +104,10 @@ const Routes = () => {
           element: <AdminTeachers />,
         },
         {
+          path: "attendance",
+          element: <AdminAttendance />,
+        },
+        {
           path: "settings/*",
           element: <AdminSettings />,
         },
@@ -123,6 +128,10 @@ const Routes = () => {
         {
           path: "dashboard",
           element: <TeacherDashboard />,
+        },
+        {
+          path: "attendance",
+          element: <AdminAttendance />,
         },
       ],
     },
