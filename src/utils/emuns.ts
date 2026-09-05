@@ -34,6 +34,7 @@ export const API_QUERY_KEY = {
   GET_ALL_TEACHERS: "get-all-teachers",
   GET_DASHBOARD_STATS: "get-dashboard-stats",
   GET_TEACHER_DIRECTORY: "get-teacher-directory",
+  GET_MY_TEACHING_LOAD: "get-my-teaching-load",
 };
 
 export const API_MUTATION_KEY = {

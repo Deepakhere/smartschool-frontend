@@ -9,7 +9,7 @@ interface PublicRouteProps {
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
-  role: "admin" | "parent";
+  role: "admin" | "parent" | "teacher";
 }
 
 const useRoutesController = () => {

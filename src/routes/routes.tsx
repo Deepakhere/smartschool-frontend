@@ -13,6 +13,9 @@ import AdminClasses from "../pages/admin/classes";
 import AdminTeachers from "../pages/admin/teachers";
 import AdminSettings from "../pages/admin/settings";
 
+// Teacher Pages
+import TeacherDashboard from "../pages/teacher/dashboard";
+
 // Parent Pages
 import ParentDashboard from "../pages/parent/dashboard";
 import ParentNotices from "../pages/parent/notices";
@@ -102,6 +105,24 @@ const Routes = () => {
         {
           path: "settings/*",
           element: <AdminSettings />,
+        },
+      ],
+    },
+    {
+      path: "/:organizationId/teacher",
+      element: (
+        <ProtectedRoute role="teacher">
+          <Layout />
+        </ProtectedRoute>
+      ),
+      children: [
+        {
+          index: true,
+          element: <Navigate to="dashboard" replace />,
+        },
+        {
+          path: "dashboard",
+          element: <TeacherDashboard />,
         },
       ],
     },

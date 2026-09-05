@@ -136,7 +136,7 @@ export interface ILoginResponse {
   email: string;
   token: string;
   name: string;
-  role: "admin" | "parent";
+  role: "admin" | "parent" | "teacher";
   permissions: {
     canRead: boolean;
     canCreate: boolean;
@@ -154,7 +154,7 @@ export interface IAddUser {
   id: number;
   username: string;
   email: string;
-  role: "admin" | "parent";
+  role: "admin" | "parent" | "teacher";
 }
 
 export interface IAddUserValue {
@@ -186,7 +186,7 @@ export interface IAllUserDetails {
 export interface FormData {
   fullname: string;
   email: string;
-  role: "admin" | "parent";
+  role: "admin" | "parent" | "teacher";
   permissions: {
     canRead: boolean;
     canCreate: boolean;
@@ -196,7 +196,7 @@ export interface FormData {
 }
 
 export interface RoleOption {
-  value: "admin" | "parent";
+  value: "admin" | "parent" | "teacher";
   label: string;
   description: string;
   icon: ReactNode;
@@ -260,7 +260,7 @@ export interface IUpdateUserValue {
   id: string;
   name: string;
   email: string;
-  role: "admin" | "parent";
+  role: "admin" | "parent" | "teacher";
   permissions: {
     canRead: boolean;
     canCreate: boolean;
@@ -273,7 +273,7 @@ export interface IUserDetailResponse {
   id: string;
   email: string;
   token: string;
-  role: "admin" | "parent";
+  role: "admin" | "parent" | "teacher";
   permissions: {
     canRead: boolean;
     canCreate: boolean;
@@ -284,7 +284,7 @@ export interface IUserDetailResponse {
 }
 
 export interface IRoleOptionDropDown {
-  value: "all" | "admin" | "parent";
+  value: "all" | "admin" | "parent" | "teacher";
   label: string;
   description: string;
   icon: React.ReactNode;

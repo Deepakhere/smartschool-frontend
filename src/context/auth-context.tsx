@@ -14,7 +14,7 @@ type User = {
   name?: string;
   id?: string;
   email?: string;
-  role?: "admin" | "parent";
+  role?: "admin" | "parent" | "teacher";
   phoneNumber?: string;
   permissions?: {
     canRead: boolean;
