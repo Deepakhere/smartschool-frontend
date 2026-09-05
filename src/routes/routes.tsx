@@ -13,9 +13,11 @@ import AdminClasses from "../pages/admin/classes";
 import AdminTeachers from "../pages/admin/teachers";
 import AdminAttendance from "../pages/admin/attendance";
 import AdminSettings from "../pages/admin/settings";
+import AdminPTM from "../pages/admin/ptm";
 
 // Teacher Pages
 import TeacherDashboard from "../pages/teacher/dashboard";
+import TeacherPTM from "../pages/teacher/ptm";
 
 // Parent Pages
 import ParentDashboard from "../pages/parent/dashboard";
@@ -23,6 +25,7 @@ import ParentNotices from "../pages/parent/notices";
 import ParentHomework from "../pages/parent/homework";
 import ParentReports from "../pages/parent/reports";
 import ParentFees from "../pages/parent/fees";
+import ParentPTM from "../pages/parent/ptm";
 
 // Auth Pages
 import Login from "../pages/auth/login";
@@ -108,6 +111,10 @@ const Routes = () => {
           element: <AdminAttendance />,
         },
         {
+          path: "ptm",
+          element: <AdminPTM />,
+        },
+        {
           path: "settings/*",
           element: <AdminSettings />,
         },
@@ -136,6 +143,10 @@ const Routes = () => {
         {
           path: "homework",
           element: <AdminHomework />,
+        },
+        {
+          path: "ptm",
+          element: <TeacherPTM />,
         },
       ],
     },
@@ -170,6 +181,10 @@ const Routes = () => {
         {
           path: "fees",
           element: <ParentFees />,
+        },
+        {
+          path: "ptm",
+          element: <ParentPTM />,
         },
       ],
     },

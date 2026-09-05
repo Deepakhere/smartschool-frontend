@@ -16,6 +16,7 @@ export const APIS_ROUTES = {
   STAFF_SERVICE: "/staff-service/v1",
   ATTENDANCE_SERVICE: "/attendance-service/v1",
   HOMEWORK_SERVICE: "/homework-service/v1",
+  PTM_SERVICE: "/ptm-service/v1",
 };
 
 export const API_QUERY_KEY = {
@@ -41,6 +42,10 @@ export const API_QUERY_KEY = {
   GET_MY_TEACHING_LOAD: "get-my-teaching-load",
   GET_MY_NOTICES: "get-my-notices",
   GET_MY_NOTIFICATIONS: "get-my-notifications",
+  GET_PTM_EVENTS: "get-ptm-events",
+  GET_PTM_SLOTS: "get-ptm-slots",
+  GET_MY_PTM_BOOKINGS: "get-my-ptm-bookings",
+  GET_MY_PTM_AGENDA: "get-my-ptm-agenda",
 };
 
 export const API_MUTATION_KEY = {
@@ -65,6 +70,10 @@ export const API_MUTATION_KEY = {
   ASSIGN_TEACHER: "assign-teacher",
   MARK_NOTICE_READ: "mark-notice-read",
   MARK_NOTIFICATION_READ: "mark-notification-read",
+  CREATE_PTM_EVENT: "create-ptm-event",
+  GENERATE_PTM_SLOTS: "generate-ptm-slots",
+  BOOK_PTM_SLOT: "book-ptm-slot",
+  CANCEL_PTM_BOOKING: "cancel-ptm-booking",
 };
 
 export const PASSWORD_CIPHER_MESSAGE = "KID_SIGHT_KEY";
