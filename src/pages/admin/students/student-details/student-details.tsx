@@ -9,6 +9,7 @@ import CreateUpdateStudentModal from "../student-modal/create-update-student-mod
 import useStudentDetailController from "./student-detail-controller";
 import LogoSpinner from "../../../../components/logo-spinner";
 import Avatar from "../../../../components/avatar";
+import GuardianModal from "./guardian-modal";
 
 const StudentDetails = () => {
   const {
@@ -19,6 +20,8 @@ const StudentDetails = () => {
     updateStudent,
     isEditModalOpen,
     isDeleteModalOpen,
+    isGuardianModalOpen,
+    setIsGuardianModalOpen,
     studentDetails,
     isLoadingStudentDetail,
     isErrorStudentDetail,
@@ -32,6 +35,9 @@ const StudentDetails = () => {
     setIsDeleteModalOpen,
     handleDeleteStudent,
     handleSubmit,
+    addGuardian,
+    handleSetPrimaryGuardian,
+    handleRemoveGuardian,
   } = useStudentDetailController();
 
   return (
@@ -155,43 +161,73 @@ const StudentDetails = () => {
             </div>
           </div>
 
-          {/* Parent information */}
+          {/* Guardians */}
           <div className="bg-white shadow overflow-hidden sm:rounded-lg mb-6">
-            <div className="px-4 py-5 sm:px-6">
-              <h3 className="text-lg leading-6 font-medium text-gray-900">
-                Parent Information
-              </h3>
-              <p className="mt-1 max-w-2xl text-sm text-gray-500">
-                Contact details of parent or guardian.
-              </p>
+            <div className="px-4 py-5 sm:px-6 flex justify-between items-center">
+              <div>
+                <h3 className="text-lg leading-6 font-medium text-gray-900">
+                  Guardians
+                </h3>
+                <p className="mt-1 max-w-2xl text-sm text-gray-500">
+                  Parents and guardians linked to this student.
+                </p>
+              </div>
+              <button
+                onClick={() => setIsGuardianModalOpen(true)}
+                className="inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
+              >
+                + Add Guardian
+              </button>
             </div>
-            <div className="border-t border-gray-200">
-              <dl>
-                <div className="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                  <dt className="text-sm font-medium text-gray-500">
-                    Parent Name
-                  </dt>
-                  <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                    {studentDetails?.parentName}
-                  </dd>
-                </div>
-                <div className="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                  <dt className="text-sm font-medium text-gray-500">
-                    Email address
-                  </dt>
-                  <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                    {studentDetails?.parentEmail}
-                  </dd>
-                </div>
-                <div className="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                  <dt className="text-sm font-medium text-gray-500">
-                    Phone number
-                  </dt>
-                  <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                    {studentDetails?.phoneNumber}
-                  </dd>
-                </div>
-              </dl>
+            <div className="border-t border-gray-200 divide-y divide-gray-200">
+              {!studentDetails?.guardians?.length ? (
+                <p className="px-4 py-5 text-sm text-gray-500">No guardians linked yet.</p>
+              ) : (
+                studentDetails.guardians.map((g) => (
+                  <div key={g.id} className="px-4 py-4 sm:px-6 flex justify-between items-center">
+                    <div>
+                      <p className="text-sm font-medium text-gray-900">
+                        {g.parentUserId?.name}{" "}
+                        <span className="text-xs font-normal text-gray-500 capitalize">
+                          ({g.relationshipType.toLowerCase()})
+                        </span>
+                      </p>
+                      <p className="text-sm text-gray-500">
+                        {g.parentUserId?.email} {g.parentUserId?.phoneNumber ? `· ${g.parentUserId.phoneNumber}` : ""}
+                      </p>
+                      <div className="mt-1 flex gap-2">
+                        {g.isPrimaryGuardian && (
+                          <span className="bg-indigo-100 text-indigo-800 text-xs font-medium px-2 py-0.5 rounded-full">Primary</span>
+                        )}
+                        {g.isEmergencyContact && (
+                          <span className="bg-amber-100 text-amber-800 text-xs font-medium px-2 py-0.5 rounded-full">Emergency contact</span>
+                        )}
+                        {g.canPickup && (
+                          <span className="bg-green-100 text-green-800 text-xs font-medium px-2 py-0.5 rounded-full">Can pick up</span>
+                        )}
+                      </div>
+                    </div>
+                    <div className="flex gap-3">
+                      {!g.isPrimaryGuardian && (
+                        <button
+                          onClick={() => handleSetPrimaryGuardian(g.id)}
+                          className="text-sm text-indigo-600 hover:text-indigo-800"
+                        >
+                          Set as primary
+                        </button>
+                      )}
+                      {!g.isPrimaryGuardian && (
+                        <button
+                          onClick={() => handleRemoveGuardian(g.id)}
+                          className="text-sm text-red-600 hover:text-red-800"
+                        >
+                          Remove
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                ))
+              )}
             </div>
           </div>
 
@@ -490,6 +526,13 @@ const StudentDetails = () => {
             isLoading={false}
             onClose={() => setIsDeleteModalOpen(false)}
             onConfirm={handleDeleteStudent}
+          />
+
+          <GuardianModal
+            isOpen={isGuardianModalOpen}
+            isSubmitting={addGuardian.isLoading}
+            onClose={() => setIsGuardianModalOpen(false)}
+            onSubmit={(value) => addGuardian.mutate(value)}
           />
         </div>
       )}

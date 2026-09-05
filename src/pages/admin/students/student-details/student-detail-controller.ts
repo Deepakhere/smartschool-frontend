@@ -1,11 +1,13 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import toast from "react-hot-toast";
 import {
   useDeleteStudent,
   useGetStudentById,
   useUpdateStudentDetail,
 } from "../service";
+import { useAddGuardian, useSetPrimaryGuardian, useRemoveGuardian } from "../service/guardian-service";
 import { IStudentFormData } from "../../../../types";
 import { useError } from "../../../../hooks";
 
@@ -17,6 +19,7 @@ const useStudentDetailController = () => {
 
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [isGuardianModalOpen, setIsGuardianModalOpen] = useState(false);
   const [currentStep, setCurrentStep] = useState(1);
   const [formData, setFormData] = useState({} as IStudentFormData);
 
@@ -28,6 +31,10 @@ const useStudentDetailController = () => {
   const updateStudent = useUpdateStudentDetail(organizationId || "");
 
   const deleteStudent = useDeleteStudent(organizationId || "");
+
+  const addGuardian = useAddGuardian(organizationId || "", studentId || "");
+  const setPrimaryGuardian = useSetPrimaryGuardian(organizationId || "", studentId || "");
+  const removeGuardian = useRemoveGuardian(organizationId || "", studentId || "");
 
   useError({
     mutation: deleteStudent,
@@ -97,14 +104,45 @@ const useStudentDetailController = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [deleteStudent.isSuccess]);
 
+  useEffect(() => {
+    if (addGuardian.isSuccess) {
+      toast.success("Guardian added successfully.");
+      setIsGuardianModalOpen(false);
+    }
+    if (addGuardian.isError) {
+      toast.error(addGuardian.error?.response?.Error?.message || "Failed to add guardian");
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [addGuardian.isSuccess, addGuardian.isError]);
+
+  useEffect(() => {
+    if (removeGuardian.isError) {
+      toast.error(removeGuardian.error?.response?.Error?.message || "Failed to remove guardian");
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [removeGuardian.isError]);
+
+  const handleSetPrimaryGuardian = (guardianLinkId: string) => {
+    setPrimaryGuardian.mutate(guardianLinkId);
+  };
+
+  const handleRemoveGuardian = (guardianLinkId: string) => {
+    if (window.confirm("Remove this guardian from the student?")) {
+      removeGuardian.mutate(guardianLinkId);
+    }
+  };
+
   return {
     t,
     organizationId: organizationId || "",
+    studentId: studentId || "",
     formData,
     currentStep,
     updateStudent,
     isEditModalOpen,
     isDeleteModalOpen,
+    isGuardianModalOpen,
+    setIsGuardianModalOpen,
     studentDetails: getStudentDetailById?.data?.item,
     isLoadingStudentDetail: getStudentDetailById.isLoading,
     isErrorStudentDetail: getStudentDetailById.isError,
@@ -118,6 +156,9 @@ const useStudentDetailController = () => {
     setIsEditModalOpen,
     setIsDeleteModalOpen,
     handleDeleteStudent,
+    addGuardian,
+    handleSetPrimaryGuardian,
+    handleRemoveGuardian,
   };
 };
 

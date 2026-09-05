@@ -391,6 +391,27 @@ export interface IStudentEnrollment {
   rollNumber: string;
 }
 
+export interface IGuardian {
+  id: string;
+  parentUserId: { id: string; name: string; email: string; phoneNumber: string; status: string };
+  relationshipType: "FATHER" | "MOTHER" | "GUARDIAN" | "OTHER";
+  isPrimaryGuardian: boolean;
+  isEmergencyContact: boolean;
+  canPickup: boolean;
+  communicationPreference: string[];
+  status: string;
+}
+
+export interface IAddGuardianValue {
+  parentEmail: string;
+  parentName?: string;
+  phoneNumber?: string;
+  relationshipType: string;
+  isPrimaryGuardian: boolean;
+  isEmergencyContact: boolean;
+  canPickup: boolean;
+}
+
 export interface ICreateUpdateStudentModalProps {
   t: (key: string) => string;
   isOpen: boolean;

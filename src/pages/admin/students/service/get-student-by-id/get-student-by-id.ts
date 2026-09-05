@@ -1,6 +1,6 @@
 import { useQuery } from "react-query";
 import apiClient from "../../../../../config";
-import { IAPIError, IAxiosResponse, IStudentEnrollment } from "../../../../../types";
+import { IAPIError, IAxiosResponse, IStudentEnrollment, IGuardian } from "../../../../../types";
 import { APIS_ROUTES, API_QUERY_KEY } from "../../../../../utils";
 
 interface IStudentDetailResponse {
@@ -17,6 +17,7 @@ interface IStudentDetailResponse {
   parentEmail: string;
   phoneNumber: string;
   parentId: string;
+  guardians: IGuardian[];
 }
 
 const getStudentById = async (
