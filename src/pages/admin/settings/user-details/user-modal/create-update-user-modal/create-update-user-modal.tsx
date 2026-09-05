@@ -10,6 +10,7 @@ const CreateUpdateUserModal = ({
   roleOptions,
   permissionOptions,
   isEditUser,
+  isEditingSelf,
   isLoadingAddUserDetail,
   isLoadingUpdateUserDetail,
   onClose,
@@ -91,6 +92,12 @@ const CreateUpdateUserModal = ({
                   />
                 </div>
 
+                {isEditingSelf && (
+                  <div className="bg-blue-50 border border-blue-200 rounded-md p-3 text-sm text-blue-800">
+                    You can't change your own role or permissions. Ask another admin if this needs to change.
+                  </div>
+                )}
+
                 <div>
                   <label
                     htmlFor="role"
@@ -102,15 +109,19 @@ const CreateUpdateUserModal = ({
                     {roleOptions.map((role) => (
                       <div
                         key={role.value}
-                        className={`relative rounded-lg border p-4 cursor-pointer ${
+                        aria-disabled={isEditingSelf}
+                        className={`relative rounded-lg border p-4 ${
+                          isEditingSelf ? "opacity-50 cursor-not-allowed" : "cursor-pointer"
+                        } ${
                           formData.role === role.value
                             ? "border-indigo-500 bg-indigo-50"
                             : "border-gray-300 hover:border-indigo-300"
                         }`}
                         onClick={() =>
+                          !isEditingSelf &&
                           setFormData({
                             ...formData,
-                            role: role.value as "admin" | "parent",
+                            role: role.value as "admin" | "parent" | "teacher",
                           })
                         }
                       >
@@ -166,6 +177,7 @@ const CreateUpdateUserModal = ({
                             <input
                               type="checkbox"
                               id={permission.id}
+                              disabled={isEditingSelf}
                               checked={
                                 formData.permissions[
                                   permission.id as keyof typeof formData.permissions
@@ -176,7 +188,7 @@ const CreateUpdateUserModal = ({
                                   permission.id as keyof typeof formData.permissions
                                 )
                               }
-                              className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
+                              className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded disabled:opacity-50 disabled:cursor-not-allowed"
                             />
                           </div>
                           <div className="flex flex-col">

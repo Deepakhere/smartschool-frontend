@@ -18,12 +18,15 @@ import {
 } from "./service";
 import { useError } from "../../../../hooks";
 import { useTranslation } from "react-i18next";
+import { useAuth } from "../../../../context/auth-context";
 
 const useUserDetailsController = () => {
   const { organizationId } = useParams<{ organizationId: string }>();
   const { t } = useTranslation();
+  const { user: currentUser } = useAuth();
 
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editingUserId, setEditingUserId] = useState<string>("");
   const [sortBy, setSortBy] = useState<"all" | "admin" | "parent">("all");
   const [formData, setFormData] = useState({
     fullname: "",
@@ -328,7 +331,7 @@ const useUserDetailsController = () => {
     setFormData({
       fullname: user.name,
       email: user.email,
-      role: user.role as "admin" | "parent",
+      role: user.role as "admin" | "parent" | "teacher",
       permissions: {
         canRead: user.permissions.canRead,
         canCreate: user.permissions.canCreate,
@@ -337,13 +340,17 @@ const useUserDetailsController = () => {
       },
     });
 
+    setEditingUserId(userId);
     setIsModalOpen(true);
     setIsEditUser(true);
   };
 
+  const isEditingSelf = !!currentUser?.id && editingUserId === currentUser.id;
+
   const onCancel = () => {
     setIsModalOpen(false);
     setIsEditUser(false);
+    setEditingUserId("");
     setFormData({
       fullname: "",
       email: "",
@@ -415,6 +422,7 @@ const useUserDetailsController = () => {
     sortBy,
     formData,
     isModalOpen,
+    isEditingSelf,
     users,
     roleOptions,
     permissionOptions,

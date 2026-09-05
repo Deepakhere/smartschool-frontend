@@ -11,7 +11,7 @@ interface BulkUploadModalProps {
 }
 
 const inputClass =
-  "mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm";
+  "mt-1 block w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-gray-900 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm";
 
 const BulkUploadModal = ({ isOpen, organizationId, onClose, onImported }: BulkUploadModalProps) => {
   const c = useBulkUploadModalController(organizationId, onImported);

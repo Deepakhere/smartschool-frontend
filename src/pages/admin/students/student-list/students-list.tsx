@@ -129,7 +129,7 @@ const StudentsList = () => {
               <select
                 value={classFilter}
                 onChange={handleClassFilterChange}
-                className="block w-full pl-3 pr-10 py-2 text-base border border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
+                className="block w-full pl-3 pr-10 py-2 text-base bg-white text-gray-900 border border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
               >
                 <option value="all">{t("labels.all_classes")}</option>
                 {CLASS_OPTIONS.map((klass) => (

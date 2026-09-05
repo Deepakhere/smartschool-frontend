@@ -11,6 +11,7 @@ const UserDetails = () => {
     sortBy,
     formData,
     isModalOpen,
+    isEditingSelf,
     users,
     isEditUser,
     roleOptions,
@@ -68,7 +69,7 @@ const UserDetails = () => {
                 <select
                   value={sortBy}
                   onChange={(e) => onRoleChange(e.target.value)}
-                  className="appearance-none pl-10 pr-8 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm cursor-pointer"
+                  className="appearance-none pl-10 pr-8 py-2 bg-white text-gray-900 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm cursor-pointer"
                 >
                   {roleOptionsDropDown.map((option) => (
                     <option key={option.value} value={option.value}>
@@ -230,6 +231,7 @@ const UserDetails = () => {
             roleOptions={roleOptions}
             permissionOptions={permissionOptions}
             isEditUser={isEditUser}
+            isEditingSelf={isEditingSelf}
             isLoadingAddUserDetail={isLoadingAddUserDetail}
             isLoadingUpdateUserDetail={isLoadingUpdateUserDetail}
             setFormData={setFormData}

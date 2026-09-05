@@ -289,7 +289,7 @@ const AdminProfile = () => {
                         </label>
                         <select
                           id="language"
-                          className="mt-1 block w-full pl-3 pr-10 py-2 text-base border border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
+                          className="mt-1 block w-full pl-3 pr-10 py-2 text-base bg-white text-gray-900 border border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
                           value={currentLanguage}
                           onChange={(e) => changeLanguage(e.target.value)}
                         >
@@ -311,7 +311,7 @@ const AdminProfile = () => {
                         </label>
                         <select
                           id="theme"
-                          className="mt-1 block w-full pl-3 pr-10 py-2 text-base border border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
+                          className="mt-1 block w-full pl-3 pr-10 py-2 text-base bg-white text-gray-900 border border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
                           value={theme}
                           onChange={(e) =>
                             changeTheme(e.target.value as "light" | "dark")

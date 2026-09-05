@@ -209,6 +209,7 @@ export interface ICreateUpdateUserModalProps {
   roleOptions: RoleOption[];
   permissionOptions: PermissionOption[];
   isEditUser: boolean;
+  isEditingSelf?: boolean;
   isLoadingAddUserDetail: boolean;
   isLoadingUpdateUserDetail?: boolean;
   onClose: () => void;

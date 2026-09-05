@@ -42,7 +42,7 @@ const StudentDetailsForm = ({
               placeholder={t("messages.enter_admission_no")}
               value={formData.admissionNumber}
               onChange={handleChange}
-              className="mt-1 block w-full p-2 rounded-md border border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+              className="mt-1 block w-full p-2 rounded-md border border-gray-300 bg-white text-gray-900 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
               required
             />
           </div>
@@ -60,7 +60,7 @@ const StudentDetailsForm = ({
               name="admissionDate"
               value={formData.admissionDate}
               onChange={handleChange}
-              className="mt-1 block w-full p-2 rounded-md border border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+              className="mt-1 block w-full p-2 rounded-md border border-gray-300 bg-white text-gray-900 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
               required
             />
           </div>
@@ -81,7 +81,7 @@ const StudentDetailsForm = ({
                   name="academicYearId"
                   value={formData.academicYearId || ""}
                   onChange={handleChange}
-                  className="mt-1 block w-full p-2 rounded-md border border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                  className="mt-1 block w-full p-2 rounded-md border border-gray-300 bg-white text-gray-900 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                   required
                 >
                   <option value="">Select academic year</option>
@@ -101,7 +101,7 @@ const StudentDetailsForm = ({
                   value={formData.classId || ""}
                   onChange={handleChange}
                   disabled={!formData.academicYearId}
-                  className="mt-1 block w-full p-2 rounded-md border border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                  className="mt-1 block w-full p-2 rounded-md border border-gray-300 bg-white text-gray-900 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                   required
                 >
                   <option value="">Select class</option>
@@ -121,7 +121,7 @@ const StudentDetailsForm = ({
                   value={formData.sectionId || ""}
                   onChange={handleChange}
                   disabled={!formData.classId}
-                  className="mt-1 block w-full p-2 rounded-md border border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                  className="mt-1 block w-full p-2 rounded-md border border-gray-300 bg-white text-gray-900 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                   required
                 >
                   <option value="">Select section</option>
@@ -145,7 +145,7 @@ const StudentDetailsForm = ({
                   placeholder={t("messages.enter_roll_no")}
                   value={formData.rollNumber}
                   onChange={handleChange}
-                  className="mt-1 block w-full p-2 rounded-md border border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                  className="mt-1 block w-full p-2 rounded-md border border-gray-300 bg-white text-gray-900 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                   required
                 />
               </div>
@@ -169,7 +169,7 @@ const StudentDetailsForm = ({
               placeholder={t("messages.enter_fullname")}
               value={formData.name}
               onChange={handleChange}
-              className="mt-1 block w-full p-2 rounded-md border border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+              className="mt-1 block w-full p-2 rounded-md border border-gray-300 bg-white text-gray-900 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
               required
             />
           </div>
@@ -187,7 +187,7 @@ const StudentDetailsForm = ({
               name="dateOfBirth"
               value={formData.dateOfBirth}
               onChange={handleChange}
-              className="mt-1 block w-full p-2 rounded-md border border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+              className="mt-1 block w-full p-2 rounded-md border border-gray-300 bg-white text-gray-900 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
               required
             />
           </div>
@@ -206,7 +206,7 @@ const StudentDetailsForm = ({
               placeholder={t("messages.enter_city")}
               value={formData.city}
               onChange={handleChange}
-              className="mt-1 block w-full p-2 rounded-md border border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+              className="mt-1 block w-full p-2 rounded-md border border-gray-300 bg-white text-gray-900 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
               required
             />
           </div>
@@ -225,7 +225,7 @@ const StudentDetailsForm = ({
               placeholder={t("messages.enter_state")}
               value={formData.state}
               onChange={handleChange}
-              className="mt-1 block w-full p-2 rounded-md border border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+              className="mt-1 block w-full p-2 rounded-md border border-gray-300 bg-white text-gray-900 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
               required
             />
           </div>
@@ -247,7 +247,7 @@ const StudentDetailsForm = ({
           placeholder={t("messages.enter_full_address")}
           value={formData.address}
           onChange={handleChange}
-          className="mt-1 block w-full p-2 rounded-md border border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+          className="mt-1 block w-full p-2 rounded-md border border-gray-300 bg-white text-gray-900 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
           required
         />
       </div>
