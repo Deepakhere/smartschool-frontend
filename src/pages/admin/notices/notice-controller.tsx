@@ -58,6 +58,10 @@ const useNoticeController = () => {
       noticeFormData.append("attachment", formData.attachment);
     }
 
+    if (formData.audience) {
+      noticeFormData.append("audience", JSON.stringify(formData.audience));
+    }
+
     createNotice.mutate(noticeFormData);
   };
 

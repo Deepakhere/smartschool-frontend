@@ -79,6 +79,12 @@ const AdminNotices = () => {
                         scope="col"
                         className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                       >
+                        Audience
+                      </th>
+                      <th
+                        scope="col"
+                        className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                      >
                         Date
                       </th>
                       <th
@@ -116,6 +122,17 @@ const AdminNotices = () => {
                               }`}
                             >
                               {notice.type}
+                            </span>
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            <span className="px-2 py-1 inline-flex text-xs leading-5 font-medium rounded-full bg-gray-100 text-gray-700">
+                              {notice.audience?.scope === "SCHOOL" || !notice.audience
+                                ? "Whole School"
+                                : notice.audience.scope === "ROLE"
+                                ? `Roles: ${notice.audience.roles.join(", ")}`
+                                : notice.audience.scope === "CLASS"
+                                ? `${notice.audience.classIds.length} class(es)`
+                                : `${notice.audience.sectionIds.length} section(s)`}
                             </span>
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">

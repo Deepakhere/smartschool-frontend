@@ -1,5 +1,14 @@
 import { ReactNode } from "react";
 
+export type NoticeAudienceScope = "SCHOOL" | "ROLE" | "CLASS" | "SECTION";
+
+export interface INoticeAudience {
+  scope: NoticeAudienceScope;
+  roles: string[];
+  classIds: string[];
+  sectionIds: string[];
+}
+
 export interface INotice {
   id: string;
   title: string;
@@ -9,6 +18,8 @@ export interface INotice {
   createdAt: string;
   updatedAt: string;
   attachmentURL: string;
+  audience?: INoticeAudience;
+  pinned?: boolean;
 }
 
 export interface ICreateNoticeRequest {
@@ -17,6 +28,7 @@ export interface ICreateNoticeRequest {
   type: string;
   date?: string;
   attachment?: File | null;
+  audience?: INoticeAudience;
 }
 
 export interface IHomework {

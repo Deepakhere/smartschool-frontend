@@ -39,6 +39,8 @@ export const API_QUERY_KEY = {
   GET_SECTION_ATTENDANCE: "get-section-attendance",
   GET_HOMEWORK_LIST: "get-homework-list",
   GET_MY_TEACHING_LOAD: "get-my-teaching-load",
+  GET_MY_NOTICES: "get-my-notices",
+  GET_MY_NOTIFICATIONS: "get-my-notifications",
 };
 
 export const API_MUTATION_KEY = {
@@ -61,6 +63,8 @@ export const API_MUTATION_KEY = {
   CREATE_SECTION: "create-section",
   CREATE_SUBJECT: "create-subject",
   ASSIGN_TEACHER: "assign-teacher",
+  MARK_NOTICE_READ: "mark-notice-read",
+  MARK_NOTIFICATION_READ: "mark-notification-read",
 };
 
 export const PASSWORD_CIPHER_MESSAGE = "KID_SIGHT_KEY";

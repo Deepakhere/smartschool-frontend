@@ -30,6 +30,15 @@ const NoticeModalWrapper = ({
     selectedNoticeType,
     isGeneratingContent,
     isAIPreviewModalOpen,
+    classOptions,
+    sectionOptions,
+    roleOptions,
+    sectionPickerClassId,
+    setSectionPickerClassId,
+    handleAudienceScopeChange,
+    handleAudienceRoleToggle,
+    handleAudienceClassToggle,
+    handleAudienceSectionToggle,
     handleSelectAI,
     handleSelectCustom,
     closeNoticeModal,
@@ -68,6 +77,15 @@ const NoticeModalWrapper = ({
         isGeneratingContent={isGeneratingContent}
         isAIModalOpen={isAIModalOpen}
         isAIPreviewModalOpen={isAIPreviewModalOpen}
+        classOptions={classOptions}
+        sectionOptions={sectionOptions}
+        roleOptions={roleOptions}
+        sectionPickerClassId={sectionPickerClassId}
+        setSectionPickerClassId={setSectionPickerClassId}
+        handleAudienceScopeChange={handleAudienceScopeChange}
+        handleAudienceRoleToggle={handleAudienceRoleToggle}
+        handleAudienceClassToggle={handleAudienceClassToggle}
+        handleAudienceSectionToggle={handleAudienceSectionToggle}
         onClickAIPreviewButton={onClickAIPreviewButton}
         onCloseAIPreviewModal={onCloseAIPreviewModal}
         onClose={closeNoticeModal}

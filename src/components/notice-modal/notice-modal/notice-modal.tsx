@@ -6,7 +6,7 @@ import { SparklesIcon, EyeIcon } from "@heroicons/react/24/solid";
 import DatePicker from "../../date-picker";
 import SelectDropdown from "../../custom-select";
 import ButtonSpinner from "../../../icons/button-spinner";
-import { ICreateNoticeRequest, SelectOption } from "../../../types";
+import { ICreateNoticeRequest, IClass, ISection, NoticeAudienceScope, SelectOption } from "../../../types";
 import NoticePreviewModal from "../../notice-preview-modal/notice-preview-modal";
 
 interface NoticeModalProps {
@@ -23,6 +23,15 @@ interface NoticeModalProps {
   isGeneratingContent: boolean;
   isAIModalOpen: boolean;
   isAIPreviewModalOpen: boolean;
+  classOptions: IClass[];
+  sectionOptions: ISection[];
+  roleOptions: string[];
+  sectionPickerClassId: string;
+  setSectionPickerClassId: (classId: string) => void;
+  handleAudienceScopeChange: (scope: NoticeAudienceScope) => void;
+  handleAudienceRoleToggle: (role: string) => void;
+  handleAudienceClassToggle: (classId: string) => void;
+  handleAudienceSectionToggle: (sectionId: string) => void;
   handleChange: (
     e: React.ChangeEvent<
       HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
@@ -35,6 +44,13 @@ interface NoticeModalProps {
   onClickAIPreviewButton: () => void;
   onCloseAIPreviewModal: () => void;
 }
+
+const audienceScopes: { value: NoticeAudienceScope; label: string }[] = [
+  { value: "SCHOOL", label: "Whole School" },
+  { value: "ROLE", label: "Specific Role" },
+  { value: "CLASS", label: "Specific Class" },
+  { value: "SECTION", label: "Specific Section" },
+];
 
 const NoticeModal = ({
   t,
@@ -50,6 +66,15 @@ const NoticeModal = ({
   isGeneratingContent,
   isAIModalOpen,
   isAIPreviewModalOpen,
+  classOptions,
+  sectionOptions,
+  roleOptions,
+  sectionPickerClassId,
+  setSectionPickerClassId,
+  handleAudienceScopeChange,
+  handleAudienceRoleToggle,
+  handleAudienceClassToggle,
+  handleAudienceSectionToggle,
   handleChange,
   handleDateChange,
   handleNoticeTypeChange,
@@ -58,6 +83,7 @@ const NoticeModal = ({
   onClickAIPreviewButton,
   onCloseAIPreviewModal,
 }: NoticeModalProps) => {
+  const audienceScope = formData.audience?.scope || "SCHOOL";
   return (
     <>
       <Transition.Root show={isOpen} as={Fragment}>
@@ -179,6 +205,116 @@ const NoticeModal = ({
                             onChange={handleNoticeTypeChange}
                           />
                         </div>
+
+                        {isAIModalOpen ? null : (
+                          <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                              Send To
+                            </label>
+                            <div className="flex flex-wrap gap-2">
+                              {audienceScopes.map((s) => (
+                                <button
+                                  key={s.value}
+                                  type="button"
+                                  onClick={() => handleAudienceScopeChange(s.value)}
+                                  className={`px-3 py-1.5 rounded-md text-sm border ${
+                                    audienceScope === s.value
+                                      ? "bg-indigo-600 text-white border-indigo-600"
+                                      : "bg-white text-gray-700 border-gray-300 hover:bg-gray-50"
+                                  }`}
+                                >
+                                  {s.label}
+                                </button>
+                              ))}
+                            </div>
+
+                            {audienceScope === "ROLE" && (
+                              <div className="mt-3 flex flex-wrap gap-2">
+                                {roleOptions.map((role) => {
+                                  const selected = (formData.audience?.roles || []).includes(role);
+                                  return (
+                                    <button
+                                      key={role}
+                                      type="button"
+                                      onClick={() => handleAudienceRoleToggle(role)}
+                                      className={`px-3 py-1 rounded-full text-xs border ${
+                                        selected
+                                          ? "bg-indigo-100 text-indigo-800 border-indigo-300"
+                                          : "bg-white text-gray-600 border-gray-300"
+                                      }`}
+                                    >
+                                      {role}
+                                    </button>
+                                  );
+                                })}
+                              </div>
+                            )}
+
+                            {audienceScope === "CLASS" && (
+                              <div className="mt-3 flex flex-wrap gap-2">
+                                {classOptions.length === 0 && (
+                                  <p className="text-sm text-gray-500">No classes found.</p>
+                                )}
+                                {classOptions.map((c) => {
+                                  const selected = (formData.audience?.classIds || []).includes(c.id);
+                                  return (
+                                    <button
+                                      key={c.id}
+                                      type="button"
+                                      onClick={() => handleAudienceClassToggle(c.id)}
+                                      className={`px-3 py-1 rounded-full text-xs border ${
+                                        selected
+                                          ? "bg-indigo-100 text-indigo-800 border-indigo-300"
+                                          : "bg-white text-gray-600 border-gray-300"
+                                      }`}
+                                    >
+                                      {c.name}
+                                    </button>
+                                  );
+                                })}
+                              </div>
+                            )}
+
+                            {audienceScope === "SECTION" && (
+                              <div className="mt-3 space-y-2">
+                                <select
+                                  value={sectionPickerClassId}
+                                  onChange={(e) => setSectionPickerClassId(e.target.value)}
+                                  className="block w-full p-2 rounded-md border border-gray-300 bg-white text-gray-900 shadow-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 sm:text-sm"
+                                >
+                                  <option value="">Select a class first</option>
+                                  {classOptions.map((c) => (
+                                    <option key={c.id} value={c.id}>
+                                      {c.name}
+                                    </option>
+                                  ))}
+                                </select>
+                                <div className="flex flex-wrap gap-2">
+                                  {sectionOptions.length === 0 && sectionPickerClassId && (
+                                    <p className="text-sm text-gray-500">No sections found.</p>
+                                  )}
+                                  {sectionOptions.map((sec) => {
+                                    const selected = (formData.audience?.sectionIds || []).includes(sec.id);
+                                    return (
+                                      <button
+                                        key={sec.id}
+                                        type="button"
+                                        onClick={() => handleAudienceSectionToggle(sec.id)}
+                                        className={`px-3 py-1 rounded-full text-xs border ${
+                                          selected
+                                            ? "bg-indigo-100 text-indigo-800 border-indigo-300"
+                                            : "bg-white text-gray-600 border-gray-300"
+                                        }`}
+                                      >
+                                        {sec.name}
+                                      </button>
+                                    );
+                                  })}
+                                </div>
+                              </div>
+                            )}
+                          </div>
+                        )}
 
                         <div>
                           <label
