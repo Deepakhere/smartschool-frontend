@@ -296,9 +296,16 @@ export interface IOrganization {
   description: string;
   country: string;
   users: string[];
-  location: string;
+  address: string;
   pincode: string;
   status: string;
+}
+
+export interface ICreateOrganizationValue {
+  name: string;
+  address: string;
+  pincode: string;
+  description?: string;
 }
 
 export interface IStudentDetails {

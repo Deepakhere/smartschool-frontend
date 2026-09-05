@@ -99,7 +99,11 @@
     "sign_out": "Sign Out",
     "manage_notices": "Manage Notices",
     "create_notice": "Create Notice",
-    "generate_notice_with_ai": "Create Notice with AI"
+    "generate_notice_with_ai": "Create Notice with AI",
+    "add_organization": "Add Organization",
+    "organization_name": "Organization Name",
+    "pincode": "Pincode",
+    "description": "Description"
   },
   "messages": {
     "enter_email_associate_with_account": "Don't worry! It happens. Please enter your email address associated with your account.",
@@ -137,7 +141,8 @@
     "search": "Search",
     "no_record_found": "No record found. Try changing the filter or add a new user.",
     "no_search_term_found": "No record found matching {{entity}}. Try a different search term or clear the search.",
-    "notice_created_successfully": "Notice created successfully."
+    "notice_created_successfully": "Notice created successfully.",
+    "organization_created_successfully": "Organization created successfully."
   },
   "buttons": {
     "sending": "Sending",

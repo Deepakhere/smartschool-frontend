@@ -2,10 +2,19 @@ import Avatar from "../../../components/avatar";
 import LogoSpinner from "../../../components/logo-spinner";
 import { IOrganization } from "../../../types";
 import useOrganizationController from "./organization-controller";
+import AddOrganizationModal from "./add-organization-modal";
 
 function Organization() {
-  const { organization, isLoading, navigateHome, signOut } =
-    useOrganizationController();
+  const {
+    organization,
+    isLoading,
+    navigateHome,
+    signOut,
+    isAddModalOpen,
+    openAddModal,
+    closeAddModal,
+    onOrganizationCreated,
+  } = useOrganizationController();
   return (
     <>
       {isLoading ? (
@@ -24,7 +33,7 @@ function Organization() {
               </div>
               <div className="flex gap-3">
                 <button
-                  onClick={() => {}}
+                  onClick={openAddModal}
                   title="Add Organization"
                   className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                 >
@@ -76,9 +85,9 @@ function Organization() {
                         <h3 className="text-lg font-medium text-base-400">
                           {workspace.name}
                         </h3>
-                        {workspace.location && (
+                        {workspace.address && (
                           <p className="text-xs text-base-600">
-                            {workspace.location}
+                            {workspace.address}
                           </p>
                         )}
                       </div>
@@ -122,6 +131,11 @@ function Organization() {
           </div>
         </div>
       )}
+      <AddOrganizationModal
+        isOpen={isAddModalOpen}
+        onClose={closeAddModal}
+        onCreated={onOrganizationCreated}
+      />
     </>
   );
 }

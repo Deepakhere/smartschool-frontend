@@ -13,6 +13,7 @@ const useOrganizationController = () => {
   const getAllOrganization = useGetAllOrganizations();
 
   const [organization, setOrganization] = useState<IOrganization[]>([]);
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
 
   const navigateHome = (organizationId: string) => {
     navigate(`/${organizationId}/${user?.role}`);
@@ -45,12 +46,17 @@ const useOrganizationController = () => {
   const signOut = () => {
     logout();
   };
+
   return {
     getAllOrganization,
     organization,
     isLoading: getAllOrganization.isLoading,
     navigateHome,
     signOut,
+    isAddModalOpen,
+    openAddModal: () => setIsAddModalOpen(true),
+    closeAddModal: () => setIsAddModalOpen(false),
+    onOrganizationCreated: () => getAllOrganization.refetch(),
   };
 };
 
