@@ -1,6 +1,7 @@
 export { default as Dashboard } from "./dashboard";
 export { default as Classes } from "./classes";
 export { default as Students } from "./students";
+export { default as Teachers } from "./teachers";
 export { default as Fees } from "./fees";
 export { default as Homework } from "./homework";
 export { default as Notices } from "./notices";

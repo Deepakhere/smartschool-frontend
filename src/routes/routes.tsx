@@ -10,6 +10,7 @@ import AdminReports from "../pages/admin/reports";
 import AdminFees from "../pages/admin/fees";
 import AdminStudents from "../pages/admin/students";
 import AdminClasses from "../pages/admin/classes";
+import AdminTeachers from "../pages/admin/teachers";
 import AdminSettings from "../pages/admin/settings";
 
 // Parent Pages
@@ -93,6 +94,10 @@ const Routes = () => {
         {
           path: "classes",
           element: <AdminClasses />,
+        },
+        {
+          path: "teachers",
+          element: <AdminTeachers />,
         },
         {
           path: "settings/*",
