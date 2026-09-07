@@ -8,7 +8,7 @@ import {
 import Cookies from "js-cookie";
 import { useGetUserDetails } from "./service";
 import { APIS_ROUTES, USER_ACCESS_KEY } from "../utils";
-import { ILoginResponse, IUserPreferences } from "../types";
+import { ILoginResponse, IUserAvatar, IUserPreferences } from "../types";
 import LogoSpinner from "../components/logo-spinner";
 import apiClient from "../config/api-client";
 
@@ -27,6 +27,7 @@ type User = {
     isGlobalAdmin: boolean;
   };
   preferences?: IUserPreferences;
+  avatar?: IUserAvatar;
 } | null;
 
 interface IAuthContext {
@@ -38,6 +39,7 @@ interface IAuthContext {
   // (theme, language, notification switches) don't each need their own local
   // state + a useEffect to keep it in sync with the server value
   updatePreferences: (partial: Partial<IUserPreferences>) => void;
+  updateAvatar: (avatar: IUserAvatar) => void;
 }
 
 const AuthContext = createContext<IAuthContext | undefined>(undefined);
@@ -59,6 +61,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     setUser((prev) =>
       prev ? { ...prev, preferences: { ...prev.preferences, ...partial } as IUserPreferences } : prev
     );
+  };
+
+  const updateAvatar = (avatar: IUserAvatar) => {
+    setUser((prev) => (prev ? { ...prev, avatar } : prev));
   };
 
   const logout = () => {
@@ -112,7 +118,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   }
 
   return (
-    <AuthContext.Provider value={{ login, logout, user, updatePreferences }}>
+    <AuthContext.Provider value={{ login, logout, user, updatePreferences, updateAvatar }}>
       {children}
     </AuthContext.Provider>
   );

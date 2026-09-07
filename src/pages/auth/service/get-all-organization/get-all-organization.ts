@@ -13,12 +13,13 @@ const getAllOrganizations = async () => {
   return result.data.Data;
 };
 
-const useGetAllOrganizations = () =>
+const useGetAllOrganizations = (enabled = true) =>
   useQuery<{ items: IOrganization[] }, IAPIError>(
     [API_QUERY_KEY.GET_ALL_ORGANIZATIONS],
     () => getAllOrganizations(),
     {
       cacheTime: 0,
+      enabled,
     }
   );
 

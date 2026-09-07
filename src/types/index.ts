@@ -152,6 +152,7 @@ export interface ILoginResponse {
     isGlobalAdmin: boolean;
   };
   preferences?: IUserPreferences;
+  avatar?: IUserAvatar;
 }
 
 export interface IForgotPassword {
@@ -266,6 +267,11 @@ export interface IUserPreferences {
   smsNotifications: boolean;
 }
 
+export interface IUserAvatar {
+  publicId: string;
+  url: string;
+}
+
 export interface IUserDetailResponse {
   id: string;
   email: string;
@@ -280,6 +286,7 @@ export interface IUserDetailResponse {
     isGlobalAdmin: boolean;
   };
   preferences?: IUserPreferences;
+  avatar?: IUserAvatar;
 }
 
 export interface IRoleOptionDropDown {
@@ -298,6 +305,10 @@ export interface IOrganization {
   address: string;
   pincode: string;
   status: string;
+  logo?: {
+    publicId: string;
+    url: string;
+  };
 }
 
 export interface ICreateOrganizationValue {

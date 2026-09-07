@@ -94,7 +94,7 @@ const Header = ({ onToggleSidebar, isCollapsed, onToggleCollapse }: HeaderProps)
                 aria-expanded={isUserMenuOpen}
                 aria-haspopup="true"
               >
-                {user && user?.name && <Avatar name={user?.name} />}
+                {user && user?.name && <Avatar name={user.name} src={user.avatar?.url} />}
               </button>
               {isUserMenuOpen && (
                 <div

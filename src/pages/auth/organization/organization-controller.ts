@@ -14,6 +14,8 @@ const useOrganizationController = () => {
 
   const [organization, setOrganization] = useState<IOrganization[]>([]);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [editingOrganization, setEditingOrganization] = useState<IOrganization | null>(null);
+  const [searchTerm, setSearchTerm] = useState("");
 
   const navigateHome = (organizationId: string) => {
     navigate(`/${organizationId}/${user?.role}`);
@@ -47,16 +49,28 @@ const useOrganizationController = () => {
     logout();
   };
 
+  const filteredOrganizations = organization.filter((workspace) =>
+    workspace.name.toLowerCase().includes(searchTerm.trim().toLowerCase())
+  );
+
   return {
     getAllOrganization,
-    organization,
+    organization: filteredOrganizations,
+    hasAnyOrganization: organization.length > 0,
     isLoading: getAllOrganization.isLoading,
     navigateHome,
     signOut,
-    isAddModalOpen,
+    isAddModalOpen: isAddModalOpen || !!editingOrganization,
+    editingOrganization,
     openAddModal: () => setIsAddModalOpen(true),
-    closeAddModal: () => setIsAddModalOpen(false),
+    openEditModal: (org: IOrganization) => setEditingOrganization(org),
+    closeAddModal: () => {
+      setIsAddModalOpen(false);
+      setEditingOrganization(null);
+    },
     onOrganizationCreated: () => getAllOrganization.refetch(),
+    searchTerm,
+    setSearchTerm,
   };
 };
 

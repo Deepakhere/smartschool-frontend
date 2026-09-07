@@ -11,6 +11,7 @@ import {
 } from "@heroicons/react/24/outline";
 
 import useProfileController from "./profile-controller";
+import ButtonSpinner from "../../../../icons/button-spinner";
 import PageLoader from "../../../../components/page-loader";
 import CustomSelectDropdown from "../../../../components/custom-select";
 import { Switch } from "../../../../components/ui/switch";
@@ -32,6 +33,7 @@ const AdminProfile = () => {
     smsNotifications,
     changeEmailNotifications,
     changeSmsNotifications,
+    isUploadingAvatar,
   } = useProfileController();
 
   const languageOptions: SelectOption[] = [
@@ -271,13 +273,18 @@ const AdminProfile = () => {
                           htmlFor="avatar-upload"
                           className="absolute bottom-0 right-0 bg-white rounded-full p-2 shadow-md cursor-pointer hover:bg-gray-50"
                         >
-                          <ArrowUpTrayIcon className="h-5 w-5 text-gray-600" />
+                          {isUploadingAvatar ? (
+                            <ButtonSpinner />
+                          ) : (
+                            <ArrowUpTrayIcon className="h-5 w-5 text-gray-600" />
+                          )}
                         </label>
                         <input
                           id="avatar-upload"
                           type="file"
                           className="hidden"
-                          accept="image/*"
+                          accept="image/png,image/jpeg"
+                          disabled={isUploadingAvatar}
                           onChange={handleAvatarChange}
                         />
                       </div>

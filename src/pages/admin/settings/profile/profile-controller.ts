@@ -4,30 +4,31 @@ import Cookies from "js-cookie";
 
 import { useAuth } from "../../../../context/auth-context";
 import { useTheme } from "../../../../context/theme-context";
-import { useUpdateUserPreferences } from "./service";
+import { useUpdateUserPreferences, useUploadAvatar } from "./service";
 
 const useProfileController = () => {
   const { t, i18n } = useTranslation();
-  const { user, updatePreferences } = useAuth();
+  const { user, updatePreferences, updateAvatar } = useAuth();
   const { theme, setTheme } = useTheme();
   const updateServerPreferences = useUpdateUserPreferences();
+  const uploadAvatar = useUploadAvatar();
 
   const [editMode, setEditMode] = useState(false);
-  const [imageUrl, setImageUrl] = useState<string | null>(null);
 
   // react-i18next already re-renders on language change, so i18n.language itself
   // is the current language — no need to mirror it into its own state
   const currentLanguage = i18n.language || "en";
 
+  // derived straight from the shared user object, same as theme/notifications —
+  // no local state, so a refresh (or another tab) always shows what's actually saved
+  const imageUrl = user?.avatar?.url;
+
   const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        if (event.target?.result) {
-          setImageUrl(event.target.result as string);
-        }
-      };
-      reader.readAsDataURL(e.target.files[0]);
+    const file = e.target.files?.[0];
+    if (file) {
+      uploadAvatar.mutate(file, {
+        onSuccess: (avatar) => updateAvatar(avatar),
+      });
     }
   };
 
@@ -77,6 +78,7 @@ const useProfileController = () => {
     smsNotifications,
     changeEmailNotifications,
     changeSmsNotifications,
+    isUploadingAvatar: uploadAvatar.isLoading,
   };
 };
 

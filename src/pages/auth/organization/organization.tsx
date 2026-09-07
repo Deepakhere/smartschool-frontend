@@ -1,19 +1,41 @@
+import {
+  PlusIcon,
+  ArrowRightOnRectangleIcon,
+  MagnifyingGlassIcon,
+  BuildingOffice2Icon,
+  MapPinIcon,
+  ArrowRightIcon,
+  PencilIcon,
+} from "@heroicons/react/24/outline";
+
 import Avatar from "../../../components/avatar";
 import LogoSpinner from "../../../components/logo-spinner";
 import { IOrganization } from "../../../types";
 import useOrganizationController from "./organization-controller";
 import AddOrganizationModal from "./add-organization-modal";
 
+const statusStyles: Record<string, string> = {
+  active: "bg-green-100 text-green-800",
+  trial: "bg-blue-100 text-blue-800",
+  suspended: "bg-red-100 text-red-800",
+  churned: "bg-gray-100 text-gray-700",
+};
+
 function Organization() {
   const {
     organization,
+    hasAnyOrganization,
     isLoading,
     navigateHome,
     signOut,
     isAddModalOpen,
+    editingOrganization,
     openAddModal,
+    openEditModal,
     closeAddModal,
     onOrganizationCreated,
+    searchTerm,
+    setSearchTerm,
   } = useOrganizationController();
   return (
     <>
@@ -21,14 +43,17 @@ function Organization() {
         <LogoSpinner />
       ) : (
         <div className="min-h-screen bg-gray-50 font-sans">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
-            <div className="flex justify-between items-center mb-8">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+            <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between mb-8">
               <div>
                 <h1 className="text-2xl font-semibold text-base-400">
                   Organizations
                 </h1>
                 <p className="text-sm text-base-600 mt-1">
                   Select an organization to view and manage its information
+                  {hasAnyOrganization && (
+                    <span className="text-gray-400"> · {organization.length} total</span>
+                  )}
                 </p>
               </div>
               <div className="flex gap-3">
@@ -37,18 +62,7 @@ function Organization() {
                   title="Add Organization"
                   className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                 >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-5 w-5 mr-2"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
-                    <path d="M12 5v14M5 12h14"></path>
-                  </svg>
+                  <PlusIcon className="h-5 w-5 mr-2" />
                   Add Organization
                 </button>
                 <button
@@ -56,78 +70,139 @@ function Organization() {
                   title="Sign Out"
                   className="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-base-400 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                 >
-                  <svg
-                    className="h-5 w-5 mr-2 text-base-600"
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      fill="currentColor"
-                      d="M5 21q-.825 0-1.412-.587T3 19V5q0-.825.588-1.412T5 3h6q.425 0 .713.288T12 4t-.288.713T11 5H5v14h6q.425 0 .713.288T12 20t-.288.713T11 21zm12.175-8H10q-.425 0-.712-.288T9 12t.288-.712T10 11h7.175L15.3 9.125q-.275-.275-.275-.675t.275-.7t.7-.313t.725.288L20.3 11.3q.3.3.3.7t-.3.7l-3.575 3.575q-.3.3-.712.288t-.713-.313q-.275-.3-.262-.712t.287-.688z"
-                    />
-                  </svg>
+                  <ArrowRightOnRectangleIcon className="h-5 w-5 mr-2 text-base-600" />
                   Sign Out
                 </button>
               </div>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-              {organization.map((workspace: IOrganization) => (
-                <div
-                  key={workspace.id}
-                  onClick={() => navigateHome(workspace.id)}
-                  className="bg-white shadow rounded-lg overflow-hidden hover:shadow-md transition-all duration-200 cursor-pointer border border-gray-200 hover:border-indigo-200"
+            {hasAnyOrganization && (
+              <div className="relative w-full sm:w-80 mb-8">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <MagnifyingGlassIcon className="h-5 w-5 text-gray-400" />
+                </div>
+                <input
+                  type="text"
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  placeholder="Search organizations..."
+                  className="block w-full pl-10 pr-3 py-2.5 border border-gray-300 rounded-lg leading-5 bg-white placeholder-gray-500 shadow-sm focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                />
+              </div>
+            )}
+
+            {!hasAnyOrganization ? (
+              <div className="flex flex-col items-center justify-center py-20 bg-white rounded-xl border border-gray-200">
+                <BuildingOffice2Icon className="h-12 w-12 text-gray-300 mb-4" />
+                <h3 className="text-lg font-medium text-gray-900 mb-1">
+                  No organizations yet
+                </h3>
+                <p className="text-sm text-gray-500 mb-6 text-center max-w-md">
+                  Get started by adding the first school organization to the platform.
+                </p>
+                <button
+                  onClick={openAddModal}
+                  className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700"
                 >
-                  <div className="p-5 border-b border-gray-100">
-                    <div className="flex items-center">
-                      <Avatar name={workspace.name} />
-                      <div className="ml-3">
-                        <h3 className="text-lg font-medium text-base-400">
-                          {workspace.name}
-                        </h3>
-                        {workspace.address && (
-                          <p className="text-xs text-base-600">
-                            {workspace.address}
-                          </p>
-                        )}
+                  <PlusIcon className="h-5 w-5 mr-2" />
+                  Add Organization
+                </button>
+              </div>
+            ) : organization.length === 0 ? (
+              <div className="flex flex-col items-center justify-center py-20 bg-white rounded-xl border border-gray-200">
+                <h3 className="text-lg font-medium text-gray-900 mb-1">
+                  No organizations found
+                </h3>
+                <p className="text-sm text-gray-500 mb-6 text-center max-w-md">
+                  No organizations match "{searchTerm}". Try a different search term.
+                </p>
+                <button
+                  onClick={() => setSearchTerm("")}
+                  className="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50"
+                >
+                  Clear search
+                </button>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                {organization.map((workspace: IOrganization) => (
+                  <div
+                    key={workspace.id}
+                    onClick={() => navigateHome(workspace.id)}
+                    className="group bg-white shadow-sm rounded-xl overflow-hidden hover:shadow-lg transition-all duration-200 cursor-pointer border border-gray-200 hover:border-indigo-300"
+                  >
+                    <div className="p-6 border-b border-gray-100">
+                      <div className="flex items-start justify-between gap-3">
+                        <div className="flex items-center min-w-0">
+                          <Avatar name={workspace.name} src={workspace.logo?.url} size={48} />
+                          <div className="ml-4 min-w-0">
+                            <h3 className="text-lg font-semibold text-base-400 truncate">
+                              {workspace.name}
+                            </h3>
+                            {workspace.address && (
+                              <p className="flex items-center gap-1 text-xs text-base-600 mt-0.5 truncate">
+                                <MapPinIcon className="h-3.5 w-3.5 shrink-0" />
+                                {workspace.address}
+                              </p>
+                            )}
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-2 shrink-0">
+                          {workspace.status && (
+                            <span
+                              className={`text-xs font-medium px-2.5 py-1 rounded-full capitalize ${
+                                statusStyles[workspace.status] || "bg-gray-100 text-gray-700"
+                              }`}
+                            >
+                              {workspace.status}
+                            </span>
+                          )}
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              openEditModal(workspace);
+                            }}
+                            title="Edit organization"
+                            className="p-1.5 rounded-md text-gray-400 hover:text-indigo-600 hover:bg-gray-100"
+                          >
+                            <PencilIcon className="h-4 w-4" />
+                          </button>
+                        </div>
                       </div>
                     </div>
-                  </div>
 
-                  <div className="px-5 py-4">
-                    <div className="space-y-2">
+                    <div className="px-6 py-5 space-y-3">
                       <div>
-                        <p className="text-xs text-base-600 uppercase font-medium">
+                        <p className="text-xs text-base-600 uppercase font-medium tracking-wide">
                           Description
                         </p>
-                        <p className="text-sm text-base-400">
+                        <p className="text-sm text-base-400 mt-1">
                           {workspace.description || "No description provided"}
                         </p>
                       </div>
                       <div>
-                        <p className="text-xs text-base-600 uppercase font-medium">
+                        <p className="text-xs text-base-600 uppercase font-medium tracking-wide">
                           Code
                         </p>
-                        <p className="text-sm text-base-400 font-mono">
+                        <p className="text-sm text-base-400 font-mono mt-1">
                           {workspace.pincode}
                         </p>
                       </div>
                     </div>
-                  </div>
 
-                  <div className="bg-gray-50 px-5 py-3 flex justify-between items-center">
-                    <span className="text-xs text-base-600">
-                      Click to manage
-                    </span>
-                    <div className="flex items-center">
-                      <span className="bg-indigo-100 text-indigo-800 text-xs font-medium px-2.5 py-0.5 rounded-full">
+                    <div className="bg-gray-50 px-6 py-4 flex justify-between items-center">
+                      <span className="bg-indigo-100 text-indigo-800 text-xs font-medium px-2.5 py-1 rounded-full">
                         {workspace.users.length} Users
+                      </span>
+                      <span className="flex items-center gap-1 text-xs font-medium text-indigo-600 group-hover:text-indigo-700">
+                        Manage
+                        <ArrowRightIcon className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
                       </span>
                     </div>
                   </div>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            )}
           </div>
         </div>
       )}
@@ -135,6 +210,7 @@ function Organization() {
         isOpen={isAddModalOpen}
         onClose={closeAddModal}
         onCreated={onOrganizationCreated}
+        organization={editingOrganization}
       />
     </>
   );

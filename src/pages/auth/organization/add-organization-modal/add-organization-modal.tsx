@@ -1,28 +1,34 @@
-import { XMarkIcon } from "@heroicons/react/24/outline";
+import { XMarkIcon, BuildingOffice2Icon, ArrowUpTrayIcon } from "@heroicons/react/24/outline";
 
 import ButtonSpinner from "../../../../icons/button-spinner";
 import useAddOrganizationModalController from "./add-organization-modal-controller";
+import { IOrganization } from "../../../../types";
 
 interface AddOrganizationModalProps {
   isOpen: boolean;
   onClose: () => void;
   onCreated: () => void;
+  organization?: IOrganization | null;
 }
 
-const AddOrganizationModal = ({ isOpen, onClose, onCreated }: AddOrganizationModalProps) => {
+const AddOrganizationModal = ({ isOpen, onClose, onCreated, organization }: AddOrganizationModalProps) => {
   const {
     t,
+    isEditMode,
     name,
     address,
     pincode,
     description,
+    logoPreviewUrl,
     setName,
     setAddress,
     setPincode,
     setDescription,
+    handleLogoFileChange,
     handleSubmit,
     isLoading,
-  } = useAddOrganizationModalController(isOpen, onClose, onCreated);
+    isUploadingLogo,
+  } = useAddOrganizationModalController(isOpen, onClose, onCreated, organization);
 
   if (!isOpen) return null;
 
@@ -47,10 +53,44 @@ const AddOrganizationModal = ({ isOpen, onClose, onCreated }: AddOrganizationMod
 
           <div className="p-4 sm:p-6">
           <h3 className="text-lg font-medium leading-6 text-gray-900 mb-4">
-            {t("labels.add_organization")}
+            {isEditMode ? "Edit Organization" : t("labels.add_organization")}
           </h3>
 
           <form onSubmit={handleSubmit} className="space-y-4 text-left">
+            <div className="flex justify-center">
+              <div className="w-24 h-24 relative">
+                {logoPreviewUrl ? (
+                  <img
+                    src={logoPreviewUrl}
+                    alt="School logo"
+                    className="w-full h-full rounded-lg object-contain border border-gray-200 bg-white"
+                  />
+                ) : (
+                  <div className="w-full h-full rounded-lg bg-gray-100 flex items-center justify-center border border-gray-200">
+                    <BuildingOffice2Icon className="h-10 w-10 text-gray-300" />
+                  </div>
+                )}
+                <label
+                  htmlFor="organization-logo-upload"
+                  className="absolute bottom-0 right-0 bg-white rounded-full p-1.5 shadow-md cursor-pointer hover:bg-gray-50"
+                >
+                  {isUploadingLogo ? (
+                    <ButtonSpinner />
+                  ) : (
+                    <ArrowUpTrayIcon className="h-4 w-4 text-gray-600" />
+                  )}
+                </label>
+                <input
+                  id="organization-logo-upload"
+                  type="file"
+                  className="hidden"
+                  accept="image/png,image/jpeg"
+                  disabled={isUploadingLogo}
+                  onChange={handleLogoFileChange}
+                />
+              </div>
+            </div>
+
             <div>
               <label className="block text-sm font-medium text-gray-700">
                 {t("labels.organization_name")}

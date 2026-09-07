@@ -3,6 +3,7 @@ export const APIS_ROUTES = {
   REFRESH_TOKEN: "/auth/v1/user/refresh-token",
   LOGOUT: "/auth/v1/user/logout",
   UPDATE_USER_PREFERENCES: "/auth/v1/user/preferences",
+  UPLOAD_AVATAR: "/auth/v1/user/avatar",
   FORGOT_PASSWORD: "/auth/v1/user/forgot-password",
   RESET_PASSWORD: "/auth/v1/user/reset-password/:token",
   GET_USER_DETAILS: "/auth/v1/user/get-user-details",
@@ -81,6 +82,7 @@ export const API_MUTATION_KEY = {
   DELETE_HOMEWORK: "delete-homework",
   DELETE_NOTICE: "delete-notice",
   CREATE_ORGANIZATION: "create-organization",
+  UPDATE_ORGANIZATION: "update-organization",
   CREATE_ACADEMIC_YEAR: "create-academic-year",
   CREATE_CLASS: "create-class",
   CREATE_SECTION: "create-section",
@@ -104,6 +106,8 @@ export const API_MUTATION_KEY = {
   VERIFY_EXAM_SUBJECT_MARKS: "verify-exam-subject-marks",
   PUBLISH_EXAM: "publish-exam",
   UPDATE_USER_PREFERENCES: "update-user-preferences",
+  UPLOAD_ORGANIZATION_LOGO: "upload-organization-logo",
+  UPLOAD_AVATAR: "upload-avatar",
 };
 
 export const PASSWORD_CIPHER_MESSAGE = "KID_SIGHT_KEY";
