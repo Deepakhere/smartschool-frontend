@@ -8,7 +8,7 @@ import {
 import Cookies from "js-cookie";
 import { useGetUserDetails } from "./service";
 import { APIS_ROUTES, USER_ACCESS_KEY } from "../utils";
-import { ILoginResponse } from "../types";
+import { ILoginResponse, IUserPreferences } from "../types";
 import LogoSpinner from "../components/logo-spinner";
 import apiClient from "../config/api-client";
 
@@ -26,6 +26,7 @@ type User = {
     canDelete: boolean;
     isGlobalAdmin: boolean;
   };
+  preferences?: IUserPreferences;
 } | null;
 
 interface IAuthContext {

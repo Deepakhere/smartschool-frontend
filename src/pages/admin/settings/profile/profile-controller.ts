@@ -5,11 +5,13 @@ import Cookies from "js-cookie";
 
 import { useAuth } from "../../../../context/auth-context";
 import { useTheme } from "../../../../context/theme-context";
+import { useUpdateUserPreferences } from "./service";
 
 const useProfileController = () => {
   const { t } = useTranslation();
   const { user } = useAuth();
   const { theme, setTheme } = useTheme();
+  const updatePreferences = useUpdateUserPreferences();
 
   const [editMode, setEditMode] = useState(false);
   const [imageUrl, setImageUrl] = useState<string | null>(null);
@@ -36,6 +38,10 @@ const useProfileController = () => {
 
     // Force reload translations
     document.documentElement.lang = lng;
+
+    if (user && (lng === "en" || lng === "hi")) {
+      updatePreferences.mutate({ locale: lng });
+    }
   };
 
   const changeTheme = (newTheme: "light" | "dark") => {
@@ -49,6 +55,19 @@ const useProfileController = () => {
       setCurrentLanguage(savedLanguage);
     }
   }, []);
+
+  // once the authenticated user's server-side locale preference is known, it wins
+  // over whatever was cached locally — same cross-device consistency as theme
+  useEffect(() => {
+    const serverLocale = user?.preferences?.locale;
+    if (serverLocale && i18n.language !== serverLocale) {
+      i18n.changeLanguage(serverLocale);
+      setCurrentLanguage(serverLocale);
+      localStorage.setItem("i18nextLng", serverLocale);
+      Cookies.set("i18nextLng", serverLocale, { expires: 365 });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user?.preferences?.locale]);
 
   return {
     t,

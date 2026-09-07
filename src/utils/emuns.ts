@@ -2,6 +2,7 @@ export const APIS_ROUTES = {
   SIGNIN: "/auth/v1/user/signin",
   REFRESH_TOKEN: "/auth/v1/user/refresh-token",
   LOGOUT: "/auth/v1/user/logout",
+  UPDATE_USER_PREFERENCES: "/auth/v1/user/preferences",
   FORGOT_PASSWORD: "/auth/v1/user/forgot-password",
   RESET_PASSWORD: "/auth/v1/user/reset-password/:token",
   GET_USER_DETAILS: "/auth/v1/user/get-user-details",
@@ -102,6 +103,7 @@ export const API_MUTATION_KEY = {
   SAVE_MARKS: "save-marks",
   VERIFY_EXAM_SUBJECT_MARKS: "verify-exam-subject-marks",
   PUBLISH_EXAM: "publish-exam",
+  UPDATE_USER_PREFERENCES: "update-user-preferences",
 };
 
 export const PASSWORD_CIPHER_MESSAGE = "KID_SIGHT_KEY";

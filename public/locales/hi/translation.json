@@ -94,7 +94,16 @@
     "previous": "पिछला",
     "next": "अगला",
     "filter_by_class": "कक्षा के अनुसार फ़िल्टर करें",
-    "all_classes": "सभी कक्षाएं"
+    "all_classes": "सभी कक्षाएं",
+    "your_profile": "आपकी प्रोफ़ाइल",
+    "sign_out": "साइन आउट",
+    "manage_notices": "सूचनाएं प्रबंधित करें",
+    "create_notice": "सूचना बनाएं",
+    "generate_notice_with_ai": "AI से सूचना बनाएं",
+    "add_organization": "संगठन जोड़ें",
+    "organization_name": "संगठन का नाम",
+    "pincode": "पिनकोड",
+    "description": "विवरण"
   },
   "messages": {
     "enter_email_associate_with_account": "चिंता न करें! ऐसा होता है। कृपया अपने खाते से जुड़ा ईमेल पता दर्ज करें।",
@@ -129,7 +138,11 @@
     "notice_added_success": "सूचना सफलतापूर्वक जोड़ी गई!",
     "failed_to_add_notice": "सूचना जोड़ने में विफल",
     "error_adding_notice": "सूचना जोड़ने में त्रुटि:",
-    "search": "खोजें"
+    "search": "खोजें",
+    "no_record_found": "कोई रिकॉर्ड नहीं मिला। फ़िल्टर बदलें या नया उपयोगकर्ता जोड़ें।",
+    "no_search_term_found": "\"{{entity}}\" से मेल खाता कोई रिकॉर्ड नहीं मिला। कोई भिन्न खोज शब्द आज़माएं या खोज साफ़ करें।",
+    "notice_created_successfully": "सूचना सफलतापूर्वक बनाई गई।",
+    "organization_created_successfully": "संगठन सफलतापूर्वक बनाया गया।"
   },
   "buttons": {
     "sending": "भेज रहा है",
@@ -153,7 +166,8 @@
     "today": "आज",
     "clear_selection": "चयन साफ़ करें",
     "edit": "संपादित करें",
-    "save": "सहेजें"
+    "save": "सहेजें",
+    "preview": "पूर्वावलोकन"
   },
   "common": {
     "notice_types": {

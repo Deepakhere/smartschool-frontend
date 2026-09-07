@@ -32,7 +32,7 @@ const AdminProfile = () => {
 
   const languageOptions: SelectOption[] = [
     { id: "en", name: t("common.languages.english") },
-    { id: "hn", name: t("common.languages.hindi") },
+    { id: "hi", name: t("common.languages.hindi") },
   ];
   const themeOptions: SelectOption[] = [
     { id: "light", name: t("common.themes.light") },

@@ -151,6 +151,7 @@ export interface ILoginResponse {
     canDelete: boolean;
     isGlobalAdmin: boolean;
   };
+  preferences?: IUserPreferences;
 }
 
 export interface IForgotPassword {
@@ -258,6 +259,11 @@ export interface IUpdateUserValue {
   };
 }
 
+export interface IUserPreferences {
+  theme: "light" | "dark";
+  locale: "en" | "hi";
+}
+
 export interface IUserDetailResponse {
   id: string;
   email: string;
@@ -271,6 +277,7 @@ export interface IUserDetailResponse {
     canDelete: boolean;
     isGlobalAdmin: boolean;
   };
+  preferences?: IUserPreferences;
 }
 
 export interface IRoleOptionDropDown {
