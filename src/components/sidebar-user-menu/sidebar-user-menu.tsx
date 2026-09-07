@@ -30,15 +30,13 @@ const SidebarUserMenu = ({ isCollapsed }: SidebarUserMenuProps) => {
         <PopoverTrigger asChild>
           <button
             type="button"
-            className={`group flex w-full items-center rounded-md py-2 text-sm hover:bg-gray-50 ${
-              isCollapsed ? "justify-center px-0" : "justify-between px-2"
-            }`}
+            className="group flex w-full items-center justify-between rounded-xl border border-gray-200 bg-white px-2 py-2 shadow-sm transition-all duration-300 ease-in-out hover:-translate-y-0.5 hover:border-indigo-200 hover:shadow-md"
           >
-            <span className="flex items-center min-w-0">
+            <span className="flex items-center min-w-0 -ml-0.5">
               <Avatar name={user.name} src={user.avatar?.url} size={32} />
               <span
-                className={`ml-2.5 min-w-0 overflow-hidden text-left transition-all duration-300 ease-in-out ${
-                  isCollapsed ? "max-w-0 opacity-0 ml-0" : "max-w-[9rem] opacity-100"
+                className={`min-w-0 overflow-hidden text-left transition-all duration-300 ease-in-out ${
+                  isCollapsed ? "max-w-0 opacity-0 ml-0" : "max-w-[9rem] opacity-100 ml-2.5"
                 }`}
               >
                 <span className="block truncate text-sm font-medium text-gray-900">
@@ -49,9 +47,12 @@ const SidebarUserMenu = ({ isCollapsed }: SidebarUserMenuProps) => {
                 </span>
               </span>
             </span>
-            {!isCollapsed && (
-              <ChevronUpDownIcon className="h-4 w-4 text-gray-400 shrink-0" aria-hidden="true" />
-            )}
+            <ChevronUpDownIcon
+              className={`text-gray-400 shrink-0 overflow-hidden transition-all duration-300 ease-in-out ${
+                isCollapsed ? "h-4 w-0 opacity-0" : "h-4 w-4 opacity-100"
+              }`}
+              aria-hidden="true"
+            />
           </button>
         </PopoverTrigger>
 
@@ -88,12 +89,14 @@ const SidebarUserMenu = ({ isCollapsed }: SidebarUserMenuProps) => {
 
           <div className="px-2 py-2">
             <p className="mb-1.5 text-xs font-medium text-gray-500">{t("labels.theme")}</p>
-            <div className="grid grid-cols-2 gap-1 rounded-md bg-gray-100 p-1">
+            <div className="grid grid-cols-2 gap-1 rounded-md bg-gray-100 dark:bg-gray-950 p-1">
               <button
                 type="button"
                 onClick={() => setTheme("light")}
                 className={`flex items-center justify-center gap-1.5 rounded py-1.5 text-sm font-medium transition-colors ${
-                  theme === "light" ? "bg-white text-gray-900 shadow-sm" : "text-gray-500 hover:text-gray-700"
+                  theme === "light"
+                    ? "bg-white text-gray-900 shadow-sm dark:bg-gray-700 dark:text-white"
+                    : "text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
                 }`}
               >
                 <SunIcon className="h-4 w-4" />
@@ -103,7 +106,9 @@ const SidebarUserMenu = ({ isCollapsed }: SidebarUserMenuProps) => {
                 type="button"
                 onClick={() => setTheme("dark")}
                 className={`flex items-center justify-center gap-1.5 rounded py-1.5 text-sm font-medium transition-colors ${
-                  theme === "dark" ? "bg-white text-gray-900 shadow-sm" : "text-gray-500 hover:text-gray-700"
+                  theme === "dark"
+                    ? "bg-white text-gray-900 shadow-sm dark:bg-gray-700 dark:text-white"
+                    : "text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
                 }`}
               >
                 <MoonIcon className="h-4 w-4" />

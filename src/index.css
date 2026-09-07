@@ -165,14 +165,9 @@
   @apply text-amber-300;
 }
 
-/* Persistent app chrome (Header, Sidebar) — these sat at the exact same bg-white→gray-800
-   shade as ordinary content cards, so in dark mode there was no visual separation between
-   navigation chrome and page content. Given its own deeper shade so it reads as structural
-   chrome, with page content (gray-800 cards) sitting visibly "above" the gray-900 page
-   background, which itself sits above this. Combined-class selectors so this always wins
-   over the plain .bg-white / .border-gray-* rules above regardless of source order. */
+/* Persistent app chrome (Header, Sidebar) */
 .dark .app-shell-surface.bg-white {
-  @apply bg-gray-950;
+  @apply bg-black;
 }
 .dark .app-shell-surface.border-gray-200,
 .dark .app-shell-surface .border-gray-200,
@@ -180,11 +175,9 @@
   @apply border-gray-800;
 }
 
-/* Main content area — one step darker than its default (still lighter than the raw page
-   background used elsewhere) so cards floating on it (gray-800) read as clearly "elevated"
-   above a near-black backdrop that matches the chrome, instead of a mid-gray in between. */
+/* Main content area */
 .dark .app-main-surface.bg-gray-50 {
-  @apply bg-gray-950;
+  @apply bg-black;
 }
 
 /* Shared interactive components (dropdowns, popovers, menus) */
