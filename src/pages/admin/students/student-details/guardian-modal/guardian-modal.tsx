@@ -1,8 +1,16 @@
 import { useState } from "react";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 
-import { IAddGuardianValue } from "../../../../../types";
+import { IAddGuardianValue, SelectOption } from "../../../../../types";
 import ButtonSpinner from "../../../../../icons/button-spinner";
+import CustomSelectDropdown from "../../../../../components/custom-select";
+
+const relationshipOptions: SelectOption[] = [
+  { id: "FATHER", name: "Father" },
+  { id: "MOTHER", name: "Mother" },
+  { id: "GUARDIAN", name: "Guardian" },
+  { id: "OTHER", name: "Other" },
+];
 
 interface GuardianModalProps {
   isOpen: boolean;
@@ -59,15 +67,12 @@ const GuardianModal = ({ isOpen, isSubmitting, onClose, onSubmit }: GuardianModa
                 <input className={inputClass} value={phoneNumber} onChange={(e) => setPhoneNumber(e.target.value)} />
               </div>
             </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700">Relationship</label>
-              <select className={inputClass} value={relationshipType} onChange={(e) => setRelationshipType(e.target.value)}>
-                <option value="FATHER">Father</option>
-                <option value="MOTHER">Mother</option>
-                <option value="GUARDIAN">Guardian</option>
-                <option value="OTHER">Other</option>
-              </select>
-            </div>
+            <CustomSelectDropdown
+              label="Relationship"
+              options={relationshipOptions}
+              value={relationshipOptions.find((o) => o.id === relationshipType) || null}
+              onChange={(o) => setRelationshipType(String(o.id))}
+            />
             <div className="flex gap-6">
               <label className="flex items-center gap-2 text-sm text-gray-700">
                 <input type="checkbox" checked={isPrimaryGuardian} onChange={(e) => setIsPrimaryGuardian(e.target.checked)} />

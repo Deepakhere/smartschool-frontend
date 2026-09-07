@@ -13,6 +13,8 @@ import {
 import useProfileController from "./profile-controller";
 import PageLoader from "../../../../components/page-loader";
 import SectionHeader from "../../../../components/section-header";
+import CustomSelectDropdown from "../../../../components/custom-select";
+import { SelectOption } from "../../../../types";
 
 const AdminProfile = () => {
   const {
@@ -27,6 +29,15 @@ const AdminProfile = () => {
     changeLanguage,
     changeTheme,
   } = useProfileController();
+
+  const languageOptions: SelectOption[] = [
+    { id: "en", name: t("common.languages.english") },
+    { id: "hn", name: t("common.languages.hindi") },
+  ];
+  const themeOptions: SelectOption[] = [
+    { id: "light", name: t("common.themes.light") },
+    { id: "dark", name: t("common.themes.dark") },
+  ];
 
   return (
     <>
@@ -280,50 +291,26 @@ const AdminProfile = () => {
                   <div className="border-t border-gray-200 px-4 py-5 sm:p-6">
                     <form className="space-y-4">
                       <div>
-                        <label
-                          htmlFor="language"
-                          className="block text-sm font-medium text-gray-700 flex items-center"
-                        >
+                        <label className="flex items-center text-sm font-medium text-gray-700 mb-1">
                           <GlobeAltIcon className="h-5 w-5 mr-2 text-gray-500" />
                           {t("labels.language")}
                         </label>
-                        <select
-                          id="language"
-                          className="mt-1 block w-full pl-3 pr-10 py-2 text-base bg-white text-gray-900 border border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
-                          value={currentLanguage}
-                          onChange={(e) => changeLanguage(e.target.value)}
-                        >
-                          <option value="en">
-                            {t("common.languages.english")}
-                          </option>
-                          <option value="hn">
-                            {t("common.languages.hindi")}
-                          </option>
-                        </select>
+                        <CustomSelectDropdown
+                          options={languageOptions}
+                          value={languageOptions.find((o) => o.id === currentLanguage) || languageOptions[0]}
+                          onChange={(o) => changeLanguage(String(o.id))}
+                        />
                       </div>
                       <div>
-                        <label
-                          htmlFor="theme"
-                          className="block text-sm font-medium text-gray-700 flex items-center"
-                        >
+                        <label className="flex items-center text-sm font-medium text-gray-700 mb-1">
                           <MoonIcon className="h-5 w-5 mr-2 text-gray-500" />
                           {t("labels.theme")}
                         </label>
-                        <select
-                          id="theme"
-                          className="mt-1 block w-full pl-3 pr-10 py-2 text-base bg-white text-gray-900 border border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
-                          value={theme}
-                          onChange={(e) =>
-                            changeTheme(e.target.value as "light" | "dark")
-                          }
-                        >
-                          <option value="light">
-                            {t("common.themes.light")}
-                          </option>
-                          <option value="dark">
-                            {t("common.themes.dark")}
-                          </option>
-                        </select>
+                        <CustomSelectDropdown
+                          options={themeOptions}
+                          value={themeOptions.find((o) => o.id === theme) || themeOptions[0]}
+                          onChange={(o) => changeTheme(o.id as "light" | "dark")}
+                        />
                       </div>
                       <div className="flex items-center justify-between">
                         <label

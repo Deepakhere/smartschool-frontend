@@ -2,6 +2,7 @@ import { PlusIcon, MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 
 import PageLoader from "../../../../components/page-loader";
 import NoRecordIcon from "../../../../icons/no-record-icon";
+import CustomSelectDropdown from "../../../../components/custom-select";
 import { CreateUpdateUserModal, DeleteUserModal } from "./user-modal";
 import useUserDetailsController from "./user-details-controller";
 
@@ -65,38 +66,22 @@ const UserDetails = () => {
 
             <div className="flex items-center space-x-4">
               {/* Role filter dropdown */}
-              <div className="relative">
-                <select
-                  value={sortBy}
-                  onChange={(e) => onRoleChange(e.target.value)}
-                  className="appearance-none pl-10 pr-8 py-2 bg-white text-gray-900 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm cursor-pointer"
-                >
-                  {roleOptionsDropDown.map((option) => (
-                    <option key={option.value} value={option.value}>
-                      {option.label}
-                    </option>
-                  ))}
-                </select>
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  {
-                    roleOptionsDropDown.find(
-                      (option) => option.value === sortBy
-                    )?.icon
+              <div className="w-56">
+                <CustomSelectDropdown
+                  options={roleOptionsDropDown.map((option) => ({
+                    id: option.value,
+                    name: option.label,
+                    description: option.description,
+                    icon: option.icon,
+                  }))}
+                  value={
+                    (() => {
+                      const match = roleOptionsDropDown.find((option) => option.value === sortBy);
+                      return match ? { id: match.value, name: match.label, description: match.description, icon: match.icon } : null;
+                    })()
                   }
-                </div>
-                <div className="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
-                  <svg
-                    className="h-5 w-5 text-gray-400"
-                    viewBox="0 0 20 20"
-                    fill="currentColor"
-                  >
-                    <path
-                      fillRule="evenodd"
-                      d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-                      clipRule="evenodd"
-                    />
-                  </svg>
-                </div>
+                  onChange={(o) => onRoleChange(String(o.id))}
+                />
               </div>
 
               {/* Add user  */}

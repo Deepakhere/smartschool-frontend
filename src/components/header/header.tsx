@@ -43,9 +43,11 @@ const Header = ({ onToggleSidebar, isCollapsed, onToggleCollapse }: HeaderProps)
           </button>
           <Link
             to={homePath}
-            className={`flex-1 items-center justify-center ${isCollapsed ? "hidden" : "hidden lg:flex"}`}
+            className={`hidden lg:flex flex-1 items-center justify-center overflow-hidden transition-all duration-200 ${
+              isCollapsed ? "max-w-0 opacity-0" : "max-w-xs opacity-100"
+            }`}
           >
-            <img src={KidSight} className="h-12 w-auto" alt="Kidsight Logo" />
+            <img src={KidSight} className="h-12 w-auto shrink-0" alt="Kidsight Logo" />
           </Link>
           <button
             type="button"

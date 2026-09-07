@@ -1,8 +1,15 @@
 import Spinner from "../../../components/spinner";
 import NoRecordFound from "../../../components/no-record-found";
 import SectionHeader from "../../../components/section-header";
+import CustomSelectDropdown from "../../../components/custom-select";
 import { useTranslation } from "react-i18next";
 import useClassesController from "./classes-controller";
+import { SelectOption } from "../../../types";
+
+const roleOptions: SelectOption[] = [
+  { id: "SUBJECT_TEACHER", name: "Subject Teacher" },
+  { id: "CLASS_TEACHER", name: "Class Teacher" },
+];
 
 const tabs = [
   { key: "years", label: "Academic Years" },
@@ -126,12 +133,17 @@ const AdminClasses = () => {
           <div className="bg-white shadow rounded-lg">
             <div className="px-4 py-4 flex justify-between items-center border-b border-gray-200 gap-4">
               <div className="flex items-center gap-3">
-                <label className="text-sm text-gray-700">Academic Year:</label>
-                <select className={inputClass} value={c.selectedAcademicYearId} onChange={(e) => c.setSelectedAcademicYearId(e.target.value)}>
-                  {c.academicYears.map((y) => (
-                    <option key={y.id} value={y.id}>{y.name}</option>
-                  ))}
-                </select>
+                <label className="text-sm text-gray-700 whitespace-nowrap">Academic Year:</label>
+                <div className="w-48">
+                  <CustomSelectDropdown
+                    options={c.academicYears.map((y): SelectOption => ({ id: y.id, name: y.name }))}
+                    value={(() => {
+                      const y = c.academicYears.find((y) => y.id === c.selectedAcademicYearId);
+                      return y ? { id: y.id, name: y.name } : null;
+                    })()}
+                    onChange={(o) => c.setSelectedAcademicYearId(String(o.id))}
+                  />
+                </div>
               </div>
               <button className={btnPrimary} onClick={() => c.setShowClassForm(!c.showClassForm)} disabled={!c.selectedAcademicYearId}>
                 + Add Class
@@ -190,12 +202,17 @@ const AdminClasses = () => {
           <div className="bg-white shadow rounded-lg">
             <div className="px-4 py-4 flex justify-between items-center border-b border-gray-200 gap-4">
               <div className="flex items-center gap-3">
-                <label className="text-sm text-gray-700">Class:</label>
-                <select className={inputClass} value={c.selectedClassId} onChange={(e) => c.setSelectedClassId(e.target.value)}>
-                  {c.classes.map((k) => (
-                    <option key={k.id} value={k.id}>{k.name}</option>
-                  ))}
-                </select>
+                <label className="text-sm text-gray-700 whitespace-nowrap">Class:</label>
+                <div className="w-48">
+                  <CustomSelectDropdown
+                    options={c.classes.map((k): SelectOption => ({ id: k.id, name: k.name }))}
+                    value={(() => {
+                      const k = c.classes.find((k) => k.id === c.selectedClassId);
+                      return k ? { id: k.id, name: k.name } : null;
+                    })()}
+                    onChange={(o) => c.setSelectedClassId(String(o.id))}
+                  />
+                </div>
               </div>
               <button className={btnPrimary} onClick={() => c.setShowSectionForm(!c.showSectionForm)} disabled={!c.selectedClassId}>
                 + Add Section
@@ -254,12 +271,17 @@ const AdminClasses = () => {
           <div className="bg-white shadow rounded-lg">
             <div className="px-4 py-4 flex justify-between items-center border-b border-gray-200 gap-4">
               <div className="flex items-center gap-3">
-                <label className="text-sm text-gray-700">Academic Year:</label>
-                <select className={inputClass} value={c.selectedAcademicYearId} onChange={(e) => c.setSelectedAcademicYearId(e.target.value)}>
-                  {c.academicYears.map((y) => (
-                    <option key={y.id} value={y.id}>{y.name}</option>
-                  ))}
-                </select>
+                <label className="text-sm text-gray-700 whitespace-nowrap">Academic Year:</label>
+                <div className="w-48">
+                  <CustomSelectDropdown
+                    options={c.academicYears.map((y): SelectOption => ({ id: y.id, name: y.name }))}
+                    value={(() => {
+                      const y = c.academicYears.find((y) => y.id === c.selectedAcademicYearId);
+                      return y ? { id: y.id, name: y.name } : null;
+                    })()}
+                    onChange={(o) => c.setSelectedAcademicYearId(String(o.id))}
+                  />
+                </div>
               </div>
               <button className={btnPrimary} onClick={() => c.setShowSubjectForm(!c.showSubjectForm)} disabled={!c.selectedAcademicYearId}>
                 + Add Subject
@@ -326,52 +348,62 @@ const AdminClasses = () => {
             {c.showAssignForm && (
               <form onSubmit={c.submitAssign} className="p-4 border-b border-gray-200 grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700">Teacher</label>
-                  <select className={inputClass} value={c.assignTeacherId} onChange={(e) => c.setAssignTeacherId(e.target.value)}>
-                    <option value="">Select teacher</option>
-                    {c.teachers.map((tch) => (
-                      <option key={tch.id} value={tch.id}>{tch.name} ({tch.email})</option>
-                    ))}
-                  </select>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Teacher</label>
+                  <CustomSelectDropdown
+                    placeholder="Select teacher"
+                    options={c.teachers.map((tch): SelectOption => ({ id: tch.id, name: `${tch.name} (${tch.email})` }))}
+                    value={(() => {
+                      const tch = c.teachers.find((tch) => tch.id === c.assignTeacherId);
+                      return tch ? { id: tch.id, name: `${tch.name} (${tch.email})` } : null;
+                    })()}
+                    onChange={(o) => c.setAssignTeacherId(String(o.id))}
+                  />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700">Class</label>
-                  <select className={inputClass} value={c.assignClassId} onChange={(e) => c.setAssignClassId(e.target.value)}>
-                    <option value="">Select class</option>
-                    {c.classes.map((k) => (
-                      <option key={k.id} value={k.id}>{k.name}</option>
-                    ))}
-                  </select>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Class</label>
+                  <CustomSelectDropdown
+                    placeholder="Select class"
+                    options={c.classes.map((k): SelectOption => ({ id: k.id, name: k.name }))}
+                    value={(() => {
+                      const k = c.classes.find((k) => k.id === c.assignClassId);
+                      return k ? { id: k.id, name: k.name } : null;
+                    })()}
+                    onChange={(o) => c.setAssignClassId(String(o.id))}
+                  />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700">Section</label>
-                  <select className={inputClass} value={c.assignSectionId} onChange={(e) => c.setAssignSectionId(e.target.value)} disabled={!c.assignClassId}>
-                    <option value="">Select section</option>
-                    {c.assignSections.map((s) => (
-                      <option key={s.id} value={s.id}>{s.name}</option>
-                    ))}
-                  </select>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Section</label>
+                  <CustomSelectDropdown
+                    placeholder="Select section"
+                    disabled={!c.assignClassId}
+                    options={c.assignSections.map((s): SelectOption => ({ id: s.id, name: s.name }))}
+                    value={(() => {
+                      const s = c.assignSections.find((s) => s.id === c.assignSectionId);
+                      return s ? { id: s.id, name: s.name } : null;
+                    })()}
+                    onChange={(o) => c.setAssignSectionId(String(o.id))}
+                  />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700">Role</label>
-                  <select
-                    className={inputClass}
-                    value={c.assignRole}
-                    onChange={(e) => c.setAssignRole(e.target.value as "SUBJECT_TEACHER" | "CLASS_TEACHER")}
-                  >
-                    <option value="SUBJECT_TEACHER">Subject Teacher</option>
-                    <option value="CLASS_TEACHER">Class Teacher</option>
-                  </select>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Role</label>
+                  <CustomSelectDropdown
+                    options={roleOptions}
+                    value={roleOptions.find((o) => o.id === c.assignRole) || roleOptions[0]}
+                    onChange={(o) => c.setAssignRole(o.id as "SUBJECT_TEACHER" | "CLASS_TEACHER")}
+                  />
                 </div>
                 {c.assignRole === "SUBJECT_TEACHER" && (
                   <div>
-                    <label className="block text-sm font-medium text-gray-700">Subject</label>
-                    <select className={inputClass} value={c.assignSubjectId} onChange={(e) => c.setAssignSubjectId(e.target.value)}>
-                      <option value="">Select subject</option>
-                      {c.subjects.map((s) => (
-                        <option key={s.id} value={s.id}>{s.name}</option>
-                      ))}
-                    </select>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Subject</label>
+                    <CustomSelectDropdown
+                      placeholder="Select subject"
+                      options={c.subjects.map((s): SelectOption => ({ id: s.id, name: s.name }))}
+                      value={(() => {
+                        const s = c.subjects.find((s) => s.id === c.assignSubjectId);
+                        return s ? { id: s.id, name: s.name } : null;
+                      })()}
+                      onChange={(o) => c.setAssignSubjectId(String(o.id))}
+                    />
                   </div>
                 )}
                 <div className="flex items-end justify-end gap-3">

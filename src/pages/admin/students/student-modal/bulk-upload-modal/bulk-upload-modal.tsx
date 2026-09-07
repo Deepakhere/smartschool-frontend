@@ -1,7 +1,9 @@
 import { XMarkIcon } from "@heroicons/react/24/outline";
 
 import ButtonSpinner from "../../../../../icons/button-spinner";
+import CustomSelectDropdown from "../../../../../components/custom-select";
 import useBulkUploadModalController from "./bulk-upload-modal-controller";
+import { SelectOption } from "../../../../../types";
 
 interface BulkUploadModalProps {
   isOpen: boolean;
@@ -47,41 +49,42 @@ const BulkUploadModal = ({ isOpen, organizationId, onClose, onImported }: BulkUp
             <form onSubmit={c.handleSubmit} className="space-y-4 text-left">
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700">Academic Year</label>
-                  <select className={inputClass} value={c.academicYearId} onChange={(e) => c.setAcademicYearId(e.target.value)}>
-                    <option value="">Select</option>
-                    {c.academicYears.map((y) => (
-                      <option key={y.id} value={y.id}>{y.name}</option>
-                    ))}
-                  </select>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Academic Year</label>
+                  <CustomSelectDropdown
+                    placeholder="Select"
+                    options={c.academicYears.map((y): SelectOption => ({ id: y.id, name: y.name }))}
+                    value={(() => {
+                      const y = c.academicYears.find((y) => y.id === c.academicYearId);
+                      return y ? { id: y.id, name: y.name } : null;
+                    })()}
+                    onChange={(o) => c.setAcademicYearId(String(o.id))}
+                  />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700">Class</label>
-                  <select
-                    className={inputClass}
-                    value={c.classId}
-                    onChange={(e) => c.setClassId(e.target.value)}
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Class</label>
+                  <CustomSelectDropdown
+                    placeholder="Select"
                     disabled={!c.academicYearId}
-                  >
-                    <option value="">Select</option>
-                    {c.classes.map((k) => (
-                      <option key={k.id} value={k.id}>{k.name}</option>
-                    ))}
-                  </select>
+                    options={c.classes.map((k): SelectOption => ({ id: k.id, name: k.name }))}
+                    value={(() => {
+                      const k = c.classes.find((k) => k.id === c.classId);
+                      return k ? { id: k.id, name: k.name } : null;
+                    })()}
+                    onChange={(o) => c.setClassId(String(o.id))}
+                  />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700">Section</label>
-                  <select
-                    className={inputClass}
-                    value={c.sectionId}
-                    onChange={(e) => c.setSectionId(e.target.value)}
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Section</label>
+                  <CustomSelectDropdown
+                    placeholder="Select"
                     disabled={!c.classId}
-                  >
-                    <option value="">Select</option>
-                    {c.sections.map((s) => (
-                      <option key={s.id} value={s.id}>{s.name}</option>
-                    ))}
-                  </select>
+                    options={c.sections.map((s): SelectOption => ({ id: s.id, name: s.name }))}
+                    value={(() => {
+                      const s = c.sections.find((s) => s.id === c.sectionId);
+                      return s ? { id: s.id, name: s.name } : null;
+                    })()}
+                    onChange={(o) => c.setSectionId(String(o.id))}
+                  />
                 </div>
               </div>
 

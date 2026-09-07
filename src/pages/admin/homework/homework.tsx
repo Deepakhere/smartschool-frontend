@@ -1,8 +1,10 @@
 import Spinner from "../../../components/spinner";
 import NoRecordFound from "../../../components/no-record-found";
 import SectionHeader from "../../../components/section-header";
+import CustomSelectDropdown from "../../../components/custom-select";
 import { useTranslation } from "react-i18next";
 import { useHomeworkController } from "./homework-controller";
+import { SelectOption } from "../../../types";
 
 const inputClass =
   "mt-1 block w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-gray-900 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm";
@@ -22,31 +24,42 @@ const Homework = () => {
       <div className="bg-white shadow rounded-lg p-4">
         <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700">Academic Year</label>
-            <select className={inputClass} value={c.academicYearId} onChange={(e) => c.setAcademicYearId(e.target.value)}>
-              <option value="">Select</option>
-              {c.academicYears.map((y) => (
-                <option key={y.id} value={y.id}>{y.name}</option>
-              ))}
-            </select>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Academic Year</label>
+            <CustomSelectDropdown
+              placeholder="Select"
+              options={c.academicYears.map((y): SelectOption => ({ id: y.id, name: y.name }))}
+              value={(() => {
+                const y = c.academicYears.find((y) => y.id === c.academicYearId);
+                return y ? { id: y.id, name: y.name } : null;
+              })()}
+              onChange={(o) => c.setAcademicYearId(String(o.id))}
+            />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700">Class</label>
-            <select className={inputClass} value={c.classId} onChange={(e) => c.setClassId(e.target.value)} disabled={!c.academicYearId}>
-              <option value="">Select</option>
-              {c.classes.map((k) => (
-                <option key={k.id} value={k.id}>{k.name}</option>
-              ))}
-            </select>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Class</label>
+            <CustomSelectDropdown
+              placeholder="Select"
+              disabled={!c.academicYearId}
+              options={c.classes.map((k): SelectOption => ({ id: k.id, name: k.name }))}
+              value={(() => {
+                const k = c.classes.find((k) => k.id === c.classId);
+                return k ? { id: k.id, name: k.name } : null;
+              })()}
+              onChange={(o) => c.setClassId(String(o.id))}
+            />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700">Section</label>
-            <select className={inputClass} value={c.sectionId} onChange={(e) => c.setSectionId(e.target.value)} disabled={!c.classId}>
-              <option value="">Select</option>
-              {c.sections.map((s) => (
-                <option key={s.id} value={s.id}>{s.name}</option>
-              ))}
-            </select>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Section</label>
+            <CustomSelectDropdown
+              placeholder="Select"
+              disabled={!c.classId}
+              options={c.sections.map((s): SelectOption => ({ id: s.id, name: s.name }))}
+              value={(() => {
+                const s = c.sections.find((s) => s.id === c.sectionId);
+                return s ? { id: s.id, name: s.name } : null;
+              })()}
+              onChange={(o) => c.setSectionId(String(o.id))}
+            />
           </div>
           <div className="flex items-end">
             <button className={btnPrimary} onClick={() => c.setShowForm(!c.showForm)} disabled={!c.sectionId}>
@@ -60,13 +73,16 @@ const Homework = () => {
         <form onSubmit={c.handleSubmit} className="bg-white shadow rounded-lg p-4 space-y-4">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700">Subject</label>
-              <select className={inputClass} value={c.subjectId} onChange={(e) => c.setSubjectId(e.target.value)}>
-                <option value="">Select subject</option>
-                {c.subjects.map((s) => (
-                  <option key={s.id} value={s.id}>{s.name}</option>
-                ))}
-              </select>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Subject</label>
+              <CustomSelectDropdown
+                placeholder="Select subject"
+                options={c.subjects.map((s): SelectOption => ({ id: s.id, name: s.name }))}
+                value={(() => {
+                  const s = c.subjects.find((s) => s.id === c.subjectId);
+                  return s ? { id: s.id, name: s.name } : null;
+                })()}
+                onChange={(o) => c.setSubjectId(String(o.id))}
+              />
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700">Title</label>
