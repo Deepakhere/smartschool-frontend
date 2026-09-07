@@ -140,6 +140,7 @@ export interface ILoginResponse {
   id: string;
   email: string;
   token: string;
+  refreshToken?: string;
   name: string;
   role: "admin" | "parent" | "teacher";
   isPlatformAdmin?: boolean;

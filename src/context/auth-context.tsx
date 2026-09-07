@@ -7,9 +7,10 @@ import {
 } from "react";
 import Cookies from "js-cookie";
 import { useGetUserDetails } from "./service";
-import { USER_ACCESS_KEY } from "../utils";
+import { APIS_ROUTES, USER_ACCESS_KEY } from "../utils";
 import { ILoginResponse } from "../types";
 import LogoSpinner from "../components/logo-spinner";
+import apiClient from "../config/api-client";
 
 type User = {
   name?: string;
@@ -41,12 +42,18 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const login = (data: ILoginResponse) => {
     Cookies.set(USER_ACCESS_KEY.TOKEN, data.token);
+    if (data.refreshToken) {
+      Cookies.set(USER_ACCESS_KEY.REFRESH_TOKEN, data.refreshToken);
+    }
     Cookies.set(USER_ACCESS_KEY.ROLE, data.role);
     setUser(data);
   };
 
   const logout = () => {
+    // best-effort session revocation — clear local cookies regardless of outcome
+    apiClient.post(APIS_ROUTES.LOGOUT).catch(() => {});
     Cookies.remove(USER_ACCESS_KEY.TOKEN);
+    Cookies.remove(USER_ACCESS_KEY.REFRESH_TOKEN);
     Cookies.remove(USER_ACCESS_KEY.ROLE);
     window.location.href = "/login";
   };
@@ -56,6 +63,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       if (getUserDetails.isSuccess && getUserDetails.data) {
         if (getUserDetails.data.role !== Cookies.get(USER_ACCESS_KEY.ROLE)) {
           Cookies.remove(USER_ACCESS_KEY.TOKEN);
+          Cookies.remove(USER_ACCESS_KEY.REFRESH_TOKEN);
           Cookies.remove(USER_ACCESS_KEY.ROLE);
           window.location.href = "/login";
         } else {
@@ -69,6 +77,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     if (getUserDetails.isError) {
       if (Cookies.get(USER_ACCESS_KEY.TOKEN)) {
         Cookies.remove(USER_ACCESS_KEY.TOKEN);
+        Cookies.remove(USER_ACCESS_KEY.REFRESH_TOKEN);
         Cookies.remove(USER_ACCESS_KEY.ROLE);
         setUser(null);
       }

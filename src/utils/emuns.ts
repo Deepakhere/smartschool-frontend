@@ -1,5 +1,7 @@
 export const APIS_ROUTES = {
   SIGNIN: "/auth/v1/user/signin",
+  REFRESH_TOKEN: "/auth/v1/user/refresh-token",
+  LOGOUT: "/auth/v1/user/logout",
   FORGOT_PASSWORD: "/auth/v1/user/forgot-password",
   RESET_PASSWORD: "/auth/v1/user/reset-password/:token",
   GET_USER_DETAILS: "/auth/v1/user/get-user-details",
@@ -112,6 +114,7 @@ export const EMAIL_REGEX_PATTERN = new RegExp(
 
 export const USER_ACCESS_KEY = {
   TOKEN: "kidSightAccessToken",
+  REFRESH_TOKEN: "kidSightRefreshToken",
   ROLE: "kidSightUserRole",
   ORGANIZATION_ID: "kidSightOrganizationId",
   ORGANIZATION_NAME: "kidSightOrganizationName",
