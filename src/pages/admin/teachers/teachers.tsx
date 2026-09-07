@@ -76,7 +76,17 @@ const AdminTeachers = () => {
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <label className="block text-sm font-medium text-gray-700">Employee Code</label>
-                    <input className={inputClass} value={c.employeeCode} onChange={(e) => c.setEmployeeCode(e.target.value)} />
+                    <input
+                      className={
+                        c.editingTeacher?.staffProfile?.employeeCode
+                          ? `${inputClass} bg-gray-100 text-gray-500 cursor-not-allowed`
+                          : inputClass
+                      }
+                      value={c.employeeCode}
+                      onChange={(e) => c.setEmployeeCode(e.target.value)}
+                      disabled={!!c.editingTeacher?.staffProfile?.employeeCode}
+                      title={c.editingTeacher?.staffProfile?.employeeCode ? "Employee code can't be changed once assigned." : undefined}
+                    />
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700">Date of Joining</label>

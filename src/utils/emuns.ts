@@ -38,6 +38,8 @@ export const API_QUERY_KEY = {
   GET_TEACHER_ASSIGNMENTS: "get-teacher-assignments",
   GET_ALL_TEACHERS: "get-all-teachers",
   GET_DASHBOARD_STATS: "get-dashboard-stats",
+  GET_DASHBOARD_CHARTS: "get-dashboard-charts",
+  GET_PARENT_DASHBOARD: "get-parent-dashboard",
   GET_TEACHER_DIRECTORY: "get-teacher-directory",
   GET_SECTION_ATTENDANCE: "get-section-attendance",
   GET_HOMEWORK_LIST: "get-homework-list",

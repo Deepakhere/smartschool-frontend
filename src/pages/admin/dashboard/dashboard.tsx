@@ -21,6 +21,8 @@ const Dashboard = () => {
     isUserTypeModalOpen,
     closeNoticeModal,
     handleCreateNotice,
+    isCreatingNotice,
+    isSuccessNoticeCreation,
     closeUserTypeModal,
     handleSelectStudent,
     handleSelectTeacher,
@@ -141,9 +143,9 @@ const Dashboard = () => {
           <NoticeModal
             isOpen={isNoticeModalOpen}
             onCancel={closeNoticeModal}
-            isLoading={false}
+            isLoading={isCreatingNotice}
             onSubmit={handleCreateNotice}
-            isSuccessNoticeCreation={false}
+            isSuccessNoticeCreation={isSuccessNoticeCreation}
           />
 
           <UserTypeSelectionModal

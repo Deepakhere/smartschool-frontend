@@ -48,7 +48,11 @@ const StudentDetailsForm = ({
               placeholder={t("messages.enter_admission_no")}
               value={formData.admissionNumber}
               onChange={handleChange}
-              className="mt-1 block w-full p-2 rounded-md border border-gray-300 bg-white text-gray-900 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+              disabled={isEditStudent}
+              title={isEditStudent ? "Admission number can't be changed once assigned." : undefined}
+              className={`mt-1 block w-full p-2 rounded-md border border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm ${
+                isEditStudent ? "bg-gray-100 text-gray-500 cursor-not-allowed" : "bg-white text-gray-900"
+              }`}
               required
             />
           </div>
