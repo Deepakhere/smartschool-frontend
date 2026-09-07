@@ -26,7 +26,7 @@ const CreateUpdateUserModal = ({
 
   return (
     <div className="fixed inset-0 z-50 overflow-y-auto bg-gray-500 bg-opacity-75">
-      <div className="flex min-h-screen items-center justify-center px-4 pt-4 pb-20 text-center sm:block sm:p-0">
+      <div className="flex min-h-screen items-center justify-center p-4 text-center">
         <div className="fixed inset-0 transition-opacity" aria-hidden="true">
           <div
             className="absolute inset-0 bg-gray-500 opacity-75"
@@ -34,8 +34,8 @@ const CreateUpdateUserModal = ({
           ></div>
         </div>
 
-        <div className="inline-block transform overflow-hidden rounded-lg bg-white px-4 pt-5 pb-4 text-left align-bottom shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg sm:p-6 sm:align-middle">
-          <div className="absolute top-0 right-0 pt-4 pr-4">
+        <div className="relative w-full max-h-[90vh] overflow-y-auto transform rounded-lg bg-white text-left shadow-xl transition-all sm:max-w-lg">
+          <div className="absolute top-4 right-4">
             <button
               type="button"
               className="rounded-md bg-white text-gray-400 hover:text-gray-500 focus:outline-none"
@@ -46,6 +46,7 @@ const CreateUpdateUserModal = ({
             </button>
           </div>
 
+          <div className="p-4 sm:p-6">
           <div className="sm:flex sm:items-start">
             <div className="mt-3 text-center sm:mt-0 sm:text-left w-full">
               <h3 className="text-lg font-medium leading-6 text-gray-900 mb-6">
@@ -263,6 +264,7 @@ const CreateUpdateUserModal = ({
                 </div>
               </form>
             </div>
+          </div>
           </div>
         </div>
       </div>

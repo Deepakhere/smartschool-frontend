@@ -1,6 +1,5 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
-import i18n from "../../../../i18n";
 import Cookies from "js-cookie";
 
 import { useAuth } from "../../../../context/auth-context";
@@ -8,14 +7,17 @@ import { useTheme } from "../../../../context/theme-context";
 import { useUpdateUserPreferences } from "./service";
 
 const useProfileController = () => {
-  const { t } = useTranslation();
-  const { user } = useAuth();
+  const { t, i18n } = useTranslation();
+  const { user, updatePreferences } = useAuth();
   const { theme, setTheme } = useTheme();
-  const updatePreferences = useUpdateUserPreferences();
+  const updateServerPreferences = useUpdateUserPreferences();
 
   const [editMode, setEditMode] = useState(false);
   const [imageUrl, setImageUrl] = useState<string | null>(null);
-  const [currentLanguage, setCurrentLanguage] = useState(i18n.language || "en");
+
+  // react-i18next already re-renders on language change, so i18n.language itself
+  // is the current language — no need to mirror it into its own state
+  const currentLanguage = i18n.language || "en";
 
   const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -31,16 +33,13 @@ const useProfileController = () => {
 
   const changeLanguage = (lng: string) => {
     i18n.changeLanguage(lng);
-    setCurrentLanguage(lng);
-
     localStorage.setItem("i18nextLng", lng);
     Cookies.set("i18nextLng", lng, { expires: 365 });
-
-    // Force reload translations
     document.documentElement.lang = lng;
 
-    if (user && (lng === "en" || lng === "hi")) {
-      updatePreferences.mutate({ locale: lng });
+    if (lng === "en" || lng === "hi") {
+      updatePreferences({ locale: lng });
+      if (user) updateServerPreferences.mutate({ locale: lng });
     }
   };
 
@@ -48,26 +47,20 @@ const useProfileController = () => {
     setTheme(newTheme);
   };
 
-  useEffect(() => {
-    const savedLanguage = localStorage.getItem("i18nextLng") || "en";
-    if (savedLanguage && i18n.language !== savedLanguage) {
-      i18n.changeLanguage(savedLanguage);
-      setCurrentLanguage(savedLanguage);
-    }
-  }, []);
+  // derived straight from the shared user object — no local state to keep in sync,
+  // defaulting true (matches the backend default) until the user is known
+  const emailNotifications = user?.preferences?.emailNotifications ?? true;
+  const smsNotifications = user?.preferences?.smsNotifications ?? true;
 
-  // once the authenticated user's server-side locale preference is known, it wins
-  // over whatever was cached locally — same cross-device consistency as theme
-  useEffect(() => {
-    const serverLocale = user?.preferences?.locale;
-    if (serverLocale && i18n.language !== serverLocale) {
-      i18n.changeLanguage(serverLocale);
-      setCurrentLanguage(serverLocale);
-      localStorage.setItem("i18nextLng", serverLocale);
-      Cookies.set("i18nextLng", serverLocale, { expires: 365 });
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user?.preferences?.locale]);
+  const changeEmailNotifications = (checked: boolean) => {
+    updatePreferences({ emailNotifications: checked });
+    updateServerPreferences.mutate({ emailNotifications: checked });
+  };
+
+  const changeSmsNotifications = (checked: boolean) => {
+    updatePreferences({ smsNotifications: checked });
+    updateServerPreferences.mutate({ smsNotifications: checked });
+  };
 
   return {
     t,
@@ -80,6 +73,10 @@ const useProfileController = () => {
     handleAvatarChange,
     changeLanguage,
     changeTheme,
+    emailNotifications,
+    smsNotifications,
+    changeEmailNotifications,
+    changeSmsNotifications,
   };
 };
 

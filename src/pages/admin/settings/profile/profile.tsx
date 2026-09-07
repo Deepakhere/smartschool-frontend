@@ -12,8 +12,8 @@ import {
 
 import useProfileController from "./profile-controller";
 import PageLoader from "../../../../components/page-loader";
-import SectionHeader from "../../../../components/section-header";
 import CustomSelectDropdown from "../../../../components/custom-select";
+import { Switch } from "../../../../components/ui/switch";
 import { SelectOption } from "../../../../types";
 
 const AdminProfile = () => {
@@ -28,6 +28,10 @@ const AdminProfile = () => {
     handleAvatarChange,
     changeLanguage,
     changeTheme,
+    emailNotifications,
+    smsNotifications,
+    changeEmailNotifications,
+    changeSmsNotifications,
   } = useProfileController();
 
   const languageOptions: SelectOption[] = [
@@ -45,7 +49,6 @@ const AdminProfile = () => {
         <PageLoader />
       ) : (
         <div className="max-w-7xl mx-auto">
-          <SectionHeader title="Profile" description="Your account details and preferences" />
           <div className="">
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
               {/* Left column - 2/3 width */}
@@ -324,15 +327,11 @@ const AdminProfile = () => {
                           <EnvelopeIcon className="h-5 w-5 mr-2 text-gray-500" />
                           {t("labels.email_notifications")}
                         </label>
-                        <div className="relative inline-block w-10 mr-2 align-middle select-none">
-                          <input
-                            type="checkbox"
-                            id="emailNotifications"
-                            defaultChecked
-                            className="sr-only peer"
-                          />
-                          <div className="w-10 h-5 bg-gray-200 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-indigo-600"></div>
-                        </div>
+                        <Switch
+                          id="emailNotifications"
+                          checked={emailNotifications}
+                          onCheckedChange={changeEmailNotifications}
+                        />
                       </div>
                       <div className="flex items-center justify-between">
                         <label
@@ -342,15 +341,11 @@ const AdminProfile = () => {
                           <BellIcon className="h-5 w-5 mr-2 text-gray-500" />
                           {t("labels.sms_notifications")}
                         </label>
-                        <div className="relative inline-block w-10 mr-2 align-middle select-none">
-                          <input
-                            type="checkbox"
-                            id="smsNotifications"
-                            defaultChecked
-                            className="sr-only peer"
-                          />
-                          <div className="w-10 h-5 bg-gray-200 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-indigo-600"></div>
-                        </div>
+                        <Switch
+                          id="smsNotifications"
+                          checked={smsNotifications}
+                          onCheckedChange={changeSmsNotifications}
+                        />
                       </div>
                     </form>
                   </div>

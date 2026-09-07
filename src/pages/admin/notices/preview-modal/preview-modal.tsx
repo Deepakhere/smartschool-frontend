@@ -59,7 +59,8 @@ const AttachmentPreviewModal = ({
               leaveFrom="opacity-100 scale-100"
               leaveTo="opacity-0 scale-95"
             >
-              <Dialog.Panel className="w-full max-w-4xl transform overflow-hidden rounded-lg bg-white p-6 text-left align-middle shadow-xl transition-all">
+              <Dialog.Panel className="w-full max-w-4xl max-h-[90vh] overflow-y-auto transform rounded-lg bg-white text-left align-middle shadow-xl transition-all">
+                <div className="p-6">
                 <div className="flex justify-between items-center mb-4">
                   <Dialog.Title
                     as="h3"
@@ -117,6 +118,7 @@ const AttachmentPreviewModal = ({
                   >
                     Download
                   </a>
+                </div>
                 </div>
               </Dialog.Panel>
             </Transition.Child>

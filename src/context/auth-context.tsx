@@ -33,6 +33,11 @@ interface IAuthContext {
   login: (data: ILoginResponse) => void;
   logout: () => void;
   user: User;
+  // merges a partial preferences update into the current user in place — the one
+  // source of truth for "what does this user have set right now", so consumers
+  // (theme, language, notification switches) don't each need their own local
+  // state + a useEffect to keep it in sync with the server value
+  updatePreferences: (partial: Partial<IUserPreferences>) => void;
 }
 
 const AuthContext = createContext<IAuthContext | undefined>(undefined);
@@ -48,6 +53,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
     Cookies.set(USER_ACCESS_KEY.ROLE, data.role);
     setUser(data);
+  };
+
+  const updatePreferences = (partial: Partial<IUserPreferences>) => {
+    setUser((prev) =>
+      prev ? { ...prev, preferences: { ...prev.preferences, ...partial } as IUserPreferences } : prev
+    );
   };
 
   const logout = () => {
@@ -101,7 +112,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   }
 
   return (
-    <AuthContext.Provider value={{ login, logout, user }}>
+    <AuthContext.Provider value={{ login, logout, user, updatePreferences }}>
       {children}
     </AuthContext.Provider>
   );

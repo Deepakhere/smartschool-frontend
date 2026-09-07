@@ -262,6 +262,8 @@ export interface IUpdateUserValue {
 export interface IUserPreferences {
   theme: "light" | "dark";
   locale: "en" | "hi";
+  emailNotifications: boolean;
+  smsNotifications: boolean;
 }
 
 export interface IUserDetailResponse {

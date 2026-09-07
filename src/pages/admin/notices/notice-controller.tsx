@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useParams } from "react-router-dom";
 import toast from "react-hot-toast";
 import { useTranslation } from "react-i18next";
@@ -16,6 +16,9 @@ const useNoticeController = () => {
   const [previewAttachmentURL, setPreviewAttachmentURL] = useState("");
   const [previewFileName, setPreviewFileName] = useState("");
   const [isNoticeModalOpen, setIsNoticeModalOpen] = useState(false);
+  const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
+  const [previewNotice, setPreviewNotice] = useState<INotice | null>(null);
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
   const getNoticeList = useGetNoticeList(organizationId, "", "", 10, 1);
   const createNotice = useCreateNotice(organizationId || "");
@@ -81,6 +84,33 @@ const useNoticeController = () => {
 
   const cancelDeleteNotice = () => setNoticeIdPendingDelete(null);
 
+  const toggleDropdown = (noticeId: string) => {
+    setActiveDropdown(activeDropdown === noticeId ? null : noticeId);
+  };
+
+  const onClickPreviewNotice = (notice: INotice) => {
+    setPreviewNotice(notice);
+    setActiveDropdown(null);
+  };
+
+  const closePreviewNotice = () => setPreviewNotice(null);
+
+  const onClickDeleteFromDropdown = (id: string) => {
+    handleDeleteNotice(id);
+    setActiveDropdown(null);
+  };
+
+  // close the row action dropdown on an outside click
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setActiveDropdown(null);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
   const confirmDeleteNotice = () => {
     if (!noticeIdPendingDelete) return;
     deleteNotice.mutate(noticeIdPendingDelete, {
@@ -133,6 +163,13 @@ const useNoticeController = () => {
     confirmDeleteNotice,
     isDeletingNotice: deleteNotice.isLoading,
     setPreviewModalOpen,
+    activeDropdown,
+    dropdownRef,
+    toggleDropdown,
+    previewNotice,
+    onClickPreviewNotice,
+    closePreviewNotice,
+    onClickDeleteFromDropdown,
   };
 };
 

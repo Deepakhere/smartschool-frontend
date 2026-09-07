@@ -1,6 +1,7 @@
-import { DocumentArrowDownIcon, EyeIcon } from "@heroicons/react/24/outline";
+import { DocumentArrowDownIcon, EyeIcon, EllipsisHorizontalIcon, TrashIcon } from "@heroicons/react/24/outline";
 
 import NoticeModal from "../../../components/notice-modal";
+import NoticePreviewModal from "../../../components/notice-preview-modal/notice-preview-modal";
 import DeleteConfirmationDialog from "../../../components/delete-confirmation-dialog";
 import NoRecordFound from "../../../components/no-record-found";
 import useNoticeController from "./notice-controller";
@@ -27,12 +28,18 @@ const AdminNotices = () => {
     handleViewAttachment,
     handleDownloadAttachment,
     onClickCreateNotice,
-    handleDeleteNotice,
     noticeIdPendingDelete,
     cancelDeleteNotice,
     confirmDeleteNotice,
     isDeletingNotice,
     setPreviewModalOpen,
+    activeDropdown,
+    dropdownRef,
+    toggleDropdown,
+    previewNotice,
+    onClickPreviewNotice,
+    closePreviewNotice,
+    onClickDeleteFromDropdown,
   } = useNoticeController();
 
   usePageHeader({
@@ -101,7 +108,7 @@ const AdminNotices = () => {
                         </TableCell>
                         <TableCell className="text-center text-gray-500">{new Date(notice.createdAt).toLocaleDateString()}</TableCell>
                         <TableCell className="text-center">
-                          <div className="flex justify-center gap-2">
+                          <div className="flex justify-center items-center gap-2">
                             {notice.attachmentURL && (
                               <>
                                 <button
@@ -120,13 +127,44 @@ const AdminNotices = () => {
                                 </button>
                               </>
                             )}
-                            <button
-                              className="text-red-600 hover:text-red-900"
-                              title="Delete notice"
-                              onClick={() => handleDeleteNotice(notice.id)}
+                            <div
+                              className="relative inline-block text-left"
+                              ref={activeDropdown === notice.id ? dropdownRef : undefined}
                             >
-                              Delete
-                            </button>
+                              <button
+                                onClick={() => toggleDropdown(notice.id)}
+                                className="text-gray-500 hover:text-gray-700 focus:outline-none"
+                                aria-expanded={activeDropdown === notice.id}
+                                aria-haspopup="true"
+                              >
+                                <EllipsisHorizontalIcon className="h-5 w-5" />
+                              </button>
+
+                              {activeDropdown === notice.id && (
+                                <div
+                                  className="absolute right-0 top-full mt-1 w-36 bg-white border rounded-lg shadow-lg overflow-hidden z-20"
+                                  role="menu"
+                                  aria-orientation="vertical"
+                                >
+                                  <button
+                                    className="w-full text-left flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+                                    role="menuitem"
+                                    onClick={() => onClickPreviewNotice(notice)}
+                                  >
+                                    <EyeIcon className="h-4 w-4" />
+                                    Preview
+                                  </button>
+                                  <button
+                                    className="w-full text-left flex items-center gap-2 px-4 py-2 text-sm text-red-600 hover:bg-gray-50"
+                                    role="menuitem"
+                                    onClick={() => onClickDeleteFromDropdown(notice.id)}
+                                  >
+                                    <TrashIcon className="h-4 w-4" />
+                                    Delete
+                                  </button>
+                                </div>
+                              )}
+                            </div>
                           </div>
                         </TableCell>
                       </TableRow>
@@ -148,6 +186,14 @@ const AdminNotices = () => {
         onSubmit={handleCreateNotice}
         isSuccessNoticeCreation={isSuccessNoticeCreation}
       />
+
+      {previewNotice && (
+        <NoticePreviewModal
+          isOpen={!!previewNotice}
+          onClose={closePreviewNotice}
+          notice={previewNotice}
+        />
+      )}
 
       <AttachmentPreviewModal
         isOpen={previewModalOpen}

@@ -1,10 +1,4 @@
-import {
-  createContext,
-  useContext,
-  useState,
-  useEffect,
-  ReactNode,
-} from "react";
+import { createContext, useContext, useEffect, ReactNode } from "react";
 
 import { useAuth } from "./auth-context";
 import { useUpdateUserPreferences } from "../pages/admin/settings/profile/service";
@@ -20,42 +14,28 @@ interface ThemeContextType {
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 export const ThemeProvider = ({ children }: { children: ReactNode }) => {
-  const { user } = useAuth();
-  const updatePreferences = useUpdateUserPreferences();
+  const { user, updatePreferences } = useAuth();
+  const updateServerPreferences = useUpdateUserPreferences();
 
-  // localStorage is only the pre-auth/offline fallback so there's no flash of the
-  // wrong theme before the session check resolves — once logged in, the server's
-  // preferences.theme is the source of truth (keeps it consistent across devices)
-  const [theme, setThemeState] = useState<ThemeType>(
-    () => (localStorage.getItem("theme") as ThemeType) || "light"
-  );
+  // no local state to keep in sync: once logged in, the server preference is the
+  // value; before that (or as an offline fallback), localStorage is read directly —
+  // it never changes except through setTheme below, so there's nothing to watch
+  const theme: ThemeType = user?.preferences?.theme || (localStorage.getItem("theme") as ThemeType) || "light";
 
   useEffect(() => {
     localStorage.setItem("theme", theme);
     document.documentElement.classList.toggle("dark", theme === "dark");
   }, [theme]);
 
-  useEffect(() => {
-    if (user?.preferences?.theme && user.preferences.theme !== theme) {
-      setThemeState(user.preferences.theme);
-    }
-    // only react to the server value changing (e.g. on login) — not to our own `theme` state
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user?.preferences?.theme]);
-
-  const applyTheme = (next: ThemeType) => {
-    setThemeState(next);
-    if (user) {
-      updatePreferences.mutate({ theme: next });
-    }
+  const setTheme = (next: ThemeType) => {
+    updatePreferences({ theme: next });
+    if (user) updateServerPreferences.mutate({ theme: next });
   };
 
-  const toggleTheme = () => {
-    applyTheme(theme === "light" ? "dark" : "light");
-  };
+  const toggleTheme = () => setTheme(theme === "light" ? "dark" : "light");
 
   return (
-    <ThemeContext.Provider value={{ theme, toggleTheme, setTheme: applyTheme }}>
+    <ThemeContext.Provider value={{ theme, toggleTheme, setTheme }}>
       {children}
     </ThemeContext.Provider>
   );

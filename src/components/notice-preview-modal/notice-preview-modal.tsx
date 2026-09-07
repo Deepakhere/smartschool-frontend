@@ -79,7 +79,7 @@ const NoticePreviewModal = ({
         className="fixed z-10 inset-0 overflow-y-auto"
         onClose={onClose}
       >
-        <div className="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+        <div className="flex min-h-screen items-center justify-center p-4 text-center">
           <Transition.Child
             as={Fragment}
             enter="ease-out duration-300"
@@ -92,12 +92,6 @@ const NoticePreviewModal = ({
             <Dialog.Overlay className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" />
           </Transition.Child>
 
-          <span
-            className="hidden sm:inline-block sm:align-middle sm:h-screen"
-            aria-hidden="true"
-          >
-            &#8203;
-          </span>
           <Transition.Child
             as={Fragment}
             enter="ease-out duration-300"
@@ -107,7 +101,7 @@ const NoticePreviewModal = ({
             leaveFrom="opacity-100 translate-y-0 sm:scale-100"
             leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
           >
-            <div className="relative inline-block w-full transform overflow-hidden rounded-lg bg-white text-left align-bottom shadow-xl transition-all sm:my-8 sm:max-w-3xl sm:align-middle">
+            <div className="relative flex max-h-[90vh] w-full transform flex-col overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:max-w-3xl">
               {/* Header */}
               <div className="flex items-center justify-between border-b border-gray-200 p-4">
                 <Dialog.Title as="h3" className="text-base font-semibold text-gray-900">
@@ -134,8 +128,8 @@ const NoticePreviewModal = ({
               </div>
 
               {/* Content */}
-              <div className="max-h-[70vh] overflow-y-auto p-4 sm:p-6">
-                <div id="notice-print-content">
+              <div className="flex-1 overflow-y-auto">
+                <div id="notice-print-content" className="p-4 sm:p-6">
                   {/* Organization Logo and Name */}
                   <div className="mb-8 flex items-center border-b border-gray-200 pb-4">
                     <img

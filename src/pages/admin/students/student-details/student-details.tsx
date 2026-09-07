@@ -45,8 +45,7 @@ const StudentDetails = () => {
     confirmRemoveGuardian,
   } = useStudentDetailController();
 
-  // no title here — the page below already shows "Student Profile" and the student's name
-  usePageHeader({ onBack: onBackClick });
+  usePageHeader({ title: "Student Profile", onBack: onBackClick });
 
   return (
     <>
@@ -73,7 +72,7 @@ const StudentDetails = () => {
                 <Avatar name={studentDetails?.name || ""} size={40} />
                 <div>
                   <h3 className="text-lg leading-6 font-medium text-gray-900">
-                    Student Profile
+                    {studentDetails?.name}
                   </h3>
                   <p className="mt-1 max-w-2xl text-sm text-gray-500">
                     Personal details and information.

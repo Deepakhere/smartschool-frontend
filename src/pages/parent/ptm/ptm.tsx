@@ -133,8 +133,9 @@ const ParentPTM = () => {
       </div>
 
       {bookingSlotId && (
-        <div className="fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center z-10">
-          <div className="bg-white rounded-lg shadow-xl p-6 max-w-sm w-full">
+        <div className="fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center z-10 p-4">
+          <div className="bg-white rounded-lg shadow-xl max-w-sm w-full max-h-[90vh] overflow-y-auto">
+            <div className="p-6">
             <h3 className="text-lg font-medium text-gray-900 mb-4">Confirm booking</h3>
             <CustomSelectDropdown
               label="Booking for"
@@ -156,6 +157,7 @@ const ParentPTM = () => {
               >
                 Cancel
               </button>
+            </div>
             </div>
           </div>
         </div>

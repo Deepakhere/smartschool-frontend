@@ -37,7 +37,7 @@ const DeleteConfirmationDialog = ({
 }: DeleteConfirmationDialogProps) => (
   <AlertDialog open={open} onOpenChange={(next) => !next && onClose()}>
     <AlertDialogContent>
-      <div className="flex flex-col items-center text-center">
+      <div className="flex flex-col items-center p-4 text-center sm:p-6">
         <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-red-100">
           <ExclamationTriangleIcon className="h-6 w-6 text-red-600" aria-hidden="true" />
         </div>

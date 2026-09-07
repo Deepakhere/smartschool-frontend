@@ -200,7 +200,7 @@ const StudentsList = () => {
                         <TableCell className="text-center">
                           <div
                             className="relative inline-block text-center"
-                            ref={dropdownRef}
+                            ref={activeDropdown === student.id ? dropdownRef : undefined}
                           >
                             <button
                               onClick={() => {

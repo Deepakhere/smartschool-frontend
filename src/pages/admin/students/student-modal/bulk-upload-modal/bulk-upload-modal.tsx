@@ -27,16 +27,17 @@ const BulkUploadModal = ({ isOpen, organizationId, onClose, onImported }: BulkUp
 
   return (
     <div className="fixed inset-0 z-50 overflow-y-auto">
-      <div className="flex min-h-screen items-center justify-center px-4 pt-4 pb-20 text-center sm:block sm:p-0">
+      <div className="flex min-h-screen items-center justify-center p-4 text-center">
         <div className="fixed inset-0 bg-gray-500 opacity-75" onClick={handleClose}></div>
 
-        <div className="inline-block transform overflow-hidden rounded-lg bg-white px-4 pt-5 pb-4 text-left align-bottom shadow-xl transition-all sm:my-8 sm:max-w-xl sm:w-full sm:p-6 sm:align-middle">
-          <div className="absolute top-0 right-0 pt-4 pr-4">
+        <div className="relative w-full max-h-[90vh] overflow-y-auto transform rounded-lg bg-white text-left shadow-xl transition-all sm:max-w-xl">
+          <div className="absolute top-4 right-4">
             <button type="button" className="text-gray-400 hover:text-gray-500" onClick={handleClose}>
               <XMarkIcon className="h-6 w-6" />
             </button>
           </div>
 
+          <div className="p-4 sm:p-6">
           <h3 className="text-lg font-medium text-gray-900 mb-1">Bulk Upload Students (CSV)</h3>
           <p className="text-sm text-gray-500 mb-4">
             Choose the class and section these students belong to, then upload a CSV with columns:{" "}
@@ -146,6 +147,7 @@ const BulkUploadModal = ({ isOpen, organizationId, onClose, onImported }: BulkUp
               </div>
             </div>
           )}
+          </div>
         </div>
       </div>
     </div>
