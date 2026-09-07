@@ -7,8 +7,6 @@ import {
   AlertDialogCancel,
   AlertDialogContent,
   AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
   AlertDialogTitle,
 } from "../ui/alert-dialog";
 import ButtonSpinner from "../../icons/button-spinner";
@@ -39,29 +37,31 @@ const DeleteConfirmationDialog = ({
 }: DeleteConfirmationDialogProps) => (
   <AlertDialog open={open} onOpenChange={(next) => !next && onClose()}>
     <AlertDialogContent>
-      <AlertDialogHeader>
-        <div className="mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-red-100 sm:mx-0 sm:h-10 sm:w-10">
+      <div className="flex flex-col items-center text-center">
+        <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-red-100">
           <ExclamationTriangleIcon className="h-6 w-6 text-red-600" aria-hidden="true" />
         </div>
-        <div className="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left">
-          <AlertDialogTitle>{title}</AlertDialogTitle>
-          <AlertDialogDescription>{description}</AlertDialogDescription>
+        <AlertDialogTitle className="mt-4">{title}</AlertDialogTitle>
+        <AlertDialogDescription className="mt-2">{description}</AlertDialogDescription>
+
+        <div className="mt-6 flex w-full flex-col-reverse gap-3 sm:flex-row sm:justify-center">
+          <AlertDialogCancel disabled={isLoading} className="mt-0 sm:w-32">
+            {cancelLabel}
+          </AlertDialogCancel>
+          <AlertDialogAction
+            disabled={isLoading}
+            className="sm:w-32"
+            onClick={(e) => {
+              // AlertDialogAction closes the dialog on click by default; the confirm
+              // handler decides when to close (only after the mutation succeeds)
+              e.preventDefault();
+              onConfirm();
+            }}
+          >
+            {isLoading ? <ButtonSpinner /> : confirmLabel}
+          </AlertDialogAction>
         </div>
-      </AlertDialogHeader>
-      <AlertDialogFooter>
-        <AlertDialogAction
-          disabled={isLoading}
-          onClick={(e) => {
-            // AlertDialogAction closes the dialog on click by default; the confirm
-            // handler decides when to close (only after the mutation succeeds)
-            e.preventDefault();
-            onConfirm();
-          }}
-        >
-          {isLoading ? <ButtonSpinner /> : confirmLabel}
-        </AlertDialogAction>
-        <AlertDialogCancel disabled={isLoading}>{cancelLabel}</AlertDialogCancel>
-      </AlertDialogFooter>
+      </div>
     </AlertDialogContent>
   </AlertDialog>
 );
