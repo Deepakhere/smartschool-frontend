@@ -1,6 +1,7 @@
 import { DocumentArrowDownIcon, EyeIcon } from "@heroicons/react/24/outline";
 
 import NoticeModal from "../../../components/notice-modal";
+import DeleteConfirmationDialog from "../../../components/delete-confirmation-dialog";
 import NoRecordFound from "../../../components/no-record-found";
 import useNoticeController from "./notice-controller";
 import Spinner from "../../../components/spinner";
@@ -27,6 +28,10 @@ const AdminNotices = () => {
     handleDownloadAttachment,
     onClickCreateNotice,
     handleDeleteNotice,
+    noticeIdPendingDelete,
+    cancelDeleteNotice,
+    confirmDeleteNotice,
+    isDeletingNotice,
     setPreviewModalOpen,
   } = useNoticeController();
 
@@ -149,6 +154,15 @@ const AdminNotices = () => {
         onClose={() => setPreviewModalOpen(false)}
         attachmentURL={previewAttachmentURL}
         fileName={previewFileName}
+      />
+
+      <DeleteConfirmationDialog
+        open={!!noticeIdPendingDelete}
+        title="Delete Notice"
+        description="Are you sure you want to delete this notice? This action cannot be undone."
+        isLoading={isDeletingNotice}
+        onClose={cancelDeleteNotice}
+        onConfirm={confirmDeleteNotice}
       />
     </>
   );

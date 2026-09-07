@@ -73,8 +73,19 @@ const useNoticeController = () => {
     setIsNoticeModalOpen(false);
   };
 
+  const [noticeIdPendingDelete, setNoticeIdPendingDelete] = useState<string | null>(null);
+
   const handleDeleteNotice = (id: string) => {
-    deleteNotice.mutate(id);
+    setNoticeIdPendingDelete(id);
+  };
+
+  const cancelDeleteNotice = () => setNoticeIdPendingDelete(null);
+
+  const confirmDeleteNotice = () => {
+    if (!noticeIdPendingDelete) return;
+    deleteNotice.mutate(noticeIdPendingDelete, {
+      onSuccess: () => setNoticeIdPendingDelete(null),
+    });
   };
 
   useEffect(() => {
@@ -117,6 +128,10 @@ const useNoticeController = () => {
     handleDownloadAttachment,
     onClickCreateNotice,
     handleDeleteNotice,
+    noticeIdPendingDelete,
+    cancelDeleteNotice,
+    confirmDeleteNotice,
+    isDeletingNotice: deleteNotice.isLoading,
     setPreviewModalOpen,
   };
 };

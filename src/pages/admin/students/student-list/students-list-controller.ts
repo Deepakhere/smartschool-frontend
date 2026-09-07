@@ -305,6 +305,7 @@ const useStudentsListController = () => {
     isLoadingGetStudentDetails: getStudentDetails.isLoading,
     isLoadingAddStudent: addStudentProfile.isLoading,
     isLoadingUpdateStudent: updateStudentDetail.isLoading,
+    isDeletingStudent: deleteStudent.isLoading,
     isFetchingStudentList: getStudentDetails.isFetching,
     handleChange,
     handleSubmit,

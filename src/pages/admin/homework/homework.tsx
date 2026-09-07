@@ -1,4 +1,5 @@
 import Spinner from "../../../components/spinner";
+import DeleteConfirmationDialog from "../../../components/delete-confirmation-dialog";
 import NoRecordFound from "../../../components/no-record-found";
 import SectionHeader from "../../../components/section-header";
 import CustomSelectDropdown from "../../../components/custom-select";
@@ -163,6 +164,15 @@ const Homework = () => {
           )}
         </div>
       )}
+
+      <DeleteConfirmationDialog
+        open={!!c.homeworkIdPendingDelete}
+        title="Delete Homework"
+        description="Are you sure you want to delete this homework? This action cannot be undone."
+        isLoading={c.isDeleting}
+        onClose={c.cancelDelete}
+        onConfirm={c.confirmDelete}
+      />
     </div>
   );
 };

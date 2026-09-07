@@ -20,6 +20,7 @@ const useStudentDetailController = () => {
 
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [guardianIdPendingRemoval, setGuardianIdPendingRemoval] = useState<string | null>(null);
   const [isGuardianModalOpen, setIsGuardianModalOpen] = useState(false);
   const [currentStep, setCurrentStep] = useState(1);
   const [formData, setFormData] = useState({} as IStudentFormData);
@@ -137,9 +138,16 @@ const useStudentDetailController = () => {
   };
 
   const handleRemoveGuardian = (guardianLinkId: string) => {
-    if (window.confirm("Remove this guardian from the student?")) {
-      removeGuardian.mutate(guardianLinkId);
-    }
+    setGuardianIdPendingRemoval(guardianLinkId);
+  };
+
+  const cancelRemoveGuardian = () => setGuardianIdPendingRemoval(null);
+
+  const confirmRemoveGuardian = () => {
+    if (!guardianIdPendingRemoval) return;
+    removeGuardian.mutate(guardianIdPendingRemoval, {
+      onSuccess: () => setGuardianIdPendingRemoval(null),
+    });
   };
 
   return {
@@ -165,10 +173,15 @@ const useStudentDetailController = () => {
     setCurrentStep,
     setIsEditModalOpen,
     setIsDeleteModalOpen,
+    isDeletingStudent: deleteStudent.isLoading,
     handleDeleteStudent,
     addGuardian,
     handleSetPrimaryGuardian,
     handleRemoveGuardian,
+    guardianIdPendingRemoval,
+    isRemovingGuardian: removeGuardian.isLoading,
+    cancelRemoveGuardian,
+    confirmRemoveGuardian,
   };
 };
 

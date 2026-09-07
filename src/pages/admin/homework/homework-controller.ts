@@ -88,10 +88,19 @@ export const useHomeworkController = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [createHomework.isSuccess, createHomework.isError]);
 
+  const [homeworkIdPendingDelete, setHomeworkIdPendingDelete] = useState<string | null>(null);
+
   const handleDelete = (homeworkId: string) => {
-    if (window.confirm("Delete this homework?")) {
-      deleteHomework.mutate(homeworkId);
-    }
+    setHomeworkIdPendingDelete(homeworkId);
+  };
+
+  const cancelDelete = () => setHomeworkIdPendingDelete(null);
+
+  const confirmDelete = () => {
+    if (!homeworkIdPendingDelete) return;
+    deleteHomework.mutate(homeworkIdPendingDelete, {
+      onSuccess: () => setHomeworkIdPendingDelete(null),
+    });
   };
 
   return {
@@ -122,6 +131,10 @@ export const useHomeworkController = () => {
     handleFileChange,
     handleSubmit,
     handleDelete,
+    homeworkIdPendingDelete,
+    cancelDelete,
+    confirmDelete,
+    isDeleting: deleteHomework.isLoading,
     isCreating: createHomework.isLoading,
   };
 };

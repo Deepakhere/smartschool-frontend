@@ -3,7 +3,8 @@ import { PlusIcon, MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 import PageLoader from "../../../../components/page-loader";
 import NoRecordIcon from "../../../../icons/no-record-icon";
 import CustomSelectDropdown from "../../../../components/custom-select";
-import { CreateUpdateUserModal, DeleteUserModal } from "./user-modal";
+import { CreateUpdateUserModal } from "./user-modal";
+import DeleteConfirmationDialog from "../../../../components/delete-confirmation-dialog";
 import useUserDetailsController from "./user-details-controller";
 
 const UserDetails = () => {
@@ -225,12 +226,19 @@ const UserDetails = () => {
             handlePermissionChange={handlePermissionChange}
           />
 
-          <DeleteUserModal
-            t={t}
-            user={users}
-            userId={deleteUserId}
-            isOpen={isDeleteModalOpen}
-            isLoadingDeleteUser={isLoadingDeleteUser}
+          <DeleteConfirmationDialog
+            open={isDeleteModalOpen}
+            title="Delete User"
+            description={
+              <>
+                Are you sure you want to delete{" "}
+                <span className="font-medium italic text-gray-700">
+                  {users?.find((u) => u.id === deleteUserId)?.name || "this user"}
+                </span>
+                ? This action cannot be undone.
+              </>
+            }
+            isLoading={isLoadingDeleteUser}
             onClose={onCancelDeleteModal}
             onConfirm={handleDeleteUser}
           />

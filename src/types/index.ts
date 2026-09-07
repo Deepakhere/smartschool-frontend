@@ -245,25 +245,6 @@ export interface EditUserModalProps {
   handlePermissionChange: (permission: keyof FormData["permissions"]) => void;
 }
 
-export interface DeleteUserModalProps {
-  t: (t: string) => string;
-  isOpen: boolean;
-  user: IAllUserDetails[];
-  userId: string;
-  isLoadingDeleteUser: boolean;
-  onClose: () => void;
-  onConfirm: () => void;
-}
-
-export interface DeleteModalProps {
-  t: (t: string) => string;
-  isOpen: boolean;
-  name: string;
-  isLoading: boolean;
-  onClose: () => void;
-  onConfirm: () => void;
-}
-
 export interface IUpdateUserValue {
   id: string;
   name: string;

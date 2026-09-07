@@ -12,7 +12,7 @@ import { usePageHeader } from "../../../../hooks";
 import SectionHeader from "../../../../components/section-header";
 
 import useStudentsListController from "./students-list-controller";
-import DeleteModal from "../../../../components/delete-modal";
+import DeleteConfirmationDialog from "../../../../components/delete-confirmation-dialog";
 import CreateUpdateStudentModal from "../student-modal/create-update-student-modal";
 import BulkUploadModal from "../student-modal/bulk-upload-modal";
 
@@ -45,6 +45,7 @@ const StudentsList = () => {
     isLoadingAddStudent,
     isLoadingGetStudentDetails,
     isLoadingUpdateStudent,
+    isDeletingStudent,
     isFetchingStudentList,
     handleChange,
     handleSubmit,
@@ -408,13 +409,19 @@ const StudentsList = () => {
         onImported={onBulkImported}
       />
 
-      <DeleteModal
-        t={t}
-        isOpen={isDeleteModalOpen}
-        name={
-          studentDetail?.find((std) => std.id === deleteStudentId)?.name || ""
+      <DeleteConfirmationDialog
+        open={isDeleteModalOpen}
+        title="Delete Student"
+        description={
+          <>
+            Are you sure you want to delete{" "}
+            <span className="font-medium italic text-gray-700">
+              {studentDetail?.find((std) => std.id === deleteStudentId)?.name || "this student"}
+            </span>
+            ? This action cannot be undone.
+          </>
         }
-        isLoading={false}
+        isLoading={isDeletingStudent}
         onClose={onCancelDeleteModal}
         onConfirm={handleDeleteStudent}
       />

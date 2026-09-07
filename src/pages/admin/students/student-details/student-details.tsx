@@ -3,7 +3,7 @@ import {
   TrashIcon,
 } from "@heroicons/react/24/outline";
 
-import DeleteModal from "../../../../components/delete-modal";
+import DeleteConfirmationDialog from "../../../../components/delete-confirmation-dialog";
 import CreateUpdateStudentModal from "../student-modal/create-update-student-modal";
 import useStudentDetailController from "./student-detail-controller";
 import PageLoader from "../../../../components/page-loader";
@@ -33,11 +33,16 @@ const StudentDetails = () => {
     setCurrentStep,
     setIsEditModalOpen,
     setIsDeleteModalOpen,
+    isDeletingStudent,
     handleDeleteStudent,
     handleSubmit,
     addGuardian,
     handleSetPrimaryGuardian,
     handleRemoveGuardian,
+    guardianIdPendingRemoval,
+    isRemovingGuardian,
+    cancelRemoveGuardian,
+    confirmRemoveGuardian,
   } = useStudentDetailController();
 
   // no title here — the page below already shows "Student Profile" and the student's name
@@ -508,14 +513,31 @@ const StudentDetails = () => {
             setCurrentStep={setCurrentStep}
           />
 
-          {/* Delete Confirmation Modal */}
-          <DeleteModal
-            t={t}
-            isOpen={isDeleteModalOpen}
-            name={studentDetails?.name || ""}
-            isLoading={false}
+          <DeleteConfirmationDialog
+            open={isDeleteModalOpen}
+            title="Delete Student"
+            description={
+              <>
+                Are you sure you want to delete{" "}
+                <span className="font-medium italic text-gray-700">
+                  {studentDetails?.name || "this student"}
+                </span>
+                ? This action cannot be undone.
+              </>
+            }
+            isLoading={isDeletingStudent}
             onClose={() => setIsDeleteModalOpen(false)}
             onConfirm={handleDeleteStudent}
+          />
+
+          <DeleteConfirmationDialog
+            open={!!guardianIdPendingRemoval}
+            title="Remove Guardian"
+            description="Are you sure you want to remove this guardian from the student? This action cannot be undone."
+            confirmLabel="Remove"
+            isLoading={isRemovingGuardian}
+            onClose={cancelRemoveGuardian}
+            onConfirm={confirmRemoveGuardian}
           />
 
           <GuardianModal
