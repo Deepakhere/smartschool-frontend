@@ -26,11 +26,11 @@ const Header = ({ onToggleSidebar, isCollapsed, onToggleCollapse }: HeaderProps)
   } = useHeaderController();
 
   return (
-    <header className="bg-white z-40">
+    <header className="app-shell-surface bg-white z-40">
       <div className="flex h-16">
         {/* App brand segment — width matches the sidebar so the divider lines up with it */}
         <div
-          className={`flex items-center ${isCollapsed ? "justify-center" : "justify-between"} shrink-0 px-3 border-r border-gray-200 ${
+          className={`flex items-center ${isCollapsed ? "justify-center" : "justify-between"} shrink-0 px-3 border-r border-gray-200 transition-[width] duration-300 ease-in-out ${
             isCollapsed ? "lg:w-16" : "lg:w-56"
           } w-auto`}
         >
@@ -43,11 +43,11 @@ const Header = ({ onToggleSidebar, isCollapsed, onToggleCollapse }: HeaderProps)
           </button>
           <Link
             to={homePath}
-            className={`hidden lg:flex flex-1 items-center justify-center overflow-hidden transition-all duration-200 ${
+            className={`hidden lg:flex flex-1 items-center justify-center overflow-hidden transition-all duration-300 ease-in-out ${
               isCollapsed ? "max-w-0 opacity-0" : "max-w-xs opacity-100"
             }`}
           >
-            <img src={KidSight} className="h-12 w-auto shrink-0" alt="Kidsight Logo" />
+            <img src={KidSight} className="h-12 w-auto shrink-0 dark:invert" alt="Kidsight Logo" />
           </Link>
           <button
             type="button"

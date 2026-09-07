@@ -14,7 +14,7 @@ const Layout = () => {
         <Header onToggleSidebar={toggleSidebar} isCollapsed={isCollapsed} onToggleCollapse={toggleCollapse} />
         <div className="flex flex-1 overflow-hidden">
           {isSidebarOpen && <Sidebar isCollapsed={isCollapsed} />}
-          <main className="relative flex-1 overflow-y-auto bg-gray-50">
+          <main className="app-main-surface relative flex-1 overflow-y-auto bg-gray-50">
             <div className="p-6">
               <Outlet />
             </div>

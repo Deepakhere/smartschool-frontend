@@ -103,7 +103,8 @@
     "add_organization": "संगठन जोड़ें",
     "organization_name": "संगठन का नाम",
     "pincode": "पिनकोड",
-    "description": "विवरण"
+    "description": "विवरण",
+    "not_provided": "उपलब्ध नहीं"
   },
   "messages": {
     "enter_email_associate_with_account": "चिंता न करें! ऐसा होता है। कृपया अपने खाते से जुड़ा ईमेल पता दर्ज करें।",
@@ -131,6 +132,9 @@
     "enter_parent_full_name": "अभिभावक का पूरा नाम दर्ज करें",
     "enter_parent_email": "अभिभावक का ईमेल दर्ज करें",
     "enter_phone_number": "फोन नंबर दर्ज करें",
+    "enter_current_password": "अपना वर्तमान पासवर्ड दर्ज करें",
+    "enter_new_password": "एक नया पासवर्ड दर्ज करें",
+    "enter_confirm_new_password": "नया पासवर्ड दोबारा दर्ज करें",
     "please_fill_all_required_fields": "कृपया सभी आवश्यक फ़ील्ड भरें",
     "enter_title": "शीर्षक दर्ज करें",
     "enter_content": "सामग्री दर्ज करें",

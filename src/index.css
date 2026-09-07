@@ -7,6 +7,25 @@
   @apply bg-gray-900 text-white;
 }
 
+/* Safety net for form fields with no explicit background class (many across the app
+   rely on the browser's native white input background instead of a Tailwind bg-white
+   class, so the blanket .dark .bg-white rule below never matches them). Low specificity
+   (element selectors, not classes) so any input that DOES carry an explicit background
+   or text color class still wins via the more specific rules further down — this only
+   fills the gap where nothing else would apply, which is exactly what was leaving
+   white-on-white text: the ancestor's white text color from .dark above applied, but
+   the background stayed the browser's native white since no matching class existed
+   to override it. */
+.dark input:not([type="checkbox"]):not([type="radio"]),
+.dark textarea,
+.dark select {
+  @apply bg-gray-800 text-white border-gray-600;
+}
+.dark input::placeholder,
+.dark textarea::placeholder {
+  @apply text-gray-400;
+}
+
 .dark .bg-white {
   @apply bg-gray-800;
 }
@@ -55,6 +74,165 @@
 
 .dark .bg-indigo-50 {
   @apply bg-indigo-900 bg-opacity-30;
+}
+
+.dark .text-indigo-700,
+.dark .text-indigo-800 {
+  @apply text-indigo-300;
+}
+
+/* Row/element hover states — left un-remapped these flash bright light-gray
+   against the dark page background on hover */
+.dark .hover\:bg-gray-50:hover {
+  @apply bg-gray-700;
+}
+
+.dark .hover\:bg-gray-50\/60:hover {
+  @apply bg-gray-700/60;
+}
+
+.dark .hover\:bg-gray-100:hover {
+  @apply bg-gray-700;
+}
+
+/* Table row/column dividers — `divide-*` generates a different selector shape
+   than `border-*`, so it needs its own override */
+.dark .divide-gray-100 > :not([hidden]) ~ :not([hidden]) {
+  @apply border-gray-700;
+}
+
+.dark .divide-gray-200 > :not([hidden]) ~ :not([hidden]) {
+  @apply border-gray-700;
+}
+
+/* Status/role/type badges and alert banners — every one of these pairs a light-50/100
+   background with dark-600/700/800 text. Left alone, the background goes translucent-dark
+   (below) while the text stays just as dark, which is the actual "invisible in dark mode"
+   bug: dark text on a near-black tinted background. Both halves of each pair move together. */
+.dark .bg-red-50 {
+  @apply bg-red-900 bg-opacity-30;
+}
+.dark .bg-red-100 {
+  @apply bg-red-900 bg-opacity-40;
+}
+.dark .text-red-600,
+.dark .text-red-700,
+.dark .text-red-800 {
+  @apply text-red-300;
+}
+
+.dark .bg-green-50 {
+  @apply bg-green-900 bg-opacity-30;
+}
+.dark .bg-green-100 {
+  @apply bg-green-900 bg-opacity-40;
+}
+.dark .text-green-600,
+.dark .text-green-700,
+.dark .text-green-800 {
+  @apply text-green-300;
+}
+
+.dark .bg-blue-50 {
+  @apply bg-blue-900 bg-opacity-30;
+}
+.dark .bg-blue-100 {
+  @apply bg-blue-900 bg-opacity-40;
+}
+.dark .text-blue-800 {
+  @apply text-blue-300;
+}
+
+.dark .bg-yellow-50 {
+  @apply bg-yellow-900 bg-opacity-30;
+}
+.dark .bg-yellow-100 {
+  @apply bg-yellow-900 bg-opacity-40;
+}
+.dark .text-yellow-700,
+.dark .text-yellow-800 {
+  @apply text-yellow-300;
+}
+
+.dark .bg-amber-100 {
+  @apply bg-amber-900 bg-opacity-40;
+}
+.dark .text-amber-800 {
+  @apply text-amber-300;
+}
+
+/* Persistent app chrome (Header, Sidebar) — these sat at the exact same bg-white→gray-800
+   shade as ordinary content cards, so in dark mode there was no visual separation between
+   navigation chrome and page content. Given its own deeper shade so it reads as structural
+   chrome, with page content (gray-800 cards) sitting visibly "above" the gray-900 page
+   background, which itself sits above this. Combined-class selectors so this always wins
+   over the plain .bg-white / .border-gray-* rules above regardless of source order. */
+.dark .app-shell-surface.bg-white {
+  @apply bg-gray-950;
+}
+.dark .app-shell-surface.border-gray-200,
+.dark .app-shell-surface .border-gray-200,
+.dark .app-shell-surface .border-gray-100 {
+  @apply border-gray-800;
+}
+
+/* Main content area — one step darker than its default (still lighter than the raw page
+   background used elsewhere) so cards floating on it (gray-800) read as clearly "elevated"
+   above a near-black backdrop that matches the chrome, instead of a mid-gray in between. */
+.dark .app-main-surface.bg-gray-50 {
+  @apply bg-gray-950;
+}
+
+/* Shared interactive components (dropdowns, popovers, menus) */
+
+/* Headless UI's default "selected option" and "darken further on hover" patterns use the
+   -900 shade, which is unreadable against the now-dark tinted backgrounds/page above */
+.dark .text-indigo-900 {
+  @apply text-indigo-200;
+}
+.dark .hover\:text-indigo-900:hover {
+  @apply text-indigo-200;
+}
+.dark .hover\:text-red-900:hover {
+  @apply text-red-300;
+}
+
+/* Popover/dropdown menus (user menu, select options, "..." row menus) use a 5%-opacity
+   black ring for a barely-there edge on a white surface — on a dark surface that's
+   effectively invisible, so the panel has no visible boundary */
+.dark .ring-black {
+  @apply ring-white ring-opacity-10;
+}
+
+/* PageLoader's section-level overlay is a semi-transparent WHITE wash — in dark mode
+   that's a bright flash over whatever's still loading instead of a dark scrim */
+.dark .bg-white\/70 {
+  @apply bg-gray-900 bg-opacity-70;
+}
+
+/* text-gray-800 was never covered (only -900 and -600/-700/-500 were) — against the
+   gray-800 card background used everywhere, that's literally the same color as its own
+   background: invisible text */
+.dark .text-gray-800 {
+  @apply text-gray-100;
+}
+
+/* Selection chips, icon badges and file-input buttons all use the indigo-100/200/300
+   trio designed for a white page; on dark surfaces they need the same treatment as the
+   other status-badge colors already handled above */
+.dark .bg-indigo-100,
+.dark .file\:bg-indigo-50::file-selector-button {
+  @apply bg-indigo-900 bg-opacity-40;
+}
+.dark .group:hover .group-hover\:bg-indigo-200,
+.dark .hover\:file\:bg-indigo-100:hover::file-selector-button {
+  @apply bg-indigo-900 bg-opacity-60;
+}
+.dark .border-indigo-300 {
+  @apply border-indigo-700;
+}
+.dark .file\:text-indigo-700::file-selector-button {
+  @apply text-indigo-300;
 }
 
 /* Global focus styles */

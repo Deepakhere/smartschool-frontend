@@ -8,7 +8,7 @@ const ForgotPasswordEmail: React.FC<IForgotPassword> = ({ email }) => {
 
   return (
     <div className="min-h-screen flex items-center justify-center flex-col bg-gray-100">
-      <img src="./kidsight.png" alt="" />
+      <img src="./kidsight.png" alt="" className="dark:invert" />
       <div className="max-w-sm w-full space-y-8 p-8 bg-white rounded-lg shadow">
         <div>
           <h2 className="mt-2 text-xl font-bold text-gray-900">

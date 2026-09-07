@@ -13,13 +13,17 @@ const Sidebar = ({ isCollapsed }: SidebarProps) => {
     <div
       className={`${
         isCollapsed ? "w-16" : "w-56"
-      } shrink-0 bg-white border-r border-gray-200 z-10 transition-[width] duration-200`}
+      } app-shell-surface shrink-0 bg-white border-r border-gray-200 z-10 transition-[width] duration-300 ease-in-out`}
     >
       <div className="flex flex-col h-full pb-4 overflow-y-auto">
         {sections.map((section, sectionIndex) => (
           <div key={sectionIndex} className={sectionIndex === 0 ? "pt-3" : "pt-4 mt-4 border-t border-gray-100"}>
-            {section.label && !isCollapsed && (
-              <p className="px-3 pb-2 text-xs font-semibold text-gray-400 uppercase tracking-wider">
+            {section.label && (
+              <p
+                className={`px-3 overflow-hidden whitespace-nowrap text-xs font-semibold text-gray-400 uppercase tracking-wider transition-all duration-300 ease-in-out ${
+                  isCollapsed ? "max-h-0 opacity-0 pb-0" : "max-h-6 opacity-100 pb-2"
+                }`}
+              >
                 {section.label}
               </p>
             )}
@@ -32,9 +36,7 @@ const Sidebar = ({ isCollapsed }: SidebarProps) => {
                     to={item.href}
                     title={isCollapsed ? item.name : undefined}
                     className={({ isActive }) =>
-                      `group flex items-center ${
-                        isCollapsed ? "justify-center px-2" : "px-3"
-                      } py-2 text-sm font-medium rounded-md ${
+                      `group flex items-center px-3 py-2 text-sm font-medium rounded-md ${
                         isActive
                           ? "bg-gray-100 text-indigo-600"
                           : "text-gray-600 hover:bg-gray-50 hover:text-indigo-600"
@@ -44,14 +46,20 @@ const Sidebar = ({ isCollapsed }: SidebarProps) => {
                     {({ isActive }) => (
                       <>
                         <Icon
-                          className={`${isCollapsed ? "" : "mr-3"} h-5 w-5 flex-shrink-0 ${
+                          className={`h-5 w-5 flex-shrink-0 ${
                             isActive
                               ? "text-indigo-600"
                               : "text-gray-400 group-hover:text-indigo-600"
                           }`}
                           aria-hidden="true"
                         />
-                        {!isCollapsed && item.name}
+                        <span
+                          className={`overflow-hidden whitespace-nowrap transition-all duration-300 ease-in-out ${
+                            isCollapsed ? "max-w-0 opacity-0 ml-0" : "max-w-[10rem] opacity-100 ml-3"
+                          }`}
+                        >
+                          {item.name}
+                        </span>
                       </>
                     )}
                   </NavLink>

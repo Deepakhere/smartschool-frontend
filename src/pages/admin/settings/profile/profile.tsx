@@ -114,7 +114,8 @@ const AdminProfile = () => {
                           <input
                             type="tel"
                             id="phone"
-                            defaultValue="+91 9876543210"
+                            defaultValue={user?.phoneNumber || ""}
+                            placeholder={t("messages.enter_phone_number")}
                             className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                           />
                         </div>
@@ -159,7 +160,7 @@ const AdminProfile = () => {
                             {t("labels.phone_number")}
                           </dt>
                           <dd className="mt-1 text-sm text-gray-900">
-                            {user?.phoneNumber}
+                            {user?.phoneNumber || t("labels.not_provided")}
                           </dd>
                         </div>
                         <div className="sm:col-span-1">
@@ -197,6 +198,7 @@ const AdminProfile = () => {
                         <input
                           type="password"
                           id="currentPassword"
+                          placeholder={t("messages.enter_current_password")}
                           className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                         />
                       </div>
@@ -210,6 +212,7 @@ const AdminProfile = () => {
                         <input
                           type="password"
                           id="newPassword"
+                          placeholder={t("messages.enter_new_password")}
                           className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                         />
                       </div>
@@ -223,6 +226,7 @@ const AdminProfile = () => {
                         <input
                           type="password"
                           id="confirmPassword"
+                          placeholder={t("messages.enter_confirm_new_password")}
                           className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                         />
                       </div>

@@ -103,7 +103,8 @@
     "add_organization": "Add Organization",
     "organization_name": "Organization Name",
     "pincode": "Pincode",
-    "description": "Description"
+    "description": "Description",
+    "not_provided": "Not provided"
   },
   "messages": {
     "enter_email_associate_with_account": "Don't worry! It happens. Please enter your email address associated with your account.",
@@ -131,6 +132,9 @@
     "enter_parent_full_name": "Enter parent's full name",
     "enter_parent_email": "Enter parent's email",
     "enter_phone_number": "Enter phone number",
+    "enter_current_password": "Enter your current password",
+    "enter_new_password": "Enter a new password",
+    "enter_confirm_new_password": "Re-enter the new password",
     "please_fill_all_required_fields": "Please fill all required fields",
     "enter_title": "Enter title",
     "enter_content": "Enter content",
