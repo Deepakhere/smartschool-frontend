@@ -1,5 +1,6 @@
 import { NavLink } from "react-router-dom";
 
+import SidebarUserMenu from "../sidebar-user-menu";
 import { useSidebarController } from "./sidebar-controller";
 
 interface SidebarProps {
@@ -13,9 +14,9 @@ const Sidebar = ({ isCollapsed }: SidebarProps) => {
     <div
       className={`${
         isCollapsed ? "w-16" : "w-56"
-      } app-shell-surface shrink-0 bg-white border-r border-gray-200 z-10 transition-[width] duration-300 ease-in-out`}
+      } app-shell-surface shrink-0 bg-white border-r border-gray-200 z-10 transition-[width] duration-300 ease-in-out flex flex-col h-full`}
     >
-      <div className="flex flex-col h-full pb-4 overflow-y-auto">
+      <div className="flex-1 overflow-y-auto pb-4">
         {sections.map((section, sectionIndex) => (
           <div key={sectionIndex} className={sectionIndex === 0 ? "pt-3" : "pt-4 mt-4 border-t border-gray-100"}>
             {section.label && (
@@ -69,6 +70,8 @@ const Sidebar = ({ isCollapsed }: SidebarProps) => {
           </div>
         ))}
       </div>
+
+      <SidebarUserMenu isCollapsed={isCollapsed} />
     </div>
   );
 };

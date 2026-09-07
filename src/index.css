@@ -50,6 +50,10 @@
   @apply border-gray-700;
 }
 
+.dark .border-gray-100 {
+  @apply border-gray-700;
+}
+
 .dark .border-gray-300 {
   @apply border-gray-600;
 }

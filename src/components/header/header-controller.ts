@@ -1,85 +1,17 @@
-import { useEffect, useRef, useState } from "react";
-import { useTranslation } from "react-i18next";
-import { useLocation, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 
 import { useAuth } from "../../context/auth-context";
 import { usePageHeaderContext } from "../../context/page-header-context";
 
 export const useHeaderController = () => {
-  const menuRef = useRef<HTMLDivElement>(null);
-  const buttonRef = useRef<HTMLButtonElement>(null);
-  const location = useLocation();
   const { organizationId } = useParams();
-  const { t } = useTranslation();
-
-  const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
-  const { user, logout } = useAuth();
+  const { user } = useAuth();
   const { config: pageHeaderConfig } = usePageHeaderContext();
-
-  // admin's own profile lives inside the tabbed Settings area; teacher/parent get a direct page
-  const profilePath =
-    user?.role === "admin"
-      ? `/${organizationId}/admin/settings`
-      : `/${organizationId}/${user?.role}/profile`;
 
   const homePath = `/${organizationId}/${user?.role}/dashboard`;
 
-  const handleUserMenuToggle = () => {
-    setIsUserMenuOpen(!isUserMenuOpen);
-  };
-
-  const handleLogout = async () => {
-    try {
-      logout();
-    } catch (error) {
-      console.error("Logout failed:", error);
-    }
-  };
-
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (
-        menuRef.current &&
-        !menuRef.current.contains(event.target as Node) &&
-        buttonRef.current &&
-        !buttonRef.current.contains(event.target as Node)
-      ) {
-        setIsUserMenuOpen(false);
-      }
-    };
-
-    const handleEscapeKey = (event: KeyboardEvent) => {
-      if (event.key === "Escape") {
-        setIsUserMenuOpen(false);
-      }
-    };
-
-    document.addEventListener("mousedown", handleClickOutside);
-    document.addEventListener("keydown", handleEscapeKey);
-
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-      document.removeEventListener("keydown", handleEscapeKey);
-    };
-  }, [setIsUserMenuOpen]);
-
-  // Close menu when route changes
-  useEffect(() => {
-    setIsUserMenuOpen(false);
-  }, [location.pathname, setIsUserMenuOpen]);
-
   return {
-    t,
-    user,
-    isUserMenuOpen,
-    buttonRef,
-    menuRef,
-    organizationId,
-    pageHeaderConfig,
-    profilePath,
     homePath,
-    handleUserMenuToggle,
-    handleLogout,
-    setIsUserMenuOpen,
+    pageHeaderConfig,
   };
 };

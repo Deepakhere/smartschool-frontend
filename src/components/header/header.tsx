@@ -1,7 +1,6 @@
 import { Link } from "react-router-dom";
 import { Bars3Icon, ChevronLeftIcon, ChevronRightIcon, ArrowLeftIcon } from "@heroicons/react/24/outline";
 
-import Avatar from "../avatar";
 import KidSight from "../../icons/kidsight.png";
 import { useHeaderController } from "./header-controller";
 
@@ -12,18 +11,7 @@ interface HeaderProps {
 }
 
 const Header = ({ onToggleSidebar, isCollapsed, onToggleCollapse }: HeaderProps) => {
-  const {
-    t,
-    user,
-    buttonRef,
-    menuRef,
-    isUserMenuOpen,
-    pageHeaderConfig,
-    profilePath,
-    homePath,
-    handleUserMenuToggle,
-    handleLogout,
-  } = useHeaderController();
+  const { homePath, pageHeaderConfig } = useHeaderController();
 
   return (
     <header className="app-shell-surface bg-white z-40">
@@ -63,7 +51,9 @@ const Header = ({ onToggleSidebar, isCollapsed, onToggleCollapse }: HeaderProps)
           </button>
         </div>
 
-        {/* Page header segment — each page registers its own title/back/actions via usePageHeader() */}
+        {/* Page header segment — each page registers its own title/back/actions via usePageHeader().
+            The user menu used to live at the far right here — it now lives at the bottom of the
+            Sidebar instead. */}
         <div className="flex-1 flex items-center justify-between px-4 min-w-0 border-b border-gray-200">
           <div className="flex items-center gap-2 min-w-0">
             {pageHeaderConfig?.onBack && (
@@ -81,61 +71,7 @@ const Header = ({ onToggleSidebar, isCollapsed, onToggleCollapse }: HeaderProps)
             </h1>
           </div>
 
-          <div className="flex items-center gap-3 shrink-0">
-            {pageHeaderConfig?.actions}
-
-            <div className="relative">
-              <button
-                ref={buttonRef}
-                type="button"
-                className="bg-white rounded-full flex text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                id="user-menu-button"
-                onClick={handleUserMenuToggle}
-                aria-expanded={isUserMenuOpen}
-                aria-haspopup="true"
-              >
-                {user && user?.name && <Avatar name={user.name} src={user.avatar?.url} />}
-              </button>
-              {isUserMenuOpen && (
-                <div
-                  ref={menuRef}
-                  className="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none z-10"
-                  role="menu"
-                  aria-orientation="vertical"
-                  aria-labelledby="user-menu-button"
-                  tabIndex={-1}
-                >
-                  <div className="px-4 py-2 text-sm text-gray-700 border-b">
-                    <div className="font-medium">{user?.name}</div>
-                    <div className="text-gray-500">{user?.email}</div>
-                  </div>
-                  <Link
-                    to={profilePath}
-                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                    role="menuitem"
-                  >
-                    {t("labels.your_profile")}
-                  </Link>
-                  {user?.isPlatformAdmin && (
-                    <Link
-                      to="/organization"
-                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                      role="menuitem"
-                    >
-                      Switch Organization
-                    </Link>
-                  )}
-                  <button
-                    onClick={handleLogout}
-                    className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                    role="menuitem"
-                  >
-                    {t("labels.sign_out")}
-                  </button>
-                </div>
-              )}
-            </div>
-          </div>
+          <div className="flex items-center gap-3 shrink-0">{pageHeaderConfig?.actions}</div>
         </div>
       </div>
     </header>

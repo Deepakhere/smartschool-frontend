@@ -1,0 +1,131 @@
+import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
+import {
+  UserCircleIcon,
+  BuildingOffice2Icon,
+  ArrowRightOnRectangleIcon,
+  ChevronUpDownIcon,
+  SunIcon,
+  MoonIcon,
+} from "@heroicons/react/24/outline";
+
+import Avatar from "../avatar";
+import { Popover, PopoverTrigger, PopoverContent } from "../ui/popover";
+import { useSidebarUserMenuController } from "./sidebar-user-menu-controller";
+
+interface SidebarUserMenuProps {
+  isCollapsed: boolean;
+}
+
+const SidebarUserMenu = ({ isCollapsed }: SidebarUserMenuProps) => {
+  const { t } = useTranslation();
+  const { user, theme, setTheme, profilePath, isPlatformAdmin, handleLogout } =
+    useSidebarUserMenuController();
+
+  if (!user?.name) return null;
+
+  return (
+    <div className="border-t border-gray-100 p-2">
+      <Popover>
+        <PopoverTrigger asChild>
+          <button
+            type="button"
+            className={`group flex w-full items-center rounded-md py-2 text-sm hover:bg-gray-50 ${
+              isCollapsed ? "justify-center px-0" : "justify-between px-2"
+            }`}
+          >
+            <span className="flex items-center min-w-0">
+              <Avatar name={user.name} src={user.avatar?.url} size={32} />
+              <span
+                className={`ml-2.5 min-w-0 overflow-hidden text-left transition-all duration-300 ease-in-out ${
+                  isCollapsed ? "max-w-0 opacity-0 ml-0" : "max-w-[9rem] opacity-100"
+                }`}
+              >
+                <span className="block truncate text-sm font-medium text-gray-900">
+                  {user.name}
+                </span>
+                <span className="block truncate text-xs text-gray-500 capitalize">
+                  {user.role}
+                </span>
+              </span>
+            </span>
+            {!isCollapsed && (
+              <ChevronUpDownIcon className="h-4 w-4 text-gray-400 shrink-0" aria-hidden="true" />
+            )}
+          </button>
+        </PopoverTrigger>
+
+        <PopoverContent side="top" align={isCollapsed ? "center" : "start"}>
+          <div className="flex items-center gap-2.5 px-2 py-2">
+            <Avatar name={user.name} src={user.avatar?.url} size={36} />
+            <div className="min-w-0">
+              <p className="truncate text-sm font-medium text-gray-900">{user.name}</p>
+              <p className="truncate text-xs text-gray-500">{user.email}</p>
+            </div>
+          </div>
+
+          <div className="my-1 border-t border-gray-100" />
+
+          <Link
+            to={profilePath}
+            className="flex items-center gap-2 rounded-md px-2 py-2 text-sm text-gray-700 hover:bg-gray-50"
+          >
+            <UserCircleIcon className="h-4 w-4 text-gray-400" />
+            {t("labels.your_profile")}
+          </Link>
+
+          {isPlatformAdmin && (
+            <Link
+              to="/organization"
+              className="flex items-center gap-2 rounded-md px-2 py-2 text-sm text-gray-700 hover:bg-gray-50"
+            >
+              <BuildingOffice2Icon className="h-4 w-4 text-gray-400" />
+              Switch Organization
+            </Link>
+          )}
+
+          <div className="my-1 border-t border-gray-100" />
+
+          <div className="px-2 py-2">
+            <p className="mb-1.5 text-xs font-medium text-gray-500">{t("labels.theme")}</p>
+            <div className="grid grid-cols-2 gap-1 rounded-md bg-gray-100 p-1">
+              <button
+                type="button"
+                onClick={() => setTheme("light")}
+                className={`flex items-center justify-center gap-1.5 rounded py-1.5 text-sm font-medium transition-colors ${
+                  theme === "light" ? "bg-white text-gray-900 shadow-sm" : "text-gray-500 hover:text-gray-700"
+                }`}
+              >
+                <SunIcon className="h-4 w-4" />
+                {t("common.themes.light")}
+              </button>
+              <button
+                type="button"
+                onClick={() => setTheme("dark")}
+                className={`flex items-center justify-center gap-1.5 rounded py-1.5 text-sm font-medium transition-colors ${
+                  theme === "dark" ? "bg-white text-gray-900 shadow-sm" : "text-gray-500 hover:text-gray-700"
+                }`}
+              >
+                <MoonIcon className="h-4 w-4" />
+                {t("common.themes.dark")}
+              </button>
+            </div>
+          </div>
+
+          <div className="my-1 border-t border-gray-100" />
+
+          <button
+            type="button"
+            onClick={handleLogout}
+            className="flex w-full items-center gap-2 rounded-md px-2 py-2 text-sm text-gray-700 hover:bg-gray-50"
+          >
+            <ArrowRightOnRectangleIcon className="h-4 w-4 text-gray-400" />
+            {t("labels.sign_out")}
+          </button>
+        </PopoverContent>
+      </Popover>
+    </div>
+  );
+};
+
+export default SidebarUserMenu;
