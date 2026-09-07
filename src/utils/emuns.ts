@@ -18,6 +18,7 @@ export const APIS_ROUTES = {
   HOMEWORK_SERVICE: "/homework-service/v1",
   PTM_SERVICE: "/ptm-service/v1",
   FEE_SERVICE: "/fee-service/v1",
+  EXAM_SERVICE: "/exam-service/v1",
 };
 
 export const API_QUERY_KEY = {
@@ -52,6 +53,12 @@ export const API_QUERY_KEY = {
   GET_STUDENT_FEE_SUMMARY: "get-student-fee-summary",
   GET_MY_FEES: "get-my-fees",
   GET_PAYMENT_LEDGER: "get-payment-ledger",
+  GET_GRADING_SCHEMES: "get-grading-schemes",
+  GET_EXAMS: "get-exams",
+  GET_EXAM_SUBJECTS: "get-exam-subjects",
+  GET_MARKS_SHEET: "get-marks-sheet",
+  GET_RESULTS_FOR_STUDENT: "get-results-for-student",
+  GET_MY_RESULTS: "get-my-results",
 };
 
 export const API_MUTATION_KEY = {
@@ -85,6 +92,12 @@ export const API_MUTATION_KEY = {
   ASSIGN_FEE_STRUCTURE: "assign-fee-structure",
   RECORD_PAYMENT: "record-payment",
   REVERSE_PAYMENT: "reverse-payment",
+  CREATE_GRADING_SCHEME: "create-grading-scheme",
+  CREATE_EXAM: "create-exam",
+  ADD_EXAM_SUBJECTS: "add-exam-subjects",
+  SAVE_MARKS: "save-marks",
+  VERIFY_EXAM_SUBJECT_MARKS: "verify-exam-subject-marks",
+  PUBLISH_EXAM: "publish-exam",
 };
 
 export const PASSWORD_CIPHER_MESSAGE = "KID_SIGHT_KEY";
