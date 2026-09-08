@@ -171,3 +171,31 @@ export const useGetPaymentLedger = (organizationId: string) =>
     },
     { enabled: !!organizationId, cacheTime: 0 }
   );
+
+interface IGrantConcessionPayload {
+  studentFeeId: string;
+  amount: number;
+  reason: string;
+  installmentLabel?: string;
+}
+
+// same idempotency-key-per-attempt convention as record/reverse payment above —
+// a double-click reuses the same key, so a retried request replays instead of double-granting
+export const useGrantConcession = (organizationId: string) => {
+  const queryClient = useQueryClient();
+  const idempotencyKeyRef = useRef(crypto.randomUUID());
+  return useMutation<void, IAPIError, IGrantConcessionPayload>(
+    [API_MUTATION_KEY.GRANT_CONCESSION],
+    async ({ studentFeeId, ...value }) => {
+      await apiClient.post(`${base(organizationId)}/student-fee/${studentFeeId}/concession`, value, {
+        headers: { "Idempotency-Key": idempotencyKeyRef.current },
+      });
+    },
+    {
+      onSuccess: () => {
+        idempotencyKeyRef.current = crypto.randomUUID();
+        queryClient.invalidateQueries([API_QUERY_KEY.GET_STUDENT_FEE_SUMMARY, organizationId]);
+      },
+    }
+  );
+};

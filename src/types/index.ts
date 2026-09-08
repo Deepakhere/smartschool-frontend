@@ -587,12 +587,21 @@ export interface IPayment {
   remarks?: string;
 }
 
+export interface IFeeConcession {
+  id: string;
+  reason: string;
+  amount: number;
+  approvedBy?: string;
+  approvedAt: string;
+}
+
 export interface IStudentFeeSummary {
   studentFeeId: string;
   academicYearId: string;
   studentId?: string;
   studentName?: string;
   installments: IFeeInstallmentBalance[];
+  concessions?: IFeeConcession[];
   totalNet: number;
   totalPaid: number;
   totalBalance: number;

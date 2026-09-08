@@ -13,6 +13,7 @@ import {
   useRecordPayment,
   useReversePayment,
   useGetPaymentLedger,
+  useGrantConcession,
 } from "./service/fees-service";
 import { useGetAcademicYears, useGetClasses, useGetSections } from "../classes/service/academics-service";
 import useGetStudentDetails from "../students/service/get-student-details/get-student-details";
@@ -40,6 +41,7 @@ const useFeesController = () => {
   const [studentSearch, setStudentSearch] = useState("");
   const [selectedStudentId, setSelectedStudentId] = useState("");
   const [paymentForm, setPaymentForm] = useState({ studentFeeId: "", amount: "", method: "cash", instrumentRef: "", remarks: "" });
+  const [concessionForm, setConcessionForm] = useState({ studentFeeId: "", amount: "", reason: "", installmentLabel: "" });
 
   const getAcademicYears = useGetAcademicYears(org);
   const currentAcademicYearId = getAcademicYears.data?.items.find((y) => y.isCurrent)?.id;
@@ -56,12 +58,14 @@ const useFeesController = () => {
   const assignFeeStructure = useAssignFeeStructure(org);
   const recordPayment = useRecordPayment(org);
   const reversePayment = useReversePayment(org);
+  const grantConcession = useGrantConcession(org);
 
   useError({ mutation: createFeeHead });
   useError({ mutation: createFeeStructure });
   useError({ mutation: assignFeeStructure });
   useError({ mutation: recordPayment });
   useError({ mutation: reversePayment });
+  useError({ mutation: grantConcession });
 
   const feeHeads = getFeeHeads.data?.items || [];
   const feeStructures = getFeeStructures.data?.items || [];
@@ -202,6 +206,31 @@ const useFeesController = () => {
     });
   };
 
+  const handleConcessionFormChange = (field: string, value: string) => {
+    setConcessionForm({ ...concessionForm, [field]: value });
+  };
+
+  const handleGrantConcession = () => {
+    if (!concessionForm.studentFeeId || !concessionForm.amount || !concessionForm.reason) {
+      toast.error("Select a fee record, enter an amount and a reason.");
+      return;
+    }
+    grantConcession.mutate(
+      {
+        studentFeeId: concessionForm.studentFeeId,
+        amount: Math.round(Number(concessionForm.amount) * 100),
+        reason: concessionForm.reason,
+        installmentLabel: concessionForm.installmentLabel || undefined,
+      },
+      {
+        onSuccess: () => {
+          toast.success("Concession granted.");
+          setConcessionForm({ studentFeeId: "", amount: "", reason: "", installmentLabel: "" });
+        },
+      }
+    );
+  };
+
   return {
     t,
     activeTab,
@@ -246,6 +275,10 @@ const useFeesController = () => {
     isRecordingPayment: recordPayment.isLoading,
     paymentLedger,
     handleReversePayment,
+    concessionForm,
+    handleConcessionFormChange,
+    handleGrantConcession,
+    isGrantingConcession: grantConcession.isLoading,
   };
 };
 

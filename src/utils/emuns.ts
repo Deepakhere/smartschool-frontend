@@ -107,6 +107,7 @@ export const API_MUTATION_KEY = {
   ASSIGN_FEE_STRUCTURE: "assign-fee-structure",
   RECORD_PAYMENT: "record-payment",
   REVERSE_PAYMENT: "reverse-payment",
+  GRANT_CONCESSION: "grant-concession",
   CREATE_GRADING_SCHEME: "create-grading-scheme",
   CREATE_EXAM: "create-exam",
   ADD_EXAM_SUBJECTS: "add-exam-subjects",

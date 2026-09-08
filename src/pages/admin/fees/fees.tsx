@@ -87,6 +87,10 @@ const AdminFees = () => {
     isRecordingPayment,
     paymentLedger,
     handleReversePayment,
+    concessionForm,
+    handleConcessionFormChange,
+    handleGrantConcession,
+    isGrantingConcession,
   } = useFeesController();
 
   return (
@@ -426,6 +430,73 @@ const AdminFees = () => {
                   </button>
                 </div>
               </div>
+
+              <div className="bg-gray-50 rounded-md p-4 mt-4">
+                <p className="text-sm font-medium text-gray-700 mb-2">Grant a concession</p>
+                <div className="grid grid-cols-1 sm:grid-cols-5 gap-2 items-center">
+                  <input
+                    type="number"
+                    className={inputClass}
+                    placeholder="Amount"
+                    value={concessionForm.studentFeeId === summary.studentFeeId ? concessionForm.amount : ""}
+                    onChange={(e) => {
+                      handleConcessionFormChange("studentFeeId", summary.studentFeeId);
+                      handleConcessionFormChange("amount", e.target.value);
+                    }}
+                  />
+                  <input
+                    className={inputClass}
+                    placeholder="Reason"
+                    value={concessionForm.studentFeeId === summary.studentFeeId ? concessionForm.reason : ""}
+                    onChange={(e) => {
+                      handleConcessionFormChange("studentFeeId", summary.studentFeeId);
+                      handleConcessionFormChange("reason", e.target.value);
+                    }}
+                  />
+                  <CustomSelectDropdown
+                    placeholder="Any installment (oldest first)"
+                    options={summary.installments.map((i): SelectOption => ({ id: i.label, name: i.label }))}
+                    value={
+                      concessionForm.studentFeeId === summary.studentFeeId && concessionForm.installmentLabel
+                        ? { id: concessionForm.installmentLabel, name: concessionForm.installmentLabel }
+                        : null
+                    }
+                    onChange={(o) => {
+                      handleConcessionFormChange("studentFeeId", summary.studentFeeId);
+                      handleConcessionFormChange("installmentLabel", String(o.id));
+                    }}
+                  />
+                  <button
+                    onClick={handleGrantConcession}
+                    disabled={isGrantingConcession}
+                    className="px-4 py-2 rounded-md text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50"
+                  >
+                    Grant
+                  </button>
+                </div>
+              </div>
+
+              {summary.concessions && summary.concessions.length > 0 && (
+                <div className="mt-4">
+                  <p className="text-sm font-medium text-gray-700 mb-2">Concessions granted</p>
+                  <Table>
+                    <TableHeader>
+                      <TableHead>Reason</TableHead>
+                      <TableHead className="text-center">Amount</TableHead>
+                      <TableHead className="text-center">Date</TableHead>
+                    </TableHeader>
+                    <TableBody>
+                      {summary.concessions.map((c) => (
+                        <TableRow key={c.id}>
+                          <TableCell>{c.reason}</TableCell>
+                          <TableCell className="text-center">{formatMoney(c.amount)}</TableCell>
+                          <TableCell className="text-center">{new Date(c.approvedAt).toLocaleDateString()}</TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </div>
+              )}
 
               {summary.payments.length > 0 && (
                 <div className="mt-4">
