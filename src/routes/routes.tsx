@@ -36,6 +36,7 @@ import Profile from "../pages/admin/settings/profile";
 // Auth Pages
 import Login from "../pages/auth/login";
 import ForgotPassword from "../pages/auth/forgot-password";
+import SetPassword from "../pages/auth/set-password";
 import NotAccess from "../components/not-access";
 import useRoutesController from "./routes-controller";
 import Organization from "../pages/auth/organization";
@@ -64,6 +65,10 @@ const Routes = () => {
     {
       path: "/organization",
       element: <Organization />,
+    },
+    {
+      path: "/set-password",
+      element: <SetPassword />,
     },
     {
       path: "/platform",
