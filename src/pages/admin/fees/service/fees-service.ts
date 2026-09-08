@@ -1,3 +1,4 @@
+import { useRef } from "react";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 
 import apiClient from "../../../../config";
@@ -112,15 +113,24 @@ interface IRecordPaymentPayload {
   remarks?: string;
 }
 
+// the backend requires an Idempotency-Key on this route — the same key must survive
+// a double-click or a retried request (so the backend can recognize it as the same
+// attempt and replay the original response instead of recording a second payment),
+// so it's held in a ref for the mutation's lifetime and only rotated after a
+// successful submit, not regenerated on every call
 export const useRecordPayment = (organizationId: string) => {
   const queryClient = useQueryClient();
+  const idempotencyKeyRef = useRef(crypto.randomUUID());
   return useMutation<void, IAPIError, IRecordPaymentPayload>(
     [API_MUTATION_KEY.RECORD_PAYMENT],
     async (value) => {
-      await apiClient.post(`${base(organizationId)}/payment`, value);
+      await apiClient.post(`${base(organizationId)}/payment`, value, {
+        headers: { "Idempotency-Key": idempotencyKeyRef.current },
+      });
     },
     {
       onSuccess: () => {
+        idempotencyKeyRef.current = crypto.randomUUID();
         queryClient.invalidateQueries([API_QUERY_KEY.GET_STUDENT_FEE_SUMMARY, organizationId]);
         queryClient.invalidateQueries([API_QUERY_KEY.GET_PAYMENT_LEDGER, organizationId]);
       },
@@ -130,13 +140,19 @@ export const useRecordPayment = (organizationId: string) => {
 
 export const useReversePayment = (organizationId: string) => {
   const queryClient = useQueryClient();
+  const idempotencyKeyRef = useRef(crypto.randomUUID());
   return useMutation<void, IAPIError, string>(
     [API_MUTATION_KEY.REVERSE_PAYMENT],
     async (paymentId) => {
-      await apiClient.post(`${base(organizationId)}/payment/${paymentId}/reverse`);
+      await apiClient.post(
+        `${base(organizationId)}/payment/${paymentId}/reverse`,
+        {},
+        { headers: { "Idempotency-Key": idempotencyKeyRef.current } }
+      );
     },
     {
       onSuccess: () => {
+        idempotencyKeyRef.current = crypto.randomUUID();
         queryClient.invalidateQueries([API_QUERY_KEY.GET_STUDENT_FEE_SUMMARY, organizationId]);
         queryClient.invalidateQueries([API_QUERY_KEY.GET_PAYMENT_LEDGER, organizationId]);
       },
