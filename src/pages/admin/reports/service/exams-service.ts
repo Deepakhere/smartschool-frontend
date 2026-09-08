@@ -198,3 +198,18 @@ export const useGetMyResults = (organizationId: string) =>
     },
     { enabled: !!organizationId, cacheTime: 0 }
   );
+
+// not a query/mutation hook — a report card is a PDF blob, not envelope JSON
+export const downloadReportCard = async (organizationId: string, examId: string, studentId: string) => {
+  const result = await apiClient.get(`${base(organizationId)}/exam/${examId}/student/${studentId}/report-card`, {
+    responseType: "blob",
+  });
+  const url = window.URL.createObjectURL(new Blob([result.data], { type: "application/pdf" }));
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = `report-card-${studentId}.pdf`;
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  window.URL.revokeObjectURL(url);
+};

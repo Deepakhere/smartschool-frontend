@@ -8,5 +8,6 @@ export { validateLength } from "./validate-length";
 export { validateMatch } from "./validate-match";
 export { validateNumber } from "./validate-number";
 export { validateInteger } from "./validate-integer";
+export { exportToCsv } from "./exportCsv";
 
 export * from "./emuns";

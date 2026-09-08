@@ -3,6 +3,7 @@ import SectionHeader from "../../../components/section-header";
 import CustomSelectDropdown from "../../../components/custom-select";
 import useAttendanceController from "./attendance-controller";
 import { AttendanceStatus, SelectOption } from "../../../types";
+import { exportToCsv } from "../../../utils";
 
 const inputClass =
   "mt-1 block w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-gray-900 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm";
@@ -79,6 +80,23 @@ const AdminAttendance = () => {
               Students {c.summary && <span className="text-sm text-gray-500 font-normal">— {c.summary.present} present / {c.summary.total} total</span>}
             </h2>
             <div className="flex gap-2">
+              <button
+                className={btnSecondary}
+                onClick={() =>
+                  exportToCsv(
+                    `attendance-${c.date}`,
+                    c.students.map((student) => ({
+                      student: student.name,
+                      roll_number: student.currentEnrollment?.rollNumber ?? "",
+                      status: c.statuses[student.id] || "present",
+                      reason: c.reasons[student.id] || "",
+                      date: c.date,
+                    }))
+                  )
+                }
+              >
+                Export CSV
+              </button>
               <button className={btnSecondary} onClick={() => c.markAll("present")}>Mark all present</button>
               <button className={btnSecondary} onClick={() => c.markAll("absent")}>Mark all absent</button>
             </div>

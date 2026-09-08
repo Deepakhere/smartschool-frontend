@@ -3,6 +3,7 @@ import DatePicker from "../../../components/date-picker";
 import { Table, TableHeader, TableHead, TableBody, TableRow, TableCell, TableEmpty } from "../../../components/table";
 import { SelectOption } from "../../../types";
 import SectionHeader from "../../../components/section-header";
+import { exportToCsv } from "../../../utils";
 import useFeesController from "./fees-controller";
 
 const inputClass =
@@ -540,7 +541,27 @@ const AdminFees = () => {
 
       {activeTab === "ledger" && (
         <div className="bg-white rounded-lg shadow p-6">
-          <h2 className="text-lg font-medium text-gray-900 mb-4">Payment Ledger</h2>
+          <div className="flex justify-between items-center mb-4">
+            <h2 className="text-lg font-medium text-gray-900">Payment Ledger</h2>
+            <button
+              onClick={() =>
+                exportToCsv(
+                  "payment-ledger",
+                  paymentLedger.map((p) => ({
+                    receipt: p.receiptNumber,
+                    student: typeof p.studentId === "object" ? p.studentId.name : "",
+                    type: p.entryType === "reversal" ? "Reversal" : "Payment",
+                    amount: p.amount / 100,
+                    method: p.method,
+                    date: new Date(p.paidAt).toLocaleDateString(),
+                  }))
+                )
+              }
+              className="inline-flex items-center px-3 py-1.5 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50"
+            >
+              Export CSV
+            </button>
+          </div>
           <Table>
             <TableHeader>
               <TableHead>Receipt</TableHead>

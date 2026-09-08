@@ -1,10 +1,11 @@
 import { useParams } from "react-router-dom";
+import toast from "react-hot-toast";
 
 import SectionHeader from "../../../components/section-header";
 import Spinner from "../../../components/spinner";
 import NoRecordFound from "../../../components/no-record-found";
 import { Table, TableHeader, TableHead, TableBody, TableRow, TableCell } from "../../../components/table";
-import { useGetMyResults } from "../../admin/reports/service/exams-service";
+import { useGetMyResults, downloadReportCard } from "../../admin/reports/service/exams-service";
 import { useTranslation } from "react-i18next";
 
 const ParentReports = () => {
@@ -12,6 +13,14 @@ const ParentReports = () => {
   const { organizationId } = useParams();
   const getMyResults = useGetMyResults(organizationId || "");
   const items = getMyResults.data?.items || [];
+
+  const handleDownload = async (examId: string, studentId: string) => {
+    try {
+      await downloadReportCard(organizationId || "", examId, studentId);
+    } catch {
+      toast.error("Could not download the report card. Please try again.");
+    }
+  };
 
   return (
     <div className="max-w-7xl mx-auto">
@@ -55,6 +64,13 @@ const ParentReports = () => {
                             <p className="text-sm text-gray-500 mt-1">
                               {result.totals.percentage}% · Grade {result.grade} · GPA {result.gpa}
                             </p>
+                            <button
+                              type="button"
+                              onClick={() => handleDownload(typeof result.examId === "object" ? result.examId.id : result.examId, item.studentId)}
+                              className="text-xs text-indigo-600 hover:text-indigo-800 mt-1"
+                            >
+                              Download report card
+                            </button>
                           </div>
                         </div>
 

@@ -10,6 +10,7 @@ import { Table, TableHeader, TableHead, TableBody, TableRow, TableCell } from ".
 import { SelectOption } from "../../../../types";
 import { usePageHeader } from "../../../../hooks";
 import SectionHeader from "../../../../components/section-header";
+import { exportToCsv } from "../../../../utils";
 
 import useStudentsListController from "./students-list-controller";
 import DeleteConfirmationDialog from "../../../../components/delete-confirmation-dialog";
@@ -68,9 +69,28 @@ const StudentsList = () => {
     onClickEditStudent,
   } = useStudentsListController();
 
+  const handleExportCsv = () => {
+    exportToCsv(
+      "students",
+      (studentDetail || []).map((student) => ({
+        name: student.name,
+        roll_number: student.currentEnrollment?.rollNumber ?? "",
+        class: student.currentEnrollment?.classId?.name ?? "",
+        section: student.currentEnrollment?.sectionId?.name ?? "",
+        date_of_birth: student.dateOfBirth,
+      }))
+    );
+  };
+
   usePageHeader({
     actions: (
       <>
+        <button
+          onClick={handleExportCsv}
+          className="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+        >
+          Export CSV
+        </button>
         <button
           onClick={onClickBulkUpload}
           className="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"

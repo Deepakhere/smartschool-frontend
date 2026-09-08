@@ -7,6 +7,7 @@ import Spinner from "../../../components/spinner";
 import NoRecordFound from "../../../components/no-record-found";
 import { Table, TableHeader, TableHead, TableBody, TableRow, TableCell, TableEmpty } from "../../../components/table";
 import { SelectOption } from "../../../types";
+import { exportToCsv } from "../../../utils";
 import { useReportsController } from "./reports-controller";
 
 const inputClass =
@@ -444,6 +445,27 @@ const AdminReports = () => {
               <div className="flex justify-between items-center mb-4">
                 <h2 className="text-lg font-medium text-gray-900">Marks Sheet</h2>
                 <div className="flex gap-2">
+                  <button
+                    onClick={() =>
+                      exportToCsv(
+                        "marks-sheet",
+                        c.marksSheet.map((item) => {
+                          const draft = c.marksDraft[item.student.id];
+                          return {
+                            student: item.student.name,
+                            roll_number: item.student.rollNumber,
+                            theory_marks: draft?.isAbsent ? "" : draft?.theoryMarks ?? "",
+                            practical_marks: draft?.isAbsent ? "" : draft?.practicalMarks ?? "",
+                            absent: draft?.isAbsent ? "Yes" : "No",
+                            status: item.marks?.status ?? "",
+                          };
+                        })
+                      )
+                    }
+                    className={btnSecondary}
+                  >
+                    Export CSV
+                  </button>
                   <button onClick={c.handleVerifyMarks} disabled={c.isVerifyingMarks} className={btnSecondary}>
                     Verify all
                   </button>
