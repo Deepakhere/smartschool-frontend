@@ -1,6 +1,7 @@
 import { NavLink } from "react-router-dom";
 
 import SidebarUserMenu from "../sidebar-user-menu";
+import NotificationBell from "../notification-bell";
 import { useSidebarController } from "./sidebar-controller";
 
 interface SidebarProps {
@@ -71,6 +72,7 @@ const Sidebar = ({ isCollapsed }: SidebarProps) => {
         ))}
       </div>
 
+      <NotificationBell isCollapsed={isCollapsed} />
       <SidebarUserMenu isCollapsed={isCollapsed} />
     </div>
   );

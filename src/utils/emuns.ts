@@ -90,6 +90,7 @@ export const API_MUTATION_KEY = {
   ASSIGN_TEACHER: "assign-teacher",
   MARK_NOTICE_READ: "mark-notice-read",
   MARK_NOTIFICATION_READ: "mark-notification-read",
+  MARK_ALL_NOTIFICATIONS_READ: "mark-all-notifications-read",
   CREATE_PTM_EVENT: "create-ptm-event",
   GENERATE_PTM_SLOTS: "generate-ptm-slots",
   BOOK_PTM_SLOT: "book-ptm-slot",

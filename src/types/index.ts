@@ -22,6 +22,17 @@ export interface INotice {
   pinned?: boolean;
 }
 
+export interface INotification {
+  id: string;
+  type: string;
+  title: string;
+  body: string;
+  entityType?: string;
+  entityId?: string;
+  readAt: string | null;
+  createdAt: string;
+}
+
 export interface ICreateNoticeRequest {
   title: string;
   content: string;
