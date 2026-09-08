@@ -339,6 +339,32 @@ export interface IOrganization {
   };
 }
 
+export interface IAccount {
+  id: string;
+  name: string;
+  ownerUserId: { id: string; name: string; email: string } | string;
+  status: "active" | "trial" | "suspended";
+  createdAt: string;
+  organizations: IOrganization[];
+}
+
+export interface ICreateAccountValue {
+  accountName: string;
+  ownerEmail: string;
+  ownerName: string;
+  schoolName: string;
+  address: string;
+  pincode: string;
+  description?: string;
+}
+
+export interface IAddOrganizationToAccountValue {
+  schoolName: string;
+  address: string;
+  pincode: string;
+  description?: string;
+}
+
 export interface ICreateOrganizationValue {
   name: string;
   address: string;

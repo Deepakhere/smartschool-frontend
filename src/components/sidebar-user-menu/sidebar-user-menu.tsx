@@ -76,13 +76,22 @@ const SidebarUserMenu = ({ isCollapsed }: SidebarUserMenuProps) => {
           </Link>
 
           {isPlatformAdmin && (
-            <Link
-              to="/organization"
-              className="flex items-center gap-2 rounded-md px-2 py-2 text-sm text-gray-700 hover:bg-gray-50"
-            >
-              <BuildingOffice2Icon className="h-4 w-4 text-gray-400" />
-              Switch Organization
-            </Link>
+            <>
+              <Link
+                to="/organization"
+                className="flex items-center gap-2 rounded-md px-2 py-2 text-sm text-gray-700 hover:bg-gray-50"
+              >
+                <BuildingOffice2Icon className="h-4 w-4 text-gray-400" />
+                Switch Organization
+              </Link>
+              <Link
+                to="/platform"
+                className="flex items-center gap-2 rounded-md px-2 py-2 text-sm text-gray-700 hover:bg-gray-50"
+              >
+                <BuildingOffice2Icon className="h-4 w-4 text-gray-400" />
+                Platform Console
+              </Link>
+            </>
           )}
 
           <div className="my-1 border-t border-gray-100" />

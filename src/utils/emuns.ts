@@ -69,6 +69,7 @@ export const API_QUERY_KEY = {
   GET_MY_LEAVE_REQUESTS: "get-my-leave-requests",
   GET_LEAVE_REQUESTS_REVIEW_QUEUE: "get-leave-requests-review-queue",
   GET_PROMOTION_CANDIDATES: "get-promotion-candidates",
+  GET_ALL_ACCOUNTS: "get-all-accounts",
 };
 
 export const API_MUTATION_KEY = {
@@ -116,6 +117,9 @@ export const API_MUTATION_KEY = {
   CREATE_LEAVE_REQUEST: "create-leave-request",
   CANCEL_LEAVE_REQUEST: "cancel-leave-request",
   DECIDE_LEAVE_REQUEST: "decide-leave-request",
+  CREATE_ACCOUNT: "create-account",
+  ADD_ORGANIZATION_TO_ACCOUNT: "add-organization-to-account",
+  UPDATE_ACCOUNT_STATUS: "update-account-status",
 };
 
 export const PASSWORD_CIPHER_MESSAGE = "KID_SIGHT_KEY";
