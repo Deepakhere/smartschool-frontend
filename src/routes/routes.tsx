@@ -14,6 +14,7 @@ import AdminTeachers from "../pages/admin/teachers";
 import AdminAttendance from "../pages/admin/attendance";
 import AdminSettings from "../pages/admin/settings";
 import AdminPTM from "../pages/admin/ptm";
+import AdminLeaveRequests from "../pages/admin/leave-requests";
 
 // Teacher Pages
 import TeacherDashboard from "../pages/teacher/dashboard";
@@ -26,6 +27,7 @@ import ParentHomework from "../pages/parent/homework";
 import ParentReports from "../pages/parent/reports";
 import ParentFees from "../pages/parent/fees";
 import ParentPTM from "../pages/parent/ptm";
+import ParentLeaveRequests from "../pages/parent/leave-requests";
 
 // shared — same profile page for every role, just mounted under each role's own path
 import Profile from "../pages/admin/settings/profile";
@@ -118,6 +120,10 @@ const Routes = () => {
           element: <AdminPTM />,
         },
         {
+          path: "leave-requests",
+          element: <AdminLeaveRequests />,
+        },
+        {
           path: "settings/*",
           element: <AdminSettings />,
         },
@@ -150,6 +156,10 @@ const Routes = () => {
         {
           path: "ptm",
           element: <TeacherPTM />,
+        },
+        {
+          path: "leave-requests",
+          element: <AdminLeaveRequests />,
         },
         {
           path: "profile",
@@ -192,6 +202,10 @@ const Routes = () => {
         {
           path: "ptm",
           element: <ParentPTM />,
+        },
+        {
+          path: "leave-requests",
+          element: <ParentLeaveRequests />,
         },
         {
           path: "profile",

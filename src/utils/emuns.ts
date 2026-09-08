@@ -23,6 +23,7 @@ export const APIS_ROUTES = {
   PTM_SERVICE: "/ptm-service/v1",
   FEE_SERVICE: "/fee-service/v1",
   EXAM_SERVICE: "/exam-service/v1",
+  LEAVE_SERVICE: "/leave-service/v1",
 };
 
 export const API_QUERY_KEY = {
@@ -65,6 +66,8 @@ export const API_QUERY_KEY = {
   GET_MARKS_SHEET: "get-marks-sheet",
   GET_RESULTS_FOR_STUDENT: "get-results-for-student",
   GET_MY_RESULTS: "get-my-results",
+  GET_MY_LEAVE_REQUESTS: "get-my-leave-requests",
+  GET_LEAVE_REQUESTS_REVIEW_QUEUE: "get-leave-requests-review-queue",
 };
 
 export const API_MUTATION_KEY = {
@@ -109,6 +112,9 @@ export const API_MUTATION_KEY = {
   UPDATE_USER_PREFERENCES: "update-user-preferences",
   UPLOAD_ORGANIZATION_LOGO: "upload-organization-logo",
   UPLOAD_AVATAR: "upload-avatar",
+  CREATE_LEAVE_REQUEST: "create-leave-request",
+  CANCEL_LEAVE_REQUEST: "cancel-leave-request",
+  DECIDE_LEAVE_REQUEST: "decide-leave-request",
 };
 
 export const PASSWORD_CIPHER_MESSAGE = "KID_SIGHT_KEY";

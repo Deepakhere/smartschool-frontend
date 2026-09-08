@@ -12,6 +12,7 @@ import {
   Cog6ToothIcon,
   BookOpenIcon,
   UsersIcon,
+  CalendarDaysIcon,
 } from "@heroicons/react/24/outline";
 import { useAuth } from "../../context/auth-context";
 
@@ -36,6 +37,7 @@ export const useSidebarController = () => {
         { name: "Teachers", href: `/${organizationId}/admin/teachers`, icon: UserIcon, current: isActive("/teachers") },
         { name: "Attendance", href: `/${organizationId}/admin/attendance`, icon: ClipboardDocumentCheckIcon, current: isActive("/attendance") },
         { name: "Homework", href: `/${organizationId}/admin/homework`, icon: BookOpenIcon, current: isActive("/homework") },
+        { name: "Leave Requests", href: `/${organizationId}/admin/leave-requests`, icon: CalendarDaysIcon, current: isActive("/leave-requests") },
       ],
     },
     {
@@ -67,6 +69,7 @@ export const useSidebarController = () => {
         { name: "Notices", href: `/${organizationId}/parent/notices`, icon: ClipboardDocumentListIcon, current: isActive("/notices") },
         { name: "Homework", href: `/${organizationId}/parent/homework`, icon: ClipboardDocumentCheckIcon, current: isActive("/homework") },
         { name: "PTM", href: `/${organizationId}/parent/ptm`, icon: UsersIcon, current: isActive("/ptm") },
+        { name: "Leave Requests", href: `/${organizationId}/parent/leave-requests`, icon: CalendarDaysIcon, current: isActive("/leave-requests") },
       ],
     },
     {
@@ -88,6 +91,7 @@ export const useSidebarController = () => {
         { name: "Attendance", href: `/${organizationId}/teacher/attendance`, icon: ClipboardDocumentCheckIcon, current: isActive("/attendance") },
         { name: "Homework", href: `/${organizationId}/teacher/homework`, icon: BookOpenIcon, current: isActive("/homework") },
         { name: "PTM", href: `/${organizationId}/teacher/ptm`, icon: UsersIcon, current: isActive("/ptm") },
+        { name: "Leave Requests", href: `/${organizationId}/teacher/leave-requests`, icon: CalendarDaysIcon, current: isActive("/leave-requests") },
       ],
     },
   ];
