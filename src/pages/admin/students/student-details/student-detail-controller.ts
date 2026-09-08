@@ -9,6 +9,8 @@ import {
 } from "../service";
 import { useAddGuardian, useSetPrimaryGuardian, useRemoveGuardian } from "../service/guardian-service";
 import { useGetEnrollmentHistory, useTransferStudent, useWithdrawStudent } from "../service/lifecycle-service";
+import { useGetStudentAttendanceHistory } from "../service/attendance-history-service";
+import { useGetResultsForStudent } from "../../reports/service/exams-service";
 import { IStudentFormData } from "../../../../types";
 import { useError } from "../../../../hooks";
 
@@ -44,6 +46,8 @@ const useStudentDetailController = () => {
   const enrollmentHistory = useGetEnrollmentHistory(organizationId || "", studentId || "");
   const transferStudent = useTransferStudent(organizationId || "", studentId || "");
   const withdrawStudent = useWithdrawStudent(organizationId || "", studentId || "");
+  const attendanceHistory = useGetStudentAttendanceHistory(organizationId || "", studentId || "");
+  const examResults = useGetResultsForStudent(organizationId || "", studentId || "");
 
   useError({
     mutation: deleteStudent,
@@ -223,6 +227,10 @@ const useStudentDetailController = () => {
     confirmWithdraw,
     isTransferring: transferStudent.isLoading,
     isWithdrawing: withdrawStudent.isLoading,
+    attendanceSummary: attendanceHistory.data?.summary,
+    isLoadingAttendance: attendanceHistory.isLoading,
+    examResults: examResults.data?.items || [],
+    isLoadingExamResults: examResults.isLoading,
   };
 };
 

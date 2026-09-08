@@ -53,6 +53,10 @@ const StudentDetails = () => {
     confirmWithdraw,
     isTransferring,
     isWithdrawing,
+    attendanceSummary,
+    isLoadingAttendance,
+    examResults,
+    isLoadingExamResults,
   } = useStudentDetailController();
 
   const enrollmentStatusBadgeClass: Record<string, string> = {
@@ -307,262 +311,147 @@ const StudentDetails = () => {
                 Academic Records
               </h3>
               <p className="mt-1 max-w-2xl text-sm text-gray-500">
-                Performance, attendance, and achievements.
+                Exam results and attendance, from the school's real records.
               </p>
             </div>
             <div className="border-t border-gray-200 px-4 py-5">
-              {/* Current Academic Year Overview */}
+              {/* Current Enrollment Overview */}
               <div className="mb-6">
                 <h4 className="text-md font-medium text-gray-900 mb-3">
-                  Current Academic Year Overview
+                  Current Enrollment
                 </h4>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                   <div className="bg-gray-50 p-3 rounded">
                     <p className="text-xs text-gray-500">Class</p>
                     <p className="font-medium">
                       {studentDetails?.currentEnrollment?.classId?.name || "-"}
+                      {studentDetails?.currentEnrollment?.sectionId?.name
+                        ? ` - ${studentDetails.currentEnrollment.sectionId.name}`
+                        : ""}
                     </p>
                   </div>
                   <div className="bg-gray-50 p-3 rounded">
-                    <p className="text-xs text-gray-500">Current Term</p>
-                    <p className="font-medium">Term 1</p>
+                    <p className="text-xs text-gray-500">Roll Number</p>
+                    <p className="font-medium">{studentDetails?.currentEnrollment?.rollNumber || "-"}</p>
                   </div>
                   <div className="bg-gray-50 p-3 rounded">
-                    <p className="text-xs text-gray-500">Session</p>
-                    <p className="font-medium">2024-2025</p>
+                    <p className="text-xs text-gray-500">Status</p>
+                    <p className="font-medium capitalize">{studentDetails?.status || "-"}</p>
                   </div>
                   <div className="bg-gray-50 p-3 rounded">
-                    <p className="text-xs text-gray-500">Total Subjects</p>
-                    <p className="font-medium">6</p>
+                    <p className="text-xs text-gray-500">Exams Published</p>
+                    <p className="font-medium">{examResults.length}</p>
                   </div>
                 </div>
               </div>
 
-              {/* Subject-wise Performance */}
+              {/* Exam Results */}
               <div className="mb-6">
                 <h4 className="text-md font-medium text-gray-900 mb-3">
-                  Subject-wise Performance
+                  Exam Results
                 </h4>
-                <div className="overflow-x-auto">
-                  <table className="min-w-full divide-y divide-gray-200">
-                    <thead className="bg-gray-50">
-                      <tr>
-                        <th
-                          scope="col"
-                          className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                        >
-                          Subject
-                        </th>
-                        <th
-                          scope="col"
-                          className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                        >
-                          Marks Obtained
-                        </th>
-                        <th
-                          scope="col"
-                          className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                        >
-                          Total Marks
-                        </th>
-                        <th
-                          scope="col"
-                          className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                        >
-                          Grade
-                        </th>
-                        <th
-                          scope="col"
-                          className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                        >
-                          Remarks
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody className="bg-white divide-y divide-gray-200">
-                      <tr>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                          English
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                          85
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                          100
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                          A
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                          Good progress
-                        </td>
-                      </tr>
-                      <tr>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                          Mathematics
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                          78
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                          100
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                          B+
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                          Needs practice
-                        </td>
-                      </tr>
-                      <tr>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                          Science
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                          92
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                          100
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                          A+
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                          Excellent
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-
-              {/* Exam History */}
-              <div className="mb-6">
-                <h4 className="text-md font-medium text-gray-900 mb-3">
-                  Exam History
-                </h4>
-                <div className="overflow-x-auto">
-                  <table className="min-w-full divide-y divide-gray-200">
-                    <thead className="bg-gray-50">
-                      <tr>
-                        <th
-                          scope="col"
-                          className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                        >
-                          Exam Name
-                        </th>
-                        <th
-                          scope="col"
-                          className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                        >
-                          Date
-                        </th>
-                        <th
-                          scope="col"
-                          className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                        >
-                          Result Status
-                        </th>
-                        <th
-                          scope="col"
-                          className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                        >
-                          Total Marks
-                        </th>
-                        <th
-                          scope="col"
-                          className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                        >
-                          Marks Scored
-                        </th>
-                        <th
-                          scope="col"
-                          className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                        >
-                          Percentage
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody className="bg-white divide-y divide-gray-200">
-                      <tr>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                          Mid-Term
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                          10/01/2025
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                          Passed
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                          600
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                          470
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                          78.33%
-                        </td>
-                      </tr>
-                      <tr>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                          Final Exam
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                          25/03/2025
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                          Passed
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                          600
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                          510
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                          85.00%
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
+                {isLoadingExamResults ? (
+                  <p className="text-sm text-gray-500">Loading...</p>
+                ) : examResults.length === 0 ? (
+                  <p className="text-sm text-gray-500">No published exam results yet.</p>
+                ) : (
+                  <div className="overflow-x-auto">
+                    <table className="min-w-full divide-y divide-gray-200">
+                      <thead className="bg-gray-50">
+                        <tr>
+                          <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Exam
+                          </th>
+                          <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Date
+                          </th>
+                          <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Result
+                          </th>
+                          <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Marks
+                          </th>
+                          <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Percentage
+                          </th>
+                          <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Grade
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody className="bg-white divide-y divide-gray-200">
+                        {examResults.map((result) => {
+                          const exam = typeof result.examId === "object" ? result.examId : null;
+                          return (
+                            <tr key={result.id}>
+                              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                {exam?.name || "-"}
+                              </td>
+                              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                {exam?.startDate ? new Date(exam.startDate).toLocaleDateString() : "-"}
+                              </td>
+                              <td className="px-6 py-4 whitespace-nowrap text-sm">
+                                <span
+                                  className={`inline-block px-2 py-0.5 rounded-full text-xs font-medium capitalize ${
+                                    result.promotionStatus === "pass"
+                                      ? "bg-green-100 text-green-800"
+                                      : result.promotionStatus === "fail"
+                                        ? "bg-red-100 text-red-800"
+                                        : "bg-gray-100 text-gray-600"
+                                  }`}
+                                >
+                                  {result.promotionStatus}
+                                </span>
+                              </td>
+                              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                {result.totals.obtained} / {result.totals.max}
+                              </td>
+                              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                {result.totals.percentage}%
+                              </td>
+                              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                {result.grade || "-"}
+                              </td>
+                            </tr>
+                          );
+                        })}
+                      </tbody>
+                    </table>
+                  </div>
+                )}
               </div>
 
               {/* Attendance Summary */}
-              <div className="mb-6">
+              <div>
                 <h4 className="text-md font-medium text-gray-900 mb-3">
                   Attendance Summary
                 </h4>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                  <div className="bg-gray-50 p-3 rounded">
-                    <p className="text-xs text-gray-500">Total Working Days</p>
-                    <p className="font-medium">180</p>
+                {isLoadingAttendance ? (
+                  <p className="text-sm text-gray-500">Loading...</p>
+                ) : !attendanceSummary || attendanceSummary.total === 0 ? (
+                  <p className="text-sm text-gray-500">No attendance recorded yet.</p>
+                ) : (
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <div className="bg-gray-50 p-3 rounded">
+                      <p className="text-xs text-gray-500">Total Marked Days</p>
+                      <p className="font-medium">{attendanceSummary.total}</p>
+                    </div>
+                    <div className="bg-gray-50 p-3 rounded">
+                      <p className="text-xs text-gray-500">Present Days</p>
+                      <p className="font-medium">{attendanceSummary.present}</p>
+                    </div>
+                    <div className="bg-gray-50 p-3 rounded">
+                      <p className="text-xs text-gray-500">Absent Days</p>
+                      <p className="font-medium">{attendanceSummary.absent}</p>
+                    </div>
+                    <div className="bg-gray-50 p-3 rounded">
+                      <p className="text-xs text-gray-500">Attendance %</p>
+                      <p className="font-medium">
+                        {((attendanceSummary.present / attendanceSummary.total) * 100).toFixed(2)}%
+                      </p>
+                    </div>
                   </div>
-                  <div className="bg-gray-50 p-3 rounded">
-                    <p className="text-xs text-gray-500">Present Days</p>
-                    <p className="font-medium">160</p>
-                  </div>
-                  <div className="bg-gray-50 p-3 rounded">
-                    <p className="text-xs text-gray-500">Absent Days</p>
-                    <p className="font-medium">20</p>
-                  </div>
-                  <div className="bg-gray-50 p-3 rounded">
-                    <p className="text-xs text-gray-500">Attendance %</p>
-                    <p className="font-medium">88.88%</p>
-                  </div>
-                </div>
-              </div>
-
-              {/* Achievements / Awards */}
-              <div>
-                <h4 className="text-md font-medium text-gray-900 mb-3">
-                  Achievements / Awards
-                </h4>
-                <ul className="list-disc pl-5 space-y-2 text-sm text-gray-700">
-                  <li>Participated in Science Olympiad – Gold Medal</li>
-                  <li>Won 2nd Prize in School Debate Competition</li>
-                </ul>
+                )}
               </div>
             </div>
           </div>
