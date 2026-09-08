@@ -43,7 +43,25 @@ const StudentDetails = () => {
     isRemovingGuardian,
     cancelRemoveGuardian,
     confirmRemoveGuardian,
+    enrollmentHistory,
+    isLoadingEnrollmentHistory,
+    isTransferModalOpen,
+    setIsTransferModalOpen,
+    isWithdrawModalOpen,
+    setIsWithdrawModalOpen,
+    confirmTransfer,
+    confirmWithdraw,
+    isTransferring,
+    isWithdrawing,
   } = useStudentDetailController();
+
+  const enrollmentStatusBadgeClass: Record<string, string> = {
+    ACTIVE: "bg-green-100 text-green-800",
+    PROMOTED: "bg-indigo-100 text-indigo-800",
+    DETAINED: "bg-amber-100 text-amber-800",
+    TRANSFERRED: "bg-gray-100 text-gray-600",
+    WITHDRAWN: "bg-red-100 text-red-800",
+  };
 
   usePageHeader({ title: "Student Profile", onBack: onBackClick });
 
@@ -218,6 +236,63 @@ const StudentDetails = () => {
                           Remove
                         </button>
                       )}
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
+          </div>
+
+          {/* Enrollment Lifecycle */}
+          <div className="bg-white shadow overflow-hidden sm:rounded-lg mb-6">
+            <div className="px-4 py-5 sm:px-6 flex justify-between items-center">
+              <div>
+                <h3 className="text-lg leading-6 font-medium text-gray-900">
+                  Enrollment Lifecycle
+                </h3>
+                <p className="mt-1 max-w-2xl text-sm text-gray-500">
+                  Transfer, withdraw, and year-over-year enrollment history.
+                </p>
+              </div>
+              {studentDetails?.status === "active" && (
+                <div className="flex gap-3">
+                  <button
+                    onClick={() => setIsTransferModalOpen(true)}
+                    className="inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
+                  >
+                    Transfer
+                  </button>
+                  <button
+                    onClick={() => setIsWithdrawModalOpen(true)}
+                    className="inline-flex items-center px-3 py-2 border border-red-300 shadow-sm text-sm leading-4 font-medium rounded-md text-red-700 bg-white hover:bg-red-50"
+                  >
+                    Withdraw
+                  </button>
+                </div>
+              )}
+            </div>
+            <div className="border-t border-gray-200 divide-y divide-gray-200">
+              {isLoadingEnrollmentHistory ? (
+                <p className="px-4 py-5 text-sm text-gray-500">Loading history...</p>
+              ) : enrollmentHistory.length === 0 ? (
+                <p className="px-4 py-5 text-sm text-gray-500">No enrollment history yet.</p>
+              ) : (
+                enrollmentHistory.map((entry) => (
+                  <div key={entry.id} className="px-4 py-4 sm:px-6 flex justify-between items-center">
+                    <div>
+                      <p className="text-sm font-medium text-gray-900">
+                        {entry.academicYearId?.name || "-"} — {entry.classId?.name || "-"}
+                        {entry.sectionId?.name ? ` - ${entry.sectionId.name}` : ""}
+                        <span
+                          className={`ml-2 inline-block px-2 py-0.5 text-xs rounded-full capitalize ${enrollmentStatusBadgeClass[entry.status]}`}
+                        >
+                          {entry.status.toLowerCase()}
+                        </span>
+                      </p>
+                      <p className="text-sm text-gray-500 mt-1">
+                        Roll No. {entry.rollNumber} · Joined {new Date(entry.joinedOn).toLocaleDateString()}
+                        {entry.leftOn ? ` · Left ${new Date(entry.leftOn).toLocaleDateString()}` : ""}
+                      </p>
                     </div>
                   </div>
                 ))
@@ -537,6 +612,26 @@ const StudentDetails = () => {
             isLoading={isRemovingGuardian}
             onClose={cancelRemoveGuardian}
             onConfirm={confirmRemoveGuardian}
+          />
+
+          <DeleteConfirmationDialog
+            open={isTransferModalOpen}
+            title="Transfer Student"
+            description="This marks the student as transferred out and closes their current enrollment. This action cannot be undone from here."
+            confirmLabel="Transfer"
+            isLoading={isTransferring}
+            onClose={() => setIsTransferModalOpen(false)}
+            onConfirm={confirmTransfer}
+          />
+
+          <DeleteConfirmationDialog
+            open={isWithdrawModalOpen}
+            title="Withdraw Student"
+            description="This marks the student as withdrawn and closes their current enrollment. This action cannot be undone from here."
+            confirmLabel="Withdraw"
+            isLoading={isWithdrawing}
+            onClose={() => setIsWithdrawModalOpen(false)}
+            onConfirm={confirmWithdraw}
           />
 
           <GuardianModal

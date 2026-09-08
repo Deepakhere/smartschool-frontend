@@ -8,6 +8,7 @@ import {
   useUpdateStudentDetail,
 } from "../service";
 import { useAddGuardian, useSetPrimaryGuardian, useRemoveGuardian } from "../service/guardian-service";
+import { useGetEnrollmentHistory, useTransferStudent, useWithdrawStudent } from "../service/lifecycle-service";
 import { IStudentFormData } from "../../../../types";
 import { useError } from "../../../../hooks";
 
@@ -37,6 +38,12 @@ const useStudentDetailController = () => {
   const addGuardian = useAddGuardian(organizationId || "", studentId || "");
   const setPrimaryGuardian = useSetPrimaryGuardian(organizationId || "", studentId || "");
   const removeGuardian = useRemoveGuardian(organizationId || "", studentId || "");
+
+  const [isTransferModalOpen, setIsTransferModalOpen] = useState(false);
+  const [isWithdrawModalOpen, setIsWithdrawModalOpen] = useState(false);
+  const enrollmentHistory = useGetEnrollmentHistory(organizationId || "", studentId || "");
+  const transferStudent = useTransferStudent(organizationId || "", studentId || "");
+  const withdrawStudent = useWithdrawStudent(organizationId || "", studentId || "");
 
   useError({
     mutation: deleteStudent,
@@ -150,6 +157,30 @@ const useStudentDetailController = () => {
     });
   };
 
+  const confirmTransfer = () => {
+    transferStudent.mutate(undefined, {
+      onSuccess: () => {
+        toast.success("Student marked as transferred.");
+        setIsTransferModalOpen(false);
+      },
+      onError: (error) => {
+        toast.error(error?.response?.Error?.message || "Failed to transfer student");
+      },
+    });
+  };
+
+  const confirmWithdraw = () => {
+    withdrawStudent.mutate(undefined, {
+      onSuccess: () => {
+        toast.success("Student marked as withdrawn.");
+        setIsWithdrawModalOpen(false);
+      },
+      onError: (error) => {
+        toast.error(error?.response?.Error?.message || "Failed to withdraw student");
+      },
+    });
+  };
+
   return {
     t,
     organizationId: organizationId || "",
@@ -182,6 +213,16 @@ const useStudentDetailController = () => {
     isRemovingGuardian: removeGuardian.isLoading,
     cancelRemoveGuardian,
     confirmRemoveGuardian,
+    enrollmentHistory: enrollmentHistory.data?.items || [],
+    isLoadingEnrollmentHistory: enrollmentHistory.isLoading,
+    isTransferModalOpen,
+    setIsTransferModalOpen,
+    isWithdrawModalOpen,
+    setIsWithdrawModalOpen,
+    confirmTransfer,
+    confirmWithdraw,
+    isTransferring: transferStudent.isLoading,
+    isWithdrawing: withdrawStudent.isLoading,
   };
 };
 

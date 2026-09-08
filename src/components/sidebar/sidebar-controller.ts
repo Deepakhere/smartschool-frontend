@@ -13,6 +13,7 @@ import {
   BookOpenIcon,
   UsersIcon,
   CalendarDaysIcon,
+  ArrowTrendingUpIcon,
 } from "@heroicons/react/24/outline";
 import { useAuth } from "../../context/auth-context";
 
@@ -38,6 +39,7 @@ export const useSidebarController = () => {
         { name: "Attendance", href: `/${organizationId}/admin/attendance`, icon: ClipboardDocumentCheckIcon, current: isActive("/attendance") },
         { name: "Homework", href: `/${organizationId}/admin/homework`, icon: BookOpenIcon, current: isActive("/homework") },
         { name: "Leave Requests", href: `/${organizationId}/admin/leave-requests`, icon: CalendarDaysIcon, current: isActive("/leave-requests") },
+        { name: "Promotion", href: `/${organizationId}/admin/promotion`, icon: ArrowTrendingUpIcon, current: isActive("/promotion") },
       ],
     },
     {

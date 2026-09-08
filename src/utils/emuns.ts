@@ -68,6 +68,7 @@ export const API_QUERY_KEY = {
   GET_MY_RESULTS: "get-my-results",
   GET_MY_LEAVE_REQUESTS: "get-my-leave-requests",
   GET_LEAVE_REQUESTS_REVIEW_QUEUE: "get-leave-requests-review-queue",
+  GET_PROMOTION_CANDIDATES: "get-promotion-candidates",
 };
 
 export const API_MUTATION_KEY = {

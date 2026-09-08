@@ -607,6 +607,37 @@ export interface IStudentEnrollment {
   rollNumber: string;
 }
 
+export interface IPromotionCandidate {
+  student: { id: string; name: string; admissionNumber: string };
+  rollNumber: string;
+  result: {
+    examName: string;
+    examType: string;
+    promotionStatus: "pass" | "fail" | "pending";
+    percentage: number | null;
+    grade: string | null;
+  } | null;
+}
+
+export type PromotionAction = "promote" | "detain" | "transfer" | "withdraw";
+
+export interface IPromotionDecisionResult {
+  studentId: string;
+  success: boolean;
+  message?: string;
+}
+
+export interface IEnrollmentHistoryEntry {
+  id: string;
+  academicYearId: { id: string; name: string } | null;
+  classId: { id: string; name: string } | null;
+  sectionId: { id: string; name: string } | null;
+  rollNumber: string;
+  status: "ACTIVE" | "PROMOTED" | "DETAINED" | "TRANSFERRED" | "WITHDRAWN";
+  joinedOn: string;
+  leftOn?: string;
+}
+
 export interface IGuardian {
   id: string;
   parentUserId: { id: string; name: string; email: string; phoneNumber: string; status: string };

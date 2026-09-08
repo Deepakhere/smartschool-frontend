@@ -18,6 +18,7 @@ interface IStudentDetailResponse {
   phoneNumber: string;
   parentId: string;
   guardians: IGuardian[];
+  status: "active" | "inactive" | "suspended";
 }
 
 const getStudentById = async (

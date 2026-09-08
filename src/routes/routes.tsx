@@ -15,6 +15,7 @@ import AdminAttendance from "../pages/admin/attendance";
 import AdminSettings from "../pages/admin/settings";
 import AdminPTM from "../pages/admin/ptm";
 import AdminLeaveRequests from "../pages/admin/leave-requests";
+import AdminPromotion from "../pages/admin/promotion";
 
 // Teacher Pages
 import TeacherDashboard from "../pages/teacher/dashboard";
@@ -122,6 +123,10 @@ const Routes = () => {
         {
           path: "leave-requests",
           element: <AdminLeaveRequests />,
+        },
+        {
+          path: "promotion",
+          element: <AdminPromotion />,
         },
         {
           path: "settings/*",
