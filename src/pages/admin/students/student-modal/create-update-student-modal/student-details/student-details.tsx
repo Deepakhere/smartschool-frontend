@@ -1,10 +1,10 @@
 import { UseFormReturn } from "react-hook-form";
 
-import { IStudentFormData, SelectOption } from "../../../../../../types";
-import { useGetAcademicYears, useGetClasses, useGetSections } from "../../../../classes/service/academics-service";
-import { FormControl, FormField, FormItem, FormLabel, FormMessage } from "../../../../../../components/ui/form";
-import { Input } from "../../../../../../components/ui/input";
-import CustomSelectDropdown from "../../../../../../components/custom-select";
+import { IStudentFormData, SelectOption } from "@/types";
+import { useGetAcademicYears, useGetClasses, useGetSections } from "@/pages/admin/classes/service/academics-service";
+import { FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import CustomSelectDropdown from "@/components/custom-select";
 
 interface IStudentDetailsFormProps {
   t: (key: string) => string;

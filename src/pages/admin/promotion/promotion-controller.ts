@@ -4,7 +4,7 @@ import toast from "react-hot-toast";
 
 import { useGetAcademicYears, useGetClasses, useGetSections } from "../classes/service/academics-service";
 import { useGetPromotionCandidates, useProcessPromotions } from "./service/promotion-service";
-import { PromotionAction } from "../../../types";
+import { PromotionAction } from "@/types";
 
 interface RowState {
   action: PromotionAction;

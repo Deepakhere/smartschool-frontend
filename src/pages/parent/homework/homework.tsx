@@ -1,11 +1,11 @@
 import { BookOpenIcon } from "@heroicons/react/24/outline";
 
-import Spinner from "../../../components/spinner";
-import NoRecordFound from "../../../components/no-record-found";
-import SectionHeader from "../../../components/section-header";
-import CustomSelectDropdown from "../../../components/custom-select";
+import Spinner from "@/components/spinner";
+import NoRecordFound from "@/components/no-record-found";
+import SectionHeader from "@/components/section-header";
+import CustomSelectDropdown from "@/components/custom-select";
 import { useHomeworkController } from "./homework-controller";
-import { SelectOption } from "../../../types";
+import { SelectOption } from "@/types";
 
 const ParentHomework = () => {
   const { t, children, studentId, setStudentId, homeworkList, isLoading } = useHomeworkController();

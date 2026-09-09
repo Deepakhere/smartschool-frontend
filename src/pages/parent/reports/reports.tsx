@@ -1,11 +1,11 @@
 import { useParams } from "react-router-dom";
 import toast from "react-hot-toast";
 
-import SectionHeader from "../../../components/section-header";
-import Spinner from "../../../components/spinner";
-import NoRecordFound from "../../../components/no-record-found";
-import { Table, TableHeader, TableHead, TableBody, TableRow, TableCell } from "../../../components/table";
-import { useGetMyResults, downloadReportCard } from "../../admin/reports/service/exams-service";
+import SectionHeader from "@/components/section-header";
+import Spinner from "@/components/spinner";
+import NoRecordFound from "@/components/no-record-found";
+import { Table, TableHeader, TableHead, TableBody, TableRow, TableCell } from "@/components/table";
+import { useGetMyResults, downloadReportCard } from "@/pages/admin/reports/service/exams-service";
 import { useTranslation } from "react-i18next";
 
 const ParentReports = () => {

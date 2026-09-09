@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
-import apiClient from "../../../config";
+import apiClient from "@/config";
 import {
   IAPIError,
   IAxiosResponse,
@@ -8,8 +8,8 @@ import {
   ICreateAccountValue,
   IAddOrganizationToAccountValue,
   IOrganization,
-} from "../../../types";
-import { API_QUERY_KEY, API_MUTATION_KEY } from "../../../utils";
+} from "@/types";
+import { API_QUERY_KEY, API_MUTATION_KEY } from "@/utils";
 
 const base = "/platform-service/v1";
 

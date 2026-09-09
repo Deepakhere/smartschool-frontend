@@ -2,9 +2,9 @@ import React from "react";
 import { Link } from "react-router-dom";
 import ReCAPTCHA from "react-google-recaptcha";
 
-import { Form, FormControl, FormField, FormItem, FormMessage } from "../../../components/ui/form";
-import { Input } from "../../../components/ui/input";
-import { GOOGLE_CAPTCHA_KEY } from "../../../utils";
+import { Form, FormControl, FormField, FormItem, FormMessage } from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { GOOGLE_CAPTCHA_KEY } from "@/utils";
 import useForgotPasswordController from "./forgot-password-controller";
 import ForgotPasswordEmail from "./success/forgot-password-email";
 

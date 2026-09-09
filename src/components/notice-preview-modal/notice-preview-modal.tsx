@@ -1,8 +1,8 @@
 import { PrinterIcon, XMarkIcon } from "@heroicons/react/24/outline";
 
 import { Dialog, DialogContent, DialogHeader, DialogBody, DialogTitle } from "../ui/dialog";
-import { ICreateNoticeRequest } from "../../types";
-import organisationLogo from "../../icons/kidsight.png";
+import { ICreateNoticeRequest } from "@/types";
+import organisationLogo from "@/icons/kidsight.png";
 
 interface NoticePreviewModalProps {
   isOpen: boolean;

@@ -11,11 +11,11 @@ import {
   IUpdateUserValue,
   PermissionOption,
   RoleOption,
-} from "../../../../types";
+} from "@/types";
 import { useAddUserDetail, useDeleteUser, useGetAllUserDetails, useUpdateUserDetail } from "./service";
-import { useError } from "../../../../hooks";
+import { useError } from "@/hooks";
 import { useTranslation } from "react-i18next";
-import { useAuth } from "../../../../context/auth-context";
+import { useAuth } from "@/context/auth-context";
 import { userFormSchema, defaultUserFormValues, UserFormValues } from "./user-details.schema";
 
 const useUserDetailsController = () => {

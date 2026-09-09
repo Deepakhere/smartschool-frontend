@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { Bars3Icon, ChevronLeftIcon, ChevronRightIcon, ArrowLeftIcon } from "@heroicons/react/24/outline";
 
-import KidSight from "../../icons/kidsight.png";
+import KidSight from "@/icons/kidsight.png";
 import { useHeaderController } from "./header-controller";
 
 interface HeaderProps {

@@ -5,12 +5,12 @@ import { useTranslation } from "react-i18next";
 import debounce from "lodash.debounce";
 
 import { useAddStudent, useDeleteStudent, useGetStudentDetails, useUpdateStudentDetail } from "../service";
-import { IStudentFormData } from "../../../../types";
-import { EMAIL_REGEX_PATTERN, TOTAL_STEPS } from "../../../../utils";
+import { IStudentFormData } from "@/types";
+import { EMAIL_REGEX_PATTERN, TOTAL_STEPS } from "@/utils";
 import { useNavigate, useParams } from "react-router-dom";
 import useGetParentByEmail from "../service/get-parent-by-email";
-import { useError } from "../../../../hooks";
-import { useGetAcademicYears, useGetClasses } from "../../classes/service/academics-service";
+import { useError } from "@/hooks";
+import { useGetAcademicYears, useGetClasses } from "@/pages/admin/classes/service/academics-service";
 import { createStudentSchema } from "../student-modal/create-update-student-modal/student-form.schema";
 
 const emptyFormData = {} as IStudentFormData;

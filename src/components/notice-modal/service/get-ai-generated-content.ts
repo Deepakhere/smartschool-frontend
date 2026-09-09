@@ -1,6 +1,6 @@
-import { IAPIError, IAxiosResponse } from "../../../types";
-import { APIS_ROUTES, API_QUERY_KEY } from "../../../utils";
-import apiClient from "../../../config";
+import { IAPIError, IAxiosResponse } from "@/types";
+import { APIS_ROUTES, API_QUERY_KEY } from "@/utils";
+import apiClient from "@/config";
 import { useMutation } from "@tanstack/react-query";
 
 interface IContentResponse {

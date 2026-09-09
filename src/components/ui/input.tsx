@@ -1,6 +1,6 @@
 import * as React from "react";
 
-import { cn } from "../../lib/utils";
+import { cn } from "@/lib/utils";
 
 // the shared text-input primitive — matches the border/focus-ring style every
 // form in the app already used inline; centralizing it here is what makes a

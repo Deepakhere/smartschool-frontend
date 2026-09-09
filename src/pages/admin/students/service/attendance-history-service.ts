@@ -1,8 +1,8 @@
 import { useQuery } from "@tanstack/react-query";
 
-import apiClient from "../../../../config";
-import { IAPIError, IAxiosResponse, IAttendanceRecord } from "../../../../types";
-import { APIS_ROUTES } from "../../../../utils";
+import apiClient from "@/config";
+import { IAPIError, IAxiosResponse, IAttendanceRecord } from "@/types";
+import { APIS_ROUTES } from "@/utils";
 
 interface IAttendanceHistoryResponse {
   items: IAttendanceRecord[];

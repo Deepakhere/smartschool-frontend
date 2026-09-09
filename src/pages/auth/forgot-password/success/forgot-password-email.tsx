@@ -1,7 +1,7 @@
 import React from "react";
 
 import useForgotPasswordEmailController from "./forgot-password-email-controller";
-import { IForgotPassword } from "../../../../types";
+import { IForgotPassword } from "@/types";
 
 const ForgotPasswordEmail: React.FC<IForgotPassword> = ({ email }) => {
   const { t, redirectToLogin } = useForgotPasswordEmailController();

@@ -6,8 +6,8 @@ import {
   BellIcon,
 } from "@heroicons/react/24/outline";
 
-import SectionHeader from "../../../components/section-header";
-import Spinner from "../../../components/spinner";
+import SectionHeader from "@/components/section-header";
+import Spinner from "@/components/spinner";
 import useGetParentDashboard from "./service/get-parent-dashboard";
 
 const formatMoney = (paise: number) => `${(paise / 100).toFixed(2)}`;

@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
-import apiClient from "../../../../../config";
-import { IAPIError, IAxiosResponse, IStudentEnrollment, IGuardian } from "../../../../../types";
-import { APIS_ROUTES, API_QUERY_KEY } from "../../../../../utils";
+import apiClient from "@/config";
+import { IAPIError, IAxiosResponse, IStudentEnrollment, IGuardian } from "@/types";
+import { APIS_ROUTES, API_QUERY_KEY } from "@/utils";
 
 interface IStudentDetailResponse {
   id: string;

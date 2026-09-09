@@ -1,9 +1,9 @@
-import Spinner from "../../../components/spinner";
-import NoRecordFound from "../../../components/no-record-found";
-import CustomSelectDropdown from "../../../components/custom-select";
-import { Table, TableHeader, TableHead, TableBody, TableRow, TableCell } from "../../../components/table";
-import { SelectOption } from "../../../types";
-import SectionHeader from "../../../components/section-header";
+import Spinner from "@/components/spinner";
+import NoRecordFound from "@/components/no-record-found";
+import CustomSelectDropdown from "@/components/custom-select";
+import { Table, TableHeader, TableHead, TableBody, TableRow, TableCell } from "@/components/table";
+import { SelectOption } from "@/types";
+import SectionHeader from "@/components/section-header";
 import useParentPTMController from "./ptm-controller";
 
 const ParentPTM = () => {

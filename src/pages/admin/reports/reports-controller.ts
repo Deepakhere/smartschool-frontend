@@ -20,7 +20,7 @@ import {
   useGetSections,
   useGetSubjects,
 } from "../classes/service/academics-service";
-import { useError } from "../../../hooks";
+import { useError } from "@/hooks";
 
 export const useReportsController = () => {
   const { organizationId } = useParams();

@@ -1,10 +1,10 @@
-import Spinner from "../../../components/spinner";
-import NoRecordFound from "../../../components/no-record-found";
-import CustomSelectDropdown from "../../../components/custom-select";
-import DatePicker from "../../../components/date-picker";
-import { SelectOption } from "../../../types";
-import { usePageHeader } from "../../../hooks";
-import SectionHeader from "../../../components/section-header";
+import Spinner from "@/components/spinner";
+import NoRecordFound from "@/components/no-record-found";
+import CustomSelectDropdown from "@/components/custom-select";
+import DatePicker from "@/components/date-picker";
+import { SelectOption } from "@/types";
+import { usePageHeader } from "@/hooks";
+import SectionHeader from "@/components/section-header";
 import usePTMController from "./ptm-controller";
 
 const inputClass =

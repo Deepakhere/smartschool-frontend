@@ -1,10 +1,10 @@
 import { XMarkIcon } from "@heroicons/react/24/outline";
 
-import { Input } from "../../../../../components/ui/input";
-import ButtonSpinner from "../../../../../icons/button-spinner";
-import CustomSelectDropdown from "../../../../../components/custom-select";
+import { Input } from "@/components/ui/input";
+import ButtonSpinner from "@/icons/button-spinner";
+import CustomSelectDropdown from "@/components/custom-select";
 import useBulkUploadModalController from "./bulk-upload-modal-controller";
-import { SelectOption } from "../../../../../types";
+import { SelectOption } from "@/types";
 
 interface BulkUploadModalProps {
   isOpen: boolean;

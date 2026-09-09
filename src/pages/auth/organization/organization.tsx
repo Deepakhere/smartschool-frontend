@@ -8,9 +8,9 @@ import {
   PencilIcon,
 } from "@heroicons/react/24/outline";
 
-import Avatar from "../../../components/avatar";
-import LogoSpinner from "../../../components/logo-spinner";
-import { IOrganization } from "../../../types";
+import Avatar from "@/components/avatar";
+import LogoSpinner from "@/components/logo-spinner";
+import { IOrganization } from "@/types";
 import useOrganizationController from "./organization-controller";
 import AddOrganizationModal from "./add-organization-modal";
 

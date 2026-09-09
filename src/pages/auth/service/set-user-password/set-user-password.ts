@@ -1,8 +1,8 @@
 import { useMutation } from "@tanstack/react-query";
 
-import apiClient from "../../../../config";
-import { IAPIError } from "../../../../types";
-import { API_MUTATION_KEY, APIS_ROUTES } from "../../../../utils";
+import apiClient from "@/config";
+import { IAPIError } from "@/types";
+import { API_MUTATION_KEY, APIS_ROUTES } from "@/utils";
 
 interface ISetUserPasswordRequest {
   token: string;

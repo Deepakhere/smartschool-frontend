@@ -1,8 +1,8 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
-import apiClient from "../../../../config";
-import { IAPIError, IAxiosResponse, ITeacherDirectoryEntry, IStaffProfile } from "../../../../types";
-import { APIS_ROUTES, API_QUERY_KEY } from "../../../../utils";
+import apiClient from "@/config";
+import { IAPIError, IAxiosResponse, ITeacherDirectoryEntry, IStaffProfile } from "@/types";
+import { APIS_ROUTES, API_QUERY_KEY } from "@/utils";
 
 export const useGetTeacherDirectory = (organizationId: string) =>
   useQuery<{ items: ITeacherDirectoryEntry[]; total_count: number }, IAPIError>({

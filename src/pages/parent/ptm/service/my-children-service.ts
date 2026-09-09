@@ -1,8 +1,8 @@
 import { useQuery } from "@tanstack/react-query";
 
-import apiClient from "../../../../config";
-import { IAPIError, IAxiosResponse } from "../../../../types";
-import { APIS_ROUTES } from "../../../../utils";
+import apiClient from "@/config";
+import { IAPIError, IAxiosResponse } from "@/types";
+import { APIS_ROUTES } from "@/utils";
 
 export interface IMyChildLink {
   id: string;

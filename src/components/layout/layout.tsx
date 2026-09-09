@@ -2,8 +2,8 @@ import { Outlet } from "react-router-dom";
 
 import Header from "../header";
 import Sidebar from "../sidebar";
-import { PageHeaderProvider } from "../../context/page-header-context";
-import { NotificationProvider } from "../../context/notification-context";
+import { PageHeaderProvider } from "@/context/page-header-context";
+import { NotificationProvider } from "@/context/notification-context";
 import { useLayoutController } from "./layout-controller";
 
 const Layout = () => {

@@ -11,13 +11,13 @@ import {
 } from "@heroicons/react/24/outline";
 
 import useProfileController from "./profile-controller";
-import ButtonSpinner from "../../../../icons/button-spinner";
-import PageLoader from "../../../../components/page-loader";
-import CustomSelectDropdown from "../../../../components/custom-select";
-import { Switch } from "../../../../components/ui/switch";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "../../../../components/ui/form";
-import { Input } from "../../../../components/ui/input";
-import { SelectOption } from "../../../../types";
+import ButtonSpinner from "@/icons/button-spinner";
+import PageLoader from "@/components/page-loader";
+import CustomSelectDropdown from "@/components/custom-select";
+import { Switch } from "@/components/ui/switch";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { SelectOption } from "@/types";
 
 const AdminProfile = () => {
   const {

@@ -1,7 +1,7 @@
-import PageLoader from "../../../components/page-loader";
-import NoRecordFound from "../../../components/no-record-found";
-import { Table, TableHeader, TableHead, TableBody, TableRow, TableCell } from "../../../components/table";
-import SectionHeader from "../../../components/section-header";
+import PageLoader from "@/components/page-loader";
+import NoRecordFound from "@/components/no-record-found";
+import { Table, TableHeader, TableHead, TableBody, TableRow, TableCell } from "@/components/table";
+import SectionHeader from "@/components/section-header";
 import useParentFeesController from "./fees-controller";
 
 const formatMoney = (paise: number) => `${(paise / 100).toFixed(2)}`;

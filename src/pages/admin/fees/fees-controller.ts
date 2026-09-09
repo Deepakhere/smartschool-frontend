@@ -17,7 +17,7 @@ import {
 } from "./service/fees-service";
 import { useGetAcademicYears, useGetClasses, useGetSections } from "../classes/service/academics-service";
 import useGetStudentDetails from "../students/service/get-student-details/get-student-details";
-import { useError } from "../../../hooks";
+import { useError } from "@/hooks";
 
 type Tab = "heads" | "structures" | "students" | "ledger";
 

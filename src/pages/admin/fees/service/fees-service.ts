@@ -1,9 +1,9 @@
 import { useRef } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
-import apiClient from "../../../../config";
-import { IAPIError, IAxiosResponse, IFeeHead, IFeeStructure, IStudentFeeSummary, IPayment } from "../../../../types";
-import { APIS_ROUTES, API_QUERY_KEY, API_MUTATION_KEY } from "../../../../utils";
+import apiClient from "@/config";
+import { IAPIError, IAxiosResponse, IFeeHead, IFeeStructure, IStudentFeeSummary, IPayment } from "@/types";
+import { APIS_ROUTES, API_QUERY_KEY, API_MUTATION_KEY } from "@/utils";
 
 const base = (organizationId: string) => `${APIS_ROUTES.FEE_SERVICE}/${organizationId}`;
 

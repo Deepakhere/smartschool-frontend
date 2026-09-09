@@ -1,7 +1,7 @@
 import { useParams } from "react-router-dom";
 
-import { useAuth } from "../../context/auth-context";
-import { useTheme } from "../../context/theme-context";
+import { useAuth } from "@/context/auth-context";
+import { useTheme } from "@/context/theme-context";
 
 export const useSidebarUserMenuController = () => {
   const { organizationId } = useParams();

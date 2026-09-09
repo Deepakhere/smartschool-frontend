@@ -1,7 +1,7 @@
 import * as React from "react";
 import * as TabsPrimitive from "@radix-ui/react-tabs";
 
-import { cn } from "../../lib/utils";
+import { cn } from "@/lib/utils";
 
 // the shared tab-navigation primitive — replaces Headless UI's Tab.Group
 const Tabs = TabsPrimitive.Root;

@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 
-import { IAPIError } from "../../types";
+import { IAPIError } from "@/types";
 
 const useError = ({
   mutation,

@@ -1,13 +1,13 @@
 import { useTranslation } from "react-i18next";
 
-import Spinner from "../../../components/spinner";
-import NoRecordFound from "../../../components/no-record-found";
-import SectionHeader from "../../../components/section-header";
-import CustomSelectDropdown from "../../../components/custom-select";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "../../../components/ui/form";
-import { Input } from "../../../components/ui/input";
+import Spinner from "@/components/spinner";
+import NoRecordFound from "@/components/no-record-found";
+import SectionHeader from "@/components/section-header";
+import CustomSelectDropdown from "@/components/custom-select";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
 import useClassesController from "./classes-controller";
-import { SelectOption } from "../../../types";
+import { SelectOption } from "@/types";
 
 const roleOptions: SelectOption[] = [
   { id: "SUBJECT_TEACHER", name: "Subject Teacher" },

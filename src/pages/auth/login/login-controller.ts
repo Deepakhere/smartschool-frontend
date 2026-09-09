@@ -4,9 +4,9 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 
-import { useAuth } from "../../../context/auth-context";
+import { useAuth } from "@/context/auth-context";
 import { useSingIn } from "../service";
-import { useError } from "../../../hooks";
+import { useError } from "@/hooks";
 import { loginSchema, LoginFormValues } from "./login.schema";
 
 const useLoginController = () => {

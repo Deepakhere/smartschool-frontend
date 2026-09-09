@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import logo from "../../icons/logo.png";
+import logo from "@/icons/logo.png";
 
 // full-viewport loading overlay — reserved for the app's own boot-time session
 // check (AuthProvider) and the org picker's initial load. Every other loading

@@ -1,8 +1,8 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
-import apiClient from "../../../../config";
-import { IAPIError, IAxiosResponse, IPTMEvent, IPTMSlot, IPTMBooking } from "../../../../types";
-import { APIS_ROUTES, API_QUERY_KEY, API_MUTATION_KEY } from "../../../../utils";
+import apiClient from "@/config";
+import { IAPIError, IAxiosResponse, IPTMEvent, IPTMSlot, IPTMBooking } from "@/types";
+import { APIS_ROUTES, API_QUERY_KEY, API_MUTATION_KEY } from "@/utils";
 
 const base = (organizationId: string) => `${APIS_ROUTES.PTM_SERVICE}/${organizationId}`;
 

@@ -1,9 +1,9 @@
-import SectionHeader from "../../../components/section-header";
-import Spinner from "../../../components/spinner";
-import NoRecordFound from "../../../components/no-record-found";
-import CustomSelectDropdown from "../../../components/custom-select";
+import SectionHeader from "@/components/section-header";
+import Spinner from "@/components/spinner";
+import NoRecordFound from "@/components/no-record-found";
+import CustomSelectDropdown from "@/components/custom-select";
 import { usePromotionController } from "./promotion-controller";
-import { PromotionAction, SelectOption } from "../../../types";
+import { PromotionAction, SelectOption } from "@/types";
 import { useTranslation } from "react-i18next";
 
 const btnPrimary =

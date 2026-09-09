@@ -1,11 +1,11 @@
 import Highcharts from "highcharts";
 import HighchartsReact from "highcharts-react-official";
 
-import PageLoader from "../../../components/page-loader";
-import NoticeModal from "../../../components/notice-modal";
-import SectionHeader from "../../../components/section-header";
+import PageLoader from "@/components/page-loader";
+import NoticeModal from "@/components/notice-modal";
+import SectionHeader from "@/components/section-header";
 import { useDashboardController } from "./dashboard-controller";
-import UserTypeSelectionModal from "../../../components/user-type-selection-modal";
+import UserTypeSelectionModal from "@/components/user-type-selection-modal";
 
 const Dashboard = () => {
   const {

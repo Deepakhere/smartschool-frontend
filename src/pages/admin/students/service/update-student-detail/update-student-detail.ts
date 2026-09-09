@@ -1,8 +1,8 @@
 import { useMutation } from "@tanstack/react-query";
 
-import apiClient from "../../../../../config";
-import { IAPIError, IStudentFormData } from "../../../../../types";
-import { API_MUTATION_KEY, APIS_ROUTES } from "../../../../../utils";
+import apiClient from "@/config";
+import { IAPIError, IStudentFormData } from "@/types";
+import { API_MUTATION_KEY, APIS_ROUTES } from "@/utils";
 
 const updateStudent = async (organizationId: string, studentDetails: IStudentFormData) => {
   await apiClient.put(

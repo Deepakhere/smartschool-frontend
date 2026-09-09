@@ -1,8 +1,8 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
-import apiClient from "../../../../config";
-import { IAPIError, IAxiosResponse, ILeaveRequest } from "../../../../types";
-import { APIS_ROUTES, API_QUERY_KEY, API_MUTATION_KEY } from "../../../../utils";
+import apiClient from "@/config";
+import { IAPIError, IAxiosResponse, ILeaveRequest } from "@/types";
+import { APIS_ROUTES, API_QUERY_KEY, API_MUTATION_KEY } from "@/utils";
 
 const base = (organizationId: string) => `${APIS_ROUTES.LEAVE_SERVICE}/${organizationId}`;
 

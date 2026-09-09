@@ -4,8 +4,8 @@ import toast from "react-hot-toast";
 import { useTranslation } from "react-i18next";
 
 import { useCreateNotice, useGetNoticeList, useDeleteNotice } from "./service";
-import { ICreateNoticeRequest, INotice } from "../../../types";
-import { useError } from "../../../hooks";
+import { ICreateNoticeRequest, INotice } from "@/types";
+import { useError } from "@/hooks";
 
 const useNoticeController = () => {
   const { t } = useTranslation();

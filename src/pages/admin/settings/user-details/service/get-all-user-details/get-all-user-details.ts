@@ -1,8 +1,8 @@
 import { useQuery } from "@tanstack/react-query";
 
-import apiClient from "../../../../../../config/api-client";
-import { IAPIError, IAxiosResponse, IAllUserDetails } from "../../../../../../types";
-import { APIS_ROUTES, API_QUERY_KEY } from "../../../../../../utils";
+import apiClient from "@/config/api-client";
+import { IAPIError, IAxiosResponse, IAllUserDetails } from "@/types";
+import { APIS_ROUTES, API_QUERY_KEY } from "@/utils";
 
 const getAllUserDetails = async (
   organizationId: string,

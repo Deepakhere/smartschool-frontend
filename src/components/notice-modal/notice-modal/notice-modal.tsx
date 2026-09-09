@@ -1,16 +1,16 @@
 import { UseFormReturn } from "react-hook-form";
 import { SparklesIcon, EyeIcon } from "@heroicons/react/24/solid";
 
-import { Dialog, DialogContent, DialogTitle } from "../../ui/dialog";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "../../ui/form";
-import { Input } from "../../ui/input";
-import { Textarea } from "../../ui/textarea";
-import DatePicker from "../../date-picker";
-import SelectDropdown from "../../custom-select";
-import ButtonSpinner from "../../../icons/button-spinner";
-import { IClass, ISection, NoticeAudienceScope, SelectOption } from "../../../types";
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import DatePicker from "@/components/date-picker";
+import SelectDropdown from "@/components/custom-select";
+import ButtonSpinner from "@/icons/button-spinner";
+import { IClass, ISection, NoticeAudienceScope, SelectOption } from "@/types";
 import { NoticeFormValues } from "../notice-modal.schema";
-import NoticePreviewModal from "../../notice-preview-modal/notice-preview-modal";
+import NoticePreviewModal from "@/components/notice-preview-modal/notice-preview-modal";
 
 interface NoticeModalProps {
   t: (key: string) => string;

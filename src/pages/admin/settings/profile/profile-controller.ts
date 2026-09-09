@@ -5,11 +5,11 @@ import { useTranslation } from "react-i18next";
 import toast from "react-hot-toast";
 import Cookies from "js-cookie";
 
-import { useAuth } from "../../../../context/auth-context";
-import { useTheme } from "../../../../context/theme-context";
+import { useAuth } from "@/context/auth-context";
+import { useTheme } from "@/context/theme-context";
 import { useUpdateUserPreferences, useUploadAvatar, useUpdateMyProfile, useChangeMyPassword } from "./service";
-import { useError } from "../../../../hooks";
-import { IAPIError } from "../../../../types";
+import { useError } from "@/hooks";
+import { IAPIError } from "@/types";
 import { editProfileSchema, changePasswordSchema, defaultChangePasswordValues } from "./profile.schema";
 
 const useProfileController = () => {

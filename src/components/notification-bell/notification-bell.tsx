@@ -1,7 +1,7 @@
 import { useTranslation } from "react-i18next";
 import { BellIcon } from "@heroicons/react/24/outline";
 
-import { useNotifications } from "../../context/notification-context";
+import { useNotifications } from "@/context/notification-context";
 import NotificationSheet from "./notification-sheet";
 
 interface NotificationBellProps {

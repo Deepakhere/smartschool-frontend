@@ -1,11 +1,11 @@
 import { PlusIcon, MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 
-import Spinner from "../../../../components/spinner";
-import NoRecordFound from "../../../../components/no-record-found";
-import CustomSelectDropdown from "../../../../components/custom-select";
-import { Table, TableHeader, TableHead, TableBody, TableRow, TableCell } from "../../../../components/table";
+import Spinner from "@/components/spinner";
+import NoRecordFound from "@/components/no-record-found";
+import CustomSelectDropdown from "@/components/custom-select";
+import { Table, TableHeader, TableHead, TableBody, TableRow, TableCell } from "@/components/table";
 import { CreateUpdateUserModal } from "./user-modal";
-import DeleteConfirmationDialog from "../../../../components/delete-confirmation-dialog";
+import DeleteConfirmationDialog from "@/components/delete-confirmation-dialog";
 import useUserDetailsController from "./user-details-controller";
 
 const UserDetails = () => {

@@ -1,13 +1,13 @@
 import { useTranslation } from "react-i18next";
 
-import SectionHeader from "../../../components/section-header";
-import CustomSelectDropdown from "../../../components/custom-select";
-import DatePicker from "../../../components/date-picker";
-import Spinner from "../../../components/spinner";
-import NoRecordFound from "../../../components/no-record-found";
-import { Table, TableHeader, TableHead, TableBody, TableRow, TableCell, TableEmpty } from "../../../components/table";
-import { SelectOption } from "../../../types";
-import { exportToCsv } from "../../../utils";
+import SectionHeader from "@/components/section-header";
+import CustomSelectDropdown from "@/components/custom-select";
+import DatePicker from "@/components/date-picker";
+import Spinner from "@/components/spinner";
+import NoRecordFound from "@/components/no-record-found";
+import { Table, TableHeader, TableHead, TableBody, TableRow, TableCell, TableEmpty } from "@/components/table";
+import { SelectOption } from "@/types";
+import { exportToCsv } from "@/utils";
 import { useReportsController } from "./reports-controller";
 
 const inputClass =

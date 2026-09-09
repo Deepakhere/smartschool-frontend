@@ -1,14 +1,14 @@
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 
-import { useAuth } from "../../context/auth-context";
+import { useAuth } from "@/context/auth-context";
 import {
   useGetAccounts,
   useCreateAccount,
   useAddOrganizationToAccount,
   useUpdateAccountStatus,
 } from "./service/platform-service";
-import { ICreateAccountValue, IAddOrganizationToAccountValue } from "../../types";
+import { ICreateAccountValue, IAddOrganizationToAccountValue } from "@/types";
 
 export const usePlatformController = () => {
   const { user } = useAuth();

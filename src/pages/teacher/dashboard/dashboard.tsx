@@ -1,5 +1,5 @@
-import PageLoader from "../../../components/page-loader";
-import SectionHeader from "../../../components/section-header";
+import PageLoader from "@/components/page-loader";
+import SectionHeader from "@/components/section-header";
 import useTeacherDashboardController from "./dashboard-controller";
 
 const TeacherDashboard = () => {

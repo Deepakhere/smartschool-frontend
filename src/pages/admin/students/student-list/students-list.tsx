@@ -1,16 +1,16 @@
 import { EllipsisHorizontalIcon, MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 
-import Spinner from "../../../../components/spinner";
-import NoRecordFound from "../../../../components/no-record-found";
-import CustomSelectDropdown from "../../../../components/custom-select";
-import { Table, TableHeader, TableHead, TableBody, TableRow, TableCell } from "../../../../components/table";
-import { SelectOption } from "../../../../types";
-import { usePageHeader } from "../../../../hooks";
-import SectionHeader from "../../../../components/section-header";
-import { exportToCsv } from "../../../../utils";
+import Spinner from "@/components/spinner";
+import NoRecordFound from "@/components/no-record-found";
+import CustomSelectDropdown from "@/components/custom-select";
+import { Table, TableHeader, TableHead, TableBody, TableRow, TableCell } from "@/components/table";
+import { SelectOption } from "@/types";
+import { usePageHeader } from "@/hooks";
+import SectionHeader from "@/components/section-header";
+import { exportToCsv } from "@/utils";
 
 import useStudentsListController from "./students-list-controller";
-import DeleteConfirmationDialog from "../../../../components/delete-confirmation-dialog";
+import DeleteConfirmationDialog from "@/components/delete-confirmation-dialog";
 import CreateUpdateStudentModal from "../student-modal/create-update-student-modal";
 import BulkUploadModal from "../student-modal/bulk-upload-modal";
 

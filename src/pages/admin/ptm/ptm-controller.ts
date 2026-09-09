@@ -10,7 +10,7 @@ import {
   useGetSections,
   useGetTeacherAssignments,
 } from "../classes/service/academics-service";
-import { useError } from "../../../hooks";
+import { useError } from "@/hooks";
 
 const usePTMController = () => {
   const { t } = useTranslation();

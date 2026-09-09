@@ -1,11 +1,11 @@
-import Spinner from "../../../components/spinner";
-import NoRecordFound from "../../../components/no-record-found";
-import SectionHeader from "../../../components/section-header";
+import Spinner from "@/components/spinner";
+import NoRecordFound from "@/components/no-record-found";
+import SectionHeader from "@/components/section-header";
 import { useTranslation } from "react-i18next";
 import { XMarkIcon } from "@heroicons/react/24/outline";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "../../../components/ui/form";
-import { Input } from "../../../components/ui/input";
-import ButtonSpinner from "../../../icons/button-spinner";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import ButtonSpinner from "@/icons/button-spinner";
 import useTeachersController from "./teachers-controller";
 
 const AdminTeachers = () => {

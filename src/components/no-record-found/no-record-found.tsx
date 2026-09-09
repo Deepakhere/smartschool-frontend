@@ -1,5 +1,5 @@
 import { TFunction } from "i18next";
-import NoRecordIcon from "../../icons/no-record-icon";
+import NoRecordIcon from "@/icons/no-record-icon";
 
 const NoRecordFound = ({
   t,

@@ -1,11 +1,11 @@
 import { Link } from "react-router-dom";
 
-import { Form, FormControl, FormField, FormItem, FormMessage } from "../../../components/ui/form";
-import { Input } from "../../../components/ui/input";
-import EyeON from "../../../icons/eye-on-icon";
-import EyeOff from "../../../icons/eye-off";
+import { Form, FormControl, FormField, FormItem, FormMessage } from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import EyeON from "@/icons/eye-on-icon";
+import EyeOff from "@/icons/eye-off";
 import useLoginController from "./login-controller";
-import ButtonSpinner from "../../../icons/button-spinner";
+import ButtonSpinner from "@/icons/button-spinner";
 
 const Login = () => {
   const { t, form, showPassword, isSigninLoading, setShowPassword, onSubmit } = useLoginController();

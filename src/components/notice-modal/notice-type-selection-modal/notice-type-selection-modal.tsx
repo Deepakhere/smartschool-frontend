@@ -1,6 +1,6 @@
 import { SparklesIcon, PencilSquareIcon } from "@heroicons/react/24/solid";
 
-import { Dialog, DialogContent, DialogTitle } from "../../ui/dialog";
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 
 interface NoticeTypeSelectionModalProps {
   isOpen: boolean;

@@ -1,9 +1,9 @@
-import CustomSelectDropdown from "../../../components/custom-select";
-import DatePicker from "../../../components/date-picker";
-import { Table, TableHeader, TableHead, TableBody, TableRow, TableCell, TableEmpty } from "../../../components/table";
-import { SelectOption } from "../../../types";
-import SectionHeader from "../../../components/section-header";
-import { exportToCsv } from "../../../utils";
+import CustomSelectDropdown from "@/components/custom-select";
+import DatePicker from "@/components/date-picker";
+import { Table, TableHeader, TableHead, TableBody, TableRow, TableCell, TableEmpty } from "@/components/table";
+import { SelectOption } from "@/types";
+import SectionHeader from "@/components/section-header";
+import { exportToCsv } from "@/utils";
 import useFeesController from "./fees-controller";
 
 const inputClass =

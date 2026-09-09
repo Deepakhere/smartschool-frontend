@@ -1,7 +1,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
-import { USER_ACCESS_KEY } from "../../utils";
+import { USER_ACCESS_KEY } from "@/utils";
 
 const NotAccess: React.FC = () => {
   const navigate = useNavigate();

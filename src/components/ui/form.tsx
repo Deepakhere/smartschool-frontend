@@ -11,7 +11,7 @@ import {
   useFormState,
 } from "react-hook-form";
 
-import { cn } from "../../lib/utils";
+import { cn } from "@/lib/utils";
 
 // the shared react-hook-form + zod wiring — every new form uses Form/FormField/FormItem/
 // FormLabel/FormControl/FormMessage instead of hand-rolling useState + manual validation

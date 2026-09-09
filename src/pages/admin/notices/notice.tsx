@@ -1,15 +1,15 @@
 import { DocumentArrowDownIcon, EyeIcon, EllipsisHorizontalIcon, TrashIcon } from "@heroicons/react/24/outline";
 
-import NoticeModal from "../../../components/notice-modal";
-import NoticePreviewModal from "../../../components/notice-preview-modal/notice-preview-modal";
-import DeleteConfirmationDialog from "../../../components/delete-confirmation-dialog";
-import NoRecordFound from "../../../components/no-record-found";
+import NoticeModal from "@/components/notice-modal";
+import NoticePreviewModal from "@/components/notice-preview-modal/notice-preview-modal";
+import DeleteConfirmationDialog from "@/components/delete-confirmation-dialog";
+import NoRecordFound from "@/components/no-record-found";
 import useNoticeController from "./notice-controller";
-import Spinner from "../../../components/spinner";
+import Spinner from "@/components/spinner";
 import AttachmentPreviewModal from "./preview-modal";
-import { Table, TableHeader, TableHead, TableBody, TableRow, TableCell } from "../../../components/table";
-import SectionHeader from "../../../components/section-header";
-import { usePageHeader } from "../../../hooks";
+import { Table, TableHeader, TableHead, TableBody, TableRow, TableCell } from "@/components/table";
+import SectionHeader from "@/components/section-header";
+import { usePageHeader } from "@/hooks";
 
 const AdminNotices = () => {
   const {

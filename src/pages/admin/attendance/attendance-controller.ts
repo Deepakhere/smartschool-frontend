@@ -9,7 +9,7 @@ import {
   useMarkAttendance,
   useGetSectionAttendanceReport,
 } from "./service/attendance-service";
-import { AttendanceStatus } from "../../../types";
+import { AttendanceStatus } from "@/types";
 
 const today = () => new Date().toISOString().slice(0, 10);
 const firstOfMonth = () => `${today().slice(0, 7)}-01`;

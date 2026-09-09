@@ -5,7 +5,7 @@ import { useTranslation } from "react-i18next";
 import ReCAPTCHA from "react-google-recaptcha";
 
 import { useForgotPassword } from "../service";
-import useError from "../../../hooks/error/error";
+import useError from "@/hooks/error/error";
 import { forgotPasswordSchema, ForgotPasswordFormValues } from "./forgot-password.schema";
 
 const useForgotPasswordController = () => {

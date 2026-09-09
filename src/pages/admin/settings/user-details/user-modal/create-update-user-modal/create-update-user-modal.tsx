@@ -1,9 +1,9 @@
 import { XMarkIcon } from "@heroicons/react/24/outline";
 
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "../../../../../../components/ui/form";
-import { Input } from "../../../../../../components/ui/input";
-import { ICreateUpdateUserModalProps } from "../../../../../../types";
-import ButtonSpinner from "../../../../../../icons/button-spinner";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { ICreateUpdateUserModalProps } from "@/types";
+import ButtonSpinner from "@/icons/button-spinner";
 
 const CreateUpdateUserModal = ({
   t,

@@ -2,7 +2,7 @@ import * as React from "react";
 import * as DialogPrimitive from "@radix-ui/react-dialog";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 
-import { cn } from "../../lib/utils";
+import { cn } from "@/lib/utils";
 
 // the shared centered-modal primitive — replaces Headless UI's Dialog+Transition
 // so every modal in the app is built on one primitive library (Radix), matching

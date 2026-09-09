@@ -16,9 +16,9 @@ import {
   UserPlusIcon,
 } from "@heroicons/react/24/outline";
 
-import { ICreateNoticeRequest } from "../../../types";
+import { ICreateNoticeRequest } from "@/types";
 import { useGetNoticeList, useCreateNotice } from "../notices/service";
-import { useError } from "../../../hooks";
+import { useError } from "@/hooks";
 import useGetDashboardStats from "./service/get-dashboard-stats";
 import useGetDashboardCharts from "./service/get-dashboard-charts";
 

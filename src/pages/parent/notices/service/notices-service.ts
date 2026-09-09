@@ -1,8 +1,8 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
-import apiClient from "../../../../config";
-import { IAPIError, IAxiosResponse, INotice } from "../../../../types";
-import { APIS_ROUTES, API_QUERY_KEY, API_MUTATION_KEY } from "../../../../utils";
+import apiClient from "@/config";
+import { IAPIError, IAxiosResponse, INotice } from "@/types";
+import { APIS_ROUTES, API_QUERY_KEY, API_MUTATION_KEY } from "@/utils";
 
 export const useGetMyNotices = (organizationId: string) =>
   useQuery<{ items: INotice[] }, IAPIError>({

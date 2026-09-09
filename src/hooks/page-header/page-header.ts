@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { ReactNode } from "react";
 
-import { usePageHeaderContext } from "../../context/page-header-context";
+import { usePageHeaderContext } from "@/context/page-header-context";
 
 interface UsePageHeaderOptions {
   title?: string;

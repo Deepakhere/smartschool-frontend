@@ -7,13 +7,13 @@ import { BellIcon, CalendarDaysIcon } from "@heroicons/react/24/outline";
 import { useParams } from "react-router-dom";
 
 import useGetAiGeneratedContent from "./service";
-import { ICreateNoticeRequest, NoticeAudienceScope, SelectOption } from "../../types";
-import { useError } from "../../hooks";
+import { ICreateNoticeRequest, NoticeAudienceScope, SelectOption } from "@/types";
+import { useError } from "@/hooks";
 import {
   useGetClasses,
   useGetSections,
   useGetAcademicYears,
-} from "../../pages/admin/classes/service/academics-service";
+} from "@/pages/admin/classes/service/academics-service";
 import { noticeFormSchema, defaultNoticeAudience, defaultNoticeFormValues } from "./notice-modal.schema";
 
 const useNoticeModalWrapperController = (

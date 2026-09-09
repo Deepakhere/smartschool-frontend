@@ -1,7 +1,7 @@
 import { useParams } from "react-router-dom";
 
-import { useAuth } from "../../context/auth-context";
-import { usePageHeaderContext } from "../../context/page-header-context";
+import { useAuth } from "@/context/auth-context";
+import { usePageHeaderContext } from "@/context/page-header-context";
 
 export const useHeaderController = () => {
   const { organizationId } = useParams();

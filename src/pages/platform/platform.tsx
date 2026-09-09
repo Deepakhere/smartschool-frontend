@@ -1,7 +1,7 @@
 import { Navigate } from "react-router-dom";
 import { PlusIcon, BuildingOffice2Icon } from "@heroicons/react/24/outline";
 
-import Spinner from "../../components/spinner";
+import Spinner from "@/components/spinner";
 import { usePlatformController } from "./platform-controller";
 import CreateAccountModal from "./create-account-modal";
 import AddSchoolModal from "./add-school-modal";

@@ -1,8 +1,8 @@
 import { BellIcon, CalendarDaysIcon } from "@heroicons/react/24/outline";
 
-import Spinner from "../../../components/spinner";
-import NoRecordFound from "../../../components/no-record-found";
-import SectionHeader from "../../../components/section-header";
+import Spinner from "@/components/spinner";
+import NoRecordFound from "@/components/no-record-found";
+import SectionHeader from "@/components/section-header";
 import useNoticesController from "./notices-controller";
 
 const ParentNotices = () => {

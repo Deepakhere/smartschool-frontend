@@ -1,5 +1,5 @@
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
-import { SelectDropdownProps } from "../../types";
+import { SelectDropdownProps } from "@/types";
 
 const CustomSelectDropdown = ({
   options,

@@ -9,9 +9,9 @@ import {
   useBookPTMSlot,
   useCancelPTMBooking,
   useGetMyPTMBookings,
-} from "../../admin/ptm/service/ptm-service";
+} from "@/pages/admin/ptm/service/ptm-service";
 import { useGetMyChildren } from "./service/my-children-service";
-import { useError } from "../../../hooks";
+import { useError } from "@/hooks";
 
 const useParentPTMController = () => {
   const { t } = useTranslation();

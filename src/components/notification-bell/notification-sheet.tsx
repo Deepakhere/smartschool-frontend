@@ -3,8 +3,8 @@ import { BellIcon } from "@heroicons/react/24/outline";
 
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "../ui/sheet";
 import Spinner from "../spinner";
-import { useNotifications } from "../../context/notification-context";
-import { INotification } from "../../types";
+import { useNotifications } from "@/context/notification-context";
+import { INotification } from "@/types";
 
 const timeAgo = (isoDate: string) => {
   const seconds = Math.floor((Date.now() - new Date(isoDate).getTime()) / 1000);

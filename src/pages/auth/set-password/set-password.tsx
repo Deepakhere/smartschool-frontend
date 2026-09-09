@@ -1,10 +1,10 @@
 import { Link } from "react-router-dom";
 
-import { Form, FormControl, FormField, FormItem, FormMessage } from "../../../components/ui/form";
-import { Input } from "../../../components/ui/input";
-import EyeON from "../../../icons/eye-on-icon";
-import EyeOff from "../../../icons/eye-off";
-import ButtonSpinner from "../../../icons/button-spinner";
+import { Form, FormControl, FormField, FormItem, FormMessage } from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import EyeON from "@/icons/eye-on-icon";
+import EyeOff from "@/icons/eye-off";
+import ButtonSpinner from "@/icons/button-spinner";
 import useSetPasswordController from "./set-password-controller";
 
 const SetPassword = () => {

@@ -2,7 +2,7 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen, fireEvent } from "@testing-library/react";
 
 import NotificationSheet from "./notification-sheet";
-import { INotification } from "../../types";
+import { INotification } from "@/types";
 
 const markAsRead = vi.fn();
 const markAllAsRead = vi.fn();

@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
-import apiClient from "../../../../config";
+import apiClient from "@/config";
 import {
   IAPIError,
   IAxiosResponse,
@@ -9,8 +9,8 @@ import {
   ISection,
   ISubject,
   ITeacherAssignment,
-} from "../../../../types";
-import { APIS_ROUTES, API_QUERY_KEY, API_MUTATION_KEY } from "../../../../utils";
+} from "@/types";
+import { APIS_ROUTES, API_QUERY_KEY, API_MUTATION_KEY } from "@/utils";
 
 const base = (organizationId: string) => `${APIS_ROUTES.ACADEMIC_SERVICE}/${organizationId}`;
 

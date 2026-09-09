@@ -277,9 +277,15 @@ These remain identified and explicitly scoped, not accidental oversights:
   keys are now tenant-scoped where it matters (see above), which was the main risk this would have
   otherwise caused — a full `TenantProvider` is still worth doing for the validation/redirect
   behavior, just no longer load-bearing for cache correctness.
-  Worth doing as a deliberate follow-up, not a patch.
-- **No `@/` path alias.** Every import is relative (`../../../../types`), which makes moving files
-  around painful. Worth adding before any large restructuring.
+
+**`@/` path alias — done.** Added to both `vite.config.ts` (`resolve.alias`) and `tsconfig.app.json`
+(`paths`), then every existing relative import of two or more `../` segments was codemodded to
+`@/...` (147 files, 437 import specifiers) — same-directory (`./foo`) and one-level-up (`../foo`)
+imports were deliberately left alone, since those are already short and clearly co-located; the
+alias only replaces the deep, hard-to-read chains like `../../../../types`. Verified via `tsc -b`
+(catches a wrong resolution immediately, since `moduleResolution: "bundler"` requires the path to
+actually exist), a clean production build, and the test suite (`vitest` shares `vite.config.ts`, so
+the alias resolves identically in tests) — all green, no manual edits needed on top of the codemod.
 
 ## 8. Testing
 

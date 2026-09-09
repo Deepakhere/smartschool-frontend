@@ -1,11 +1,11 @@
 import { useTranslation } from "react-i18next";
 
-import Spinner from "../../../components/spinner";
-import NoRecordFound from "../../../components/no-record-found";
-import SectionHeader from "../../../components/section-header";
-import CustomSelectDropdown from "../../../components/custom-select";
+import Spinner from "@/components/spinner";
+import NoRecordFound from "@/components/no-record-found";
+import SectionHeader from "@/components/section-header";
+import CustomSelectDropdown from "@/components/custom-select";
 import { useLeaveRequestsController } from "./leave-requests-controller";
-import { SelectOption } from "../../../types";
+import { SelectOption } from "@/types";
 
 const STATUS_OPTIONS: SelectOption[] = [
   { id: "pending", name: "Pending" },

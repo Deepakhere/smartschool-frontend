@@ -1,8 +1,8 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
-import apiClient from "../../../../config";
-import { IAPIError, IAxiosResponse, IEnrollmentHistoryEntry } from "../../../../types";
-import { API_QUERY_KEY, APIS_ROUTES } from "../../../../utils";
+import apiClient from "@/config";
+import { IAPIError, IAxiosResponse, IEnrollmentHistoryEntry } from "@/types";
+import { API_QUERY_KEY, APIS_ROUTES } from "@/utils";
 
 const base = (organizationId: string, studentId: string) =>
   `${APIS_ROUTES.STUDENT_PROFILE}/${organizationId}/student/${studentId}`;

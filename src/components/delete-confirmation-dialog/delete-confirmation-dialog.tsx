@@ -9,7 +9,7 @@ import {
   AlertDialogDescription,
   AlertDialogTitle,
 } from "../ui/alert-dialog";
-import ButtonSpinner from "../../icons/button-spinner";
+import ButtonSpinner from "@/icons/button-spinner";
 
 interface DeleteConfirmationDialogProps {
   open: boolean;

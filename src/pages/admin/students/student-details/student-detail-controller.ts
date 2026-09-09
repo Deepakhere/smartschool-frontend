@@ -8,9 +8,9 @@ import { useDeleteStudent, useGetStudentById, useUpdateStudentDetail } from "../
 import { useAddGuardian, useSetPrimaryGuardian, useRemoveGuardian } from "../service/guardian-service";
 import { useGetEnrollmentHistory, useTransferStudent, useWithdrawStudent } from "../service/lifecycle-service";
 import { useGetStudentAttendanceHistory } from "../service/attendance-history-service";
-import { useGetResultsForStudent } from "../../reports/service/exams-service";
-import { IStudentFormData } from "../../../../types";
-import { useError } from "../../../../hooks";
+import { useGetResultsForStudent } from "@/pages/admin/reports/service/exams-service";
+import { IStudentFormData } from "@/types";
+import { useError } from "@/hooks";
 import { editStudentSchema } from "../student-modal/create-update-student-modal/student-form.schema";
 
 const useStudentDetailController = () => {

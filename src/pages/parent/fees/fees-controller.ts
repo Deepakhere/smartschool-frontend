@@ -1,7 +1,7 @@
 import { useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 
-import { useGetMyFees } from "../../admin/fees/service/fees-service";
+import { useGetMyFees } from "@/pages/admin/fees/service/fees-service";
 
 const useParentFeesController = () => {
   const { t } = useTranslation();

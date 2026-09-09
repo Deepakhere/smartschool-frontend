@@ -5,7 +5,7 @@ import { useParams } from "react-router-dom";
 import toast from "react-hot-toast";
 
 import { useGetTeacherDirectory, useUpsertStaffProfile } from "./service/teacher-directory-service";
-import { ITeacherDirectoryEntry } from "../../../types";
+import { ITeacherDirectoryEntry } from "@/types";
 import { staffProfileSchema, defaultStaffProfileValues } from "./teachers.schema";
 
 const useTeachersController = () => {

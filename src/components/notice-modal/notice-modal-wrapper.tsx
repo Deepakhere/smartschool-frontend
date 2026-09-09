@@ -2,7 +2,7 @@ import NoticeModal from "./notice-modal";
 
 import NoticeTypeSelectionModal from "./notice-type-selection-modal";
 import useNoticeModalWrapperController from "./notice-modal-wrapper-controller";
-import { ICreateNoticeRequest } from "../../types";
+import { ICreateNoticeRequest } from "@/types";
 
 interface NoticeModalWrapperProps {
   isOpen: boolean;

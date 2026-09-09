@@ -3,8 +3,8 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import toast from "react-hot-toast";
 
-import useBulkImportStudents, { IBulkImportResult } from "../../service/bulk-import-students";
-import { useGetAcademicYears, useGetClasses, useGetSections } from "../../../classes/service/academics-service";
+import useBulkImportStudents, { IBulkImportResult } from "@/pages/admin/students/service/bulk-import-students";
+import { useGetAcademicYears, useGetClasses, useGetSections } from "@/pages/admin/classes/service/academics-service";
 import { bulkUploadFormSchema, defaultBulkUploadFormValues } from "./bulk-upload-modal.schema";
 
 const useBulkUploadModalController = (organizationId: string, onImported: () => void) => {

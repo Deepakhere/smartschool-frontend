@@ -3,10 +3,10 @@ import { useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import toast from "react-hot-toast";
 
-import { useGetPTMEvents, useGenerateSlots, useGetMyPTMAgenda } from "../../admin/ptm/service/ptm-service";
-import { useGetSections } from "../../admin/classes/service/academics-service";
-import { useAuth } from "../../../context/auth-context";
-import { useError } from "../../../hooks";
+import { useGetPTMEvents, useGenerateSlots, useGetMyPTMAgenda } from "@/pages/admin/ptm/service/ptm-service";
+import { useGetSections } from "@/pages/admin/classes/service/academics-service";
+import { useAuth } from "@/context/auth-context";
+import { useError } from "@/hooks";
 
 const useTeacherPTMController = () => {
   const { t } = useTranslation();

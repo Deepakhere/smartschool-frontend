@@ -2,11 +2,11 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "../../../../../components/ui/form";
-import { Input } from "../../../../../components/ui/input";
-import { IAddGuardianValue, SelectOption } from "../../../../../types";
-import ButtonSpinner from "../../../../../icons/button-spinner";
-import CustomSelectDropdown from "../../../../../components/custom-select";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { IAddGuardianValue, SelectOption } from "@/types";
+import ButtonSpinner from "@/icons/button-spinner";
+import CustomSelectDropdown from "@/components/custom-select";
 import { guardianFormSchema, defaultGuardianFormValues, GuardianFormValues } from "./guardian-modal.schema";
 
 const relationshipOptions: SelectOption[] = [

@@ -4,10 +4,10 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import toast from "react-hot-toast";
 import { useTranslation } from "react-i18next";
 
-import { useCreateOrganization } from "../../service";
+import { useCreateOrganization } from "@/pages/auth/service";
 import { useUpdateOrganization, useUploadOrganizationLogo } from "../service";
-import { useError } from "../../../../hooks";
-import { IOrganization } from "../../../../types";
+import { useError } from "@/hooks";
+import { IOrganization } from "@/types";
 import { organizationFormSchema, OrganizationFormValues } from "./add-organization-modal.schema";
 
 // `organization` present = edit an existing school; absent = create a new one.

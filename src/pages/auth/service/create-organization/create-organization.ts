@@ -1,8 +1,8 @@
 import { useMutation } from "@tanstack/react-query";
 
-import apiClient from "../../../../config";
-import { IAPIError, ICreateOrganizationValue, IOrganization } from "../../../../types";
-import { API_MUTATION_KEY, APIS_ROUTES } from "../../../../utils";
+import apiClient from "@/config";
+import { IAPIError, ICreateOrganizationValue, IOrganization } from "@/types";
+import { API_MUTATION_KEY, APIS_ROUTES } from "@/utils";
 
 const createOrganization = async (value: ICreateOrganizationValue) => {
   const result = await apiClient.post(`${APIS_ROUTES.ORGANIZATION_SERVICE}/create-organization`, value);

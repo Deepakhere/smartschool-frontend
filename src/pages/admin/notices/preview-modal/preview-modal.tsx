@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 
-import { Dialog, DialogContent, DialogTitle } from "../../../../components/ui/dialog";
-import Spinner from "../../../../components/spinner";
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
+import Spinner from "@/components/spinner";
 
 interface AttachmentPreviewModalProps {
   isOpen: boolean;

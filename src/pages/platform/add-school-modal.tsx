@@ -2,10 +2,10 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "../../components/ui/form";
-import { Input } from "../../components/ui/input";
-import ButtonSpinner from "../../icons/button-spinner";
-import { IAddOrganizationToAccountValue } from "../../types";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import ButtonSpinner from "@/icons/button-spinner";
+import { IAddOrganizationToAccountValue } from "@/types";
 import { addSchoolSchema, AddSchoolFormValues } from "./add-school-modal.schema";
 
 interface AddSchoolModalProps {

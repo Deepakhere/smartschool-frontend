@@ -1,10 +1,10 @@
 import { useQuery } from "@tanstack/react-query";
 
-import { IAPIError, IAxiosResponse, IUserDetailResponse } from "../../../types";
+import { IAPIError, IAxiosResponse, IUserDetailResponse } from "@/types";
 
 import Cookies from "js-cookie";
-import { APIS_ROUTES, API_QUERY_KEY, USER_ACCESS_KEY } from "../../../utils";
-import apiClient from "../../../config/api-client";
+import { APIS_ROUTES, API_QUERY_KEY, USER_ACCESS_KEY } from "@/utils";
+import apiClient from "@/config/api-client";
 
 const getUserDetails = async (): Promise<IUserDetailResponse> => {
   const result = await apiClient.get<null, IAxiosResponse<IUserDetailResponse>>(APIS_ROUTES.GET_USER_DETAILS);

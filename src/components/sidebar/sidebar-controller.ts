@@ -15,7 +15,7 @@ import {
   CalendarDaysIcon,
   ArrowTrendingUpIcon,
 } from "@heroicons/react/24/outline";
-import { useAuth } from "../../context/auth-context";
+import { useAuth } from "@/context/auth-context";
 
 export const useSidebarController = () => {
   const { organizationId } = useParams();

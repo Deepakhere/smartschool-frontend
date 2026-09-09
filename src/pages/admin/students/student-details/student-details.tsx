@@ -1,12 +1,12 @@
 import { PencilIcon, TrashIcon } from "@heroicons/react/24/outline";
 
-import DeleteConfirmationDialog from "../../../../components/delete-confirmation-dialog";
+import DeleteConfirmationDialog from "@/components/delete-confirmation-dialog";
 import CreateUpdateStudentModal from "../student-modal/create-update-student-modal";
 import useStudentDetailController from "./student-detail-controller";
-import PageLoader from "../../../../components/page-loader";
-import Avatar from "../../../../components/avatar";
+import PageLoader from "@/components/page-loader";
+import Avatar from "@/components/avatar";
 import GuardianModal from "./guardian-modal";
-import { usePageHeader } from "../../../../hooks";
+import { usePageHeader } from "@/hooks";
 
 const StudentDetails = () => {
   const {

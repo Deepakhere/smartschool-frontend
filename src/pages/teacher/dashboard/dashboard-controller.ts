@@ -1,7 +1,7 @@
 import { useParams } from "react-router-dom";
 
 import useGetMyTeachingLoad from "./service/get-my-teaching-load";
-import { useAuth } from "../../../context/auth-context";
+import { useAuth } from "@/context/auth-context";
 
 const DAY_NAMES = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 

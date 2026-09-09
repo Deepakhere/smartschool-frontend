@@ -1,10 +1,10 @@
-import { Form } from "../../../../../components/ui/form";
-import { TOTAL_STEPS } from "../../../../../utils";
-import { ICreateUpdateStudentModalProps } from "../../../../../types";
-import StepIndicator from "../../../../../components/step-indicator";
+import { Form } from "@/components/ui/form";
+import { TOTAL_STEPS } from "@/utils";
+import { ICreateUpdateStudentModalProps } from "@/types";
+import StepIndicator from "@/components/step-indicator";
 import StudentDetailsForm from "./student-details";
 import ParentDetailsForm from "./parent-details";
-import Spinner from "../../../../../components/spinner";
+import Spinner from "@/components/spinner";
 
 const CreateUpdateStudentModal = ({
   t,

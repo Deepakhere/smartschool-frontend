@@ -1,8 +1,8 @@
 import { useQuery } from "@tanstack/react-query";
 
-import apiClient from "../../../../config";
-import { IAPIError, IAxiosResponse, IOrganization } from "../../../../types";
-import { APIS_ROUTES, API_QUERY_KEY } from "../../../../utils";
+import apiClient from "@/config";
+import { IAPIError, IAxiosResponse, IOrganization } from "@/types";
+import { APIS_ROUTES, API_QUERY_KEY } from "@/utils";
 
 const getAllOrganizations = async () => {
   const result = await apiClient.get<null, IAxiosResponse<{ items: IOrganization[] }>>(

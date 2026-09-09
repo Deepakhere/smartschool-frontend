@@ -1,8 +1,8 @@
 import { UseFormReturn } from "react-hook-form";
 
-import { IStudentFormData } from "../../../../../../types";
-import { FormControl, FormField, FormItem, FormLabel, FormMessage } from "../../../../../../components/ui/form";
-import { Input } from "../../../../../../components/ui/input";
+import { IStudentFormData } from "@/types";
+import { FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
 
 interface IParentDetailsFormProps {
   t: (key: string) => string;
