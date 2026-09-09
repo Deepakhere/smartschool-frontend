@@ -1,4 +1,6 @@
 import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useParams } from "react-router-dom";
 import toast from "react-hot-toast";
 
@@ -9,8 +11,7 @@ import {
   useGetSubjects,
 } from "../classes/service/academics-service";
 import { useGetHomeworkList, useCreateHomework, useDeleteHomework } from "./service/homework-service";
-
-const today = () => new Date().toISOString().slice(0, 10);
+import { homeworkFormSchema, defaultHomeworkFormValues } from "./homework.schema";
 
 export const useHomeworkController = () => {
   const { organizationId = "" } = useParams();
@@ -20,12 +21,7 @@ export const useHomeworkController = () => {
   const [sectionId, setSectionId] = useState("");
 
   const [showForm, setShowForm] = useState(false);
-  const [subjectId, setSubjectId] = useState("");
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
-  const [assignedDate, setAssignedDate] = useState(today());
-  const [dueDate, setDueDate] = useState("");
-  const [attachment, setAttachment] = useState<File | null>(null);
+  const form = useForm({ resolver: zodResolver(homeworkFormSchema), defaultValues: defaultHomeworkFormValues });
 
   const setAcademicYearId = (id: string) => {
     setAcademicYearIdRaw(id);
@@ -48,22 +44,12 @@ export const useHomeworkController = () => {
   const deleteHomework = useDeleteHomework(organizationId, sectionId);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setAttachment(e.target.files?.[0] || null);
+    form.setValue("attachment", e.target.files?.[0] || null);
   };
 
-  const resetForm = () => {
-    setSubjectId("");
-    setTitle("");
-    setDescription("");
-    setAssignedDate(today());
-    setDueDate("");
-    setAttachment(null);
-  };
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!academicYearId || !classId || !sectionId || !subjectId || !title || !description || !dueDate) {
-      toast.error("Please fill all required fields");
+  const onSubmit = form.handleSubmit((values) => {
+    if (!academicYearId || !classId || !sectionId) {
+      toast.error("Please select academic year, class and section");
       return;
     }
 
@@ -71,21 +57,21 @@ export const useHomeworkController = () => {
     formData.append("academicYearId", academicYearId);
     formData.append("classId", classId);
     formData.append("sectionId", sectionId);
-    formData.append("subjectId", subjectId);
-    formData.append("title", title);
-    formData.append("description", description);
-    formData.append("assignedDate", assignedDate);
-    formData.append("dueDate", dueDate);
-    if (attachment) formData.append("attachment", attachment);
+    formData.append("subjectId", values.subjectId);
+    formData.append("title", values.title);
+    formData.append("description", values.description);
+    formData.append("assignedDate", values.assignedDate);
+    formData.append("dueDate", values.dueDate);
+    if (values.attachment) formData.append("attachment", values.attachment);
 
     createHomework.mutate(formData);
-  };
+  });
 
   useEffect(() => {
     if (createHomework.isSuccess) {
       toast.success("Homework created.");
       setShowForm(false);
-      resetForm();
+      form.reset(defaultHomeworkFormValues);
     }
     if (createHomework.isError) {
       toast.error(createHomework.error?.response?.Error?.message || "Failed to create homework");
@@ -123,18 +109,9 @@ export const useHomeworkController = () => {
     setSectionId,
     showForm,
     setShowForm,
-    subjectId,
-    setSubjectId,
-    title,
-    setTitle,
-    description,
-    setDescription,
-    assignedDate,
-    setAssignedDate,
-    dueDate,
-    setDueDate,
+    form,
     handleFileChange,
-    handleSubmit,
+    onSubmit,
     handleDelete,
     homeworkIdPendingDelete,
     cancelDelete,

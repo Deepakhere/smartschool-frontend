@@ -1,13 +1,20 @@
 import { useEffect, useRef, useState } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslation } from "react-i18next";
 import { BellIcon, CalendarDaysIcon } from "@heroicons/react/24/outline";
 
 import { useParams } from "react-router-dom";
 
 import useGetAiGeneratedContent from "./service";
-import { ICreateNoticeRequest, INoticeAudience, NoticeAudienceScope, SelectOption } from "../../types";
+import { ICreateNoticeRequest, NoticeAudienceScope, SelectOption } from "../../types";
 import { useError } from "../../hooks";
-import { useGetClasses, useGetSections, useGetAcademicYears } from "../../pages/admin/classes/service/academics-service";
+import {
+  useGetClasses,
+  useGetSections,
+  useGetAcademicYears,
+} from "../../pages/admin/classes/service/academics-service";
+import { noticeFormSchema, defaultNoticeAudience, defaultNoticeFormValues } from "./notice-modal.schema";
 
 const useNoticeModalWrapperController = (
   isSuccessNoticeCreation: boolean,
@@ -18,22 +25,12 @@ const useNoticeModalWrapperController = (
   const { organizationId } = useParams();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const [file, setFile] = useState<File | null>(null);
   const [isNoticeModalOpen, setIsNoticeModalOpen] = useState(false);
   const [isAIModalOpen, setIsAIModalOpen] = useState(false);
-
   const [isAIPreviewModalOpen, setIsAIPreviewModalOpen] = useState(false);
 
-  const defaultAudience: INoticeAudience = { scope: "SCHOOL", roles: [], classIds: [], sectionIds: [] };
-
-  const [formData, setFormData] = useState<ICreateNoticeRequest>({
-    title: "",
-    content: "",
-    date: "",
-    type: "announcement",
-    attachment: null,
-    audience: defaultAudience,
-  });
+  const form = useForm({ resolver: zodResolver(noticeFormSchema), defaultValues: defaultNoticeFormValues });
+  const formData = form.watch();
 
   const [sectionPickerClassId, setSectionPickerClassId] = useState("");
 
@@ -47,25 +44,25 @@ const useNoticeModalWrapperController = (
   const roleOptions = ["SCHOOL_ADMIN", "TEACHER", "PARENT", "STAFF"];
 
   const handleAudienceScopeChange = (scope: NoticeAudienceScope) => {
-    setFormData({ ...formData, audience: { scope, roles: [], classIds: [], sectionIds: [] } });
+    form.setValue("audience", { scope, roles: [], classIds: [], sectionIds: [] });
   };
 
   const handleAudienceRoleToggle = (role: string) => {
     const current = formData.audience?.roles || [];
     const roles = current.includes(role) ? current.filter((r) => r !== role) : [...current, role];
-    setFormData({ ...formData, audience: { ...(formData.audience || defaultAudience), roles } });
+    form.setValue("audience", { ...(formData.audience || defaultNoticeAudience), roles });
   };
 
   const handleAudienceClassToggle = (classId: string) => {
     const current = formData.audience?.classIds || [];
     const classIds = current.includes(classId) ? current.filter((c) => c !== classId) : [...current, classId];
-    setFormData({ ...formData, audience: { ...(formData.audience || defaultAudience), classIds } });
+    form.setValue("audience", { ...(formData.audience || defaultNoticeAudience), classIds });
   };
 
   const handleAudienceSectionToggle = (sectionId: string) => {
     const current = formData.audience?.sectionIds || [];
     const sectionIds = current.includes(sectionId) ? current.filter((s) => s !== sectionId) : [...current, sectionId];
-    setFormData({ ...formData, audience: { ...(formData.audience || defaultAudience), sectionIds } });
+    form.setValue("audience", { ...(formData.audience || defaultNoticeAudience), sectionIds });
   };
 
   const [isGeneratingContent, setIsGeneratingContent] = useState(false);
@@ -94,47 +91,20 @@ const useNoticeModalWrapperController = (
     },
   ];
 
-  const selectedNoticeType =
-    noticeTypeOptions.find((option) => option.id === formData.type) ||
-    noticeTypeOptions[0];
-
-  const handleChange = (
-    e: React.ChangeEvent<
-      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
-    >
-  ) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
-  };
-
-  const handleDateChange = (date: string) => {
-    setFormData({ ...formData, date });
-  };
+  const selectedNoticeType = noticeTypeOptions.find((option) => option.id === formData.type) || noticeTypeOptions[0];
 
   const handleNoticeTypeChange = (option: SelectOption) => {
-    setFormData({ ...formData, type: option.id as "announcement" | "holiday" });
+    form.setValue("type", option.id as "announcement" | "holiday");
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
-      setFile(e.target.files[0]);
-      setFormData({
-        ...formData,
-        attachment: e.target.files[0] ? e.target.files[0] : null,
-      });
+      form.setValue("attachment", e.target.files[0]);
     }
   };
 
   const resetForm = () => {
-    setFormData({
-      title: "",
-      content: "",
-      date: "",
-      type: "announcement",
-      attachment: null,
-      audience: defaultAudience,
-    });
-    setFile(null);
+    form.reset(defaultNoticeFormValues);
     setSectionPickerClassId("");
 
     if (fileInputRef.current) {
@@ -142,23 +112,16 @@ const useNoticeModalWrapperController = (
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    onSubmit(formData);
-  };
+  const handleSubmit = form.handleSubmit((values) => {
+    onSubmit(values);
+  });
 
   const generateContentWithAI = async () => {
     if (!formData.title.trim() || !formData.type) {
       return;
     }
 
-    const values = {
-      title: formData.title,
-      type: formData.type,
-    };
-
-    getAiGeneratedContent.mutate(values);
-
+    getAiGeneratedContent.mutate({ title: formData.title, type: formData.type });
     setIsGeneratingContent(true);
   };
 
@@ -194,13 +157,9 @@ const useNoticeModalWrapperController = (
 
   useEffect(() => {
     if (getAiGeneratedContent.isSuccess && getAiGeneratedContent.data) {
-      setFormData({
-        ...formData,
-        content: getAiGeneratedContent.data.content,
-      });
+      form.setValue("content", getAiGeneratedContent.data.content);
       setIsGeneratingContent(false);
     }
-
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [getAiGeneratedContent.isSuccess, getAiGeneratedContent.data]);
 
@@ -219,7 +178,8 @@ const useNoticeModalWrapperController = (
 
   return {
     t,
-    file,
+    file: formData.attachment,
+    form,
     formData,
     fileInputRef,
     isAIModalOpen,
@@ -237,8 +197,6 @@ const useNoticeModalWrapperController = (
     handleAudienceRoleToggle,
     handleAudienceClassToggle,
     handleAudienceSectionToggle,
-    handleChange,
-    handleDateChange,
     handleNoticeTypeChange,
     handleFileChange,
     handleSubmit,

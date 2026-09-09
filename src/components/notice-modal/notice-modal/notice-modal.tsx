@@ -1,10 +1,15 @@
+import { UseFormReturn } from "react-hook-form";
 import { SparklesIcon, EyeIcon } from "@heroicons/react/24/solid";
 
 import { Dialog, DialogContent, DialogTitle } from "../../ui/dialog";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "../../ui/form";
+import { Input } from "../../ui/input";
+import { Textarea } from "../../ui/textarea";
 import DatePicker from "../../date-picker";
 import SelectDropdown from "../../custom-select";
 import ButtonSpinner from "../../../icons/button-spinner";
-import { ICreateNoticeRequest, IClass, ISection, NoticeAudienceScope, SelectOption } from "../../../types";
+import { IClass, ISection, NoticeAudienceScope, SelectOption } from "../../../types";
+import { NoticeFormValues } from "../notice-modal.schema";
 import NoticePreviewModal from "../../notice-preview-modal/notice-preview-modal";
 
 interface NoticeModalProps {
@@ -13,8 +18,8 @@ interface NoticeModalProps {
   isLoading: boolean;
   onClose: () => void;
   onSubmit: (e: React.FormEvent) => void;
-  file: File | null;
-  formData: ICreateNoticeRequest;
+  file: File | null | undefined;
+  form: UseFormReturn<NoticeFormValues>;
   fileInputRef: React.RefObject<HTMLInputElement>;
   noticeTypeOptions: SelectOption[];
   selectedNoticeType: SelectOption;
@@ -30,8 +35,6 @@ interface NoticeModalProps {
   handleAudienceRoleToggle: (role: string) => void;
   handleAudienceClassToggle: (classId: string) => void;
   handleAudienceSectionToggle: (sectionId: string) => void;
-  handleChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => void;
-  handleDateChange: (date: string) => void;
   handleNoticeTypeChange: (option: SelectOption) => void;
   handleFileChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   generateContentWithAI: () => void;
@@ -53,7 +56,7 @@ const NoticeModal = ({
   onClose,
   onSubmit,
   file,
-  formData,
+  form,
   fileInputRef,
   noticeTypeOptions,
   selectedNoticeType,
@@ -69,14 +72,13 @@ const NoticeModal = ({
   handleAudienceRoleToggle,
   handleAudienceClassToggle,
   handleAudienceSectionToggle,
-  handleChange,
-  handleDateChange,
   handleNoticeTypeChange,
   handleFileChange,
   generateContentWithAI,
   onClickAIPreviewButton,
   onCloseAIPreviewModal,
 }: NoticeModalProps) => {
+  const formData = form.watch();
   const audienceScope = formData.audience?.scope || "SCHOOL";
   return (
     <>
@@ -92,231 +94,234 @@ const NoticeModal = ({
                   {isAIModalOpen ? t("labels.generate_notice_with_ai") : t("labels.add_new_notice")}
                 </DialogTitle>
                 <div className="mt-4">
-                  <form onSubmit={onSubmit} className="space-y-4">
-                    <div>
-                      <label htmlFor="title" className="block text-sm font-medium text-gray-700 mb-1">
-                        {t("labels.title")}
-                      </label>
-                      <div className="flex gap-2">
-                        <input
-                          type="text"
-                          id="title"
-                          name="title"
-                          placeholder={t("messages.enter_title")}
-                          value={formData.title}
-                          onChange={handleChange}
-                          className="mt-1 block w-full p-2 rounded-md border border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 sm:text-sm"
-                          required
-                        />
-                        {isAIModalOpen && (
-                          <>
-                            <div className="flex justify-end">
-                              <button
-                                type="button"
-                                onClick={generateContentWithAI}
-                                disabled={!formData.title.trim() || isGeneratingContent}
-                                className="mt-1 inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed"
-                                title="Generate content with AI"
-                              >
-                                {isGeneratingContent ? <ButtonSpinner /> : <SparklesIcon className="h-4 w-4" />}
-                              </button>
+                  <Form {...form}>
+                    <form onSubmit={onSubmit} className="space-y-4" noValidate>
+                      <FormField
+                        control={form.control}
+                        name="title"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>{t("labels.title")}</FormLabel>
+                            <div className="flex gap-2">
+                              <FormControl>
+                                <Input {...field} placeholder={t("messages.enter_title")} />
+                              </FormControl>
+                              {isAIModalOpen && (
+                                <div className="flex justify-end">
+                                  <button
+                                    type="button"
+                                    onClick={generateContentWithAI}
+                                    disabled={!formData.title.trim() || isGeneratingContent}
+                                    className="mt-1 inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed"
+                                    title="Generate content with AI"
+                                  >
+                                    {isGeneratingContent ? <ButtonSpinner /> : <SparklesIcon className="h-4 w-4" />}
+                                  </button>
 
-                              <button
-                                type="button"
-                                onClick={onClickAIPreviewButton}
-                                disabled={!formData.content.trim()}
-                                className="mt-1 ml-2 inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 disabled:opacity-50 disabled:cursor-not-allowed"
-                                title="Preview notice"
-                              >
-                                <EyeIcon className="h-4 w-4" />
-                              </button>
-                            </div>
-                          </>
-                        )}
-                      </div>
-                    </div>
-
-                    <div>
-                      <SelectDropdown
-                        label={t("labels.type")}
-                        options={noticeTypeOptions}
-                        value={selectedNoticeType}
-                        onChange={handleNoticeTypeChange}
-                      />
-                    </div>
-
-                    {isAIModalOpen ? null : (
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Send To</label>
-                        <div className="flex flex-wrap gap-2">
-                          {audienceScopes.map((s) => (
-                            <button
-                              key={s.value}
-                              type="button"
-                              onClick={() => handleAudienceScopeChange(s.value)}
-                              className={`px-3 py-1.5 rounded-md text-sm border ${
-                                audienceScope === s.value
-                                  ? "bg-indigo-600 text-white border-indigo-600"
-                                  : "bg-white text-gray-700 border-gray-300 hover:bg-gray-50"
-                              }`}
-                            >
-                              {s.label}
-                            </button>
-                          ))}
-                        </div>
-
-                        {audienceScope === "ROLE" && (
-                          <div className="mt-3 flex flex-wrap gap-2">
-                            {roleOptions.map((role) => {
-                              const selected = (formData.audience?.roles || []).includes(role);
-                              return (
-                                <button
-                                  key={role}
-                                  type="button"
-                                  onClick={() => handleAudienceRoleToggle(role)}
-                                  className={`px-3 py-1 rounded-full text-xs border ${
-                                    selected
-                                      ? "bg-indigo-100 text-indigo-800 border-indigo-300"
-                                      : "bg-white text-gray-600 border-gray-300"
-                                  }`}
-                                >
-                                  {role}
-                                </button>
-                              );
-                            })}
-                          </div>
-                        )}
-
-                        {audienceScope === "CLASS" && (
-                          <div className="mt-3 flex flex-wrap gap-2">
-                            {classOptions.length === 0 && <p className="text-sm text-gray-500">No classes found.</p>}
-                            {classOptions.map((c) => {
-                              const selected = (formData.audience?.classIds || []).includes(c.id);
-                              return (
-                                <button
-                                  key={c.id}
-                                  type="button"
-                                  onClick={() => handleAudienceClassToggle(c.id)}
-                                  className={`px-3 py-1 rounded-full text-xs border ${
-                                    selected
-                                      ? "bg-indigo-100 text-indigo-800 border-indigo-300"
-                                      : "bg-white text-gray-600 border-gray-300"
-                                  }`}
-                                >
-                                  {c.name}
-                                </button>
-                              );
-                            })}
-                          </div>
-                        )}
-
-                        {audienceScope === "SECTION" && (
-                          <div className="mt-3 space-y-2">
-                            <select
-                              value={sectionPickerClassId}
-                              onChange={(e) => setSectionPickerClassId(e.target.value)}
-                              className="block w-full p-2 rounded-md border border-gray-300 bg-white text-gray-900 shadow-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 sm:text-sm"
-                            >
-                              <option value="">Select a class first</option>
-                              {classOptions.map((c) => (
-                                <option key={c.id} value={c.id}>
-                                  {c.name}
-                                </option>
-                              ))}
-                            </select>
-                            <div className="flex flex-wrap gap-2">
-                              {sectionOptions.length === 0 && sectionPickerClassId && (
-                                <p className="text-sm text-gray-500">No sections found.</p>
+                                  <button
+                                    type="button"
+                                    onClick={onClickAIPreviewButton}
+                                    disabled={!formData.content.trim()}
+                                    className="mt-1 ml-2 inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 disabled:opacity-50 disabled:cursor-not-allowed"
+                                    title="Preview notice"
+                                  >
+                                    <EyeIcon className="h-4 w-4" />
+                                  </button>
+                                </div>
                               )}
-                              {sectionOptions.map((sec) => {
-                                const selected = (formData.audience?.sectionIds || []).includes(sec.id);
+                            </div>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+
+                      <div>
+                        <SelectDropdown
+                          label={t("labels.type")}
+                          options={noticeTypeOptions}
+                          value={selectedNoticeType}
+                          onChange={handleNoticeTypeChange}
+                        />
+                      </div>
+
+                      {isAIModalOpen ? null : (
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-1">Send To</label>
+                          <div className="flex flex-wrap gap-2">
+                            {audienceScopes.map((s) => (
+                              <button
+                                key={s.value}
+                                type="button"
+                                onClick={() => handleAudienceScopeChange(s.value)}
+                                className={`px-3 py-1.5 rounded-md text-sm border ${
+                                  audienceScope === s.value
+                                    ? "bg-indigo-600 text-white border-indigo-600"
+                                    : "bg-white text-gray-700 border-gray-300 hover:bg-gray-50"
+                                }`}
+                              >
+                                {s.label}
+                              </button>
+                            ))}
+                          </div>
+
+                          {audienceScope === "ROLE" && (
+                            <div className="mt-3 flex flex-wrap gap-2">
+                              {roleOptions.map((role) => {
+                                const selected = (formData.audience?.roles || []).includes(role);
                                 return (
                                   <button
-                                    key={sec.id}
+                                    key={role}
                                     type="button"
-                                    onClick={() => handleAudienceSectionToggle(sec.id)}
+                                    onClick={() => handleAudienceRoleToggle(role)}
                                     className={`px-3 py-1 rounded-full text-xs border ${
                                       selected
                                         ? "bg-indigo-100 text-indigo-800 border-indigo-300"
                                         : "bg-white text-gray-600 border-gray-300"
                                     }`}
                                   >
-                                    {sec.name}
+                                    {role}
                                   </button>
                                 );
                               })}
                             </div>
-                          </div>
-                        )}
-                      </div>
-                    )}
+                          )}
 
-                    <div>
-                      <label htmlFor="content" className="block text-sm font-medium text-gray-700 mb-1">
-                        {t("labels.content")}
-                      </label>
-                      <textarea
-                        id="content"
+                          {audienceScope === "CLASS" && (
+                            <div className="mt-3 flex flex-wrap gap-2">
+                              {classOptions.length === 0 && <p className="text-sm text-gray-500">No classes found.</p>}
+                              {classOptions.map((c) => {
+                                const selected = (formData.audience?.classIds || []).includes(c.id);
+                                return (
+                                  <button
+                                    key={c.id}
+                                    type="button"
+                                    onClick={() => handleAudienceClassToggle(c.id)}
+                                    className={`px-3 py-1 rounded-full text-xs border ${
+                                      selected
+                                        ? "bg-indigo-100 text-indigo-800 border-indigo-300"
+                                        : "bg-white text-gray-600 border-gray-300"
+                                    }`}
+                                  >
+                                    {c.name}
+                                  </button>
+                                );
+                              })}
+                            </div>
+                          )}
+
+                          {audienceScope === "SECTION" && (
+                            <div className="mt-3 space-y-2">
+                              <select
+                                value={sectionPickerClassId}
+                                onChange={(e) => setSectionPickerClassId(e.target.value)}
+                                className="block w-full p-2 rounded-md border border-gray-300 bg-white text-gray-900 shadow-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 sm:text-sm"
+                              >
+                                <option value="">Select a class first</option>
+                                {classOptions.map((c) => (
+                                  <option key={c.id} value={c.id}>
+                                    {c.name}
+                                  </option>
+                                ))}
+                              </select>
+                              <div className="flex flex-wrap gap-2">
+                                {sectionOptions.length === 0 && sectionPickerClassId && (
+                                  <p className="text-sm text-gray-500">No sections found.</p>
+                                )}
+                                {sectionOptions.map((sec) => {
+                                  const selected = (formData.audience?.sectionIds || []).includes(sec.id);
+                                  return (
+                                    <button
+                                      key={sec.id}
+                                      type="button"
+                                      onClick={() => handleAudienceSectionToggle(sec.id)}
+                                      className={`px-3 py-1 rounded-full text-xs border ${
+                                        selected
+                                          ? "bg-indigo-100 text-indigo-800 border-indigo-300"
+                                          : "bg-white text-gray-600 border-gray-300"
+                                      }`}
+                                    >
+                                      {sec.name}
+                                    </button>
+                                  );
+                                })}
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      )}
+
+                      <FormField
+                        control={form.control}
                         name="content"
-                        placeholder={t("messages.enter_content")}
-                        value={formData.content}
-                        onChange={handleChange}
-                        rows={4}
-                        className="mt-1 block w-full p-2 rounded-md border border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 sm:text-sm"
-                        required
-                      />
-                    </div>
-
-                    {isAIModalOpen ? null : (
-                      <div>
-                        <DatePicker
-                          label={t("labels.date")}
-                          value={formData.date ? new Date(formData.date).toISOString() : ""}
-                          onChange={handleDateChange}
-                          placeholder={t("messages.select_date")}
-                        />
-                      </div>
-                    )}
-
-                    {isAIModalOpen ? null : (
-                      <div>
-                        <label htmlFor="attachment" className="block text-sm font-medium text-gray-700 mb-1">
-                          {t("labels.attachment")}
-                        </label>
-                        <input
-                          type="file"
-                          id="attachment"
-                          name="attachment"
-                          ref={fileInputRef}
-                          accept=".pdf"
-                          onChange={handleFileChange}
-                          className="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-                        />
-                        {file && (
-                          <p className="mt-2 text-sm text-gray-500">
-                            {t("labels.selected_file")}: {file.name}
-                          </p>
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>{t("labels.content")}</FormLabel>
+                            <FormControl>
+                              <Textarea {...field} rows={4} placeholder={t("messages.enter_content")} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
                         )}
-                      </div>
-                    )}
+                      />
 
-                    <div className="mt-5 sm:mt-4 sm:flex sm:flex-row-reverse">
-                      <button
-                        type="submit"
-                        disabled={isLoading}
-                        className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-indigo-600 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:ml-3 sm:w-auto sm:text-sm disabled:opacity-50"
-                      >
-                        {isLoading ? <ButtonSpinner /> : t("buttons.add_notice")}
-                      </button>
-                      <button
-                        type="button"
-                        className="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:w-auto sm:text-sm"
-                        onClick={onClose}
-                      >
-                        {t("buttons.cancel")}
-                      </button>
-                    </div>
-                  </form>
+                      {isAIModalOpen ? null : (
+                        <FormField
+                          control={form.control}
+                          name="date"
+                          render={({ field }) => (
+                            <FormItem>
+                              <DatePicker
+                                label={t("labels.date")}
+                                value={field.value ? new Date(field.value).toISOString() : ""}
+                                onChange={field.onChange}
+                                placeholder={t("messages.select_date")}
+                              />
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      )}
+
+                      {isAIModalOpen ? null : (
+                        <div>
+                          <label htmlFor="attachment" className="block text-sm font-medium text-gray-700 mb-1">
+                            {t("labels.attachment")}
+                          </label>
+                          <input
+                            type="file"
+                            id="attachment"
+                            name="attachment"
+                            ref={fileInputRef}
+                            accept=".pdf"
+                            onChange={handleFileChange}
+                            className="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                          />
+                          {file && (
+                            <p className="mt-2 text-sm text-gray-500">
+                              {t("labels.selected_file")}: {file.name}
+                            </p>
+                          )}
+                        </div>
+                      )}
+
+                      <div className="mt-5 sm:mt-4 sm:flex sm:flex-row-reverse">
+                        <button
+                          type="submit"
+                          disabled={isLoading}
+                          className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-indigo-600 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:ml-3 sm:w-auto sm:text-sm disabled:opacity-50"
+                        >
+                          {isLoading ? <ButtonSpinner /> : t("buttons.add_notice")}
+                        </button>
+                        <button
+                          type="button"
+                          className="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:w-auto sm:text-sm"
+                          onClick={onClose}
+                        >
+                          {t("buttons.cancel")}
+                        </button>
+                      </div>
+                    </form>
+                  </Form>
                 </div>
               </div>
             </div>

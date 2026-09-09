@@ -1,15 +1,18 @@
 import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import toast from "react-hot-toast";
 
 import useBulkImportStudents, { IBulkImportResult } from "../../service/bulk-import-students";
 import { useGetAcademicYears, useGetClasses, useGetSections } from "../../../classes/service/academics-service";
+import { bulkUploadFormSchema, defaultBulkUploadFormValues } from "./bulk-upload-modal.schema";
 
 const useBulkUploadModalController = (organizationId: string, onImported: () => void) => {
-  const [academicYearId, setAcademicYearId] = useState("");
-  const [classId, setClassId] = useState("");
-  const [sectionId, setSectionId] = useState("");
-  const [file, setFile] = useState<File | null>(null);
   const [result, setResult] = useState<IBulkImportResult | null>(null);
+
+  const form = useForm({ resolver: zodResolver(bulkUploadFormSchema), defaultValues: defaultBulkUploadFormValues });
+  const academicYearId = form.watch("academicYearId");
+  const classId = form.watch("classId");
 
   const academicYears = useGetAcademicYears(organizationId);
   const classes = useGetClasses(organizationId, academicYearId);
@@ -17,36 +20,34 @@ const useBulkUploadModalController = (organizationId: string, onImported: () => 
   const bulkImport = useBulkImportStudents(organizationId);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFile(e.target.files?.[0] || null);
+    form.setValue("file", e.target.files?.[0] || null);
   };
 
   const onAcademicYearChange = (id: string) => {
-    setAcademicYearId(id);
-    setClassId("");
-    setSectionId("");
+    form.setValue("academicYearId", id);
+    form.setValue("classId", "");
+    form.setValue("sectionId", "");
   };
 
   const onClassChange = (id: string) => {
-    setClassId(id);
-    setSectionId("");
+    form.setValue("classId", id);
+    form.setValue("sectionId", "");
   };
 
   const reset = () => {
-    setAcademicYearId("");
-    setClassId("");
-    setSectionId("");
-    setFile(null);
+    form.reset(defaultBulkUploadFormValues);
     setResult(null);
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!academicYearId || !classId || !sectionId || !file) {
-      toast.error("Please select academic year, class, section and a CSV file");
-      return;
-    }
+  const handleSubmit = form.handleSubmit((values) => {
+    if (!values.file) return;
     bulkImport.mutate(
-      { academicYearId, classId, sectionId, file },
+      {
+        academicYearId: values.academicYearId,
+        classId: values.classId,
+        sectionId: values.sectionId,
+        file: values.file,
+      },
       {
         onSuccess: (data) => {
           setResult(data);
@@ -57,16 +58,17 @@ const useBulkUploadModalController = (organizationId: string, onImported: () => 
         },
       }
     );
-  };
+  });
 
   return {
+    form,
     academicYearId,
     setAcademicYearId: onAcademicYearChange,
     classId,
     setClassId: onClassChange,
-    sectionId,
-    setSectionId,
-    file,
+    sectionId: form.watch("sectionId"),
+    setSectionId: (id: string) => form.setValue("sectionId", id),
+    file: form.watch("file"),
     handleFileChange,
     academicYears: academicYears.data?.items || [],
     classes: classes.data?.items || [],

@@ -1,5 +1,8 @@
 import { XMarkIcon, BuildingOffice2Icon, ArrowUpTrayIcon } from "@heroicons/react/24/outline";
 
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "../../../../components/ui/form";
+import { Input } from "../../../../components/ui/input";
+import { Textarea } from "../../../../components/ui/textarea";
 import ButtonSpinner from "../../../../icons/button-spinner";
 import useAddOrganizationModalController from "./add-organization-modal-controller";
 import { IOrganization } from "../../../../types";
@@ -12,23 +15,8 @@ interface AddOrganizationModalProps {
 }
 
 const AddOrganizationModal = ({ isOpen, onClose, onCreated, organization }: AddOrganizationModalProps) => {
-  const {
-    t,
-    isEditMode,
-    name,
-    address,
-    pincode,
-    description,
-    logoPreviewUrl,
-    setName,
-    setAddress,
-    setPincode,
-    setDescription,
-    handleLogoFileChange,
-    handleSubmit,
-    isLoading,
-    isUploadingLogo,
-  } = useAddOrganizationModalController(isOpen, onClose, onCreated, organization);
+  const { t, form, isEditMode, logoPreviewUrl, handleLogoFileChange, onSubmit, isLoading, isUploadingLogo } =
+    useAddOrganizationModalController(isOpen, onClose, onCreated, organization);
 
   if (!isOpen) return null;
 
@@ -52,111 +40,117 @@ const AddOrganizationModal = ({ isOpen, onClose, onCreated, organization }: AddO
           </div>
 
           <div className="p-4 sm:p-6">
-          <h3 className="text-lg font-medium leading-6 text-gray-900 mb-4">
-            {isEditMode ? "Edit Organization" : t("labels.add_organization")}
-          </h3>
+            <h3 className="text-lg font-medium leading-6 text-gray-900 mb-4">
+              {isEditMode ? "Edit Organization" : t("labels.add_organization")}
+            </h3>
 
-          <form onSubmit={handleSubmit} className="space-y-4 text-left">
-            <div className="flex justify-center">
-              <div className="w-24 h-24 relative">
-                {logoPreviewUrl ? (
-                  <img
-                    src={logoPreviewUrl}
-                    alt="School logo"
-                    className="w-full h-full rounded-lg object-contain border border-gray-200 bg-white"
-                  />
-                ) : (
-                  <div className="w-full h-full rounded-lg bg-gray-100 flex items-center justify-center border border-gray-200">
-                    <BuildingOffice2Icon className="h-10 w-10 text-gray-300" />
+            <Form {...form}>
+              <form onSubmit={onSubmit} className="space-y-4 text-left" noValidate>
+                <div className="flex justify-center">
+                  <div className="w-24 h-24 relative">
+                    {logoPreviewUrl ? (
+                      <img
+                        src={logoPreviewUrl}
+                        alt="School logo"
+                        className="w-full h-full rounded-lg object-contain border border-gray-200 bg-white"
+                      />
+                    ) : (
+                      <div className="w-full h-full rounded-lg bg-gray-100 flex items-center justify-center border border-gray-200">
+                        <BuildingOffice2Icon className="h-10 w-10 text-gray-300" />
+                      </div>
+                    )}
+                    <label
+                      htmlFor="organization-logo-upload"
+                      className="absolute bottom-0 right-0 bg-white rounded-full p-1.5 shadow-md cursor-pointer hover:bg-gray-50"
+                    >
+                      {isUploadingLogo ? <ButtonSpinner /> : <ArrowUpTrayIcon className="h-4 w-4 text-gray-600" />}
+                    </label>
+                    <input
+                      id="organization-logo-upload"
+                      type="file"
+                      className="hidden"
+                      accept="image/png,image/jpeg"
+                      disabled={isUploadingLogo}
+                      onChange={handleLogoFileChange}
+                    />
                   </div>
-                )}
-                <label
-                  htmlFor="organization-logo-upload"
-                  className="absolute bottom-0 right-0 bg-white rounded-full p-1.5 shadow-md cursor-pointer hover:bg-gray-50"
-                >
-                  {isUploadingLogo ? (
-                    <ButtonSpinner />
-                  ) : (
-                    <ArrowUpTrayIcon className="h-4 w-4 text-gray-600" />
+                </div>
+
+                <FormField
+                  control={form.control}
+                  name="name"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>{t("labels.organization_name")}</FormLabel>
+                      <FormControl>
+                        <Input {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
                   )}
-                </label>
-                <input
-                  id="organization-logo-upload"
-                  type="file"
-                  className="hidden"
-                  accept="image/png,image/jpeg"
-                  disabled={isUploadingLogo}
-                  onChange={handleLogoFileChange}
                 />
-              </div>
-            </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700">
-                {t("labels.organization_name")}
-              </label>
-              <input
-                type="text"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
-              />
-            </div>
+                <FormField
+                  control={form.control}
+                  name="address"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>{t("labels.address")}</FormLabel>
+                      <FormControl>
+                        <Input {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700">
-                {t("labels.address")}
-              </label>
-              <input
-                type="text"
-                value={address}
-                onChange={(e) => setAddress(e.target.value)}
-                className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
-              />
-            </div>
+                <FormField
+                  control={form.control}
+                  name="pincode"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>{t("labels.pincode")}</FormLabel>
+                      <FormControl>
+                        <Input {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700">
-                {t("labels.pincode")}
-              </label>
-              <input
-                type="text"
-                value={pincode}
-                onChange={(e) => setPincode(e.target.value)}
-                className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
-              />
-            </div>
+                <FormField
+                  control={form.control}
+                  name="description"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>{t("labels.description")}</FormLabel>
+                      <FormControl>
+                        <Textarea {...field} rows={3} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700">
-                {t("labels.description")}
-              </label>
-              <textarea
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-                rows={3}
-                className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
-              />
-            </div>
-
-            <div className="flex justify-end gap-3 pt-2">
-              <button
-                type="button"
-                onClick={onClose}
-                className="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50"
-              >
-                {t("buttons.cancel")}
-              </button>
-              <button
-                type="submit"
-                disabled={isLoading}
-                className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                {isLoading && <ButtonSpinner />}
-                {t("buttons.save")}
-              </button>
-            </div>
-          </form>
+                <div className="flex justify-end gap-3 pt-2">
+                  <button
+                    type="button"
+                    onClick={onClose}
+                    className="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50"
+                  >
+                    {t("buttons.cancel")}
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={isLoading}
+                    className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    {isLoading && <ButtonSpinner />}
+                    {t("buttons.save")}
+                  </button>
+                </div>
+              </form>
+            </Form>
           </div>
         </div>
       </div>

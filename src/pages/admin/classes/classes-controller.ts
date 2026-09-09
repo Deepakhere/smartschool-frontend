@@ -1,4 +1,6 @@
 import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useParams } from "react-router-dom";
 import toast from "react-hot-toast";
 
@@ -15,6 +17,18 @@ import {
   useAssignTeacher,
 } from "./service/academics-service";
 import { useGetAllTeachers } from "./service/teachers-service";
+import {
+  yearFormSchema,
+  defaultYearFormValues,
+  classFormSchema,
+  defaultClassFormValues,
+  sectionFormSchema,
+  defaultSectionFormValues,
+  subjectFormSchema,
+  defaultSubjectFormValues,
+  assignFormSchema,
+  defaultAssignFormValues,
+} from "./classes.schema";
 
 type Tab = "years" | "classes" | "sections" | "subjects" | "teachers";
 
@@ -47,153 +61,134 @@ const useClassesController = () => {
 
   // academic year form
   const [showYearForm, setShowYearForm] = useState(false);
-  const [yearName, setYearName] = useState("");
-  const [yearStart, setYearStart] = useState("");
-  const [yearEnd, setYearEnd] = useState("");
-  const [yearIsCurrent, setYearIsCurrent] = useState(false);
+  const yearForm = useForm({ resolver: zodResolver(yearFormSchema), defaultValues: defaultYearFormValues });
   const createAcademicYear = useCreateAcademicYear(organizationId);
 
-  const submitYear = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!yearName || !yearStart || !yearEnd) {
-      toast.error("Please fill all required fields");
-      return;
-    }
-    createAcademicYear.mutate({ name: yearName, startDate: yearStart, endDate: yearEnd, isCurrent: yearIsCurrent });
-  };
+  const submitYear = yearForm.handleSubmit((values) => {
+    createAcademicYear.mutate({
+      name: values.name,
+      startDate: values.startDate,
+      endDate: values.endDate,
+      isCurrent: values.isCurrent,
+    });
+  });
 
   useEffect(() => {
     if (createAcademicYear.isSuccess) {
       toast.success("Academic year created");
       setShowYearForm(false);
-      setYearName("");
-      setYearStart("");
-      setYearEnd("");
-      setYearIsCurrent(false);
+      yearForm.reset(defaultYearFormValues);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [createAcademicYear.isSuccess]);
 
   // class form
   const [showClassForm, setShowClassForm] = useState(false);
-  const [className, setClassName] = useState("");
-  const [classLevel, setClassLevel] = useState("");
+  const classForm = useForm({ resolver: zodResolver(classFormSchema), defaultValues: defaultClassFormValues });
   const createClass = useCreateClass(organizationId);
 
-  const submitClass = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!className || !selectedAcademicYearId) {
-      toast.error("Please fill all required fields");
+  const submitClass = classForm.handleSubmit((values) => {
+    if (!selectedAcademicYearId) {
+      toast.error("Select an academic year first");
       return;
     }
     createClass.mutate({
-      name: className,
+      name: values.name,
       academicYearId: selectedAcademicYearId,
-      numericLevel: classLevel ? Number(classLevel) : undefined,
+      numericLevel: values.numericLevel ? Number(values.numericLevel) : undefined,
     });
-  };
+  });
 
   useEffect(() => {
     if (createClass.isSuccess) {
       toast.success("Class created");
       setShowClassForm(false);
-      setClassName("");
-      setClassLevel("");
+      classForm.reset(defaultClassFormValues);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [createClass.isSuccess]);
 
   // section form
   const [showSectionForm, setShowSectionForm] = useState(false);
-  const [sectionName, setSectionName] = useState("");
-  const [sectionCapacity, setSectionCapacity] = useState("");
+  const sectionForm = useForm({ resolver: zodResolver(sectionFormSchema), defaultValues: defaultSectionFormValues });
   const createSection = useCreateSection(organizationId);
 
-  const submitSection = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!sectionName || !selectedClassId || !selectedAcademicYearId) {
-      toast.error("Please fill all required fields");
+  const submitSection = sectionForm.handleSubmit((values) => {
+    if (!selectedClassId || !selectedAcademicYearId) {
+      toast.error("Select a class first");
       return;
     }
     createSection.mutate({
-      name: sectionName,
+      name: values.name,
       classId: selectedClassId,
       academicYearId: selectedAcademicYearId,
-      capacity: sectionCapacity ? Number(sectionCapacity) : undefined,
+      capacity: values.capacity ? Number(values.capacity) : undefined,
     });
-  };
+  });
 
   useEffect(() => {
     if (createSection.isSuccess) {
       toast.success("Section created");
       setShowSectionForm(false);
-      setSectionName("");
-      setSectionCapacity("");
+      sectionForm.reset(defaultSectionFormValues);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [createSection.isSuccess]);
 
   // subject form
   const [showSubjectForm, setShowSubjectForm] = useState(false);
-  const [subjectName, setSubjectName] = useState("");
-  const [subjectCode, setSubjectCode] = useState("");
+  const subjectForm = useForm({ resolver: zodResolver(subjectFormSchema), defaultValues: defaultSubjectFormValues });
   const createSubject = useCreateSubject(organizationId);
 
-  const submitSubject = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!subjectName || !subjectCode || !selectedAcademicYearId) {
-      toast.error("Please fill all required fields");
+  const submitSubject = subjectForm.handleSubmit((values) => {
+    if (!selectedAcademicYearId) {
+      toast.error("Select an academic year first");
       return;
     }
-    createSubject.mutate({ name: subjectName, code: subjectCode, academicYearId: selectedAcademicYearId });
-  };
+    createSubject.mutate({ name: values.name, code: values.code, academicYearId: selectedAcademicYearId });
+  });
 
   useEffect(() => {
     if (createSubject.isSuccess) {
       toast.success("Subject created");
       setShowSubjectForm(false);
-      setSubjectName("");
-      setSubjectCode("");
+      subjectForm.reset(defaultSubjectFormValues);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [createSubject.isSuccess]);
 
   // teacher assignment form
   const [showAssignForm, setShowAssignForm] = useState(false);
-  const [assignTeacherId, setAssignTeacherId] = useState("");
-  const [assignClassId, setAssignClassId] = useState("");
-  const [assignSectionId, setAssignSectionId] = useState("");
-  const [assignSubjectId, setAssignSubjectId] = useState("");
-  const [assignRole, setAssignRole] = useState<"SUBJECT_TEACHER" | "CLASS_TEACHER">("SUBJECT_TEACHER");
+  const assignForm = useForm({ resolver: zodResolver(assignFormSchema), defaultValues: defaultAssignFormValues });
+  const assignClassId = assignForm.watch("classId");
   const assignSections = useGetSections(organizationId, assignClassId);
   const assignTeacher = useAssignTeacher(organizationId);
 
   useEffect(() => {
-    setAssignSectionId("");
+    assignForm.setValue("sectionId", "");
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [assignClassId]);
 
-  const submitAssign = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!assignTeacherId || !assignClassId || !assignSectionId || !selectedAcademicYearId) {
-      toast.error("Please fill all required fields");
+  const submitAssign = assignForm.handleSubmit((values) => {
+    if (!selectedAcademicYearId) {
+      toast.error("Select an academic year first");
       return;
     }
     assignTeacher.mutate({
-      teacherUserId: assignTeacherId,
+      teacherUserId: values.teacherId,
       academicYearId: selectedAcademicYearId,
-      classId: assignClassId,
-      sectionId: assignSectionId,
-      subjectId: assignRole === "SUBJECT_TEACHER" ? assignSubjectId : undefined,
-      assignmentRole: assignRole,
+      classId: values.classId,
+      sectionId: values.sectionId,
+      subjectId: values.role === "SUBJECT_TEACHER" ? values.subjectId : undefined,
+      assignmentRole: values.role,
     });
-  };
+  });
 
   useEffect(() => {
     if (assignTeacher.isSuccess) {
       toast.success("Teacher assigned");
       setShowAssignForm(false);
-      setAssignTeacherId("");
-      setAssignSubjectId("");
+      assignForm.reset(defaultAssignFormValues);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [assignTeacher.isSuccess]);
@@ -219,56 +214,31 @@ const useClassesController = () => {
 
     showYearForm,
     setShowYearForm,
-    yearName,
-    setYearName,
-    yearStart,
-    setYearStart,
-    yearEnd,
-    setYearEnd,
-    yearIsCurrent,
-    setYearIsCurrent,
+    yearForm,
     submitYear,
     isCreatingYear: createAcademicYear.isPending,
 
     showClassForm,
     setShowClassForm,
-    className,
-    setClassName,
-    classLevel,
-    setClassLevel,
+    classForm,
     submitClass,
     isCreatingClass: createClass.isPending,
 
     showSectionForm,
     setShowSectionForm,
-    sectionName,
-    setSectionName,
-    sectionCapacity,
-    setSectionCapacity,
+    sectionForm,
     submitSection,
     isCreatingSection: createSection.isPending,
 
     showSubjectForm,
     setShowSubjectForm,
-    subjectName,
-    setSubjectName,
-    subjectCode,
-    setSubjectCode,
+    subjectForm,
     submitSubject,
     isCreatingSubject: createSubject.isPending,
 
     showAssignForm,
     setShowAssignForm,
-    assignTeacherId,
-    setAssignTeacherId,
-    assignClassId,
-    setAssignClassId,
-    assignSectionId,
-    setAssignSectionId,
-    assignSubjectId,
-    setAssignSubjectId,
-    assignRole,
-    setAssignRole,
+    assignForm,
     assignSections: assignSections.data?.items || [],
     submitAssign,
     isAssigning: assignTeacher.isPending,

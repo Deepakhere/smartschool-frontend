@@ -22,7 +22,7 @@ const NoticeModalWrapper = ({
   const {
     t,
     file,
-    formData,
+    form,
     fileInputRef,
     isAIModalOpen,
     isNoticeModalOpen,
@@ -42,19 +42,13 @@ const NoticeModalWrapper = ({
     handleSelectAI,
     handleSelectCustom,
     closeNoticeModal,
-    handleChange,
-    handleDateChange,
     handleNoticeTypeChange,
     handleFileChange,
     handleSubmit,
     generateContentWithAI,
     onClickAIPreviewButton,
     onCloseAIPreviewModal,
-  } = useNoticeModalWrapperController(
-    isSuccessNoticeCreation,
-    onCancel,
-    onSubmit
-  );
+  } = useNoticeModalWrapperController(isSuccessNoticeCreation, onCancel, onSubmit);
 
   return (
     <>
@@ -68,7 +62,7 @@ const NoticeModalWrapper = ({
       <NoticeModal
         t={t}
         file={file}
-        formData={formData}
+        form={form}
         isLoading={isLoading}
         fileInputRef={fileInputRef}
         isOpen={isNoticeModalOpen}
@@ -90,8 +84,6 @@ const NoticeModalWrapper = ({
         onCloseAIPreviewModal={onCloseAIPreviewModal}
         onClose={closeNoticeModal}
         onSubmit={handleSubmit}
-        handleChange={handleChange}
-        handleDateChange={handleDateChange}
         handleNoticeTypeChange={handleNoticeTypeChange}
         handleFileChange={handleFileChange}
         generateContentWithAI={generateContentWithAI}

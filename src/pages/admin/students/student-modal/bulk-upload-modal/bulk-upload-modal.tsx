@@ -1,5 +1,6 @@
 import { XMarkIcon } from "@heroicons/react/24/outline";
 
+import { Input } from "../../../../../components/ui/input";
 import ButtonSpinner from "../../../../../icons/button-spinner";
 import CustomSelectDropdown from "../../../../../components/custom-select";
 import useBulkUploadModalController from "./bulk-upload-modal-controller";
@@ -11,9 +12,6 @@ interface BulkUploadModalProps {
   onClose: () => void;
   onImported: () => void;
 }
-
-const inputClass =
-  "mt-1 block w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-gray-900 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm";
 
 const BulkUploadModal = ({ isOpen, organizationId, onClose, onImported }: BulkUploadModalProps) => {
   const c = useBulkUploadModalController(organizationId, onImported);
@@ -38,115 +36,115 @@ const BulkUploadModal = ({ isOpen, organizationId, onClose, onImported }: BulkUp
           </div>
 
           <div className="p-4 sm:p-6">
-          <h3 className="text-lg font-medium text-gray-900 mb-1">Bulk Upload Students (CSV)</h3>
-          <p className="text-sm text-gray-500 mb-4">
-            Choose the class and section these students belong to, then upload a CSV with columns:{" "}
-            <code className="text-xs bg-gray-100 px-1 py-0.5 rounded">
-              name, dateOfBirth, rollNumber, parentEmail, parentName, phoneNumber, address, city, state, pincode
-            </code>
-          </p>
+            <h3 className="text-lg font-medium text-gray-900 mb-1">Bulk Upload Students (CSV)</h3>
+            <p className="text-sm text-gray-500 mb-4">
+              Choose the class and section these students belong to, then upload a CSV with columns:{" "}
+              <code className="text-xs bg-gray-100 px-1 py-0.5 rounded">
+                name, dateOfBirth, rollNumber, parentEmail, parentName, phoneNumber, address, city, state, pincode
+              </code>
+            </p>
 
-          {!c.result ? (
-            <form onSubmit={c.handleSubmit} className="space-y-4 text-left">
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            {!c.result ? (
+              <form onSubmit={c.handleSubmit} className="space-y-4 text-left">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Academic Year</label>
+                    <CustomSelectDropdown
+                      placeholder="Select"
+                      options={c.academicYears.map((y): SelectOption => ({ id: y.id, name: y.name }))}
+                      value={(() => {
+                        const y = c.academicYears.find((y) => y.id === c.academicYearId);
+                        return y ? { id: y.id, name: y.name } : null;
+                      })()}
+                      onChange={(o) => c.setAcademicYearId(String(o.id))}
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Class</label>
+                    <CustomSelectDropdown
+                      placeholder="Select"
+                      disabled={!c.academicYearId}
+                      options={c.classes.map((k): SelectOption => ({ id: k.id, name: k.name }))}
+                      value={(() => {
+                        const k = c.classes.find((k) => k.id === c.classId);
+                        return k ? { id: k.id, name: k.name } : null;
+                      })()}
+                      onChange={(o) => c.setClassId(String(o.id))}
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Section</label>
+                    <CustomSelectDropdown
+                      placeholder="Select"
+                      disabled={!c.classId}
+                      options={c.sections.map((s): SelectOption => ({ id: s.id, name: s.name }))}
+                      value={(() => {
+                        const s = c.sections.find((s) => s.id === c.sectionId);
+                        return s ? { id: s.id, name: s.name } : null;
+                      })()}
+                      onChange={(o) => c.setSectionId(String(o.id))}
+                    />
+                  </div>
+                </div>
+
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Academic Year</label>
-                  <CustomSelectDropdown
-                    placeholder="Select"
-                    options={c.academicYears.map((y): SelectOption => ({ id: y.id, name: y.name }))}
-                    value={(() => {
-                      const y = c.academicYears.find((y) => y.id === c.academicYearId);
-                      return y ? { id: y.id, name: y.name } : null;
-                    })()}
-                    onChange={(o) => c.setAcademicYearId(String(o.id))}
-                  />
+                  <label className="block text-sm font-medium text-gray-700">CSV File</label>
+                  <Input type="file" accept=".csv,text/csv" onChange={c.handleFileChange} />
                 </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Class</label>
-                  <CustomSelectDropdown
-                    placeholder="Select"
-                    disabled={!c.academicYearId}
-                    options={c.classes.map((k): SelectOption => ({ id: k.id, name: k.name }))}
-                    value={(() => {
-                      const k = c.classes.find((k) => k.id === c.classId);
-                      return k ? { id: k.id, name: k.name } : null;
-                    })()}
-                    onChange={(o) => c.setClassId(String(o.id))}
-                  />
+
+                <div className="flex justify-end gap-3 pt-2">
+                  <button
+                    type="button"
+                    onClick={handleClose}
+                    className="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={c.isSubmitting}
+                    className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50"
+                  >
+                    {c.isSubmitting && <ButtonSpinner />}
+                    Upload
+                  </button>
                 </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Section</label>
-                  <CustomSelectDropdown
-                    placeholder="Select"
-                    disabled={!c.classId}
-                    options={c.sections.map((s): SelectOption => ({ id: s.id, name: s.name }))}
-                    value={(() => {
-                      const s = c.sections.find((s) => s.id === c.sectionId);
-                      return s ? { id: s.id, name: s.name } : null;
-                    })()}
-                    onChange={(o) => c.setSectionId(String(o.id))}
-                  />
+              </form>
+            ) : (
+              <div className="text-left">
+                <div className="bg-green-50 border border-green-200 rounded-md p-3 mb-3">
+                  <p className="text-sm text-green-800">{c.result.createdCount} student(s) added successfully.</p>
+                </div>
+
+                {c.result.failed.length > 0 && (
+                  <div className="bg-red-50 border border-red-200 rounded-md p-3 max-h-48 overflow-y-auto">
+                    <p className="text-sm font-medium text-red-800 mb-2">{c.result.failed.length} row(s) failed:</p>
+                    <ul className="text-sm text-red-700 space-y-1">
+                      {c.result.failed.map((f, i) => (
+                        <li key={i}>
+                          Row {f.row} ({f.name || "unnamed"}): {f.reason}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+
+                <div className="flex justify-end gap-3 pt-4">
+                  <button
+                    onClick={c.reset}
+                    className="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50"
+                  >
+                    Upload Another
+                  </button>
+                  <button
+                    onClick={handleClose}
+                    className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700"
+                  >
+                    Done
+                  </button>
                 </div>
               </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700">CSV File</label>
-                <input type="file" accept=".csv,text/csv" onChange={c.handleFileChange} className={inputClass} />
-              </div>
-
-              <div className="flex justify-end gap-3 pt-2">
-                <button
-                  type="button"
-                  onClick={handleClose}
-                  className="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  disabled={c.isSubmitting}
-                  className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50"
-                >
-                  {c.isSubmitting && <ButtonSpinner />}
-                  Upload
-                </button>
-              </div>
-            </form>
-          ) : (
-            <div className="text-left">
-              <div className="bg-green-50 border border-green-200 rounded-md p-3 mb-3">
-                <p className="text-sm text-green-800">{c.result.createdCount} student(s) added successfully.</p>
-              </div>
-
-              {c.result.failed.length > 0 && (
-                <div className="bg-red-50 border border-red-200 rounded-md p-3 max-h-48 overflow-y-auto">
-                  <p className="text-sm font-medium text-red-800 mb-2">{c.result.failed.length} row(s) failed:</p>
-                  <ul className="text-sm text-red-700 space-y-1">
-                    {c.result.failed.map((f, i) => (
-                      <li key={i}>
-                        Row {f.row} ({f.name || "unnamed"}): {f.reason}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              )}
-
-              <div className="flex justify-end gap-3 pt-4">
-                <button
-                  onClick={c.reset}
-                  className="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50"
-                >
-                  Upload Another
-                </button>
-                <button
-                  onClick={handleClose}
-                  className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700"
-                >
-                  Done
-                </button>
-              </div>
-            </div>
-          )}
+            )}
           </div>
         </div>
       </div>

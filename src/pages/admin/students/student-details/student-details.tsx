@@ -12,7 +12,7 @@ const StudentDetails = () => {
   const {
     t,
     organizationId,
-    formData,
+    form,
     currentStep,
     updateStudent,
     isEditModalOpen,
@@ -22,8 +22,6 @@ const StudentDetails = () => {
     studentDetails,
     isLoadingStudentDetail,
     isErrorStudentDetail,
-    setFormData,
-    handleChange,
     nextStep,
     prevStep,
     onBackClick,
@@ -32,7 +30,7 @@ const StudentDetails = () => {
     setIsDeleteModalOpen,
     isDeletingStudent,
     handleDeleteStudent,
-    handleSubmit,
+    onSubmit,
     addGuardian,
     handleSetPrimaryGuardian,
     handleRemoveGuardian,
@@ -446,7 +444,7 @@ const StudentDetails = () => {
             t={t}
             isOpen={isEditModalOpen}
             organizationId={organizationId}
-            formData={formData}
+            form={form}
             isEditStudent={true}
             currentStep={currentStep}
             isParentExist={false}
@@ -455,9 +453,7 @@ const StudentDetails = () => {
             nextStep={nextStep}
             prevStep={prevStep}
             onClose={() => setIsEditModalOpen(false)}
-            setFormData={setFormData}
-            handleSubmit={handleSubmit}
-            handleChange={handleChange}
+            onSubmit={onSubmit}
             setCurrentStep={setCurrentStep}
           />
 

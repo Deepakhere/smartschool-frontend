@@ -1,9 +1,12 @@
 import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import toast from "react-hot-toast";
 
 import { useSetUserPassword } from "../service";
+import { setPasswordSchema, SetPasswordFormValues } from "./set-password.schema";
 
 const useSetPasswordController = () => {
   const { t } = useTranslation();
@@ -11,28 +14,21 @@ const useSetPasswordController = () => {
   const [searchParams] = useSearchParams();
   const token = searchParams.get("token") || "";
 
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
 
+  const form = useForm<SetPasswordFormValues>({
+    resolver: zodResolver(setPasswordSchema),
+    defaultValues: { password: "", confirmPassword: "" },
+  });
+
   const setUserPassword = useSetUserPassword();
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+  const onSubmit = form.handleSubmit((values) => {
     setError("");
 
-    if (password !== confirmPassword) {
-      setError("Passwords do not match.");
-      return;
-    }
-    if (password.length < 10) {
-      setError("Password must be at least 10 characters long.");
-      return;
-    }
-
     setUserPassword.mutate(
-      { token, password },
+      { token, password: values.password },
       {
         onSuccess: () => {
           toast.success("Password set successfully. You can now sign in.");
@@ -43,20 +39,17 @@ const useSetPasswordController = () => {
         },
       }
     );
-  };
+  });
 
   return {
     t,
+    form,
     hasToken: !!token,
-    password,
-    confirmPassword,
     showPassword,
     error,
     isLoading: setUserPassword.isPending,
-    setPassword,
-    setConfirmPassword,
     setShowPassword,
-    handleSubmit,
+    onSubmit,
   };
 };
 

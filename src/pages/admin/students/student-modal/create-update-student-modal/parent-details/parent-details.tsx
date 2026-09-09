@@ -1,79 +1,60 @@
+import { UseFormReturn } from "react-hook-form";
+
 import { IStudentFormData } from "../../../../../../types";
+import { FormControl, FormField, FormItem, FormLabel, FormMessage } from "../../../../../../components/ui/form";
+import { Input } from "../../../../../../components/ui/input";
 
 interface IParentDetailsFormProps {
   t: (key: string) => string;
-  formData: IStudentFormData;
+  form: UseFormReturn<IStudentFormData>;
   isParentExist: boolean;
-  handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
-const ParentDetailsForm = ({
-  t,
-  formData,
-  isParentExist,
-  handleChange,
-}: IParentDetailsFormProps) => {
+const ParentDetailsForm = ({ t, form, isParentExist }: IParentDetailsFormProps) => {
   return (
     <>
       <h3 className="text-md font-medium mb-4">{t("labels.parent_details")}</h3>
-      <div>
-        <label
-          htmlFor="parentEmail"
-          className="block text-sm font-medium text-gray-700 mb-1"
-        >
-          {t("labels.parent_email")}
-        </label>
-        <input
-          type="email"
-          id="parentEmail"
-          name="parentEmail"
-          placeholder={t("messages.enter_parent_email")}
-          value={formData.parentEmail}
-          onChange={handleChange}
-          className="mt-1 block w-full p-2 rounded-md border border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-          required
-        />
-      </div>
+      <FormField
+        control={form.control}
+        name="parentEmail"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>{t("labels.parent_email")}</FormLabel>
+            <FormControl>
+              <Input type="email" {...field} placeholder={t("messages.enter_parent_email")} />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
 
-      <div>
-        <label
-          htmlFor="parentName"
-          className="block text-sm font-medium text-gray-700 mb-1"
-        >
-          {t("labels.parent_fullname")}
-        </label>
-        <input
-          type="text"
-          id="parentName"
-          name="parentName"
-          placeholder={t("messages.enter_parent_full_name")}
-          value={formData.parentName}
-          onChange={handleChange}
-          disabled={isParentExist}
-          className="mt-1 block w-full p-3 rounded-md border border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-          required
-        />
-      </div>
+      <FormField
+        control={form.control}
+        name="parentName"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>{t("labels.parent_fullname")}</FormLabel>
+            <FormControl>
+              <Input {...field} placeholder={t("messages.enter_parent_full_name")} disabled={isParentExist} />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
 
-      <div>
-        <label
-          htmlFor="phoneNumber"
-          className="block text-sm font-medium text-gray-700 mb-1"
-        >
-          {t("labels.phone_number")}
-        </label>
-        <input
-          type="text"
-          id="phoneNumber"
-          name="phoneNumber"
-          placeholder={t("messages.enter_phone_number")}
-          value={formData.phoneNumber}
-          disabled={isParentExist}
-          onChange={handleChange}
-          className="mt-1 block w-full p-3 rounded-md border border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-          required
-        />
-      </div>
+      <FormField
+        control={form.control}
+        name="phoneNumber"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>{t("labels.phone_number")}</FormLabel>
+            <FormControl>
+              <Input {...field} placeholder={t("messages.enter_phone_number")} disabled={isParentExist} />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
     </>
   );
 };

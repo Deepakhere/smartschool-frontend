@@ -1,9 +1,12 @@
 import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useParams } from "react-router-dom";
 import toast from "react-hot-toast";
 
 import { useGetTeacherDirectory, useUpsertStaffProfile } from "./service/teacher-directory-service";
 import { ITeacherDirectoryEntry } from "../../../types";
+import { staffProfileSchema, defaultStaffProfileValues } from "./teachers.schema";
 
 const useTeachersController = () => {
   const { organizationId = "" } = useParams();
@@ -12,35 +15,26 @@ const useTeachersController = () => {
   const upsertStaffProfile = useUpsertStaffProfile(organizationId);
 
   const [editingTeacher, setEditingTeacher] = useState<ITeacherDirectoryEntry | null>(null);
-  const [employeeCode, setEmployeeCode] = useState("");
-  const [designation, setDesignation] = useState("");
-  const [department, setDepartment] = useState("");
-  const [qualification, setQualification] = useState("");
-  const [dateOfJoining, setDateOfJoining] = useState("");
+
+  const form = useForm({ resolver: zodResolver(staffProfileSchema), defaultValues: defaultStaffProfileValues });
 
   const openEdit = (teacher: ITeacherDirectoryEntry) => {
     setEditingTeacher(teacher);
-    setEmployeeCode(teacher.staffProfile?.employeeCode || "");
-    setDesignation(teacher.staffProfile?.designation || "");
-    setDepartment(teacher.staffProfile?.department || "");
-    setQualification(teacher.staffProfile?.qualification || "");
-    setDateOfJoining(teacher.staffProfile?.dateOfJoining ? teacher.staffProfile.dateOfJoining.slice(0, 10) : "");
+    form.reset({
+      employeeCode: teacher.staffProfile?.employeeCode || "",
+      designation: teacher.staffProfile?.designation || "",
+      department: teacher.staffProfile?.department || "",
+      qualification: teacher.staffProfile?.qualification || "",
+      dateOfJoining: teacher.staffProfile?.dateOfJoining ? teacher.staffProfile.dateOfJoining.slice(0, 10) : "",
+    });
   };
 
   const closeEdit = () => setEditingTeacher(null);
 
-  const submitProfile = (e: React.FormEvent) => {
-    e.preventDefault();
+  const submitProfile = form.handleSubmit((values) => {
     if (!editingTeacher) return;
-    upsertStaffProfile.mutate({
-      userId: editingTeacher.userId,
-      employeeCode,
-      designation,
-      department,
-      qualification,
-      dateOfJoining,
-    });
-  };
+    upsertStaffProfile.mutate({ userId: editingTeacher.userId, ...values });
+  });
 
   useEffect(() => {
     if (upsertStaffProfile.isSuccess) {
@@ -59,16 +53,7 @@ const useTeachersController = () => {
     editingTeacher,
     openEdit,
     closeEdit,
-    employeeCode,
-    setEmployeeCode,
-    designation,
-    setDesignation,
-    department,
-    setDepartment,
-    qualification,
-    setQualification,
-    dateOfJoining,
-    setDateOfJoining,
+    form,
     submitProfile,
     isSaving: upsertStaffProfile.isPending,
   };

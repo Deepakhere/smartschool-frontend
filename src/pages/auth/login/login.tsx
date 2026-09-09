@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 
 import { Form, FormControl, FormField, FormItem, FormMessage } from "../../../components/ui/form";
+import { Input } from "../../../components/ui/input";
 import EyeON from "../../../icons/eye-on-icon";
 import EyeOff from "../../../icons/eye-off";
 import useLoginController from "./login-controller";
@@ -29,13 +30,7 @@ const Login = () => {
                 render={({ field }) => (
                   <FormItem>
                     <FormControl>
-                      <input
-                        {...field}
-                        id="email"
-                        type="email"
-                        className="shadow-sm rounded-md w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
-                        placeholder="Email address"
-                      />
+                      <Input {...field} id="email" type="email" placeholder="Email address" />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -49,12 +44,12 @@ const Login = () => {
                   <FormItem>
                     <div className="relative">
                       <FormControl>
-                        <input
+                        <Input
                           {...field}
                           id="password"
                           type={showPassword ? "text" : "password"}
-                          className="shadow-sm w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
                           placeholder="Password"
+                          className="pr-10"
                         />
                       </FormControl>
                       <button

@@ -1,16 +1,16 @@
-import React, { useState, useEffect, FormEvent } from "react";
+import React, { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslation } from "react-i18next";
 import ReCAPTCHA from "react-google-recaptcha";
 
 import { useForgotPassword } from "../service";
 import useError from "../../../hooks/error/error";
-import { EMAIL_REGEX_PATTERN } from "../../../utils";
+import { forgotPasswordSchema, ForgotPasswordFormValues } from "./forgot-password.schema";
 
 const useForgotPasswordController = () => {
   const { t } = useTranslation();
 
-  const [email, setEmail] = useState<string>("");
-  const [emailError, setEmailError] = useState<string>("");
   const [captchaToken, setCaptchaToken] = useState<string | null>("");
   const [isCaptchaLoaded, setIsCaptchaLoaded] = useState<boolean>(false);
   const [displayError, setDisplayError] = useState(false);
@@ -18,43 +18,18 @@ const useForgotPasswordController = () => {
 
   const recaptchaRef = React.createRef<ReCAPTCHA>();
 
+  const form = useForm<ForgotPasswordFormValues>({
+    resolver: zodResolver(forgotPasswordSchema),
+    defaultValues: { email: "" },
+  });
+
   const forgotPassword = useForgotPassword();
 
   useError({
     mutation: forgotPassword,
   });
 
-  const validateEmail = (email: string): boolean => {
-    if (!email.trim()) {
-      setEmailError(t("messages.email_required"));
-      return false;
-    }
-    if (!EMAIL_REGEX_PATTERN.test(email)) {
-      setEmailError(t("messages.email_invalid"));
-      return false;
-    }
-    setEmailError("");
-    return true;
-  };
-
-  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setEmail(e.target.value);
-    if (emailError) {
-      validateEmail(e.target.value);
-    }
-  };
-
-  const handleEmailBlur = () => {
-    validateEmail(email);
-  };
-
-  const handleSubmit = async (e: FormEvent) => {
-    e.preventDefault();
-
-    if (!validateEmail(email)) {
-      return;
-    }
-
+  const onSubmit = form.handleSubmit(async (values) => {
     if (!captchaToken) {
       setError(t("messages.invalid_captcha"));
       return;
@@ -62,13 +37,13 @@ const useForgotPasswordController = () => {
 
     try {
       await forgotPassword.mutateAsync({
-        email,
+        email: values.email,
         captcha_token: captchaToken,
       });
-    } catch (error) {
-      console.log(error);
+    } catch (submitError) {
+      console.log(submitError);
     }
-  };
+  });
 
   useEffect(() => {
     setIsCaptchaLoaded(true);
@@ -82,9 +57,9 @@ const useForgotPasswordController = () => {
   useEffect(() => {
     if (forgotPassword.isSuccess) {
       setCaptchaToken("");
-      setEmail("");
-      setEmailError("");
+      form.reset();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [forgotPassword.isSuccess]);
 
   useEffect(() => {
@@ -103,8 +78,8 @@ const useForgotPasswordController = () => {
 
   return {
     t,
-    email,
-    emailError,
+    form,
+    email: form.watch("email"),
     error,
     isCaptchaLoaded,
     recaptchaRef,
@@ -113,9 +88,7 @@ const useForgotPasswordController = () => {
     isLoading: forgotPassword.isPending,
     isRequestCompleted: forgotPassword.isSuccess,
     onCaptchaLoaded,
-    handleSubmit,
-    handleEmailChange,
-    handleEmailBlur,
+    onSubmit,
   };
 };
 

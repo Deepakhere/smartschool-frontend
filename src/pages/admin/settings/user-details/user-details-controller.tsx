@@ -1,4 +1,6 @@
 import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import debounce from "lodash.debounce";
 import { useParams } from "react-router-dom";
 
@@ -14,6 +16,7 @@ import { useAddUserDetail, useDeleteUser, useGetAllUserDetails, useUpdateUserDet
 import { useError } from "../../../../hooks";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "../../../../context/auth-context";
+import { userFormSchema, defaultUserFormValues, UserFormValues } from "./user-details.schema";
 
 const useUserDetailsController = () => {
   const { organizationId } = useParams<{ organizationId: string }>();
@@ -23,16 +26,9 @@ const useUserDetailsController = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingUserId, setEditingUserId] = useState<string>("");
   const [sortBy, setSortBy] = useState<"all" | "admin" | "parent">("all");
-  const [formData, setFormData] = useState({
-    fullname: "",
-    email: "",
-    role: "admin" as "admin" | "parent" | "teacher",
-    permissions: {
-      canRead: false,
-      canCreate: false,
-      canUpdate: false,
-      canDelete: false,
-    },
+  const form = useForm<UserFormValues>({
+    resolver: zodResolver(userFormSchema),
+    defaultValues: defaultUserFormValues,
   });
 
   const [users, setUsers] = useState<IAllUserDetails[]>([]);
@@ -214,50 +210,32 @@ const useUserDetailsController = () => {
     },
   ];
 
-  const handlePermissionChange = (permission: keyof typeof formData.permissions) => {
-    setFormData({
-      ...formData,
-      permissions: {
-        ...formData.permissions,
-        [permission]: !formData.permissions[permission],
-      },
-    });
+  const handlePermissionChange = (permission: keyof UserFormValues["permissions"]) => {
+    form.setValue(`permissions.${permission}`, !form.getValues(`permissions.${permission}`));
   };
 
-  const handleSubmituserDetails = async (e: React.FormEvent) => {
-    e.preventDefault();
-
+  const handleSubmituserDetails = form.handleSubmit((values) => {
     if (isEditUser) {
       const userDetails: IUpdateUserValue = {
-        id: users.find((user) => user.email === formData.email)?.id || "",
-        name: formData.fullname,
-        email: formData.email,
-        role: formData.role,
-        permissions: {
-          canRead: formData.permissions.canRead,
-          canCreate: formData.permissions.canCreate,
-          canUpdate: formData.permissions.canUpdate,
-          canDelete: formData.permissions.canDelete,
-        },
+        id: users.find((user) => user.email === values.email)?.id || "",
+        name: values.fullname,
+        email: values.email,
+        role: values.role,
+        permissions: values.permissions,
       };
 
       updateUserDetails.mutate({ ...userDetails });
     } else {
       const userDetails: IAddUserValue = {
-        name: formData.fullname,
-        email: formData.email,
-        role: formData.role,
-        permissions: {
-          canRead: formData.permissions.canRead,
-          canCreate: formData.permissions.canCreate,
-          canUpdate: formData.permissions.canUpdate,
-          canDelete: formData.permissions.canDelete,
-        },
+        name: values.fullname,
+        email: values.email,
+        role: values.role,
+        permissions: values.permissions,
       };
 
       addUserDetail.mutate({ ...userDetails });
     }
-  };
+  });
 
   const handleEditUserDetails = async (userId: string, isEdit: boolean) => {
     if (!isEdit) return;
@@ -265,7 +243,7 @@ const useUserDetailsController = () => {
     const user = users.find((user) => user.id === userId);
     if (!user) return;
 
-    setFormData({
+    form.reset({
       fullname: user.name,
       email: user.email,
       role: user.role as "admin" | "parent" | "teacher",
@@ -288,17 +266,7 @@ const useUserDetailsController = () => {
     setIsModalOpen(false);
     setIsEditUser(false);
     setEditingUserId("");
-    setFormData({
-      fullname: "",
-      email: "",
-      role: "admin" as "admin" | "parent" | "teacher",
-      permissions: {
-        canRead: false,
-        canCreate: false,
-        canUpdate: false,
-        canDelete: false,
-      },
-    });
+    form.reset(defaultUserFormValues);
   };
 
   const onClickDeleteUser = (userId: string) => {
@@ -357,7 +325,7 @@ const useUserDetailsController = () => {
   return {
     t,
     sortBy,
-    formData,
+    form,
     isModalOpen,
     isEditingSelf,
     users,
@@ -378,7 +346,6 @@ const useUserDetailsController = () => {
     onRoleChange,
     setSearchTerm,
     setSortBy,
-    setFormData,
     setIsModalOpen,
     handleSubmituserDetails,
     handlePermissionChange,

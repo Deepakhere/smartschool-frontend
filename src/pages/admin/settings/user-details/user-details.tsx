@@ -12,7 +12,7 @@ const UserDetails = () => {
   const {
     t,
     sortBy,
-    formData,
+    form,
     isModalOpen,
     isEditingSelf,
     users,
@@ -32,7 +32,6 @@ const UserDetails = () => {
     onCancel,
     onRoleChange,
     setSortBy,
-    setFormData,
     setIsModalOpen,
     handleSubmituserDetails,
     handlePermissionChange,
@@ -72,12 +71,12 @@ const UserDetails = () => {
                 description: option.description,
                 icon: option.icon,
               }))}
-              value={
-                (() => {
-                  const match = roleOptionsDropDown.find((option) => option.value === sortBy);
-                  return match ? { id: match.value, name: match.label, description: match.description, icon: match.icon } : null;
-                })()
-              }
+              value={(() => {
+                const match = roleOptionsDropDown.find((option) => option.value === sortBy);
+                return match
+                  ? { id: match.value, name: match.label, description: match.description, icon: match.icon }
+                  : null;
+              })()}
               onChange={(o) => onRoleChange(String(o.id))}
             />
           </div>
@@ -125,9 +124,7 @@ const UserDetails = () => {
                   <TableCell className="text-center">
                     <span
                       className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                        user.role === "admin"
-                          ? "bg-green-100 text-green-800"
-                          : "bg-blue-100 text-blue-800"
+                        user.role === "admin" ? "bg-green-100 text-green-800" : "bg-blue-100 text-blue-800"
                       }`}
                     >
                       {user.role}
@@ -136,26 +133,16 @@ const UserDetails = () => {
                   <TableCell className="text-center">
                     <button
                       className={`text-indigo-600 mr-4 ${
-                        user.permissions?.canUpdate
-                          ? ""
-                          : "cursor-not-allowed opacity-50"
+                        user.permissions?.canUpdate ? "" : "cursor-not-allowed opacity-50"
                       }`}
-                      title={t(
-                        "messages.you_dont_have_permission_to_edit_user"
-                      )}
+                      title={t("messages.you_dont_have_permission_to_edit_user")}
                       onClick={() => handleEditUserDetails(user.id, true)}
                     >
                       {t("labels.edit")}
                     </button>
                     <button
-                      className={`text-red-600 ${
-                        user.permissions?.canDelete
-                          ? ""
-                          : "cursor-not-allowed opacity-50"
-                      }`}
-                      title={t(
-                        "messages.you_dont_have_permission_to_delete_user"
-                      )}
+                      className={`text-red-600 ${user.permissions?.canDelete ? "" : "cursor-not-allowed opacity-50"}`}
+                      title={t("messages.you_dont_have_permission_to_delete_user")}
                       onClick={() => onClickDeleteUser(user.id)}
                     >
                       {t("labels.delete")}
@@ -186,16 +173,15 @@ const UserDetails = () => {
       <CreateUpdateUserModal
         t={t}
         isOpen={isModalOpen}
-        formData={formData}
+        form={form}
         roleOptions={roleOptions}
         permissionOptions={permissionOptions}
         isEditUser={isEditUser}
         isEditingSelf={isEditingSelf}
         isLoadingAddUserDetail={isLoadingAddUserDetail}
         isLoadingUpdateUserDetail={isLoadingUpdateUserDetail}
-        setFormData={setFormData}
         onClose={onCancel}
-        handleSubmit={(e) => handleSubmituserDetails(e)}
+        onSubmit={handleSubmituserDetails}
         handlePermissionChange={handlePermissionChange}
       />
 

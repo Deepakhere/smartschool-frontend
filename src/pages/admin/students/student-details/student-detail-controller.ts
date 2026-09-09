@@ -1,4 +1,6 @@
 import { useState, useEffect } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import toast from "react-hot-toast";
@@ -9,6 +11,7 @@ import { useGetStudentAttendanceHistory } from "../service/attendance-history-se
 import { useGetResultsForStudent } from "../../reports/service/exams-service";
 import { IStudentFormData } from "../../../../types";
 import { useError } from "../../../../hooks";
+import { editStudentSchema } from "../student-modal/create-update-student-modal/student-form.schema";
 
 const useStudentDetailController = () => {
   const { t } = useTranslation();
@@ -22,7 +25,10 @@ const useStudentDetailController = () => {
   const [guardianIdPendingRemoval, setGuardianIdPendingRemoval] = useState<string | null>(null);
   const [isGuardianModalOpen, setIsGuardianModalOpen] = useState(false);
   const [currentStep, setCurrentStep] = useState(1);
-  const [formData, setFormData] = useState({} as IStudentFormData);
+  const form = useForm<IStudentFormData>({
+    resolver: zodResolver(editStudentSchema),
+    defaultValues: {} as IStudentFormData,
+  });
 
   const getStudentDetailById = useGetStudentById(organizationId || "", studentId || "");
 
@@ -52,7 +58,7 @@ const useStudentDetailController = () => {
   useEffect(() => {
     if (getStudentDetailById.isSuccess && getStudentDetailById.data) {
       const item = getStudentDetailById.data.item;
-      setFormData({
+      form.reset({
         ...item,
         academicYearId: item.currentEnrollment?.academicYearId || "",
         classId: item.currentEnrollment?.classId?.id || "",
@@ -71,20 +77,9 @@ const useStudentDetailController = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [getStudentDetailById.isSuccess, getStudentDetailById.data]);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-      ...(name === "academicYearId" ? { classId: "", sectionId: "" } : {}),
-      ...(name === "classId" ? { sectionId: "" } : {}),
-    }));
-  };
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    updateStudent.mutate(formData);
-  };
+  const onSubmit = form.handleSubmit((values) => {
+    updateStudent.mutate(values);
+  });
 
   const handleDeleteStudent = () => {
     deleteStudent.mutate(studentId || "");
@@ -182,7 +177,7 @@ const useStudentDetailController = () => {
     t,
     organizationId: organizationId || "",
     studentId: studentId || "",
-    formData,
+    form,
     currentStep,
     updateStudent,
     isEditModalOpen,
@@ -192,9 +187,7 @@ const useStudentDetailController = () => {
     studentDetails: getStudentDetailById?.data?.item,
     isLoadingStudentDetail: getStudentDetailById.isLoading,
     isErrorStudentDetail: getStudentDetailById.isError,
-    setFormData,
-    handleChange,
-    handleSubmit,
+    onSubmit,
     nextStep,
     prevStep,
     onBackClick,

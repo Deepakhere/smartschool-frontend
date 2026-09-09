@@ -32,9 +32,11 @@ school-scoped screen is scoped to that id.
 - **`@tanstack/react-query` v5** — the data layer (migrated from v3; see §7 for what the migration
   did and didn't change)
 - **`react-router-dom` v6**
-- **Tailwind 3** + Headless UI + a handful of Radix primitives (`@radix-ui/react-dialog`,
-  `-alert-dialog`, `-avatar`, `-popover`, `-switch`) — Radix is used for the notification Sheet and
-  a few overlay components; most of the UI is still hand-built Tailwind, not a full primitive layer
+- **Tailwind 3** + Radix primitives (`@radix-ui/react-dialog`, `-alert-dialog`, `-avatar`,
+  `-popover`, `-switch`, `-select`, `-tabs`, `-slot`, `-label`) — Headless UI was fully removed;
+  every modal/select/tab in the app is now built on the one primitive library, via shared
+  `components/ui/{dialog,select,tabs,form,input,textarea}.tsx` wrappers
+- **`react-hook-form` + `zod`** — every real form in the app (see §7)
 - **`i18next`** (English + Hindi) — most (not all) copy is translated via `t()`
 - **`socket.io-client`** — real-time notification push, mirrors the backend's Socket.IO server
 - **`axios`** — one shared client (`src/config/api-client.ts`)
@@ -206,17 +208,51 @@ checks every hook's return type against every place it's used, which is what cau
 call sites and all 54 mutation `.isLoading` reads), a clean production build, and the existing test
 suite still green.
 
-These were identified and explicitly scoped, not accidental oversights:
+**`react-hook-form` + `zod` — done.** Every real `<form>` in the app (15 of them — auth, every
+admin CRUD modal, the 2-step student wizard shared across two separate controllers, the notice
+composer with its nested audience-targeting object, homework/leave-request file uploads) now uses
+`useForm` + `zodResolver` + a shared `components/ui/form.tsx` (`Form`/`FormField`/`FormItem`/
+`FormLabel`/`FormControl`/`FormMessage`, the standard pattern for this combination) instead of
+hand-rolled `useState` + manual `if (!x) toast.error(...)` checks. Every text/date/textarea input
+also now goes through shared `components/ui/input.tsx` / `textarea.tsx` primitives instead of a
+repeated `inputClass` string per file. One file was deliberately **not** converted:
+`pages/admin/settings/profile/profile.tsx`'s "Edit profile" and "Change password" cards aren't
+wired to any submit handler at all (no `onSubmit`, uncontrolled `defaultValue` inputs, one button
+is `type="button"` with no `onClick`) — they're decorative, not functional, so adding real
+validation to them would have implied they save when they still don't; that's a real gap, not
+something to paper over.
 
-- **`react-hook-form` + `zod` — not installed at all.** Every form in the app is still raw
-  `useState` + manual validation. No shared schema with the backend's zod schemas, no field-level
-  error UX, and (per the original architecture plan) failed submissions don't reliably preserve
-  input or show per-field errors.
-- **No `TenantProvider` / no tenant-scoped react-query cache keys.** Each screen reads
-  `organizationId` from the route independently; query keys are not consistently parameterized by
-  tenant. Not currently a proven data-leak (every query still runs with `gcTime: 0`, i.e. caching is
-  still off everywhere — the v5 migration moved the data layer to v5's API shape but deliberately did
-  **not** turn caching on, since enabling it safely needs tenant-scoped keys done at the same time).
+Real bugs the conversion surfaced and fixed in passing: `pages/auth/login/login-controller.ts` had
+an `error` state that was only ever reset to `""` and never actually set on failure — the error
+banner in the JSX never rendered anything (dead code; `useError`'s toast was already covering it).
+`IStudentFormData.parentName`/`phoneNumber` were typed optional even though the UI always requires
+them (`required` HTML attribute, non-optional in practice) — corrected to match reality.
+
+**Package hygiene — done.** Removed genuinely dead packages: `crypto-js` (0 real usages — only a
+never-applied cipher constant), the entire legacy `src/services/` folder (a second axios client +
+duplicate student CRUD, 0 imports anywhere), `@types/react-router-dom` (stale v5 types on a v6
+app), `@types/lodash` (only the two specific `lodash.debounce`/`lodash.get` sub-packages are
+actually used). `react-error-boundary` was installed but unused — instead of deleting a good,
+well-known package, wired it up as a real top-level `ErrorBoundary` (previously an uncaught render
+error showed a blank white screen). Also caught and fixed a real latent bug: the existing
+`sheet.tsx`/`alert-dialog.tsx` already used `animate-in`/`fade-in-0` utility classes, but the
+plugin that defines them (`tailwindcss-animate`) was never installed, so those animations had
+silently been no-ops the whole time.
+
+**Cache config — done.** `main.tsx` now sets `staleTime: 5min` / `gcTime: 10min` once, at the
+`QueryClient` instance level — not per-query. Getting there required removing 24 per-file
+`gcTime: 0` overrides that were silently defeating any global config, which in turn exposed 4 real
+bugs: `GET_ALL_USER`, `GET_NOTICE_LIST`, `GET_STUDENT_PROFILE` and `GET_PARENT_DETAILS` query keys
+were missing `organizationId` and their own filter params — harmless when caching was off, a
+genuine stale/cross-tenant risk once it was on. Fixed by including them in the key.
+
+These remain identified and explicitly scoped, not accidental oversights:
+
+- **No `TenantProvider`.** Each screen still reads `organizationId` from the route independently
+  rather than through a shared context that validates it against the user's memberships. Query
+  keys are now tenant-scoped where it matters (see above), which was the main risk this would have
+  otherwise caused — a full `TenantProvider` is still worth doing for the validation/redirect
+  behavior, just no longer load-bearing for cache correctness.
   Worth doing as a deliberate follow-up, not a patch.
 - **No `@/` path alias.** Every import is relative (`../../../../types`), which makes moving files
   around painful. Worth adding before any large restructuring.
@@ -243,7 +279,7 @@ Mirrors the backend doc's gap list, frontend-side specifics:
   with a same-day export); there's no "attendance over a date range" view.
 - **No scheduled/automated exports** — every CSV export button is user-triggered and client-side;
   nothing is emailed or generated on a schedule.
-- **react-hook-form + zod** — see §7.
+- **`profile.tsx`'s edit-profile / change-password forms aren't wired up** — see §7.
 - **Payment gateway UI** — no card/UPI checkout flow; blocked on the backend having real gateway
   credentials.
 

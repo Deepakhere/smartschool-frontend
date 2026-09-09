@@ -3,11 +3,10 @@ import NoRecordFound from "../../../components/no-record-found";
 import SectionHeader from "../../../components/section-header";
 import { useTranslation } from "react-i18next";
 import { XMarkIcon } from "@heroicons/react/24/outline";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "../../../components/ui/form";
+import { Input } from "../../../components/ui/input";
 import ButtonSpinner from "../../../icons/button-spinner";
 import useTeachersController from "./teachers-controller";
-
-const inputClass =
-  "mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm";
 
 const AdminTeachers = () => {
   const { t } = useTranslation();
@@ -69,54 +68,105 @@ const AdminTeachers = () => {
               </div>
 
               <div className="p-4 sm:p-6">
-              <h3 className="text-lg font-medium text-gray-900 mb-4">
-                Edit Staff Profile — {c.editingTeacher.name}
-              </h3>
+                <h3 className="text-lg font-medium text-gray-900 mb-4">Edit Staff Profile — {c.editingTeacher.name}</h3>
 
-              <form onSubmit={c.submitProfile} className="space-y-4 text-left">
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700">Employee Code</label>
-                    <input
-                      className={
-                        c.editingTeacher?.staffProfile?.employeeCode
-                          ? `${inputClass} bg-gray-100 text-gray-500 cursor-not-allowed`
-                          : inputClass
-                      }
-                      value={c.employeeCode}
-                      onChange={(e) => c.setEmployeeCode(e.target.value)}
-                      disabled={!!c.editingTeacher?.staffProfile?.employeeCode}
-                      title={c.editingTeacher?.staffProfile?.employeeCode ? "Employee code can't be changed once assigned." : undefined}
+                <Form {...c.form}>
+                  <form onSubmit={c.submitProfile} className="space-y-4 text-left" noValidate>
+                    <div className="grid grid-cols-2 gap-4">
+                      <FormField
+                        control={c.form.control}
+                        name="employeeCode"
+                        render={({ field }) => {
+                          const isLocked = !!c.editingTeacher?.staffProfile?.employeeCode;
+                          return (
+                            <FormItem>
+                              <FormLabel>Employee Code</FormLabel>
+                              <FormControl>
+                                <Input
+                                  {...field}
+                                  disabled={isLocked}
+                                  className={isLocked ? "bg-gray-100 text-gray-500 cursor-not-allowed" : undefined}
+                                  title={isLocked ? "Employee code can't be changed once assigned." : undefined}
+                                />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          );
+                        }}
+                      />
+                      <FormField
+                        control={c.form.control}
+                        name="dateOfJoining"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Date of Joining</FormLabel>
+                            <FormControl>
+                              <Input type="date" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+                    <FormField
+                      control={c.form.control}
+                      name="designation"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Designation</FormLabel>
+                          <FormControl>
+                            <Input {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
                     />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700">Date of Joining</label>
-                    <input type="date" className={inputClass} value={c.dateOfJoining} onChange={(e) => c.setDateOfJoining(e.target.value)} />
-                  </div>
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700">Designation</label>
-                  <input className={inputClass} value={c.designation} onChange={(e) => c.setDesignation(e.target.value)} />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700">Department</label>
-                  <input className={inputClass} value={c.department} onChange={(e) => c.setDepartment(e.target.value)} />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700">Qualification</label>
-                  <input className={inputClass} value={c.qualification} onChange={(e) => c.setQualification(e.target.value)} />
-                </div>
+                    <FormField
+                      control={c.form.control}
+                      name="department"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Department</FormLabel>
+                          <FormControl>
+                            <Input {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={c.form.control}
+                      name="qualification"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Qualification</FormLabel>
+                          <FormControl>
+                            <Input {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
 
-                <div className="flex justify-end gap-3 pt-2">
-                  <button type="button" onClick={c.closeEdit} className="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50">
-                    Cancel
-                  </button>
-                  <button type="submit" disabled={c.isSaving} className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50">
-                    {c.isSaving && <ButtonSpinner />}
-                    Save
-                  </button>
-                </div>
-              </form>
+                    <div className="flex justify-end gap-3 pt-2">
+                      <button
+                        type="button"
+                        onClick={c.closeEdit}
+                        className="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50"
+                      >
+                        Cancel
+                      </button>
+                      <button
+                        type="submit"
+                        disabled={c.isSaving}
+                        className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50"
+                      >
+                        {c.isSaving && <ButtonSpinner />}
+                        Save
+                      </button>
+                    </div>
+                  </form>
+                </Form>
               </div>
             </div>
           </div>

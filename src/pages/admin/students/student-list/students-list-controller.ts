@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslation } from "react-i18next";
-import toast from "react-hot-toast";
 import debounce from "lodash.debounce";
 
 import { useAddStudent, useDeleteStudent, useGetStudentDetails, useUpdateStudentDetail } from "../service";
@@ -10,6 +11,9 @@ import { useNavigate, useParams } from "react-router-dom";
 import useGetParentByEmail from "../service/get-parent-by-email";
 import { useError } from "../../../../hooks";
 import { useGetAcademicYears, useGetClasses } from "../../classes/service/academics-service";
+import { createStudentSchema } from "../student-modal/create-update-student-modal/student-form.schema";
+
+const emptyFormData = {} as IStudentFormData;
 
 const useStudentsListController = () => {
   const { t } = useTranslation();
@@ -19,7 +23,7 @@ const useStudentsListController = () => {
 
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isBulkModalOpen, setIsBulkModalOpen] = useState(false);
-  const [formData, setFormData] = useState<IStudentFormData>({} as IStudentFormData);
+  const form = useForm<IStudentFormData>({ resolver: zodResolver(createStudentSchema), defaultValues: emptyFormData });
   const [currentStep, setCurrentStep] = useState(1);
   const [isParentExist, setIsParentExist] = useState(false);
 
@@ -69,29 +73,19 @@ const useStudentsListController = () => {
   // Get current students for pagination
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  // const currentItems = filteredStudents.slice(
-  //   indexOfFirstItem,
-  //   indexOfLastItem
-  // );
 
   // Change page
   const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
 
   const nextStep = () => {
-    const isValidDetail = validateStudentDetails();
-
-    if (isValidDetail) {
-      setCurrentStep((prev) => Math.min(prev + 1, TOTAL_STEPS));
-      localStorage.setItem("formData", JSON.stringify(formData));
-    } else {
-      toast.error(t("messages.please_fill_all_required_fields"));
-    }
+    setCurrentStep((prev) => Math.min(prev + 1, TOTAL_STEPS));
+    localStorage.setItem("formData", JSON.stringify(form.getValues()));
   };
 
   const prevStep = () => {
-    const formData = localStorage.getItem("formData");
-    if (formData) {
-      setFormData(JSON.parse(formData));
+    const saved = localStorage.getItem("formData");
+    if (saved) {
+      form.reset(JSON.parse(saved));
     }
     setCurrentStep((prev) => Math.max(prev - 1, 1));
   };
@@ -108,7 +102,8 @@ const useStudentsListController = () => {
 
   const updateStudentDetail = useUpdateStudentDetail(organizationId || "");
 
-  const getParentDetails = useGetParentByEmail(organizationId || "", formData.parentEmail);
+  const parentEmail = form.watch("parentEmail");
+  const getParentDetails = useGetParentByEmail(organizationId || "", parentEmail);
 
   const deleteStudent = useDeleteStudent(organizationId || "");
 
@@ -120,23 +115,9 @@ const useStudentsListController = () => {
     },
   });
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-      ...(name === "academicYearId" ? { classId: "", sectionId: "" } : {}),
-      ...(name === "classId" ? { sectionId: "" } : {}),
-    }));
-  };
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    console.log(formData);
-    addStudentProfile.mutate({
-      ...formData,
-    });
-  };
+  const onSubmit = form.handleSubmit((values) => {
+    addStudentProfile.mutate(values);
+  });
 
   const onClickAddStudent = () => {
     setIsAddModalOpen(true);
@@ -156,31 +137,9 @@ const useStudentsListController = () => {
 
   const onCloseModal = () => {
     setIsAddModalOpen(false);
-    setFormData({} as IStudentFormData);
+    form.reset(emptyFormData);
     setCurrentStep(1);
   };
-
-  const validateStudentDetails = () => {
-    if (!formData.admissionNumber?.trim()) return false;
-    if (!formData.admissionDate) return false;
-    if (!formData.name?.trim()) return false;
-    if (!formData.academicYearId?.trim()) return false;
-    if (!formData.classId?.trim()) return false;
-    if (!formData.sectionId?.trim()) return false;
-    if (!formData.rollNumber?.trim()) return false;
-    if (!formData.dateOfBirth) return false;
-    if (!formData.city?.trim()) return false;
-    if (!formData.state?.trim()) return false;
-    if (!formData.address?.trim()) return false;
-    return true;
-  };
-
-  // const validateParentDetails = () => {
-  //   if (!formData.parentName?.trim()) return false;
-  //   if (!formData.parentEmail?.trim()) return false;
-  //   if (!formData.phoneNumber?.trim()) return false;
-  //   return true;
-  // };
 
   const handleDeleteAction = (studentId: string) => {
     setDeleteStudentId(studentId);
@@ -200,39 +159,31 @@ const useStudentsListController = () => {
   useEffect(() => {
     if (getParentDetails.isSuccess && getParentDetails.data) {
       const { item: parent, is_parent_exists } = getParentDetails.data;
-      setFormData((prev) => ({
-        ...prev,
-        parentName: parent.name,
-        phoneNumber: parent.phoneNumber,
-      }));
+      form.setValue("parentName", parent.name);
+      form.setValue("phoneNumber", parent.phoneNumber);
       setIsParentExist(is_parent_exists);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [getParentDetails.isSuccess, getParentDetails.data]);
 
   useEffect(() => {
-    if (EMAIL_REGEX_PATTERN.test(formData.parentEmail)) {
+    if (EMAIL_REGEX_PATTERN.test(parentEmail)) {
       getParentDetails.refetch();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [formData.parentEmail]);
+  }, [parentEmail]);
 
   useEffect(() => {
     if (addStudentProfile.isSuccess) {
       setIsAddModalOpen(false);
       localStorage.removeItem("formData");
-      setFormData({} as IStudentFormData);
+      form.reset(emptyFormData);
       setCurrentStep(1);
       getStudentDetails.refetch();
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [addStudentProfile.isSuccess]);
-
-  // useEffect(() => {
-  //   if (getStudentDetails.isSuccess && getStudentDetails.data) {
-
-  //   }
-  // }, []);
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -267,7 +218,7 @@ const useStudentsListController = () => {
   return {
     t,
     organizationId: organizationId || "",
-    formData,
+    form,
     isAddModalOpen,
     isBulkModalOpen,
     onClickBulkUpload,
@@ -294,9 +245,7 @@ const useStudentsListController = () => {
     isLoadingUpdateStudent: updateStudentDetail.isPending,
     isDeletingStudent: deleteStudent.isPending,
     isFetchingStudentList: getStudentDetails.isFetching,
-    handleChange,
-    handleSubmit,
-    setFormData,
+    onSubmit,
     onCloseModal,
     nextStep,
     prevStep,

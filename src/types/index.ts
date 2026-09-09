@@ -1,4 +1,5 @@
 import { ReactNode } from "react";
+import { UseFormReturn } from "react-hook-form";
 
 export type NoticeAudienceScope = "SCHOOL" | "ROLE" | "CLASS" | "SECTION";
 
@@ -249,7 +250,7 @@ export interface PermissionOption {
 export interface ICreateUpdateUserModalProps {
   t: (key: string) => string;
   isOpen: boolean;
-  formData: FormData;
+  form: UseFormReturn<FormData>;
   roleOptions: RoleOption[];
   permissionOptions: PermissionOption[];
   isEditUser: boolean;
@@ -257,8 +258,7 @@ export interface ICreateUpdateUserModalProps {
   isLoadingAddUserDetail: boolean;
   isLoadingUpdateUserDetail?: boolean;
   onClose: () => void;
-  setFormData: React.Dispatch<React.SetStateAction<FormData>>;
-  handleSubmit: (e: React.FormEvent) => void;
+  onSubmit: (e: React.FormEvent) => void;
   handlePermissionChange: (permission: keyof FormData["permissions"]) => void;
 }
 
@@ -618,7 +618,7 @@ export interface IStudentDetails {
 }
 
 export interface IStudentFormData {
-  id: string;
+  id?: string;
   admissionNumber: string;
   admissionDate: string;
   name: string;
@@ -631,8 +631,8 @@ export interface IStudentFormData {
   city: string;
   state: string;
   address: string;
-  parentName?: string;
-  phoneNumber?: string;
+  parentName: string;
+  phoneNumber: string;
 }
 
 export interface IStudentEnrollment {
@@ -736,7 +736,7 @@ export interface ICreateUpdateStudentModalProps {
   t: (key: string) => string;
   isOpen: boolean;
   organizationId: string;
-  formData: IStudentFormData;
+  form: UseFormReturn<IStudentFormData>;
   isEditStudent: boolean;
   currentStep: number;
   isParentExist: boolean;
@@ -745,10 +745,8 @@ export interface ICreateUpdateStudentModalProps {
   onClose: () => void;
   nextStep: () => void;
   prevStep: () => void;
-  handleSubmit: (e: React.FormEvent) => void;
-  setFormData: React.Dispatch<React.SetStateAction<IStudentFormData>>;
+  onSubmit: (e: React.FormEvent) => void;
   setCurrentStep: React.Dispatch<React.SetStateAction<number>>;
-  handleChange: (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => void;
 }
 
 export interface SelectOption {

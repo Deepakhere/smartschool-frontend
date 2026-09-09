@@ -1,21 +1,21 @@
 import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useParams } from "react-router-dom";
 import toast from "react-hot-toast";
 
 import { useGetMyChildren } from "../ptm/service/my-children-service";
 import { useGetMyLeaveRequests, useCreateLeaveRequest, useCancelLeaveRequest } from "./service/leave-request-service";
-
-const today = () => new Date().toISOString().slice(0, 10);
+import { leaveRequestFormSchema, defaultLeaveRequestFormValues } from "./leave-requests.schema";
 
 export const useLeaveRequestsController = () => {
   const { organizationId = "" } = useParams();
 
   const [showForm, setShowForm] = useState(false);
-  const [studentId, setStudentId] = useState("");
-  const [fromDate, setFromDate] = useState(today());
-  const [toDate, setToDate] = useState(today());
-  const [reason, setReason] = useState("");
-  const [attachment, setAttachment] = useState<File | null>(null);
+  const form = useForm({
+    resolver: zodResolver(leaveRequestFormSchema),
+    defaultValues: defaultLeaveRequestFormValues,
+  });
   const [leaveRequestIdPendingCancel, setLeaveRequestIdPendingCancel] = useState<string | null>(null);
 
   const children = useGetMyChildren(organizationId);
@@ -24,43 +24,25 @@ export const useLeaveRequestsController = () => {
   const cancelLeaveRequest = useCancelLeaveRequest(organizationId);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setAttachment(e.target.files?.[0] || null);
+    form.setValue("attachment", e.target.files?.[0] || null);
   };
 
-  const resetForm = () => {
-    setStudentId("");
-    setFromDate(today());
-    setToDate(today());
-    setReason("");
-    setAttachment(null);
-  };
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!studentId || !fromDate || !toDate || !reason) {
-      toast.error("Please fill all required fields");
-      return;
-    }
-    if (fromDate > toDate) {
-      toast.error("From date cannot be after to date");
-      return;
-    }
-
+  const onSubmit = form.handleSubmit((values) => {
     const formData = new FormData();
-    formData.append("studentId", studentId);
-    formData.append("fromDate", fromDate);
-    formData.append("toDate", toDate);
-    formData.append("reason", reason);
-    if (attachment) formData.append("attachment", attachment);
+    formData.append("studentId", values.studentId);
+    formData.append("fromDate", values.fromDate);
+    formData.append("toDate", values.toDate);
+    formData.append("reason", values.reason);
+    if (values.attachment) formData.append("attachment", values.attachment);
 
     createLeaveRequest.mutate(formData);
-  };
+  });
 
   useEffect(() => {
     if (createLeaveRequest.isSuccess) {
       toast.success("Leave request submitted.");
       setShowForm(false);
-      resetForm();
+      form.reset(defaultLeaveRequestFormValues);
     }
     if (createLeaveRequest.isError) {
       toast.error(createLeaveRequest.error?.response?.Error?.message || "Failed to submit leave request");
@@ -83,16 +65,9 @@ export const useLeaveRequestsController = () => {
     isLoading: leaveRequests.isLoading,
     showForm,
     setShowForm,
-    studentId,
-    setStudentId,
-    fromDate,
-    setFromDate,
-    toDate,
-    setToDate,
-    reason,
-    setReason,
+    form,
     handleFileChange,
-    handleSubmit,
+    onSubmit,
     isCreating: createLeaveRequest.isPending,
     handleCancel,
     leaveRequestIdPendingCancel,

@@ -1,8 +1,11 @@
+import { useTranslation } from "react-i18next";
+
 import Spinner from "../../../components/spinner";
 import NoRecordFound from "../../../components/no-record-found";
 import SectionHeader from "../../../components/section-header";
 import CustomSelectDropdown from "../../../components/custom-select";
-import { useTranslation } from "react-i18next";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "../../../components/ui/form";
+import { Input } from "../../../components/ui/input";
 import useClassesController from "./classes-controller";
 import { SelectOption } from "../../../types";
 
@@ -19,8 +22,6 @@ const tabs = [
   { key: "teachers", label: "Teacher Assignments" },
 ] as const;
 
-const inputClass =
-  "mt-1 block w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-gray-900 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm";
 const btnPrimary =
   "inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50";
 const btnSecondary =
@@ -66,34 +67,77 @@ const AdminClasses = () => {
             </div>
 
             {c.showYearForm && (
-              <form onSubmit={c.submitYear} className="p-4 border-b border-gray-200 grid grid-cols-1 sm:grid-cols-4 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700">Name (e.g. 2026-27)</label>
-                  <input className={inputClass} value={c.yearName} onChange={(e) => c.setYearName(e.target.value)} />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700">Start Date</label>
-                  <input type="date" className={inputClass} value={c.yearStart} onChange={(e) => c.setYearStart(e.target.value)} />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700">End Date</label>
-                  <input type="date" className={inputClass} value={c.yearEnd} onChange={(e) => c.setYearEnd(e.target.value)} />
-                </div>
-                <div className="flex items-end gap-3">
-                  <label className="flex items-center gap-2 text-sm text-gray-700">
-                    <input type="checkbox" checked={c.yearIsCurrent} onChange={(e) => c.setYearIsCurrent(e.target.checked)} />
-                    Set as current
-                  </label>
-                </div>
-                <div className="sm:col-span-4 flex justify-end gap-3">
-                  <button type="button" className={btnSecondary} onClick={() => c.setShowYearForm(false)}>
-                    {t("buttons.cancel")}
-                  </button>
-                  <button type="submit" disabled={c.isCreatingYear} className={btnPrimary}>
-                    {t("buttons.save")}
-                  </button>
-                </div>
-              </form>
+              <Form {...c.yearForm}>
+                <form
+                  onSubmit={c.submitYear}
+                  className="p-4 border-b border-gray-200 grid grid-cols-1 sm:grid-cols-4 gap-4"
+                  noValidate
+                >
+                  <FormField
+                    control={c.yearForm.control}
+                    name="name"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Name (e.g. 2026-27)</FormLabel>
+                        <FormControl>
+                          <Input {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={c.yearForm.control}
+                    name="startDate"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Start Date</FormLabel>
+                        <FormControl>
+                          <Input type="date" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={c.yearForm.control}
+                    name="endDate"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>End Date</FormLabel>
+                        <FormControl>
+                          <Input type="date" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={c.yearForm.control}
+                    name="isCurrent"
+                    render={({ field }) => (
+                      <div className="flex items-end gap-3">
+                        <label className="flex items-center gap-2 text-sm text-gray-700">
+                          <input
+                            type="checkbox"
+                            checked={field.value}
+                            onChange={(e) => field.onChange(e.target.checked)}
+                          />
+                          Set as current
+                        </label>
+                      </div>
+                    )}
+                  />
+                  <div className="sm:col-span-4 flex justify-end gap-3">
+                    <button type="button" className={btnSecondary} onClick={() => c.setShowYearForm(false)}>
+                      {t("buttons.cancel")}
+                    </button>
+                    <button type="submit" disabled={c.isCreatingYear} className={btnPrimary}>
+                      {t("buttons.save")}
+                    </button>
+                  </div>
+                </form>
+              </Form>
             )}
 
             {c.isLoadingYears ? (
@@ -118,7 +162,9 @@ const AdminClasses = () => {
                       <td className="px-6 py-4 text-sm text-gray-500">{new Date(y.endDate).toLocaleDateString()}</td>
                       <td className="px-6 py-4 text-sm">
                         {y.isCurrent && (
-                          <span className="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded-full">Current</span>
+                          <span className="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded-full">
+                            Current
+                          </span>
                         )}
                       </td>
                     </tr>
@@ -145,30 +191,58 @@ const AdminClasses = () => {
                   />
                 </div>
               </div>
-              <button className={btnPrimary} onClick={() => c.setShowClassForm(!c.showClassForm)} disabled={!c.selectedAcademicYearId}>
+              <button
+                className={btnPrimary}
+                onClick={() => c.setShowClassForm(!c.showClassForm)}
+                disabled={!c.selectedAcademicYearId}
+              >
                 + Add Class
               </button>
             </div>
 
             {c.showClassForm && (
-              <form onSubmit={c.submitClass} className="p-4 border-b border-gray-200 grid grid-cols-1 sm:grid-cols-3 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700">Name (e.g. Class 10)</label>
-                  <input className={inputClass} value={c.className} onChange={(e) => c.setClassName(e.target.value)} />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700">Numeric Level</label>
-                  <input type="number" className={inputClass} value={c.classLevel} onChange={(e) => c.setClassLevel(e.target.value)} />
-                </div>
-                <div className="flex items-end justify-end gap-3">
-                  <button type="button" className={btnSecondary} onClick={() => c.setShowClassForm(false)}>
-                    {t("buttons.cancel")}
-                  </button>
-                  <button type="submit" disabled={c.isCreatingClass} className={btnPrimary}>
-                    {t("buttons.save")}
-                  </button>
-                </div>
-              </form>
+              <Form {...c.classForm}>
+                <form
+                  onSubmit={c.submitClass}
+                  className="p-4 border-b border-gray-200 grid grid-cols-1 sm:grid-cols-3 gap-4"
+                  noValidate
+                >
+                  <FormField
+                    control={c.classForm.control}
+                    name="name"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Name (e.g. Class 10)</FormLabel>
+                        <FormControl>
+                          <Input {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={c.classForm.control}
+                    name="numericLevel"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Numeric Level</FormLabel>
+                        <FormControl>
+                          <Input type="number" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <div className="flex items-end justify-end gap-3">
+                    <button type="button" className={btnSecondary} onClick={() => c.setShowClassForm(false)}>
+                      {t("buttons.cancel")}
+                    </button>
+                    <button type="submit" disabled={c.isCreatingClass} className={btnPrimary}>
+                      {t("buttons.save")}
+                    </button>
+                  </div>
+                </form>
+              </Form>
             )}
 
             {c.isLoadingClasses ? (
@@ -214,30 +288,58 @@ const AdminClasses = () => {
                   />
                 </div>
               </div>
-              <button className={btnPrimary} onClick={() => c.setShowSectionForm(!c.showSectionForm)} disabled={!c.selectedClassId}>
+              <button
+                className={btnPrimary}
+                onClick={() => c.setShowSectionForm(!c.showSectionForm)}
+                disabled={!c.selectedClassId}
+              >
                 + Add Section
               </button>
             </div>
 
             {c.showSectionForm && (
-              <form onSubmit={c.submitSection} className="p-4 border-b border-gray-200 grid grid-cols-1 sm:grid-cols-3 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700">Name (e.g. A)</label>
-                  <input className={inputClass} value={c.sectionName} onChange={(e) => c.setSectionName(e.target.value)} />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700">Capacity</label>
-                  <input type="number" className={inputClass} value={c.sectionCapacity} onChange={(e) => c.setSectionCapacity(e.target.value)} />
-                </div>
-                <div className="flex items-end justify-end gap-3">
-                  <button type="button" className={btnSecondary} onClick={() => c.setShowSectionForm(false)}>
-                    {t("buttons.cancel")}
-                  </button>
-                  <button type="submit" disabled={c.isCreatingSection} className={btnPrimary}>
-                    {t("buttons.save")}
-                  </button>
-                </div>
-              </form>
+              <Form {...c.sectionForm}>
+                <form
+                  onSubmit={c.submitSection}
+                  className="p-4 border-b border-gray-200 grid grid-cols-1 sm:grid-cols-3 gap-4"
+                  noValidate
+                >
+                  <FormField
+                    control={c.sectionForm.control}
+                    name="name"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Name (e.g. A)</FormLabel>
+                        <FormControl>
+                          <Input {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={c.sectionForm.control}
+                    name="capacity"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Capacity</FormLabel>
+                        <FormControl>
+                          <Input type="number" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <div className="flex items-end justify-end gap-3">
+                    <button type="button" className={btnSecondary} onClick={() => c.setShowSectionForm(false)}>
+                      {t("buttons.cancel")}
+                    </button>
+                    <button type="submit" disabled={c.isCreatingSection} className={btnPrimary}>
+                      {t("buttons.save")}
+                    </button>
+                  </div>
+                </form>
+              </Form>
             )}
 
             {c.isLoadingSections ? (
@@ -283,30 +385,58 @@ const AdminClasses = () => {
                   />
                 </div>
               </div>
-              <button className={btnPrimary} onClick={() => c.setShowSubjectForm(!c.showSubjectForm)} disabled={!c.selectedAcademicYearId}>
+              <button
+                className={btnPrimary}
+                onClick={() => c.setShowSubjectForm(!c.showSubjectForm)}
+                disabled={!c.selectedAcademicYearId}
+              >
                 + Add Subject
               </button>
             </div>
 
             {c.showSubjectForm && (
-              <form onSubmit={c.submitSubject} className="p-4 border-b border-gray-200 grid grid-cols-1 sm:grid-cols-3 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700">Name</label>
-                  <input className={inputClass} value={c.subjectName} onChange={(e) => c.setSubjectName(e.target.value)} />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700">Code</label>
-                  <input className={inputClass} value={c.subjectCode} onChange={(e) => c.setSubjectCode(e.target.value)} />
-                </div>
-                <div className="flex items-end justify-end gap-3">
-                  <button type="button" className={btnSecondary} onClick={() => c.setShowSubjectForm(false)}>
-                    {t("buttons.cancel")}
-                  </button>
-                  <button type="submit" disabled={c.isCreatingSubject} className={btnPrimary}>
-                    {t("buttons.save")}
-                  </button>
-                </div>
-              </form>
+              <Form {...c.subjectForm}>
+                <form
+                  onSubmit={c.submitSubject}
+                  className="p-4 border-b border-gray-200 grid grid-cols-1 sm:grid-cols-3 gap-4"
+                  noValidate
+                >
+                  <FormField
+                    control={c.subjectForm.control}
+                    name="name"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Name</FormLabel>
+                        <FormControl>
+                          <Input {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={c.subjectForm.control}
+                    name="code"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Code</FormLabel>
+                        <FormControl>
+                          <Input {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <div className="flex items-end justify-end gap-3">
+                    <button type="button" className={btnSecondary} onClick={() => c.setShowSubjectForm(false)}>
+                      {t("buttons.cancel")}
+                    </button>
+                    <button type="submit" disabled={c.isCreatingSubject} className={btnPrimary}>
+                      {t("buttons.save")}
+                    </button>
+                  </div>
+                </form>
+              </Form>
             )}
 
             {c.isLoadingSubjects ? (
@@ -346,75 +476,129 @@ const AdminClasses = () => {
             </div>
 
             {c.showAssignForm && (
-              <form onSubmit={c.submitAssign} className="p-4 border-b border-gray-200 grid grid-cols-1 sm:grid-cols-3 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Teacher</label>
-                  <CustomSelectDropdown
-                    placeholder="Select teacher"
-                    options={c.teachers.map((tch): SelectOption => ({ id: tch.id, name: `${tch.name} (${tch.email})` }))}
-                    value={(() => {
-                      const tch = c.teachers.find((tch) => tch.id === c.assignTeacherId);
-                      return tch ? { id: tch.id, name: `${tch.name} (${tch.email})` } : null;
-                    })()}
-                    onChange={(o) => c.setAssignTeacherId(String(o.id))}
+              <Form {...c.assignForm}>
+                <form
+                  onSubmit={c.submitAssign}
+                  className="p-4 border-b border-gray-200 grid grid-cols-1 sm:grid-cols-3 gap-4"
+                  noValidate
+                >
+                  <FormField
+                    control={c.assignForm.control}
+                    name="teacherId"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Teacher</FormLabel>
+                        <FormControl>
+                          <CustomSelectDropdown
+                            placeholder="Select teacher"
+                            options={c.teachers.map((tch): SelectOption => ({
+                              id: tch.id,
+                              name: `${tch.name} (${tch.email})`,
+                            }))}
+                            value={(() => {
+                              const tch = c.teachers.find((tch) => tch.id === field.value);
+                              return tch ? { id: tch.id, name: `${tch.name} (${tch.email})` } : null;
+                            })()}
+                            onChange={(o) => field.onChange(String(o.id))}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
                   />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Class</label>
-                  <CustomSelectDropdown
-                    placeholder="Select class"
-                    options={c.classes.map((k): SelectOption => ({ id: k.id, name: k.name }))}
-                    value={(() => {
-                      const k = c.classes.find((k) => k.id === c.assignClassId);
-                      return k ? { id: k.id, name: k.name } : null;
-                    })()}
-                    onChange={(o) => c.setAssignClassId(String(o.id))}
+                  <FormField
+                    control={c.assignForm.control}
+                    name="classId"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Class</FormLabel>
+                        <FormControl>
+                          <CustomSelectDropdown
+                            placeholder="Select class"
+                            options={c.classes.map((k): SelectOption => ({ id: k.id, name: k.name }))}
+                            value={(() => {
+                              const k = c.classes.find((k) => k.id === field.value);
+                              return k ? { id: k.id, name: k.name } : null;
+                            })()}
+                            onChange={(o) => field.onChange(String(o.id))}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
                   />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Section</label>
-                  <CustomSelectDropdown
-                    placeholder="Select section"
-                    disabled={!c.assignClassId}
-                    options={c.assignSections.map((s): SelectOption => ({ id: s.id, name: s.name }))}
-                    value={(() => {
-                      const s = c.assignSections.find((s) => s.id === c.assignSectionId);
-                      return s ? { id: s.id, name: s.name } : null;
-                    })()}
-                    onChange={(o) => c.setAssignSectionId(String(o.id))}
+                  <FormField
+                    control={c.assignForm.control}
+                    name="sectionId"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Section</FormLabel>
+                        <FormControl>
+                          <CustomSelectDropdown
+                            placeholder="Select section"
+                            disabled={!c.assignForm.watch("classId")}
+                            options={c.assignSections.map((s): SelectOption => ({ id: s.id, name: s.name }))}
+                            value={(() => {
+                              const s = c.assignSections.find((s) => s.id === field.value);
+                              return s ? { id: s.id, name: s.name } : null;
+                            })()}
+                            onChange={(o) => field.onChange(String(o.id))}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
                   />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Role</label>
-                  <CustomSelectDropdown
-                    options={roleOptions}
-                    value={roleOptions.find((o) => o.id === c.assignRole) || roleOptions[0]}
-                    onChange={(o) => c.setAssignRole(o.id as "SUBJECT_TEACHER" | "CLASS_TEACHER")}
+                  <FormField
+                    control={c.assignForm.control}
+                    name="role"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Role</FormLabel>
+                        <FormControl>
+                          <CustomSelectDropdown
+                            options={roleOptions}
+                            value={roleOptions.find((o) => o.id === field.value) || roleOptions[0]}
+                            onChange={(o) => field.onChange(o.id as "SUBJECT_TEACHER" | "CLASS_TEACHER")}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
                   />
-                </div>
-                {c.assignRole === "SUBJECT_TEACHER" && (
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Subject</label>
-                    <CustomSelectDropdown
-                      placeholder="Select subject"
-                      options={c.subjects.map((s): SelectOption => ({ id: s.id, name: s.name }))}
-                      value={(() => {
-                        const s = c.subjects.find((s) => s.id === c.assignSubjectId);
-                        return s ? { id: s.id, name: s.name } : null;
-                      })()}
-                      onChange={(o) => c.setAssignSubjectId(String(o.id))}
+                  {c.assignForm.watch("role") === "SUBJECT_TEACHER" && (
+                    <FormField
+                      control={c.assignForm.control}
+                      name="subjectId"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Subject</FormLabel>
+                          <FormControl>
+                            <CustomSelectDropdown
+                              placeholder="Select subject"
+                              options={c.subjects.map((s): SelectOption => ({ id: s.id, name: s.name }))}
+                              value={(() => {
+                                const s = c.subjects.find((s) => s.id === field.value);
+                                return s ? { id: s.id, name: s.name } : null;
+                              })()}
+                              onChange={(o) => field.onChange(String(o.id))}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
                     />
+                  )}
+                  <div className="flex items-end justify-end gap-3">
+                    <button type="button" className={btnSecondary} onClick={() => c.setShowAssignForm(false)}>
+                      {t("buttons.cancel")}
+                    </button>
+                    <button type="submit" disabled={c.isAssigning} className={btnPrimary}>
+                      {t("buttons.save")}
+                    </button>
                   </div>
-                )}
-                <div className="flex items-end justify-end gap-3">
-                  <button type="button" className={btnSecondary} onClick={() => c.setShowAssignForm(false)}>
-                    {t("buttons.cancel")}
-                  </button>
-                  <button type="submit" disabled={c.isAssigning} className={btnPrimary}>
-                    {t("buttons.save")}
-                  </button>
-                </div>
-              </form>
+                </form>
+              </Form>
             )}
 
             {c.isLoadingAssignments ? (

@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import toast from "react-hot-toast";
 import { useTranslation } from "react-i18next";
 
@@ -6,6 +8,7 @@ import { useCreateOrganization } from "../../service";
 import { useUpdateOrganization, useUploadOrganizationLogo } from "../service";
 import { useError } from "../../../../hooks";
 import { IOrganization } from "../../../../types";
+import { organizationFormSchema, OrganizationFormValues } from "./add-organization-modal.schema";
 
 // `organization` present = edit an existing school; absent = create a new one.
 // Both modes share one form and one logo control — logo upload always needs a
@@ -23,10 +26,11 @@ const useAddOrganizationModalController = (
   const updateOrganization = useUpdateOrganization();
   const uploadLogo = useUploadOrganizationLogo();
 
-  const [name, setName] = useState("");
-  const [address, setAddress] = useState("");
-  const [pincode, setPincode] = useState("");
-  const [description, setDescription] = useState("");
+  const form = useForm<OrganizationFormValues>({
+    resolver: zodResolver(organizationFormSchema),
+    defaultValues: { name: "", address: "", pincode: "", description: "" },
+  });
+
   const [logoFile, setLogoFile] = useState<File | null>(null);
   const [logoPreviewUrl, setLogoPreviewUrl] = useState<string | undefined>(undefined);
 
@@ -35,13 +39,16 @@ const useAddOrganizationModalController = (
 
   useEffect(() => {
     if (isOpen) {
-      setName(organization?.name || "");
-      setAddress(organization?.address || "");
-      setPincode(organization?.pincode || "");
-      setDescription(organization?.description || "");
+      form.reset({
+        name: organization?.name || "",
+        address: organization?.address || "",
+        pincode: organization?.pincode || "",
+        description: organization?.description || "",
+      });
       setLogoFile(null);
       setLogoPreviewUrl(organization?.logo?.url);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOpen, organization]);
 
   const handleLogoFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -52,14 +59,7 @@ const useAddOrganizationModalController = (
     }
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    if (!name.trim() || !address.trim() || !pincode.trim()) {
-      toast.error(t("messages.please_fill_all_required_fields"));
-      return;
-    }
-
+  const onSubmit = form.handleSubmit((values) => {
     const finishUp = async (organizationId: string) => {
       if (logoFile) {
         await uploadLogo.mutateAsync({ organizationId, file: logoFile }).catch(() => {});
@@ -70,7 +70,7 @@ const useAddOrganizationModalController = (
 
     if (isEditMode && organization) {
       updateOrganization.mutate(
-        { organizationId: organization.id, value: { name, address, pincode, description } },
+        { organizationId: organization.id, value: values },
         {
           onSuccess: async () => {
             toast.success("Organization updated successfully.");
@@ -79,32 +79,22 @@ const useAddOrganizationModalController = (
         }
       );
     } else {
-      createOrganization.mutate(
-        { name, address, pincode, description },
-        {
-          onSuccess: async (created) => {
-            toast.success(t("messages.organization_created_successfully"));
-            await finishUp(created.id);
-          },
-        }
-      );
+      createOrganization.mutate(values, {
+        onSuccess: async (created) => {
+          toast.success(t("messages.organization_created_successfully"));
+          await finishUp(created.id);
+        },
+      });
     }
-  };
+  });
 
   return {
     t,
+    form,
     isEditMode,
-    name,
-    address,
-    pincode,
-    description,
     logoPreviewUrl,
-    setName,
-    setAddress,
-    setPincode,
-    setDescription,
     handleLogoFileChange,
-    handleSubmit,
+    onSubmit,
     isLoading: isEditMode ? updateOrganization.isPending : createOrganization.isPending,
     isUploadingLogo: uploadLogo.isPending,
   };

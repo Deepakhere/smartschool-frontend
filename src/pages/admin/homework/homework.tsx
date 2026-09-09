@@ -3,12 +3,13 @@ import DeleteConfirmationDialog from "../../../components/delete-confirmation-di
 import NoRecordFound from "../../../components/no-record-found";
 import SectionHeader from "../../../components/section-header";
 import CustomSelectDropdown from "../../../components/custom-select";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "../../../components/ui/form";
+import { Input } from "../../../components/ui/input";
+import { Textarea } from "../../../components/ui/textarea";
 import { useTranslation } from "react-i18next";
 import { useHomeworkController } from "./homework-controller";
 import { SelectOption } from "../../../types";
 
-const inputClass =
-  "mt-1 block w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-gray-900 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm";
 const btnPrimary =
   "inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50";
 const btnSecondary =
@@ -71,55 +72,102 @@ const Homework = () => {
       </div>
 
       {c.showForm && (
-        <form onSubmit={c.handleSubmit} className="bg-white shadow rounded-lg p-4 space-y-4">
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Subject</label>
-              <CustomSelectDropdown
-                placeholder="Select subject"
-                options={c.subjects.map((s): SelectOption => ({ id: s.id, name: s.name }))}
-                value={(() => {
-                  const s = c.subjects.find((s) => s.id === c.subjectId);
-                  return s ? { id: s.id, name: s.name } : null;
-                })()}
-                onChange={(o) => c.setSubjectId(String(o.id))}
+        <Form {...c.form}>
+          <form onSubmit={c.onSubmit} className="bg-white shadow rounded-lg p-4 space-y-4" noValidate>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <FormField
+                control={c.form.control}
+                name="subjectId"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Subject</FormLabel>
+                    <FormControl>
+                      <CustomSelectDropdown
+                        placeholder="Select subject"
+                        options={c.subjects.map((s): SelectOption => ({ id: s.id, name: s.name }))}
+                        value={(() => {
+                          const s = c.subjects.find((s) => s.id === field.value);
+                          return s ? { id: s.id, name: s.name } : null;
+                        })()}
+                        onChange={(o) => field.onChange(String(o.id))}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={c.form.control}
+                name="title"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Title</FormLabel>
+                    <FormControl>
+                      <Input {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
               />
             </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700">Title</label>
-              <input className={inputClass} value={c.title} onChange={(e) => c.setTitle(e.target.value)} />
-            </div>
-          </div>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700">Description</label>
-            <textarea className={inputClass} rows={3} value={c.description} onChange={(e) => c.setDescription(e.target.value)} />
-          </div>
+            <FormField
+              control={c.form.control}
+              name="description"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Description</FormLabel>
+                  <FormControl>
+                    <Textarea rows={3} {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700">Assigned Date</label>
-              <input type="date" className={inputClass} value={c.assignedDate} onChange={(e) => c.setAssignedDate(e.target.value)} />
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <FormField
+                control={c.form.control}
+                name="assignedDate"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Assigned Date</FormLabel>
+                    <FormControl>
+                      <Input type="date" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={c.form.control}
+                name="dueDate"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Due Date</FormLabel>
+                    <FormControl>
+                      <Input type="date" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <div>
+                <label className="block text-sm font-medium text-gray-700">{t("labels.attachment")}</label>
+                <Input type="file" accept=".pdf" onChange={c.handleFileChange} />
+              </div>
             </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700">Due Date</label>
-              <input type="date" className={inputClass} value={c.dueDate} onChange={(e) => c.setDueDate(e.target.value)} />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700">{t("labels.attachment")}</label>
-              <input type="file" accept=".pdf" onChange={c.handleFileChange} className={inputClass} />
-            </div>
-          </div>
 
-          <div className="flex justify-end gap-3">
-            <button type="button" className={btnSecondary} onClick={() => c.setShowForm(false)}>
-              {t("buttons.cancel")}
-            </button>
-            <button type="submit" disabled={c.isCreating} className={btnPrimary}>
-              {t("buttons.save")}
-            </button>
-          </div>
-        </form>
+            <div className="flex justify-end gap-3">
+              <button type="button" className={btnSecondary} onClick={() => c.setShowForm(false)}>
+                {t("buttons.cancel")}
+              </button>
+              <button type="submit" disabled={c.isCreating} className={btnPrimary}>
+                {t("buttons.save")}
+              </button>
+            </div>
+          </form>
+        </Form>
       )}
 
       {c.sectionId && (
@@ -148,7 +196,12 @@ const Homework = () => {
                       {hw.attachmentURL && (
                         <>
                           {" · "}
-                          <a href={hw.attachmentURL} target="_blank" rel="noreferrer" className="text-indigo-600 hover:underline">
+                          <a
+                            href={hw.attachmentURL}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="text-indigo-600 hover:underline"
+                          >
                             {t("labels.attachment")}
                           </a>
                         </>
