@@ -2,6 +2,7 @@ import React from "react";
 import Cookies from "js-cookie";
 import { USER_ACCESS_KEY } from "../utils";
 import { Navigate } from "react-router-dom";
+import { TenantProvider } from "../context/tenant-context";
 
 interface PublicRouteProps {
   children: React.ReactNode;
@@ -16,18 +17,21 @@ const useRoutesController = () => {
   const PublicRoute: React.FC<PublicRouteProps> = ({ children }) => {
     const token = Cookies.get(USER_ACCESS_KEY.TOKEN);
     const user_role = Cookies.get(USER_ACCESS_KEY.ROLE);
+    const organizationId = Cookies.get(USER_ACCESS_KEY.ORGANIZATION_ID);
 
     if (token && user_role) {
-      return <Navigate to={`/${user_role}/dashboard`} replace />;
+      // no organizationId here 404s into /not-access — send to the picker instead if none is set yet
+      return organizationId ? (
+        <Navigate to={`/${organizationId}/${user_role}/dashboard`} replace />
+      ) : (
+        <Navigate to="/organization" replace />
+      );
     }
 
     return <>{children}</>;
   };
 
-  const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
-    children,
-    role,
-  }) => {
+  const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, role }) => {
     const token = Cookies.get(USER_ACCESS_KEY.TOKEN);
     const user_role = Cookies.get(USER_ACCESS_KEY.ROLE);
 
@@ -35,7 +39,8 @@ const useRoutesController = () => {
       return <Navigate to="/login" replace />;
     }
 
-    return <>{children}</>;
+    // role checked out; TenantProvider still has to confirm the URL's :organizationId is real
+    return <TenantProvider>{children}</TenantProvider>;
   };
 
   return {

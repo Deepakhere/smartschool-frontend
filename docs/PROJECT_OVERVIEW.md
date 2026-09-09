@@ -270,13 +270,25 @@ bugs: `GET_ALL_USER`, `GET_NOTICE_LIST`, `GET_STUDENT_PROFILE` and `GET_PARENT_D
 were missing `organizationId` and their own filter params — harmless when caching was off, a
 genuine stale/cross-tenant risk once it was on. Fixed by including them in the key.
 
-These remain identified and explicitly scoped, not accidental oversights:
-
-- **No `TenantProvider`.** Each screen still reads `organizationId` from the route independently
-  rather than through a shared context that validates it against the user's memberships. Query
-  keys are now tenant-scoped where it matters (see above), which was the main risk this would have
-  otherwise caused — a full `TenantProvider` is still worth doing for the validation/redirect
-  behavior, just no longer load-bearing for cache correctness.
+**`TenantProvider` — done.** `context/tenant-context.tsx` — mounted by `ProtectedRoute` (in
+`routes-controller.tsx`), inside the `:organizationId` route segment. It reads the id from the
+route, confirms it's actually one of the user's real memberships (`useGetAllOrganizations`, the
+same query the org-picker page already used), and redirects to `/not-access` if not — platform
+admins bypass this, since `resolveTenant()` on the backend already grants them explicit, audited
+access to any named tenant. Exposes `useTenant()` (`{organizationId, organization, organizations}`)
+for new code; existing `useParams()` calls across ~50 files were left alone since they already read
+the same route param correctly — this closes a real gap (an admin at School A typing School B's id
+into the address bar rendered the shell anyway, with the backend's 403s as the only actual guard,
+not a clean redirect), not a cosmetic one. **Consolidated into the route guard** rather than added
+alongside it, per explicit direction: `ProtectedRoute` used to only check role from a cookie; it
+now checks role *and* wraps children in `TenantProvider` for the real tenant check. Found and fixed
+a second, related real bug while in there: `PublicRoute`'s already-logged-in redirect went to
+`/${role}/dashboard` with no `:organizationId` at all — a route that matches nothing, so it 404'd
+into `/not-access` (this was called out in the original architecture plan and never actually
+fixed) — now reads the `organizationId` cookie set at login and redirects properly, or to
+`/organization` (the picker) if no tenant was chosen yet. Covered by 4 new tests
+(`tenant-context.test.tsx`): loading state, valid membership, invalid membership → redirect,
+platform-admin bypass — all passing, full suite now 22/22, `tsc -b` and build both clean.
 
 **`@/` path alias — done.** Added to both `vite.config.ts` (`resolve.alias`) and `tsconfig.app.json`
 (`paths`), then every existing relative import of two or more `../` segments was codemodded to
