@@ -16,7 +16,6 @@ export const useGetMyLeaveRequests = (organizationId: string) =>
       return result.data.Data;
     },
     enabled: !!organizationId,
-    gcTime: 0,
   });
 
 export const useCreateLeaveRequest = (organizationId: string) => {

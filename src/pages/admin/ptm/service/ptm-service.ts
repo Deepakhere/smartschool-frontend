@@ -14,7 +14,6 @@ export const useGetPTMEvents = (organizationId: string) =>
       return result.data.Data;
     },
     enabled: !!organizationId,
-    gcTime: 0,
   });
 
 interface ICreatePTMEventPayload {
@@ -69,7 +68,6 @@ export const useGetSlotsForEvent = (organizationId: string, ptmEventId?: string)
       return result.data.Data;
     },
     enabled: !!organizationId && !!ptmEventId,
-    gcTime: 0,
   });
 
 export const useBookPTMSlot = (organizationId: string) => {
@@ -110,7 +108,6 @@ export const useGetMyPTMBookings = (organizationId: string) =>
       return result.data.Data;
     },
     enabled: !!organizationId,
-    gcTime: 0,
   });
 
 export const useGetMyPTMAgenda = (organizationId: string) =>
@@ -124,5 +121,4 @@ export const useGetMyPTMAgenda = (organizationId: string) =>
       return result.data.Data;
     },
     enabled: !!organizationId,
-    gcTime: 0,
   });

@@ -49,9 +49,9 @@ const useGetNoticeList = (
   page: number
 ) =>
   useQuery<{ items: INoticeResponse[]; total_count: number }, IAPIError>({
-    queryKey: [API_QUERY_KEY.GET_NOTICE_LIST],
+    queryKey: [API_QUERY_KEY.GET_NOTICE_LIST, organizationId, searchTerm, type, limit, page],
     queryFn: () => getNoticeList(organizationId, searchTerm, type, limit, page),
-    gcTime: 0,
+    enabled: !!organizationId,
   });
 
 export default useGetNoticeList;

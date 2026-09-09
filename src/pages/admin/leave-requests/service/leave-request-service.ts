@@ -17,7 +17,6 @@ export const useGetLeaveRequestsReviewQueue = (organizationId: string, status: s
       return result.data.Data;
     },
     enabled: !!organizationId,
-    gcTime: 0,
   });
 
 interface DecideVariables {

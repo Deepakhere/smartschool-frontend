@@ -16,7 +16,6 @@ export const useGetMyNotifications = (organizationId?: string) =>
       return result.data.Data;
     },
     enabled: !!organizationId,
-    gcTime: 0,
   });
 
 export const useMarkNotificationRead = (organizationId?: string) => {

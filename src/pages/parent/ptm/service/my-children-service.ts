@@ -28,5 +28,4 @@ export const useGetMyChildren = (organizationId: string) =>
       return result.data.Data;
     },
     enabled: !!organizationId,
-    gcTime: 0,
   });

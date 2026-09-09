@@ -23,7 +23,6 @@ export const useGetSectionRoster = (organizationId: string, sectionId: string) =
       return result.data.Data;
     },
     enabled: !!organizationId && !!sectionId,
-    gcTime: 0,
   });
 
 export const useGetSectionAttendance = (organizationId: string, sectionId: string, date: string) =>
@@ -37,7 +36,6 @@ export const useGetSectionAttendance = (organizationId: string, sectionId: strin
       return result.data.Data;
     },
     enabled: !!organizationId && !!sectionId && !!date,
-    gcTime: 0,
   });
 
 interface IMarkAttendanceValue {

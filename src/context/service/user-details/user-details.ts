@@ -16,7 +16,6 @@ const useGetUserDetails = () =>
   useQuery<IUserDetailResponse, IAPIError>({
     queryKey: [API_QUERY_KEY.GET_USER_DETAILS],
     queryFn: getUserDetails,
-    gcTime: 0,
     enabled: !!Cookies.get(USER_ACCESS_KEY.TOKEN),
   });
 

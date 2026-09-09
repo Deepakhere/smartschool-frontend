@@ -34,7 +34,6 @@ const useGetStudentById = (organizationId: string, studentId: string) =>
     queryKey: [API_QUERY_KEY.GET_STUDENT_BY_ID, studentId],
     queryFn: () => getStudentById(organizationId, studentId),
     enabled: !!studentId,
-    gcTime: 0,
   });
 
 export default useGetStudentById;

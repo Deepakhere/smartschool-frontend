@@ -17,7 +17,6 @@ export const useGetFeeHeads = (organizationId: string) =>
       return result.data.Data;
     },
     enabled: !!organizationId,
-    gcTime: 0,
   });
 
 export const useCreateFeeHead = (organizationId: string) => {
@@ -41,7 +40,6 @@ export const useGetFeeStructures = (organizationId: string) =>
       return result.data.Data;
     },
     enabled: !!organizationId,
-    gcTime: 0,
   });
 
 interface ICreateFeeStructurePayload {
@@ -89,7 +87,6 @@ export const useGetStudentFeeSummary = (organizationId: string, studentId?: stri
       return result.data.Data;
     },
     enabled: !!organizationId && !!studentId,
-    gcTime: 0,
   });
 
 export const useGetMyFees = (organizationId: string) =>
@@ -102,7 +99,6 @@ export const useGetMyFees = (organizationId: string) =>
       return result.data.Data;
     },
     enabled: !!organizationId,
-    gcTime: 0,
   });
 
 interface IRecordPaymentPayload {
@@ -166,7 +162,6 @@ export const useGetPaymentLedger = (organizationId: string) =>
       return result.data.Data;
     },
     enabled: !!organizationId,
-    gcTime: 0,
   });
 
 interface IGrantConcessionPayload {

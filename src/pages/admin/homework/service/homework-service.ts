@@ -17,7 +17,6 @@ export const useGetHomeworkList = (organizationId: string, sectionId: string) =>
       return result.data.Data;
     },
     enabled: !!organizationId && !!sectionId,
-    gcTime: 0,
   });
 
 export const useCreateHomework = (organizationId: string, sectionId: string) => {

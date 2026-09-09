@@ -20,7 +20,6 @@ export const useGetAccounts = () =>
       const result = await apiClient.get<null, IAxiosResponse<{ items: IAccount[] }>>(`${base}/accounts`);
       return result.data.Data;
     },
-    gcTime: 0,
   });
 
 export const useCreateAccount = () => {

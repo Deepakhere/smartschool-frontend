@@ -16,7 +16,6 @@ const useGetAllOrganizations = (enabled = true) =>
   useQuery<{ items: IOrganization[] }, IAPIError>({
     queryKey: [API_QUERY_KEY.GET_ALL_ORGANIZATIONS],
     queryFn: () => getAllOrganizations(),
-    gcTime: 0,
     enabled,
   });
 

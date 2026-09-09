@@ -15,7 +15,6 @@ export const useGetTeacherDirectory = (organizationId: string) =>
       return result.data.Data;
     },
     enabled: !!organizationId,
-    gcTime: 0,
   });
 
 interface IUpsertStaffProfileValue {

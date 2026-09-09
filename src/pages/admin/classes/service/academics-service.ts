@@ -25,7 +25,6 @@ export const useGetAcademicYears = (organizationId: string) =>
       return result.data.Data;
     },
     enabled: !!organizationId,
-    gcTime: 0,
   });
 
 export const useCreateAcademicYear = (organizationId: string) => {
@@ -50,7 +49,6 @@ export const useGetClasses = (organizationId: string, academicYearId?: string) =
       return result.data.Data;
     },
     enabled: !!organizationId && !!academicYearId,
-    gcTime: 0,
   });
 
 export const useCreateClass = (organizationId: string) => {
@@ -76,7 +74,6 @@ export const useGetSections = (organizationId: string, classId?: string) =>
       return result.data.Data;
     },
     enabled: !!organizationId && !!classId,
-    gcTime: 0,
   });
 
 export const useCreateSection = (organizationId: string) => {
@@ -102,7 +99,6 @@ export const useGetSubjects = (organizationId: string, academicYearId?: string) 
       return result.data.Data;
     },
     enabled: !!organizationId && !!academicYearId,
-    gcTime: 0,
   });
 
 export const useCreateSubject = (organizationId: string) => {
@@ -127,7 +123,6 @@ export const useGetTeacherAssignments = (organizationId: string, classId?: strin
       return result.data.Data;
     },
     enabled: !!organizationId,
-    gcTime: 0,
   });
 
 export const useAssignTeacher = (organizationId: string) => {

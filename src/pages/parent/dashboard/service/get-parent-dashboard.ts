@@ -23,7 +23,6 @@ const useGetParentDashboard = (organizationId: string) =>
     queryKey: [API_QUERY_KEY.GET_PARENT_DASHBOARD, organizationId],
     queryFn: () => getParentDashboard(organizationId),
     enabled: !!organizationId,
-    gcTime: 0,
   });
 
 export default useGetParentDashboard;

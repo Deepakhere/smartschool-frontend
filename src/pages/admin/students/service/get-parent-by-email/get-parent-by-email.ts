@@ -24,10 +24,9 @@ const getParentByEmail = async (
 
 const useGetParentByEmail = (organizationId: string, email: string) =>
   useQuery<{ item: IParentResponse; is_parent_exists: boolean }, IAPIError>({
-    queryKey: [API_QUERY_KEY.GET_PARENT_DETAILS],
+    queryKey: [API_QUERY_KEY.GET_PARENT_DETAILS, organizationId, email],
     queryFn: () => getParentByEmail(organizationId, email),
-    gcTime: 0,
-    enabled: !!email,
+    enabled: !!organizationId && !!email,
   });
 
 export default useGetParentByEmail;

@@ -14,5 +14,4 @@ export const useGetHomeworkForStudent = (organizationId: string, studentId: stri
       return result.data.Data;
     },
     enabled: !!organizationId && !!studentId,
-    gcTime: 0,
   });

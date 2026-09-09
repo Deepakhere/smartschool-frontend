@@ -42,9 +42,9 @@ const useGetStudentDetails = (
   page: number
 ) =>
   useQuery<{ items: IStudentResponse[]; total_count: number }, IAPIError>({
-    queryKey: [API_QUERY_KEY.GET_STUDENT_PROFILE],
+    queryKey: [API_QUERY_KEY.GET_STUDENT_PROFILE, organizationId, classId, searchTerm, limit, page],
     queryFn: () => getStudentDetails(organizationId, classId, searchTerm, limit, page),
-    gcTime: 0,
+    enabled: !!organizationId,
   });
 
 export default useGetStudentDetails;

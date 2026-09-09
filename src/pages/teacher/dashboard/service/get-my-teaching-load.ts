@@ -46,7 +46,6 @@ const useGetMyTeachingLoad = (organizationId: string) =>
       return result.data.Data.item;
     },
     enabled: !!organizationId,
-    gcTime: 0,
   });
 
 export default useGetMyTeachingLoad;

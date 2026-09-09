@@ -19,5 +19,4 @@ export const useGetStudentAttendanceHistory = (organizationId: string, studentId
       return result.data.Data;
     },
     enabled: !!organizationId && !!studentId,
-    gcTime: 0,
   });

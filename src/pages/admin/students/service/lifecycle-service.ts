@@ -17,7 +17,6 @@ export const useGetEnrollmentHistory = (organizationId: string, studentId: strin
       return result.data.Data;
     },
     enabled: !!organizationId && !!studentId,
-    gcTime: 0,
   });
 
 export const useTransferStudent = (organizationId: string, studentId: string) => {

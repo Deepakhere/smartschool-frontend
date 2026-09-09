@@ -23,7 +23,6 @@ export const useGetPromotionCandidates = (organizationId: string, academicYearId
       return result.data.Data;
     },
     enabled: !!organizationId && !!academicYearId && !!sectionId,
-    gcTime: 0,
   });
 
 export interface IPromotionDecisionInput {

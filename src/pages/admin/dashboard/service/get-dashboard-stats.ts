@@ -26,7 +26,6 @@ const useGetDashboardStats = (organizationId: string) =>
     queryKey: [API_QUERY_KEY.GET_DASHBOARD_STATS, organizationId],
     queryFn: () => getDashboardStats(organizationId),
     enabled: !!organizationId,
-    gcTime: 0,
   });
 
 export default useGetDashboardStats;

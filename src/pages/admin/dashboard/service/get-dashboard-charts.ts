@@ -21,7 +21,6 @@ const useGetDashboardCharts = (organizationId: string) =>
     queryKey: [API_QUERY_KEY.GET_DASHBOARD_CHARTS, organizationId],
     queryFn: () => getDashboardCharts(organizationId),
     enabled: !!organizationId,
-    gcTime: 0,
   });
 
 export default useGetDashboardCharts;

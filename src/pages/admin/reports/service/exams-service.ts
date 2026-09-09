@@ -24,7 +24,6 @@ export const useGetGradingSchemes = (organizationId: string) =>
       return result.data.Data;
     },
     enabled: !!organizationId,
-    gcTime: 0,
   });
 
 interface ICreateGradingSchemePayload {
@@ -52,7 +51,6 @@ export const useGetExams = (organizationId: string) =>
       return result.data.Data;
     },
     enabled: !!organizationId,
-    gcTime: 0,
   });
 
 interface ICreateExamPayload {
@@ -112,7 +110,6 @@ export const useGetExamSubjects = (organizationId: string, examId?: string, clas
       return result.data.Data;
     },
     enabled: !!organizationId && !!examId,
-    gcTime: 0,
   });
 
 export const useGetMarksSheet = (organizationId: string, examSubjectId?: string, sectionId?: string) =>
@@ -126,7 +123,6 @@ export const useGetMarksSheet = (organizationId: string, examSubjectId?: string,
       return result.data.Data;
     },
     enabled: !!organizationId && !!examSubjectId && !!sectionId,
-    gcTime: 0,
   });
 
 interface ISaveMarksPayload {
@@ -181,7 +177,6 @@ export const useGetResultsForStudent = (organizationId: string, studentId?: stri
       return result.data.Data;
     },
     enabled: !!organizationId && !!studentId,
-    gcTime: 0,
   });
 
 export const useGetMyResults = (organizationId: string) =>
@@ -195,7 +190,6 @@ export const useGetMyResults = (organizationId: string) =>
       return result.data.Data;
     },
     enabled: !!organizationId,
-    gcTime: 0,
   });
 
 // not a query/mutation hook — a report card is a PDF blob, not envelope JSON
