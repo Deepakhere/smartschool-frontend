@@ -1,19 +1,76 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslation } from "react-i18next";
+import toast from "react-hot-toast";
 import Cookies from "js-cookie";
 
 import { useAuth } from "../../../../context/auth-context";
 import { useTheme } from "../../../../context/theme-context";
-import { useUpdateUserPreferences, useUploadAvatar } from "./service";
+import { useUpdateUserPreferences, useUploadAvatar, useUpdateMyProfile, useChangeMyPassword } from "./service";
+import { useError } from "../../../../hooks";
+import { IAPIError } from "../../../../types";
+import { editProfileSchema, changePasswordSchema, defaultChangePasswordValues } from "./profile.schema";
 
 const useProfileController = () => {
   const { t, i18n } = useTranslation();
-  const { user, updatePreferences, updateAvatar } = useAuth();
+  const { user, updatePreferences, updateAvatar, updateProfile } = useAuth();
   const { theme, setTheme } = useTheme();
   const updateServerPreferences = useUpdateUserPreferences();
   const uploadAvatar = useUploadAvatar();
+  const updateMyProfile = useUpdateMyProfile();
+  const changeMyPassword = useChangeMyPassword();
 
   const [editMode, setEditMode] = useState(false);
+
+  const profileForm = useForm({
+    resolver: zodResolver(editProfileSchema),
+    defaultValues: { name: user?.name || "", phoneNumber: user?.phoneNumber || "" },
+  });
+
+  const passwordForm = useForm({
+    resolver: zodResolver(changePasswordSchema),
+    defaultValues: defaultChangePasswordValues,
+  });
+
+  // the user object only exists once /get-user-details resolves, so seed the form
+  // the moment it's ready rather than leaving the fields blank
+  useEffect(() => {
+    if (user) {
+      profileForm.reset({ name: user.name || "", phoneNumber: user.phoneNumber || "" });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user?.name, user?.phoneNumber]);
+
+  useError({ mutation: updateMyProfile });
+  useError({ mutation: changeMyPassword });
+
+  const onSubmitProfile = profileForm.handleSubmit((values) => {
+    updateMyProfile.mutate(values, {
+      onSuccess: (updated: { name: string; phoneNumber: string }) => {
+        updateProfile(updated);
+        toast.success("Profile updated.");
+        setEditMode(false);
+      },
+    });
+  });
+
+  const onSubmitPasswordChange = passwordForm.handleSubmit((values) => {
+    changeMyPassword.mutate(
+      { currentPassword: values.currentPassword, newPassword: values.newPassword },
+      {
+        onSuccess: () => {
+          toast.success("Password changed successfully.");
+          passwordForm.reset(defaultChangePasswordValues);
+        },
+        onError: (error: IAPIError) => {
+          if (error?.response?.Error?.code === "EX-00101") {
+            passwordForm.setError("currentPassword", { message: "Current password is incorrect." });
+          }
+        },
+      }
+    );
+  });
 
   // react-i18next already re-renders on language change, so i18n.language itself
   // is the current language — no need to mirror it into its own state
@@ -79,6 +136,12 @@ const useProfileController = () => {
     changeEmailNotifications,
     changeSmsNotifications,
     isUploadingAvatar: uploadAvatar.isPending,
+    profileForm,
+    onSubmitProfile,
+    isSavingProfile: updateMyProfile.isPending,
+    passwordForm,
+    onSubmitPasswordChange,
+    isChangingPassword: changeMyPassword.isPending,
   };
 };
 

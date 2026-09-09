@@ -208,19 +208,31 @@ checks every hook's return type against every place it's used, which is what cau
 call sites and all 54 mutation `.isLoading` reads), a clean production build, and the existing test
 suite still green.
 
-**`react-hook-form` + `zod` — done.** Every real `<form>` in the app (15 of them — auth, every
+**`react-hook-form` + `zod` — done.** Every real `<form>` in the app (16 of them — auth, every
 admin CRUD modal, the 2-step student wizard shared across two separate controllers, the notice
-composer with its nested audience-targeting object, homework/leave-request file uploads) now uses
-`useForm` + `zodResolver` + a shared `components/ui/form.tsx` (`Form`/`FormField`/`FormItem`/
-`FormLabel`/`FormControl`/`FormMessage`, the standard pattern for this combination) instead of
-hand-rolled `useState` + manual `if (!x) toast.error(...)` checks. Every text/date/textarea input
-also now goes through shared `components/ui/input.tsx` / `textarea.tsx` primitives instead of a
-repeated `inputClass` string per file. One file was deliberately **not** converted:
-`pages/admin/settings/profile/profile.tsx`'s "Edit profile" and "Change password" cards aren't
-wired to any submit handler at all (no `onSubmit`, uncontrolled `defaultValue` inputs, one button
-is `type="button"` with no `onClick`) — they're decorative, not functional, so adding real
-validation to them would have implied they save when they still don't; that's a real gap, not
-something to paper over.
+composer with its nested audience-targeting object, homework/leave-request file uploads, the
+profile edit/change-password cards) now uses `useForm` + `zodResolver` + a shared
+`components/ui/form.tsx` (`Form`/`FormField`/`FormItem`/`FormLabel`/`FormControl`/`FormMessage`,
+the standard pattern for this combination) instead of hand-rolled `useState` + manual
+`if (!x) toast.error(...)` checks. Every text/date/textarea input also now goes through shared
+`components/ui/input.tsx` / `textarea.tsx` primitives instead of a repeated `inputClass` string per
+file.
+
+`pages/admin/settings/profile/profile.tsx`'s "Edit profile" and "Change password" cards were
+initially skipped in this pass because they weren't wired to any submit handler at all (no
+`onSubmit`, uncontrolled `defaultValue` inputs, one button was `type="button"` with no `onClick`)
+— converting fake fields to real validation would have implied they saved when they didn't. Fixed
+properly instead: two new self-service backend endpoints were built (`PATCH /auth/v1/user/profile`
+and `PUT /auth/v1/user/change-password`), both authenticated-self-only, no tenant/permission gate
+— deliberately **not** reusing the admin `updateUserDetails` endpoint, which requires a tenant
+`canUpdate` permission a plain parent/teacher editing their own name would never hold, and which
+also accepts `role`/`permissions` fields with no place for those on a self-service form. Verified
+live end-to-end against a real running server with a throwaway user (created, signed in for a real
+token, profile updated, wrong-current-password rejected with 403, weak-new-password rejected by
+the shared `strongPassword` zod rule, correct change accepted, confirmed the *current* session
+survives — only other sessions are revoked, unlike the emailed-token reset flow which kills
+everything — confirmed old password stops working and new one signs in) — 8/8 checks passed, test
+user cleaned up afterward.
 
 Real bugs the conversion surfaced and fixed in passing: `pages/auth/login/login-controller.ts` had
 an `error` state that was only ever reset to `""` and never actually set on failure — the error
@@ -279,7 +291,6 @@ Mirrors the backend doc's gap list, frontend-side specifics:
   with a same-day export); there's no "attendance over a date range" view.
 - **No scheduled/automated exports** — every CSV export button is user-triggered and client-side;
   nothing is emailed or generated on a schedule.
-- **`profile.tsx`'s edit-profile / change-password forms aren't wired up** — see §7.
 - **Payment gateway UI** — no card/UPI checkout flow; blocked on the backend having real gateway
   credentials.
 

@@ -1,10 +1,4 @@
-import {
-  createContext,
-  useContext,
-  useState,
-  ReactNode,
-  useEffect,
-} from "react";
+import { createContext, useContext, useState, ReactNode, useEffect } from "react";
 import Cookies from "js-cookie";
 import { useGetUserDetails } from "./service";
 import { APIS_ROUTES, USER_ACCESS_KEY } from "../utils";
@@ -40,6 +34,7 @@ interface IAuthContext {
   // state + a useEffect to keep it in sync with the server value
   updatePreferences: (partial: Partial<IUserPreferences>) => void;
   updateAvatar: (avatar: IUserAvatar) => void;
+  updateProfile: (partial: { name?: string; phoneNumber?: string }) => void;
 }
 
 const AuthContext = createContext<IAuthContext | undefined>(undefined);
@@ -65,6 +60,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const updateAvatar = (avatar: IUserAvatar) => {
     setUser((prev) => (prev ? { ...prev, avatar } : prev));
+  };
+
+  const updateProfile = (partial: { name?: string; phoneNumber?: string }) => {
+    setUser((prev) => (prev ? { ...prev, ...partial } : prev));
   };
 
   const logout = () => {
@@ -99,10 +98,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         Cookies.remove(USER_ACCESS_KEY.ROLE);
         setUser(null);
       }
-      if (
-        !window.location.pathname.includes("/login") &&
-        !window.location.pathname.includes("/forgot-password")
-      ) {
+      if (!window.location.pathname.includes("/login") && !window.location.pathname.includes("/forgot-password")) {
         window.location.href = "/login";
       }
     }
@@ -118,7 +114,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   }
 
   return (
-    <AuthContext.Provider value={{ login, logout, user, updatePreferences, updateAvatar }}>
+    <AuthContext.Provider value={{ login, logout, user, updatePreferences, updateAvatar, updateProfile }}>
       {children}
     </AuthContext.Provider>
   );
