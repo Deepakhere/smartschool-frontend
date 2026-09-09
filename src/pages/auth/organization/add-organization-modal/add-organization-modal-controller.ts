@@ -62,7 +62,11 @@ const useAddOrganizationModalController = (
   const onSubmit = form.handleSubmit((values) => {
     const finishUp = async (organizationId: string) => {
       if (logoFile) {
-        await uploadLogo.mutateAsync({ organizationId, file: logoFile }).catch(() => {});
+        // the organization itself is already saved at this point — a logo failure
+        // shouldn't block the modal from closing, but the user still needs to know
+        await uploadLogo.mutateAsync({ organizationId, file: logoFile }).catch(() => {
+          toast.error(t("messages.organization_logo_upload_failed", "Logo upload failed. You can try again from the school settings."));
+        });
       }
       onSaved();
       onClose();

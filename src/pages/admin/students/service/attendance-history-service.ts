@@ -11,7 +11,7 @@ interface IAttendanceHistoryResponse {
 
 export const useGetStudentAttendanceHistory = (organizationId: string, studentId: string, from?: string, to?: string) =>
   useQuery<IAttendanceHistoryResponse, IAPIError>({
-    queryKey: ["get-student-attendance-history", studentId, from, to],
+    queryKey: ["get-student-attendance-history", organizationId, studentId, from, to],
     queryFn: async () => {
       const result = await apiClient.get<null, IAxiosResponse<IAttendanceHistoryResponse>>(
         `${APIS_ROUTES.ATTENDANCE_SERVICE}/${organizationId}/student/${studentId}`,

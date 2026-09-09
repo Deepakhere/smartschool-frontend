@@ -41,7 +41,7 @@ const useUserDetailsController = () => {
   const addUserDetail = useAddUserDetail(organizationId || "");
   const getAllUserDetails = useGetAllUserDetails(organizationId || "", searchTerm, filterRole);
   const deleteUser = useDeleteUser(organizationId || "");
-  const updateUserDetails = useUpdateUserDetail();
+  const updateUserDetails = useUpdateUserDetail(organizationId || "");
 
   useError({
     mutation: addUserDetail,

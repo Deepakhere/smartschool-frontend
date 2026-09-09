@@ -1,8 +1,8 @@
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 import apiClient from "@/config";
 import { IAPIError, IAxiosResponse } from "@/types";
-import { APIS_ROUTES } from "@/utils";
+import { API_QUERY_KEY, APIS_ROUTES } from "@/utils";
 
 export interface IBulkImportResult {
   createdCount: number;
@@ -31,9 +31,14 @@ const bulkImportStudents = async (organizationId: string, value: IBulkImportValu
   return result.data.Data.item;
 };
 
-const useBulkImportStudents = (organizationId: string) =>
-  useMutation<IBulkImportResult, IAPIError, IBulkImportValue>({
+const useBulkImportStudents = (organizationId: string) => {
+  const queryClient = useQueryClient();
+  return useMutation<IBulkImportResult, IAPIError, IBulkImportValue>({
     mutationFn: (value) => bulkImportStudents(organizationId, value),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [API_QUERY_KEY.GET_STUDENT_PROFILE, organizationId] });
+    },
   });
+};
 
 export default useBulkImportStudents;

@@ -118,7 +118,8 @@ export const useGetTeacherAssignments = (organizationId: string, classId?: strin
     queryKey: [API_QUERY_KEY.GET_TEACHER_ASSIGNMENTS, organizationId, classId],
     queryFn: async () => {
       const result = await apiClient.get<null, IAxiosResponse<{ items: ITeacherAssignment[] }>>(
-        `${base(organizationId)}/teacher-assignment`
+        `${base(organizationId)}/teacher-assignment`,
+        { params: { classId } }
       );
       return result.data.Data;
     },

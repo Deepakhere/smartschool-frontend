@@ -9,5 +9,6 @@ export { validateMatch } from "./validate-match";
 export { validateNumber } from "./validate-number";
 export { validateInteger } from "./validate-integer";
 export { exportToCsv } from "./exportCsv";
+export { authCookieOptions } from "./cookie-options";
 
 export * from "./emuns";

@@ -1,7 +1,7 @@
 import { createContext, useContext, useState, ReactNode, useEffect } from "react";
 import Cookies from "js-cookie";
 import { useGetUserDetails } from "./service";
-import { APIS_ROUTES, USER_ACCESS_KEY } from "../utils";
+import { APIS_ROUTES, USER_ACCESS_KEY, authCookieOptions } from "../utils";
 import { ILoginResponse, IUserAvatar, IUserPreferences } from "../types";
 import LogoSpinner from "../components/logo-spinner";
 import apiClient from "../config/api-client";
@@ -44,11 +44,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const getUserDetails = useGetUserDetails();
 
   const login = (data: ILoginResponse) => {
-    Cookies.set(USER_ACCESS_KEY.TOKEN, data.token);
+    // expiries mirror the backend's own token lifetimes (1 day access / 30 day refresh)
+    Cookies.set(USER_ACCESS_KEY.TOKEN, data.token, authCookieOptions(1));
     if (data.refreshToken) {
-      Cookies.set(USER_ACCESS_KEY.REFRESH_TOKEN, data.refreshToken);
+      Cookies.set(USER_ACCESS_KEY.REFRESH_TOKEN, data.refreshToken, authCookieOptions(30));
     }
-    Cookies.set(USER_ACCESS_KEY.ROLE, data.role);
+    Cookies.set(USER_ACCESS_KEY.ROLE, data.role, authCookieOptions(30));
     setUser(data);
   };
 

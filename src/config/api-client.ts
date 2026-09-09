@@ -3,7 +3,7 @@ import get from "lodash.get";
 import Cookies from "js-cookie";
 import toast from "react-hot-toast";
 
-import { APIS_ROUTES, USER_ACCESS_KEY } from "../utils";
+import { APIS_ROUTES, USER_ACCESS_KEY, authCookieOptions } from "../utils";
 
 const apiClient = axios.create({
   baseURL: import.meta.env.VITE_API_URL,
@@ -118,9 +118,9 @@ apiClient.interceptors.response.use(
           throw new Error("Refresh did not return a token");
         }
 
-        Cookies.set(USER_ACCESS_KEY.TOKEN, newToken);
+        Cookies.set(USER_ACCESS_KEY.TOKEN, newToken, authCookieOptions(1));
         if (newRefreshToken) {
-          Cookies.set(USER_ACCESS_KEY.REFRESH_TOKEN, newRefreshToken);
+          Cookies.set(USER_ACCESS_KEY.REFRESH_TOKEN, newRefreshToken, authCookieOptions(30));
         }
 
         isRefreshing = false;

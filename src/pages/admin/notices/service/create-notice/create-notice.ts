@@ -1,7 +1,7 @@
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import apiClient from "@/config";
 import { IAPIError, IAxiosResponse, ICreateNoticeRequest } from "@/types";
-import { API_MUTATION_KEY, APIS_ROUTES } from "@/utils";
+import { API_MUTATION_KEY, API_QUERY_KEY, APIS_ROUTES } from "@/utils";
 
 interface ICreatNoticeResponse {
   id: string;
@@ -22,9 +22,14 @@ const createNotice = async (organizationId: string, data: FormData | ICreateNoti
 };
 
 const useCreateNotice = (organizationId: string) => {
+  const queryClient = useQueryClient();
   return useMutation<ICreatNoticeResponse, IAPIError, FormData | ICreateNoticeRequest>({
     mutationKey: [API_MUTATION_KEY.CREATE_NOTICE],
     mutationFn: (data: FormData | ICreateNoticeRequest) => createNotice(organizationId, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [API_QUERY_KEY.GET_NOTICE_LIST, organizationId] });
+      queryClient.invalidateQueries({ queryKey: [API_QUERY_KEY.GET_MY_NOTICES] });
+    },
   });
 };
 

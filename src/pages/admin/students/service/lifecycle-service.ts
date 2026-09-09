@@ -28,6 +28,7 @@ export const useTransferStudent = (organizationId: string, studentId: string) =>
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [API_QUERY_KEY.GET_STUDENT_BY_ID, studentId] });
       queryClient.invalidateQueries({ queryKey: ["get-enrollment-history", studentId] });
+      queryClient.invalidateQueries({ queryKey: [API_QUERY_KEY.GET_STUDENT_PROFILE, organizationId] });
     },
   });
 };
@@ -41,6 +42,7 @@ export const useWithdrawStudent = (organizationId: string, studentId: string) =>
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [API_QUERY_KEY.GET_STUDENT_BY_ID, studentId] });
       queryClient.invalidateQueries({ queryKey: ["get-enrollment-history", studentId] });
+      queryClient.invalidateQueries({ queryKey: [API_QUERY_KEY.GET_STUDENT_PROFILE, organizationId] });
     },
   });
 };

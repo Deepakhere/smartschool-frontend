@@ -1,7 +1,7 @@
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import apiClient from "@/config";
 import { IAPIError, IAxiosResponse, IStudentFormData } from "@/types";
-import { API_MUTATION_KEY, APIS_ROUTES } from "@/utils";
+import { API_MUTATION_KEY, API_QUERY_KEY, APIS_ROUTES } from "@/utils";
 
 interface IAddStudentResponse {
   id: string;
@@ -22,9 +22,13 @@ const addStudent = async (organizationId: string, data: IStudentFormData) => {
 };
 
 const useAddStudent = (organizationId: string) => {
+  const queryClient = useQueryClient();
   return useMutation<IAddStudentResponse, IAPIError, IStudentFormData>({
     mutationKey: [API_MUTATION_KEY.ADD_STUDENT_PROFILE],
     mutationFn: (data: IStudentFormData) => addStudent(organizationId, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [API_QUERY_KEY.GET_STUDENT_PROFILE, organizationId] });
+    },
   });
 };
 
