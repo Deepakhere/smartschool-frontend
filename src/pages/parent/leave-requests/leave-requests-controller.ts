@@ -93,11 +93,11 @@ export const useLeaveRequestsController = () => {
     setReason,
     handleFileChange,
     handleSubmit,
-    isCreating: createLeaveRequest.isLoading,
+    isCreating: createLeaveRequest.isPending,
     handleCancel,
     leaveRequestIdPendingCancel,
     cancelDialogClose,
     confirmCancel,
-    isCancelling: cancelLeaveRequest.isLoading,
+    isCancelling: cancelLeaveRequest.isPending,
   };
 };

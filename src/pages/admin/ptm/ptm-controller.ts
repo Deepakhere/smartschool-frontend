@@ -4,7 +4,12 @@ import { useTranslation } from "react-i18next";
 import toast from "react-hot-toast";
 
 import { useGetPTMEvents, useCreatePTMEvent, useGenerateSlots, useGetSlotsForEvent } from "./service/ptm-service";
-import { useGetAcademicYears, useGetClasses, useGetSections, useGetTeacherAssignments } from "../classes/service/academics-service";
+import {
+  useGetAcademicYears,
+  useGetClasses,
+  useGetSections,
+  useGetTeacherAssignments,
+} from "../classes/service/academics-service";
 import { useError } from "../../../hooks";
 
 const usePTMController = () => {
@@ -107,8 +112,8 @@ const usePTMController = () => {
     teacherAssignments,
     slotsForExpandedEvent,
     isLoadingEvents: getPTMEvents.isLoading,
-    isCreatingEvent: createPTMEvent.isLoading,
-    isGeneratingSlots: generateSlots.isLoading,
+    isCreatingEvent: createPTMEvent.isPending,
+    isGeneratingSlots: generateSlots.isPending,
     isCreateModalOpen,
     setIsCreateModalOpen,
     expandedEventId,

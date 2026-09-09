@@ -112,7 +112,7 @@ const useAttendanceController = () => {
     setReason,
     markAll,
     submit,
-    isSaving: markAttendance.isLoading,
+    isSaving: markAttendance.isPending,
     summary: existing.data?.item?.session?.summary || null,
   };
 };

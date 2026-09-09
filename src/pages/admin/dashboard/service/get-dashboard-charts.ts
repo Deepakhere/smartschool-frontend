@@ -1,4 +1,4 @@
-import { useQuery } from "react-query";
+import { useQuery } from "@tanstack/react-query";
 
 import apiClient from "../../../../config";
 import { IAPIError, IAxiosResponse } from "../../../../types";
@@ -17,10 +17,11 @@ const getDashboardCharts = async (organizationId: string): Promise<IDashboardCha
 };
 
 const useGetDashboardCharts = (organizationId: string) =>
-  useQuery<IDashboardCharts, IAPIError>(
-    [API_QUERY_KEY.GET_DASHBOARD_CHARTS, organizationId],
-    () => getDashboardCharts(organizationId),
-    { enabled: !!organizationId, cacheTime: 0 }
-  );
+  useQuery<IDashboardCharts, IAPIError>({
+    queryKey: [API_QUERY_KEY.GET_DASHBOARD_CHARTS, organizationId],
+    queryFn: () => getDashboardCharts(organizationId),
+    enabled: !!organizationId,
+    gcTime: 0,
+  });
 
 export default useGetDashboardCharts;

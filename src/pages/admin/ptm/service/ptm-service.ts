@@ -1,4 +1,4 @@
-import { useMutation, useQuery, useQueryClient } from "react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import apiClient from "../../../../config";
 import { IAPIError, IAxiosResponse, IPTMEvent, IPTMSlot, IPTMBooking } from "../../../../types";
@@ -7,14 +7,15 @@ import { APIS_ROUTES, API_QUERY_KEY, API_MUTATION_KEY } from "../../../../utils"
 const base = (organizationId: string) => `${APIS_ROUTES.PTM_SERVICE}/${organizationId}`;
 
 export const useGetPTMEvents = (organizationId: string) =>
-  useQuery<{ items: IPTMEvent[] }, IAPIError>(
-    [API_QUERY_KEY.GET_PTM_EVENTS, organizationId],
-    async () => {
+  useQuery<{ items: IPTMEvent[] }, IAPIError>({
+    queryKey: [API_QUERY_KEY.GET_PTM_EVENTS, organizationId],
+    queryFn: async () => {
       const result = await apiClient.get<null, IAxiosResponse<{ items: IPTMEvent[] }>>(`${base(organizationId)}/event`);
       return result.data.Data;
     },
-    { enabled: !!organizationId, cacheTime: 0 }
-  );
+    enabled: !!organizationId,
+    gcTime: 0,
+  });
 
 interface ICreatePTMEventPayload {
   academicYearId: string;
@@ -29,13 +30,13 @@ interface ICreatePTMEventPayload {
 
 export const useCreatePTMEvent = (organizationId: string) => {
   const queryClient = useQueryClient();
-  return useMutation<void, IAPIError, ICreatePTMEventPayload>(
-    [API_MUTATION_KEY.CREATE_PTM_EVENT],
-    async (value) => {
+  return useMutation<void, IAPIError, ICreatePTMEventPayload>({
+    mutationKey: [API_MUTATION_KEY.CREATE_PTM_EVENT],
+    mutationFn: async (value) => {
       await apiClient.post(`${base(organizationId)}/event`, value);
     },
-    { onSuccess: () => queryClient.invalidateQueries([API_QUERY_KEY.GET_PTM_EVENTS, organizationId]) }
-  );
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: [API_QUERY_KEY.GET_PTM_EVENTS, organizationId] }),
+  });
 };
 
 interface IGenerateSlotsPayload {
@@ -48,78 +49,80 @@ interface IGenerateSlotsPayload {
 
 export const useGenerateSlots = (organizationId: string) => {
   const queryClient = useQueryClient();
-  return useMutation<void, IAPIError, IGenerateSlotsPayload>(
-    [API_MUTATION_KEY.GENERATE_PTM_SLOTS],
-    async (value) => {
+  return useMutation<void, IAPIError, IGenerateSlotsPayload>({
+    mutationKey: [API_MUTATION_KEY.GENERATE_PTM_SLOTS],
+    mutationFn: async (value) => {
       await apiClient.post(`${base(organizationId)}/event/${value.ptmEventId}/slot/generate`, value);
     },
-    {
-      onSuccess: (_data, variables) =>
-        queryClient.invalidateQueries([API_QUERY_KEY.GET_PTM_SLOTS, organizationId, variables.ptmEventId]),
-    }
-  );
+    onSuccess: (_data, variables) =>
+      queryClient.invalidateQueries({ queryKey: [API_QUERY_KEY.GET_PTM_SLOTS, organizationId, variables.ptmEventId] }),
+  });
 };
 
 export const useGetSlotsForEvent = (organizationId: string, ptmEventId?: string) =>
-  useQuery<{ items: IPTMSlot[] }, IAPIError>(
-    [API_QUERY_KEY.GET_PTM_SLOTS, organizationId, ptmEventId],
-    async () => {
+  useQuery<{ items: IPTMSlot[] }, IAPIError>({
+    queryKey: [API_QUERY_KEY.GET_PTM_SLOTS, organizationId, ptmEventId],
+    queryFn: async () => {
       const result = await apiClient.get<null, IAxiosResponse<{ items: IPTMSlot[] }>>(
         `${base(organizationId)}/event/${ptmEventId}/slot`
       );
       return result.data.Data;
     },
-    { enabled: !!organizationId && !!ptmEventId, cacheTime: 0 }
-  );
+    enabled: !!organizationId && !!ptmEventId,
+    gcTime: 0,
+  });
 
 export const useBookPTMSlot = (organizationId: string) => {
   const queryClient = useQueryClient();
-  return useMutation<void, IAPIError, { slotId: string; studentId: string; parentNote?: string; ptmEventId: string }>(
-    [API_MUTATION_KEY.BOOK_PTM_SLOT],
-    async (value) => {
+  return useMutation<void, IAPIError, { slotId: string; studentId: string; parentNote?: string; ptmEventId: string }>({
+    mutationKey: [API_MUTATION_KEY.BOOK_PTM_SLOT],
+    mutationFn: async (value) => {
       await apiClient.post(`${base(organizationId)}/slot/${value.slotId}/book`, {
         studentId: value.studentId,
         parentNote: value.parentNote,
       });
     },
-    {
-      onSuccess: (_data, variables) => {
-        queryClient.invalidateQueries([API_QUERY_KEY.GET_PTM_SLOTS, organizationId, variables.ptmEventId]);
-        queryClient.invalidateQueries([API_QUERY_KEY.GET_MY_PTM_BOOKINGS, organizationId]);
-      },
-    }
-  );
+    onSuccess: (_data, variables) => {
+      queryClient.invalidateQueries({ queryKey: [API_QUERY_KEY.GET_PTM_SLOTS, organizationId, variables.ptmEventId] });
+      queryClient.invalidateQueries({ queryKey: [API_QUERY_KEY.GET_MY_PTM_BOOKINGS, organizationId] });
+    },
+  });
 };
 
 export const useCancelPTMBooking = (organizationId: string) => {
   const queryClient = useQueryClient();
-  return useMutation<void, IAPIError, string>(
-    [API_MUTATION_KEY.CANCEL_PTM_BOOKING],
-    async (bookingId) => {
+  return useMutation<void, IAPIError, string>({
+    mutationKey: [API_MUTATION_KEY.CANCEL_PTM_BOOKING],
+    mutationFn: async (bookingId) => {
       await apiClient.post(`${base(organizationId)}/booking/${bookingId}/cancel`);
     },
-    { onSuccess: () => queryClient.invalidateQueries([API_QUERY_KEY.GET_MY_PTM_BOOKINGS, organizationId]) }
-  );
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: [API_QUERY_KEY.GET_MY_PTM_BOOKINGS, organizationId] }),
+  });
 };
 
 export const useGetMyPTMBookings = (organizationId: string) =>
-  useQuery<{ items: IPTMBooking[] }, IAPIError>(
-    [API_QUERY_KEY.GET_MY_PTM_BOOKINGS, organizationId],
-    async () => {
-      const result = await apiClient.get<null, IAxiosResponse<{ items: IPTMBooking[] }>>(`${base(organizationId)}/my-bookings`);
-      return result.data.Data;
-    },
-    { enabled: !!organizationId, cacheTime: 0 }
-  );
-
-export const useGetMyPTMAgenda = (organizationId: string) =>
-  useQuery<{ items: { slot: IPTMSlot; booking: IPTMBooking | null }[] }, IAPIError>(
-    [API_QUERY_KEY.GET_MY_PTM_AGENDA, organizationId],
-    async () => {
-      const result = await apiClient.get<null, IAxiosResponse<{ items: { slot: IPTMSlot; booking: IPTMBooking | null }[] }>>(
-        `${base(organizationId)}/my-agenda`
+  useQuery<{ items: IPTMBooking[] }, IAPIError>({
+    queryKey: [API_QUERY_KEY.GET_MY_PTM_BOOKINGS, organizationId],
+    queryFn: async () => {
+      const result = await apiClient.get<null, IAxiosResponse<{ items: IPTMBooking[] }>>(
+        `${base(organizationId)}/my-bookings`
       );
       return result.data.Data;
     },
-    { enabled: !!organizationId, cacheTime: 0 }
-  );
+    enabled: !!organizationId,
+    gcTime: 0,
+  });
+
+export const useGetMyPTMAgenda = (organizationId: string) =>
+  useQuery<{ items: { slot: IPTMSlot; booking: IPTMBooking | null }[] }, IAPIError>({
+    queryKey: [API_QUERY_KEY.GET_MY_PTM_AGENDA, organizationId],
+    queryFn: async () => {
+      const result = await apiClient.get<
+        null,
+        IAxiosResponse<{ items: { slot: IPTMSlot; booking: IPTMBooking | null }[] }>
+      >(`${base(organizationId)}/my-agenda`);
+      return result.data.Data;
+    },
+    enabled: !!organizationId,
+    gcTime: 0,
+  });

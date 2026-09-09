@@ -1,4 +1,4 @@
-import { useQuery } from "react-query";
+import { useQuery } from "@tanstack/react-query";
 
 import apiClient from "../../../../config";
 import { IAPIError, IAxiosResponse } from "../../../../types";
@@ -37,15 +37,16 @@ export interface IMyTeachingLoad {
 }
 
 const useGetMyTeachingLoad = (organizationId: string) =>
-  useQuery<IMyTeachingLoad, IAPIError>(
-    [API_QUERY_KEY.GET_MY_TEACHING_LOAD, organizationId],
-    async () => {
+  useQuery<IMyTeachingLoad, IAPIError>({
+    queryKey: [API_QUERY_KEY.GET_MY_TEACHING_LOAD, organizationId],
+    queryFn: async () => {
       const result = await apiClient.get<null, IAxiosResponse<{ item: IMyTeachingLoad }>>(
         `${APIS_ROUTES.STAFF_SERVICE}/${organizationId}/my-teaching-load`
       );
       return result.data.Data.item;
     },
-    { enabled: !!organizationId, cacheTime: 0 }
-  );
+    enabled: !!organizationId,
+    gcTime: 0,
+  });
 
 export default useGetMyTeachingLoad;

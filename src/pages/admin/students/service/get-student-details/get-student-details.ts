@@ -1,4 +1,4 @@
-import { useQuery } from "react-query";
+import { useQuery } from "@tanstack/react-query";
 
 import { IAPIError, IAxiosResponse, IStudentEnrollment } from "../../../../../types";
 import { APIS_ROUTES, API_QUERY_KEY } from "../../../../../utils";
@@ -19,17 +19,17 @@ const getStudentDetails = async (
   limit: number,
   page: number
 ): Promise<{ items: IStudentResponse[]; total_count: number }> => {
-  const result = await apiClient.get<
-    null,
-    IAxiosResponse<{ items: IStudentResponse[]; total_count: number }>
-  >(`${APIS_ROUTES.STUDENT_PROFILE}/${organizationId}/get-student-profile`, {
-    params: {
-      search_term: searchTerm,
-      classId: classId === "all" ? "" : classId,
-      limit: limit,
-      page: page,
-    },
-  });
+  const result = await apiClient.get<null, IAxiosResponse<{ items: IStudentResponse[]; total_count: number }>>(
+    `${APIS_ROUTES.STUDENT_PROFILE}/${organizationId}/get-student-profile`,
+    {
+      params: {
+        search_term: searchTerm,
+        classId: classId === "all" ? "" : classId,
+        limit: limit,
+        page: page,
+      },
+    }
+  );
 
   return result.data.Data;
 };
@@ -41,12 +41,10 @@ const useGetStudentDetails = (
   limit: number,
   page: number
 ) =>
-  useQuery<{ items: IStudentResponse[]; total_count: number }, IAPIError>(
-    [API_QUERY_KEY.GET_STUDENT_PROFILE],
-    () => getStudentDetails(organizationId, classId, searchTerm, limit, page),
-    {
-      cacheTime: 0,
-    }
-  );
+  useQuery<{ items: IStudentResponse[]; total_count: number }, IAPIError>({
+    queryKey: [API_QUERY_KEY.GET_STUDENT_PROFILE],
+    queryFn: () => getStudentDetails(organizationId, classId, searchTerm, limit, page),
+    gcTime: 0,
+  });
 
 export default useGetStudentDetails;

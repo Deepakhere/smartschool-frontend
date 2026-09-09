@@ -1,4 +1,4 @@
-import { useMutation } from "react-query";
+import { useMutation } from "@tanstack/react-query";
 
 import apiClient from "../../../../config";
 import { IAPIError } from "../../../../types";
@@ -14,6 +14,9 @@ const setUserPassword = async (value: ISetUserPasswordRequest) => {
 };
 
 export const useSetUserPassword = () =>
-  useMutation<void, IAPIError, ISetUserPasswordRequest>([API_MUTATION_KEY.SET_USER_PASSWORD], setUserPassword);
+  useMutation<void, IAPIError, ISetUserPasswordRequest>({
+    mutationKey: [API_MUTATION_KEY.SET_USER_PASSWORD],
+    mutationFn: setUserPassword,
+  });
 
 export default useSetUserPassword;

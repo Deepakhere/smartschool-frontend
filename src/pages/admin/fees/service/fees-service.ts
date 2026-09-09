@@ -1,51 +1,48 @@
 import { useRef } from "react";
-import { useMutation, useQuery, useQueryClient } from "react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import apiClient from "../../../../config";
-import {
-  IAPIError,
-  IAxiosResponse,
-  IFeeHead,
-  IFeeStructure,
-  IStudentFeeSummary,
-  IPayment,
-} from "../../../../types";
+import { IAPIError, IAxiosResponse, IFeeHead, IFeeStructure, IStudentFeeSummary, IPayment } from "../../../../types";
 import { APIS_ROUTES, API_QUERY_KEY, API_MUTATION_KEY } from "../../../../utils";
 
 const base = (organizationId: string) => `${APIS_ROUTES.FEE_SERVICE}/${organizationId}`;
 
 export const useGetFeeHeads = (organizationId: string) =>
-  useQuery<{ items: IFeeHead[] }, IAPIError>(
-    [API_QUERY_KEY.GET_FEE_HEADS, organizationId],
-    async () => {
-      const result = await apiClient.get<null, IAxiosResponse<{ items: IFeeHead[] }>>(`${base(organizationId)}/fee-head`);
+  useQuery<{ items: IFeeHead[] }, IAPIError>({
+    queryKey: [API_QUERY_KEY.GET_FEE_HEADS, organizationId],
+    queryFn: async () => {
+      const result = await apiClient.get<null, IAxiosResponse<{ items: IFeeHead[] }>>(
+        `${base(organizationId)}/fee-head`
+      );
       return result.data.Data;
     },
-    { enabled: !!organizationId, cacheTime: 0 }
-  );
+    enabled: !!organizationId,
+    gcTime: 0,
+  });
 
 export const useCreateFeeHead = (organizationId: string) => {
   const queryClient = useQueryClient();
-  return useMutation<void, IAPIError, { name: string; code: string; category: string; isRefundable: boolean }>(
-    [API_MUTATION_KEY.CREATE_FEE_HEAD],
-    async (value) => {
+  return useMutation<void, IAPIError, { name: string; code: string; category: string; isRefundable: boolean }>({
+    mutationKey: [API_MUTATION_KEY.CREATE_FEE_HEAD],
+    mutationFn: async (value) => {
       await apiClient.post(`${base(organizationId)}/fee-head`, value);
     },
-    { onSuccess: () => queryClient.invalidateQueries([API_QUERY_KEY.GET_FEE_HEADS, organizationId]) }
-  );
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: [API_QUERY_KEY.GET_FEE_HEADS, organizationId] }),
+  });
 };
 
 export const useGetFeeStructures = (organizationId: string) =>
-  useQuery<{ items: IFeeStructure[] }, IAPIError>(
-    [API_QUERY_KEY.GET_FEE_STRUCTURES, organizationId],
-    async () => {
+  useQuery<{ items: IFeeStructure[] }, IAPIError>({
+    queryKey: [API_QUERY_KEY.GET_FEE_STRUCTURES, organizationId],
+    queryFn: async () => {
       const result = await apiClient.get<null, IAxiosResponse<{ items: IFeeStructure[] }>>(
         `${base(organizationId)}/fee-structure`
       );
       return result.data.Data;
     },
-    { enabled: !!organizationId, cacheTime: 0 }
-  );
+    enabled: !!organizationId,
+    gcTime: 0,
+  });
 
 interface ICreateFeeStructurePayload {
   academicYearId: string;
@@ -58,52 +55,55 @@ interface ICreateFeeStructurePayload {
 
 export const useCreateFeeStructure = (organizationId: string) => {
   const queryClient = useQueryClient();
-  return useMutation<void, IAPIError, ICreateFeeStructurePayload>(
-    [API_MUTATION_KEY.CREATE_FEE_STRUCTURE],
-    async (value) => {
+  return useMutation<void, IAPIError, ICreateFeeStructurePayload>({
+    mutationKey: [API_MUTATION_KEY.CREATE_FEE_STRUCTURE],
+    mutationFn: async (value) => {
       await apiClient.post(`${base(organizationId)}/fee-structure`, value);
     },
-    { onSuccess: () => queryClient.invalidateQueries([API_QUERY_KEY.GET_FEE_STRUCTURES, organizationId]) }
-  );
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: [API_QUERY_KEY.GET_FEE_STRUCTURES, organizationId] }),
+  });
 };
 
 export const useAssignFeeStructure = (organizationId: string) => {
   const queryClient = useQueryClient();
-  return useMutation<{ assigned_count: number; skipped_count: number }, IAPIError, string>(
-    [API_MUTATION_KEY.ASSIGN_FEE_STRUCTURE],
-    async (feeStructureId) => {
+  return useMutation<{ assigned_count: number; skipped_count: number }, IAPIError, string>({
+    mutationKey: [API_MUTATION_KEY.ASSIGN_FEE_STRUCTURE],
+    mutationFn: async (feeStructureId) => {
       const result = await apiClient.post<null, IAxiosResponse<{ assigned_count: number; skipped_count: number }>>(
         `${base(organizationId)}/fee-structure/${feeStructureId}/assign`
       );
       return result.data.Data;
     },
-    { onSuccess: () => queryClient.invalidateQueries([API_QUERY_KEY.GET_STUDENT_FEE_SUMMARY, organizationId]) }
-  );
+    onSuccess: () =>
+      queryClient.invalidateQueries({ queryKey: [API_QUERY_KEY.GET_STUDENT_FEE_SUMMARY, organizationId] }),
+  });
 };
 
 export const useGetStudentFeeSummary = (organizationId: string, studentId?: string) =>
-  useQuery<{ items: IStudentFeeSummary[] }, IAPIError>(
-    [API_QUERY_KEY.GET_STUDENT_FEE_SUMMARY, organizationId, studentId],
-    async () => {
+  useQuery<{ items: IStudentFeeSummary[] }, IAPIError>({
+    queryKey: [API_QUERY_KEY.GET_STUDENT_FEE_SUMMARY, organizationId, studentId],
+    queryFn: async () => {
       const result = await apiClient.get<null, IAxiosResponse<{ items: IStudentFeeSummary[] }>>(
         `${base(organizationId)}/student-fee/${studentId}`
       );
       return result.data.Data;
     },
-    { enabled: !!organizationId && !!studentId, cacheTime: 0 }
-  );
+    enabled: !!organizationId && !!studentId,
+    gcTime: 0,
+  });
 
 export const useGetMyFees = (organizationId: string) =>
-  useQuery<{ items: IStudentFeeSummary[] }, IAPIError>(
-    [API_QUERY_KEY.GET_MY_FEES, organizationId],
-    async () => {
+  useQuery<{ items: IStudentFeeSummary[] }, IAPIError>({
+    queryKey: [API_QUERY_KEY.GET_MY_FEES, organizationId],
+    queryFn: async () => {
       const result = await apiClient.get<null, IAxiosResponse<{ items: IStudentFeeSummary[] }>>(
         `${base(organizationId)}/my-fees`
       );
       return result.data.Data;
     },
-    { enabled: !!organizationId, cacheTime: 0 }
-  );
+    enabled: !!organizationId,
+    gcTime: 0,
+  });
 
 interface IRecordPaymentPayload {
   studentFeeId: string;
@@ -121,56 +121,53 @@ interface IRecordPaymentPayload {
 export const useRecordPayment = (organizationId: string) => {
   const queryClient = useQueryClient();
   const idempotencyKeyRef = useRef(crypto.randomUUID());
-  return useMutation<void, IAPIError, IRecordPaymentPayload>(
-    [API_MUTATION_KEY.RECORD_PAYMENT],
-    async (value) => {
+  return useMutation<void, IAPIError, IRecordPaymentPayload>({
+    mutationKey: [API_MUTATION_KEY.RECORD_PAYMENT],
+    mutationFn: async (value) => {
       await apiClient.post(`${base(organizationId)}/payment`, value, {
         headers: { "Idempotency-Key": idempotencyKeyRef.current },
       });
     },
-    {
-      onSuccess: () => {
-        idempotencyKeyRef.current = crypto.randomUUID();
-        queryClient.invalidateQueries([API_QUERY_KEY.GET_STUDENT_FEE_SUMMARY, organizationId]);
-        queryClient.invalidateQueries([API_QUERY_KEY.GET_PAYMENT_LEDGER, organizationId]);
-      },
-    }
-  );
+    onSuccess: () => {
+      idempotencyKeyRef.current = crypto.randomUUID();
+      queryClient.invalidateQueries({ queryKey: [API_QUERY_KEY.GET_STUDENT_FEE_SUMMARY, organizationId] });
+      queryClient.invalidateQueries({ queryKey: [API_QUERY_KEY.GET_PAYMENT_LEDGER, organizationId] });
+    },
+  });
 };
 
 export const useReversePayment = (organizationId: string) => {
   const queryClient = useQueryClient();
   const idempotencyKeyRef = useRef(crypto.randomUUID());
-  return useMutation<void, IAPIError, string>(
-    [API_MUTATION_KEY.REVERSE_PAYMENT],
-    async (paymentId) => {
+  return useMutation<void, IAPIError, string>({
+    mutationKey: [API_MUTATION_KEY.REVERSE_PAYMENT],
+    mutationFn: async (paymentId) => {
       await apiClient.post(
         `${base(organizationId)}/payment/${paymentId}/reverse`,
         {},
         { headers: { "Idempotency-Key": idempotencyKeyRef.current } }
       );
     },
-    {
-      onSuccess: () => {
-        idempotencyKeyRef.current = crypto.randomUUID();
-        queryClient.invalidateQueries([API_QUERY_KEY.GET_STUDENT_FEE_SUMMARY, organizationId]);
-        queryClient.invalidateQueries([API_QUERY_KEY.GET_PAYMENT_LEDGER, organizationId]);
-      },
-    }
-  );
+    onSuccess: () => {
+      idempotencyKeyRef.current = crypto.randomUUID();
+      queryClient.invalidateQueries({ queryKey: [API_QUERY_KEY.GET_STUDENT_FEE_SUMMARY, organizationId] });
+      queryClient.invalidateQueries({ queryKey: [API_QUERY_KEY.GET_PAYMENT_LEDGER, organizationId] });
+    },
+  });
 };
 
 export const useGetPaymentLedger = (organizationId: string) =>
-  useQuery<{ items: IPayment[]; total_count: number }, IAPIError>(
-    [API_QUERY_KEY.GET_PAYMENT_LEDGER, organizationId],
-    async () => {
+  useQuery<{ items: IPayment[]; total_count: number }, IAPIError>({
+    queryKey: [API_QUERY_KEY.GET_PAYMENT_LEDGER, organizationId],
+    queryFn: async () => {
       const result = await apiClient.get<null, IAxiosResponse<{ items: IPayment[]; total_count: number }>>(
         `${base(organizationId)}/payment`
       );
       return result.data.Data;
     },
-    { enabled: !!organizationId, cacheTime: 0 }
-  );
+    enabled: !!organizationId,
+    gcTime: 0,
+  });
 
 interface IGrantConcessionPayload {
   studentFeeId: string;
@@ -184,18 +181,16 @@ interface IGrantConcessionPayload {
 export const useGrantConcession = (organizationId: string) => {
   const queryClient = useQueryClient();
   const idempotencyKeyRef = useRef(crypto.randomUUID());
-  return useMutation<void, IAPIError, IGrantConcessionPayload>(
-    [API_MUTATION_KEY.GRANT_CONCESSION],
-    async ({ studentFeeId, ...value }) => {
+  return useMutation<void, IAPIError, IGrantConcessionPayload>({
+    mutationKey: [API_MUTATION_KEY.GRANT_CONCESSION],
+    mutationFn: async ({ studentFeeId, ...value }) => {
       await apiClient.post(`${base(organizationId)}/student-fee/${studentFeeId}/concession`, value, {
         headers: { "Idempotency-Key": idempotencyKeyRef.current },
       });
     },
-    {
-      onSuccess: () => {
-        idempotencyKeyRef.current = crypto.randomUUID();
-        queryClient.invalidateQueries([API_QUERY_KEY.GET_STUDENT_FEE_SUMMARY, organizationId]);
-      },
-    }
-  );
+    onSuccess: () => {
+      idempotencyKeyRef.current = crypto.randomUUID();
+      queryClient.invalidateQueries({ queryKey: [API_QUERY_KEY.GET_STUDENT_FEE_SUMMARY, organizationId] });
+    },
+  });
 };

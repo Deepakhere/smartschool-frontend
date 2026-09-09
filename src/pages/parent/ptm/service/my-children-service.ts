@@ -1,4 +1,4 @@
-import { useQuery } from "react-query";
+import { useQuery } from "@tanstack/react-query";
 
 import apiClient from "../../../../config";
 import { IAPIError, IAxiosResponse } from "../../../../types";
@@ -19,13 +19,14 @@ export interface IMyChildLink {
 }
 
 export const useGetMyChildren = (organizationId: string) =>
-  useQuery<{ items: IMyChildLink[] }, IAPIError>(
-    ["get-my-children", organizationId],
-    async () => {
+  useQuery<{ items: IMyChildLink[] }, IAPIError>({
+    queryKey: ["get-my-children", organizationId],
+    queryFn: async () => {
       const result = await apiClient.get<null, IAxiosResponse<{ items: IMyChildLink[] }>>(
         `${APIS_ROUTES.STUDENT_PROFILE}/${organizationId}/my-children`
       );
       return result.data.Data;
     },
-    { enabled: !!organizationId, cacheTime: 0 }
-  );
+    enabled: !!organizationId,
+    gcTime: 0,
+  });

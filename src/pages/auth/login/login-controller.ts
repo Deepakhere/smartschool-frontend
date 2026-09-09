@@ -45,7 +45,7 @@ const useLoginController = () => {
     error,
     password,
     showPassword,
-    isSigninLoading: signIn.isLoading,
+    isSigninLoading: signIn.isPending,
     setShowPassword,
     setEmail,
     setPassword,

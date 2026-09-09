@@ -14,7 +14,12 @@ import {
   useVerifyExamSubjectMarks,
   usePublishExam,
 } from "./service/exams-service";
-import { useGetAcademicYears, useGetClasses, useGetSections, useGetSubjects } from "../classes/service/academics-service";
+import {
+  useGetAcademicYears,
+  useGetClasses,
+  useGetSections,
+  useGetSubjects,
+} from "../classes/service/academics-service";
 import { useError } from "../../../hooks";
 
 export const useReportsController = () => {
@@ -164,7 +169,10 @@ export const useReportsController = () => {
   };
 
   const addSubjectRow = () =>
-    setSubjectRows([...subjectRows, { subjectId: "", maxMarks: "100", passMarks: "33", hasPractical: false, practicalMaxMarks: "0" }]);
+    setSubjectRows([
+      ...subjectRows,
+      { subjectId: "", maxMarks: "100", passMarks: "33", hasPractical: false, practicalMaxMarks: "0" },
+    ]);
   const removeSubjectRow = (idx: number) => setSubjectRows(subjectRows.filter((_, i) => i !== idx));
   const updateSubjectRow = (idx: number, field: string, value: string | boolean) => {
     setSubjectRows(subjectRows.map((r, i) => (i === idx ? { ...r, [field]: value } : r)));
@@ -190,7 +198,9 @@ export const useReportsController = () => {
       {
         onSuccess: () => {
           toast.success("Exam subjects saved.");
-          setSubjectRows([{ subjectId: "", maxMarks: "100", passMarks: "33", hasPractical: false, practicalMaxMarks: "0" }]);
+          setSubjectRows([
+            { subjectId: "", maxMarks: "100", passMarks: "33", hasPractical: false, practicalMaxMarks: "0" },
+          ]);
         },
       }
     );
@@ -199,7 +209,9 @@ export const useReportsController = () => {
   const handlePublishExam = (examId: string) => {
     if (!window.confirm("Publish this exam? Results become visible to parents and marks lock permanently.")) return;
     publishExam.mutate(examId, {
-      onSuccess: () => { toast.success("Results published."); },
+      onSuccess: () => {
+        toast.success("Results published.");
+      },
     });
   };
 
@@ -237,13 +249,19 @@ export const useReportsController = () => {
     });
     saveMarks.mutate(
       { examSubjectId: marksExamSubjectId, sectionId: marksSectionId, entries },
-      { onSuccess: () => { toast.success("Marks saved."); } }
+      {
+        onSuccess: () => {
+          toast.success("Marks saved.");
+        },
+      }
     );
   };
 
   const handleVerifyMarks = () => {
     verifyExamSubjectMarks.mutate(marksExamSubjectId, {
-      onSuccess: () => { toast.success("Marks verified."); },
+      onSuccess: () => {
+        toast.success("Marks verified.");
+      },
     });
   };
 
@@ -259,7 +277,7 @@ export const useReportsController = () => {
     removeBandRow,
     updateBandRow,
     handleCreateGradingScheme,
-    isCreatingScheme: createGradingScheme.isLoading,
+    isCreatingScheme: createGradingScheme.isPending,
     gradingSchemes,
     isLoadingSchemes: getGradingSchemes.isLoading,
 
@@ -280,7 +298,7 @@ export const useReportsController = () => {
     examGradingSchemeId,
     setExamGradingSchemeId,
     handleCreateExam,
-    isCreatingExam: createExam.isLoading,
+    isCreatingExam: createExam.isPending,
     exams,
     isLoadingExams: getExams.isLoading,
     classOptions,
@@ -295,10 +313,10 @@ export const useReportsController = () => {
     removeSubjectRow,
     updateSubjectRow,
     handleAddExamSubjects,
-    isAddingSubjects: addExamSubjects.isLoading,
+    isAddingSubjects: addExamSubjects.isPending,
     examSubjectsForExpanded,
     handlePublishExam,
-    isPublishing: publishExam.isLoading,
+    isPublishing: publishExam.isPending,
 
     marksExamId,
     setMarksExamId,
@@ -315,8 +333,8 @@ export const useReportsController = () => {
     marksDraft,
     updateMarksDraft,
     handleSaveMarks,
-    isSavingMarks: saveMarks.isLoading,
+    isSavingMarks: saveMarks.isPending,
     handleVerifyMarks,
-    isVerifyingMarks: verifyExamSubjectMarks.isLoading,
+    isVerifyingMarks: verifyExamSubjectMarks.isPending,
   };
 };

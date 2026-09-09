@@ -2,11 +2,7 @@ import { useState, useEffect } from "react";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import toast from "react-hot-toast";
-import {
-  useDeleteStudent,
-  useGetStudentById,
-  useUpdateStudentDetail,
-} from "../service";
+import { useDeleteStudent, useGetStudentById, useUpdateStudentDetail } from "../service";
 import { useAddGuardian, useSetPrimaryGuardian, useRemoveGuardian } from "../service/guardian-service";
 import { useGetEnrollmentHistory, useTransferStudent, useWithdrawStudent } from "../service/lifecycle-service";
 import { useGetStudentAttendanceHistory } from "../service/attendance-history-service";
@@ -28,10 +24,7 @@ const useStudentDetailController = () => {
   const [currentStep, setCurrentStep] = useState(1);
   const [formData, setFormData] = useState({} as IStudentFormData);
 
-  const getStudentDetailById = useGetStudentById(
-    organizationId || "",
-    studentId || ""
-  );
+  const getStudentDetailById = useGetStudentById(organizationId || "", studentId || "");
 
   const updateStudent = useUpdateStudentDetail(organizationId || "");
 
@@ -208,13 +201,13 @@ const useStudentDetailController = () => {
     setCurrentStep,
     setIsEditModalOpen,
     setIsDeleteModalOpen,
-    isDeletingStudent: deleteStudent.isLoading,
+    isDeletingStudent: deleteStudent.isPending,
     handleDeleteStudent,
     addGuardian,
     handleSetPrimaryGuardian,
     handleRemoveGuardian,
     guardianIdPendingRemoval,
-    isRemovingGuardian: removeGuardian.isLoading,
+    isRemovingGuardian: removeGuardian.isPending,
     cancelRemoveGuardian,
     confirmRemoveGuardian,
     enrollmentHistory: enrollmentHistory.data?.items || [],
@@ -225,8 +218,8 @@ const useStudentDetailController = () => {
     setIsWithdrawModalOpen,
     confirmTransfer,
     confirmWithdraw,
-    isTransferring: transferStudent.isLoading,
-    isWithdrawing: withdrawStudent.isLoading,
+    isTransferring: transferStudent.isPending,
+    isWithdrawing: withdrawStudent.isPending,
     attendanceSummary: attendanceHistory.data?.summary,
     isLoadingAttendance: attendanceHistory.isLoading,
     examResults: examResults.data?.items || [],

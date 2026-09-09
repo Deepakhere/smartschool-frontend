@@ -70,7 +70,7 @@ const useTeachersController = () => {
     dateOfJoining,
     setDateOfJoining,
     submitProfile,
-    isSaving: upsertStaffProfile.isLoading,
+    isSaving: upsertStaffProfile.isPending,
   };
 };
 

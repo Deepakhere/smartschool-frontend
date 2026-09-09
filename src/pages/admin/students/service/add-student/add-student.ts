@@ -1,10 +1,6 @@
-import { useMutation } from "react-query";
+import { useMutation } from "@tanstack/react-query";
 import apiClient from "../../../../../config";
-import {
-  IAPIError,
-  IAxiosResponse,
-  IStudentFormData,
-} from "../../../../../types";
+import { IAPIError, IAxiosResponse, IStudentFormData } from "../../../../../types";
 import { API_MUTATION_KEY, APIS_ROUTES } from "../../../../../utils";
 
 interface IAddStudentResponse {
@@ -17,10 +13,7 @@ interface IAddStudentResponse {
 }
 
 const addStudent = async (organizationId: string, data: IStudentFormData) => {
-  const response = await apiClient.post<
-    IStudentFormData,
-    IAxiosResponse<IAddStudentResponse>
-  >(
+  const response = await apiClient.post<IStudentFormData, IAxiosResponse<IAddStudentResponse>>(
     `${APIS_ROUTES.STUDENT_PROFILE}/${organizationId}/add-student-profile`,
     data
   );
@@ -29,10 +22,10 @@ const addStudent = async (organizationId: string, data: IStudentFormData) => {
 };
 
 const useAddStudent = (organizationId: string) => {
-  return useMutation<IAddStudentResponse, IAPIError, IStudentFormData>(
-    [API_MUTATION_KEY.ADD_STUDENT_PROFILE],
-    (data: IStudentFormData) => addStudent(organizationId, data)
-  );
+  return useMutation<IAddStudentResponse, IAPIError, IStudentFormData>({
+    mutationKey: [API_MUTATION_KEY.ADD_STUDENT_PROFILE],
+    mutationFn: (data: IStudentFormData) => addStudent(organizationId, data),
+  });
 };
 
 export default useAddStudent;

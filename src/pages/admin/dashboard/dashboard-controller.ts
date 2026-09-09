@@ -91,7 +91,11 @@ export const useDashboardController = () => {
       },
     ],
     plotOptions: {
-      pie: { allowPointSelect: true, cursor: "pointer", dataLabels: { enabled: true, format: "{point.percentage:.1f}%" } },
+      pie: {
+        allowPointSelect: true,
+        cursor: "pointer",
+        dataLabels: { enabled: true, format: "{point.percentage:.1f}%" },
+      },
     },
   };
 
@@ -194,7 +198,7 @@ export const useDashboardController = () => {
     openNoticeModal,
     closeNoticeModal,
     handleCreateNotice,
-    isCreatingNotice: createNotice.isLoading,
+    isCreatingNotice: createNotice.isPending,
     isSuccessNoticeCreation: createNotice.isSuccess,
     openUserTypeModal,
     closeUserTypeModal,

@@ -1,10 +1,6 @@
-import { useMutation } from "react-query";
+import { useMutation } from "@tanstack/react-query";
 import apiClient from "../../../../../config";
-import {
-  IAPIError,
-  IAxiosResponse,
-  ICreateNoticeRequest,
-} from "../../../../../types";
+import { IAPIError, IAxiosResponse, ICreateNoticeRequest } from "../../../../../types";
 import { API_MUTATION_KEY, APIS_ROUTES } from "../../../../../utils";
 
 interface ICreatNoticeResponse {
@@ -16,14 +12,8 @@ interface ICreatNoticeResponse {
   attachment?: File | null;
 }
 
-const createNotice = async (
-  organizationId: string,
-  data: FormData | ICreateNoticeRequest
-) => {
-  const response = await apiClient.post<
-    ICreateNoticeRequest,
-    IAxiosResponse<ICreatNoticeResponse>
-  >(
+const createNotice = async (organizationId: string, data: FormData | ICreateNoticeRequest) => {
+  const response = await apiClient.post<ICreateNoticeRequest, IAxiosResponse<ICreatNoticeResponse>>(
     `${APIS_ROUTES.SCHOOL_SERVICE}/notice/${organizationId}/create-notice`,
     data
   );
@@ -32,13 +22,10 @@ const createNotice = async (
 };
 
 const useCreateNotice = (organizationId: string) => {
-  return useMutation<
-    ICreatNoticeResponse,
-    IAPIError,
-    FormData | ICreateNoticeRequest
-  >([API_MUTATION_KEY.CREATE_NOTICE], (data: FormData | ICreateNoticeRequest) =>
-    createNotice(organizationId, data)
-  );
+  return useMutation<ICreatNoticeResponse, IAPIError, FormData | ICreateNoticeRequest>({
+    mutationKey: [API_MUTATION_KEY.CREATE_NOTICE],
+    mutationFn: (data: FormData | ICreateNoticeRequest) => createNotice(organizationId, data),
+  });
 };
 
 export default useCreateNotice;

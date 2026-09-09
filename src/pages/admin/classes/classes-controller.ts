@@ -228,7 +228,7 @@ const useClassesController = () => {
     yearIsCurrent,
     setYearIsCurrent,
     submitYear,
-    isCreatingYear: createAcademicYear.isLoading,
+    isCreatingYear: createAcademicYear.isPending,
 
     showClassForm,
     setShowClassForm,
@@ -237,7 +237,7 @@ const useClassesController = () => {
     classLevel,
     setClassLevel,
     submitClass,
-    isCreatingClass: createClass.isLoading,
+    isCreatingClass: createClass.isPending,
 
     showSectionForm,
     setShowSectionForm,
@@ -246,7 +246,7 @@ const useClassesController = () => {
     sectionCapacity,
     setSectionCapacity,
     submitSection,
-    isCreatingSection: createSection.isLoading,
+    isCreatingSection: createSection.isPending,
 
     showSubjectForm,
     setShowSubjectForm,
@@ -255,7 +255,7 @@ const useClassesController = () => {
     subjectCode,
     setSubjectCode,
     submitSubject,
-    isCreatingSubject: createSubject.isLoading,
+    isCreatingSubject: createSubject.isPending,
 
     showAssignForm,
     setShowAssignForm,
@@ -271,7 +271,7 @@ const useClassesController = () => {
     setAssignRole,
     assignSections: assignSections.data?.items || [],
     submitAssign,
-    isAssigning: assignTeacher.isLoading,
+    isAssigning: assignTeacher.isPending,
   };
 };
 

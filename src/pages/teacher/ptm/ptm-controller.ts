@@ -56,7 +56,7 @@ const useTeacherPTMController = () => {
     agenda,
     eventSectionOptions,
     isLoadingAgenda: getMyAgenda.isLoading,
-    isGeneratingSlots: generateSlots.isLoading,
+    isGeneratingSlots: generateSlots.isPending,
     selectedEventId,
     setSelectedEventId,
     slotForm,

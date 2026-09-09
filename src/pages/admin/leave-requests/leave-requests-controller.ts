@@ -35,7 +35,7 @@ export const useLeaveRequestsController = () => {
     notesByRequest,
     setNote,
     handleDecide,
-    isDeciding: decideLeaveRequest.isLoading,
+    isDeciding: decideLeaveRequest.isPending,
     decidingRequestId: decideLeaveRequest.variables?.leaveRequestId,
   };
 };

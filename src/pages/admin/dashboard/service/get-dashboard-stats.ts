@@ -1,4 +1,4 @@
-import { useQuery } from "react-query";
+import { useQuery } from "@tanstack/react-query";
 
 import apiClient from "../../../../config";
 import { IAPIError, IAxiosResponse } from "../../../../types";
@@ -22,10 +22,11 @@ const getDashboardStats = async (organizationId: string): Promise<IDashboardStat
 };
 
 const useGetDashboardStats = (organizationId: string) =>
-  useQuery<IDashboardStats, IAPIError>(
-    [API_QUERY_KEY.GET_DASHBOARD_STATS, organizationId],
-    () => getDashboardStats(organizationId),
-    { enabled: !!organizationId, cacheTime: 0 }
-  );
+  useQuery<IDashboardStats, IAPIError>({
+    queryKey: [API_QUERY_KEY.GET_DASHBOARD_STATS, organizationId],
+    queryFn: () => getDashboardStats(organizationId),
+    enabled: !!organizationId,
+    gcTime: 0,
+  });
 
 export default useGetDashboardStats;

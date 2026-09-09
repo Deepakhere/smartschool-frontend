@@ -76,7 +76,7 @@ const useParentPTMController = () => {
     bookings,
     isLoadingEvents: getPTMEvents.isLoading,
     isLoadingSlots: getSlotsForEvent.isLoading,
-    isBooking: bookSlot.isLoading,
+    isBooking: bookSlot.isPending,
     selectedEventId,
     setSelectedEventId,
     bookingSlotId,

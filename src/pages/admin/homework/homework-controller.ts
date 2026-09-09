@@ -2,7 +2,12 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import toast from "react-hot-toast";
 
-import { useGetAcademicYears, useGetClasses, useGetSections, useGetSubjects } from "../classes/service/academics-service";
+import {
+  useGetAcademicYears,
+  useGetClasses,
+  useGetSections,
+  useGetSubjects,
+} from "../classes/service/academics-service";
 import { useGetHomeworkList, useCreateHomework, useDeleteHomework } from "./service/homework-service";
 
 const today = () => new Date().toISOString().slice(0, 10);
@@ -134,7 +139,7 @@ export const useHomeworkController = () => {
     homeworkIdPendingDelete,
     cancelDelete,
     confirmDelete,
-    isDeleting: deleteHomework.isLoading,
-    isCreating: createHomework.isLoading,
+    isDeleting: deleteHomework.isPending,
+    isCreating: createHomework.isPending,
   };
 };

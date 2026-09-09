@@ -34,10 +34,7 @@ const useNoticeController = () => {
     setPreviewModalOpen(true);
   };
 
-  const handleDownloadAttachment = (
-    attachmentUrl: string,
-    fileName: string
-  ) => {
+  const handleDownloadAttachment = (attachmentUrl: string, fileName: string) => {
     const link = document.createElement("a");
     link.href = attachmentUrl;
     link.download = fileName || "notice-attachment";
@@ -147,7 +144,7 @@ const useNoticeController = () => {
     isNoticeModalOpen,
     isLoadingNoticeList: getNoticeList.isLoading,
     isFetchingNoticeList: getNoticeList.isFetching,
-    isCreatingNotice: createNotice.isLoading,
+    isCreatingNotice: createNotice.isPending,
     isSuccessNoticeCreation: createNotice.isSuccess,
     previewModalOpen,
     previewAttachmentURL,
@@ -161,7 +158,7 @@ const useNoticeController = () => {
     noticeIdPendingDelete,
     cancelDeleteNotice,
     confirmDeleteNotice,
-    isDeletingNotice: deleteNotice.isLoading,
+    isDeletingNotice: deleteNotice.isPending,
     setPreviewModalOpen,
     activeDropdown,
     dropdownRef,

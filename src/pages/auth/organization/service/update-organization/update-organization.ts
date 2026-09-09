@@ -1,4 +1,4 @@
-import { useMutation } from "react-query";
+import { useMutation } from "@tanstack/react-query";
 
 import apiClient from "../../../../../config";
 import { IAPIError, ICreateOrganizationValue, IOrganization } from "../../../../../types";
@@ -20,9 +20,9 @@ const updateOrganization = async ({
 };
 
 export const useUpdateOrganization = () =>
-  useMutation<IOrganization, IAPIError, { organizationId: string; value: ICreateOrganizationValue }>(
-    [API_MUTATION_KEY.UPDATE_ORGANIZATION],
-    updateOrganization
-  );
+  useMutation<IOrganization, IAPIError, { organizationId: string; value: ICreateOrganizationValue }>({
+    mutationKey: [API_MUTATION_KEY.UPDATE_ORGANIZATION],
+    mutationFn: updateOrganization,
+  });
 
 export default useUpdateOrganization;

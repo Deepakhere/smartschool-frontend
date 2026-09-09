@@ -1,4 +1,4 @@
-import { useMutation } from "react-query";
+import { useMutation } from "@tanstack/react-query";
 
 import apiClient from "../../../../config";
 import { IAPIError, ILoginResponse, IAxiosResponse } from "../../../../types";
@@ -10,18 +10,15 @@ interface ILoginValue {
 }
 
 const singIn = async (value: ILoginValue) => {
-  const response = await apiClient.post<
-    ILoginValue,
-    IAxiosResponse<ILoginResponse>
-  >(APIS_ROUTES.SIGNIN, value);
+  const response = await apiClient.post<ILoginValue, IAxiosResponse<ILoginResponse>>(APIS_ROUTES.SIGNIN, value);
 
   return response.data.Data;
 };
 
 const useSignIn = () =>
-  useMutation<ILoginResponse, IAPIError, ILoginValue>(
-    [API_MUTATION_KEY.SIGNIN],
-    singIn
-  );
+  useMutation<ILoginResponse, IAPIError, ILoginValue>({
+    mutationKey: [API_MUTATION_KEY.SIGNIN],
+    mutationFn: singIn,
+  });
 
 export default useSignIn;

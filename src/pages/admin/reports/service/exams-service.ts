@@ -1,4 +1,4 @@
-import { useMutation, useQuery, useQueryClient } from "react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import apiClient from "../../../../config";
 import {
@@ -15,16 +15,17 @@ import { APIS_ROUTES, API_QUERY_KEY, API_MUTATION_KEY } from "../../../../utils"
 const base = (organizationId: string) => `${APIS_ROUTES.EXAM_SERVICE}/${organizationId}`;
 
 export const useGetGradingSchemes = (organizationId: string) =>
-  useQuery<{ items: IGradingScheme[] }, IAPIError>(
-    [API_QUERY_KEY.GET_GRADING_SCHEMES, organizationId],
-    async () => {
+  useQuery<{ items: IGradingScheme[] }, IAPIError>({
+    queryKey: [API_QUERY_KEY.GET_GRADING_SCHEMES, organizationId],
+    queryFn: async () => {
       const result = await apiClient.get<null, IAxiosResponse<{ items: IGradingScheme[] }>>(
         `${base(organizationId)}/grading-scheme`
       );
       return result.data.Data;
     },
-    { enabled: !!organizationId, cacheTime: 0 }
-  );
+    enabled: !!organizationId,
+    gcTime: 0,
+  });
 
 interface ICreateGradingSchemePayload {
   name: string;
@@ -34,24 +35,25 @@ interface ICreateGradingSchemePayload {
 
 export const useCreateGradingScheme = (organizationId: string) => {
   const queryClient = useQueryClient();
-  return useMutation<void, IAPIError, ICreateGradingSchemePayload>(
-    [API_MUTATION_KEY.CREATE_GRADING_SCHEME],
-    async (value) => {
+  return useMutation<void, IAPIError, ICreateGradingSchemePayload>({
+    mutationKey: [API_MUTATION_KEY.CREATE_GRADING_SCHEME],
+    mutationFn: async (value) => {
       await apiClient.post(`${base(organizationId)}/grading-scheme`, value);
     },
-    { onSuccess: () => queryClient.invalidateQueries([API_QUERY_KEY.GET_GRADING_SCHEMES, organizationId]) }
-  );
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: [API_QUERY_KEY.GET_GRADING_SCHEMES, organizationId] }),
+  });
 };
 
 export const useGetExams = (organizationId: string) =>
-  useQuery<{ items: IExam[] }, IAPIError>(
-    [API_QUERY_KEY.GET_EXAMS, organizationId],
-    async () => {
+  useQuery<{ items: IExam[] }, IAPIError>({
+    queryKey: [API_QUERY_KEY.GET_EXAMS, organizationId],
+    queryFn: async () => {
       const result = await apiClient.get<null, IAxiosResponse<{ items: IExam[] }>>(`${base(organizationId)}/exam`);
       return result.data.Data;
     },
-    { enabled: !!organizationId, cacheTime: 0 }
-  );
+    enabled: !!organizationId,
+    gcTime: 0,
+  });
 
 interface ICreateExamPayload {
   academicYearId: string;
@@ -66,13 +68,13 @@ interface ICreateExamPayload {
 
 export const useCreateExam = (organizationId: string) => {
   const queryClient = useQueryClient();
-  return useMutation<void, IAPIError, ICreateExamPayload>(
-    [API_MUTATION_KEY.CREATE_EXAM],
-    async (value) => {
+  return useMutation<void, IAPIError, ICreateExamPayload>({
+    mutationKey: [API_MUTATION_KEY.CREATE_EXAM],
+    mutationFn: async (value) => {
       await apiClient.post(`${base(organizationId)}/exam`, value);
     },
-    { onSuccess: () => queryClient.invalidateQueries([API_QUERY_KEY.GET_EXAMS, organizationId]) }
-  );
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: [API_QUERY_KEY.GET_EXAMS, organizationId] }),
+  });
 };
 
 interface IAddExamSubjectsPayload {
@@ -89,43 +91,43 @@ interface IAddExamSubjectsPayload {
 
 export const useAddExamSubjects = (organizationId: string) => {
   const queryClient = useQueryClient();
-  return useMutation<void, IAPIError, IAddExamSubjectsPayload>(
-    [API_MUTATION_KEY.ADD_EXAM_SUBJECTS],
-    async (value) => {
+  return useMutation<void, IAPIError, IAddExamSubjectsPayload>({
+    mutationKey: [API_MUTATION_KEY.ADD_EXAM_SUBJECTS],
+    mutationFn: async (value) => {
       await apiClient.post(`${base(organizationId)}/exam/${value.examId}/subject`, value);
     },
-    {
-      onSuccess: (_data, variables) =>
-        queryClient.invalidateQueries([API_QUERY_KEY.GET_EXAM_SUBJECTS, organizationId, variables.examId]),
-    }
-  );
+    onSuccess: (_data, variables) =>
+      queryClient.invalidateQueries({ queryKey: [API_QUERY_KEY.GET_EXAM_SUBJECTS, organizationId, variables.examId] }),
+  });
 };
 
 export const useGetExamSubjects = (organizationId: string, examId?: string, classId?: string) =>
-  useQuery<{ items: IExamSubject[] }, IAPIError>(
-    [API_QUERY_KEY.GET_EXAM_SUBJECTS, organizationId, examId, classId],
-    async () => {
+  useQuery<{ items: IExamSubject[] }, IAPIError>({
+    queryKey: [API_QUERY_KEY.GET_EXAM_SUBJECTS, organizationId, examId, classId],
+    queryFn: async () => {
       const result = await apiClient.get<null, IAxiosResponse<{ items: IExamSubject[] }>>(
         `${base(organizationId)}/exam/${examId}/subject`,
         { params: classId ? { classId } : undefined }
       );
       return result.data.Data;
     },
-    { enabled: !!organizationId && !!examId, cacheTime: 0 }
-  );
+    enabled: !!organizationId && !!examId,
+    gcTime: 0,
+  });
 
 export const useGetMarksSheet = (organizationId: string, examSubjectId?: string, sectionId?: string) =>
-  useQuery<{ items: IMarksSheetItem[]; examSubject: IExamSubject }, IAPIError>(
-    [API_QUERY_KEY.GET_MARKS_SHEET, organizationId, examSubjectId, sectionId],
-    async () => {
-      const result = await apiClient.get<
-        null,
-        IAxiosResponse<{ items: IMarksSheetItem[]; examSubject: IExamSubject }>
-      >(`${base(organizationId)}/exam-subject/${examSubjectId}/marks-sheet`, { params: { sectionId } });
+  useQuery<{ items: IMarksSheetItem[]; examSubject: IExamSubject }, IAPIError>({
+    queryKey: [API_QUERY_KEY.GET_MARKS_SHEET, organizationId, examSubjectId, sectionId],
+    queryFn: async () => {
+      const result = await apiClient.get<null, IAxiosResponse<{ items: IMarksSheetItem[]; examSubject: IExamSubject }>>(
+        `${base(organizationId)}/exam-subject/${examSubjectId}/marks-sheet`,
+        { params: { sectionId } }
+      );
       return result.data.Data;
     },
-    { enabled: !!organizationId && !!examSubjectId && !!sectionId, cacheTime: 0 }
-  );
+    enabled: !!organizationId && !!examSubjectId && !!sectionId,
+    gcTime: 0,
+  });
 
 interface ISaveMarksPayload {
   examSubjectId: string;
@@ -135,69 +137,66 @@ interface ISaveMarksPayload {
 
 export const useSaveMarks = (organizationId: string) => {
   const queryClient = useQueryClient();
-  return useMutation<void, IAPIError, ISaveMarksPayload>(
-    [API_MUTATION_KEY.SAVE_MARKS],
-    async (value) => {
+  return useMutation<void, IAPIError, ISaveMarksPayload>({
+    mutationKey: [API_MUTATION_KEY.SAVE_MARKS],
+    mutationFn: async (value) => {
       await apiClient.post(`${base(organizationId)}/exam-subject/${value.examSubjectId}/marks`, value);
     },
-    {
-      onSuccess: (_data, variables) =>
-        queryClient.invalidateQueries([
-          API_QUERY_KEY.GET_MARKS_SHEET,
-          organizationId,
-          variables.examSubjectId,
-          variables.sectionId,
-        ]),
-    }
-  );
+    onSuccess: (_data, variables) =>
+      queryClient.invalidateQueries({
+        queryKey: [API_QUERY_KEY.GET_MARKS_SHEET, organizationId, variables.examSubjectId, variables.sectionId],
+      }),
+  });
 };
 
 export const useVerifyExamSubjectMarks = (organizationId: string) => {
   const queryClient = useQueryClient();
-  return useMutation<void, IAPIError, string>(
-    [API_MUTATION_KEY.VERIFY_EXAM_SUBJECT_MARKS],
-    async (examSubjectId) => {
+  return useMutation<void, IAPIError, string>({
+    mutationKey: [API_MUTATION_KEY.VERIFY_EXAM_SUBJECT_MARKS],
+    mutationFn: async (examSubjectId) => {
       await apiClient.post(`${base(organizationId)}/exam-subject/${examSubjectId}/verify`);
     },
-    { onSuccess: () => queryClient.invalidateQueries([API_QUERY_KEY.GET_MARKS_SHEET, organizationId]) }
-  );
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: [API_QUERY_KEY.GET_MARKS_SHEET, organizationId] }),
+  });
 };
 
 export const usePublishExam = (organizationId: string) => {
   const queryClient = useQueryClient();
-  return useMutation<void, IAPIError, string>(
-    [API_MUTATION_KEY.PUBLISH_EXAM],
-    async (examId) => {
+  return useMutation<void, IAPIError, string>({
+    mutationKey: [API_MUTATION_KEY.PUBLISH_EXAM],
+    mutationFn: async (examId) => {
       await apiClient.post(`${base(organizationId)}/exam/${examId}/publish`);
     },
-    { onSuccess: () => queryClient.invalidateQueries([API_QUERY_KEY.GET_EXAMS, organizationId]) }
-  );
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: [API_QUERY_KEY.GET_EXAMS, organizationId] }),
+  });
 };
 
 export const useGetResultsForStudent = (organizationId: string, studentId?: string) =>
-  useQuery<{ items: IResult[] }, IAPIError>(
-    [API_QUERY_KEY.GET_RESULTS_FOR_STUDENT, organizationId, studentId],
-    async () => {
+  useQuery<{ items: IResult[] }, IAPIError>({
+    queryKey: [API_QUERY_KEY.GET_RESULTS_FOR_STUDENT, organizationId, studentId],
+    queryFn: async () => {
       const result = await apiClient.get<null, IAxiosResponse<{ items: IResult[] }>>(
         `${base(organizationId)}/student/${studentId}/results`
       );
       return result.data.Data;
     },
-    { enabled: !!organizationId && !!studentId, cacheTime: 0 }
-  );
+    enabled: !!organizationId && !!studentId,
+    gcTime: 0,
+  });
 
 export const useGetMyResults = (organizationId: string) =>
-  useQuery<{ items: { studentId: string; studentName: string; results: IResult[] }[] }, IAPIError>(
-    [API_QUERY_KEY.GET_MY_RESULTS, organizationId],
-    async () => {
+  useQuery<{ items: { studentId: string; studentName: string; results: IResult[] }[] }, IAPIError>({
+    queryKey: [API_QUERY_KEY.GET_MY_RESULTS, organizationId],
+    queryFn: async () => {
       const result = await apiClient.get<
         null,
         IAxiosResponse<{ items: { studentId: string; studentName: string; results: IResult[] }[] }>
       >(`${base(organizationId)}/my-results`);
       return result.data.Data;
     },
-    { enabled: !!organizationId, cacheTime: 0 }
-  );
+    enabled: !!organizationId,
+    gcTime: 0,
+  });
 
 // not a query/mutation hook — a report card is a PDF blob, not envelope JSON
 export const downloadReportCard = async (organizationId: string, examId: string, studentId: string) => {

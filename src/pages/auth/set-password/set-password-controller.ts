@@ -52,7 +52,7 @@ const useSetPasswordController = () => {
     confirmPassword,
     showPassword,
     error,
-    isLoading: setUserPassword.isLoading,
+    isLoading: setUserPassword.isPending,
     setPassword,
     setConfirmPassword,
     setShowPassword,

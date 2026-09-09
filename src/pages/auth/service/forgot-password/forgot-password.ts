@@ -1,4 +1,4 @@
-import { useMutation } from "react-query";
+import { useMutation } from "@tanstack/react-query";
 
 import apiClient from "../../../../config";
 import { IAPIError, IForgetPasswordRequest } from "../../../../types";
@@ -9,9 +9,9 @@ const forgotPassword = async (forgotPasswordData: IForgetPasswordRequest) => {
 };
 
 export const useForgotPassword = () =>
-  useMutation<void, IAPIError, IForgetPasswordRequest>(
-    [API_MUTATION_KEY.FORGOT_PASSWORD],
-    forgotPassword
-  );
+  useMutation<void, IAPIError, IForgetPasswordRequest>({
+    mutationKey: [API_MUTATION_KEY.FORGOT_PASSWORD],
+    mutationFn: forgotPassword,
+  });
 
 export default useForgotPassword;

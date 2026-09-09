@@ -74,7 +74,7 @@ const useBulkUploadModalController = (organizationId: string, onImported: () => 
     result,
     reset,
     handleSubmit,
-    isSubmitting: bulkImport.isLoading,
+    isSubmitting: bulkImport.isPending,
   };
 };
 

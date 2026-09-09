@@ -1,4 +1,4 @@
-import { useQuery } from "react-query";
+import { useQuery } from "@tanstack/react-query";
 
 import apiClient from "../../../../config";
 import { IAPIError, IAxiosResponse, IAttendanceRecord } from "../../../../types";
@@ -10,13 +10,14 @@ interface IAttendanceHistoryResponse {
 }
 
 export const useGetStudentAttendanceHistory = (organizationId: string, studentId: string) =>
-  useQuery<IAttendanceHistoryResponse, IAPIError>(
-    ["get-student-attendance-history", studentId],
-    async () => {
+  useQuery<IAttendanceHistoryResponse, IAPIError>({
+    queryKey: ["get-student-attendance-history", studentId],
+    queryFn: async () => {
       const result = await apiClient.get<null, IAxiosResponse<IAttendanceHistoryResponse>>(
         `${APIS_ROUTES.ATTENDANCE_SERVICE}/${organizationId}/student/${studentId}`
       );
       return result.data.Data;
     },
-    { enabled: !!organizationId && !!studentId, cacheTime: 0 }
-  );
+    enabled: !!organizationId && !!studentId,
+    gcTime: 0,
+  });

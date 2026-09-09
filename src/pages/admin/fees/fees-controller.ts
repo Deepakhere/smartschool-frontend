@@ -40,8 +40,19 @@ const useFeesController = () => {
 
   const [studentSearch, setStudentSearch] = useState("");
   const [selectedStudentId, setSelectedStudentId] = useState("");
-  const [paymentForm, setPaymentForm] = useState({ studentFeeId: "", amount: "", method: "cash", instrumentRef: "", remarks: "" });
-  const [concessionForm, setConcessionForm] = useState({ studentFeeId: "", amount: "", reason: "", installmentLabel: "" });
+  const [paymentForm, setPaymentForm] = useState({
+    studentFeeId: "",
+    amount: "",
+    method: "cash",
+    instrumentRef: "",
+    remarks: "",
+  });
+  const [concessionForm, setConcessionForm] = useState({
+    studentFeeId: "",
+    amount: "",
+    reason: "",
+    installmentLabel: "",
+  });
 
   const getAcademicYears = useGetAcademicYears(org);
   const currentAcademicYearId = getAcademicYears.data?.items.find((y) => y.isCurrent)?.id;
@@ -126,7 +137,9 @@ const useFeesController = () => {
       return;
     }
 
-    const validItems = items.filter((i) => i.feeHeadId && i.amount).map((i) => ({ feeHeadId: i.feeHeadId, amount: Number(i.amount) }));
+    const validItems = items
+      .filter((i) => i.feeHeadId && i.amount)
+      .map((i) => ({ feeHeadId: i.feeHeadId, amount: Number(i.amount) }));
     const validInstallments = installments
       .filter((i) => i.label && i.dueDate && i.amount)
       .map((i) => ({ label: i.label, dueDate: i.dueDate, amount: Number(i.amount) }));
@@ -239,7 +252,7 @@ const useFeesController = () => {
     headForm,
     handleHeadFormChange,
     handleCreateFeeHead,
-    isCreatingHead: createFeeHead.isLoading,
+    isCreatingHead: createFeeHead.isPending,
     feeStructures,
     classOptions,
     sectionOptions,
@@ -260,9 +273,9 @@ const useFeesController = () => {
     itemsTotal,
     installmentsTotal,
     handleCreateFeeStructure,
-    isCreatingStructure: createFeeStructure.isLoading,
+    isCreatingStructure: createFeeStructure.isPending,
     handleAssignStructure,
-    isAssigning: assignFeeStructure.isLoading,
+    isAssigning: assignFeeStructure.isPending,
     studentSearch,
     setStudentSearch,
     studentSearchResults,
@@ -272,13 +285,13 @@ const useFeesController = () => {
     paymentForm,
     handlePaymentFormChange,
     handleRecordPayment,
-    isRecordingPayment: recordPayment.isLoading,
+    isRecordingPayment: recordPayment.isPending,
     paymentLedger,
     handleReversePayment,
     concessionForm,
     handleConcessionFormChange,
     handleGrantConcession,
-    isGrantingConcession: grantConcession.isLoading,
+    isGrantingConcession: grantConcession.isPending,
   };
 };
 

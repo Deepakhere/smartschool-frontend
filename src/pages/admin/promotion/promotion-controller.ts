@@ -151,6 +151,6 @@ export const usePromotionController = () => {
     setRowRollNumber,
     resultsByStudent,
     handleProcess,
-    isProcessing: processPromotions.isLoading,
+    isProcessing: processPromotions.isPending,
   };
 };

@@ -1,7 +1,4 @@
-import {
-  PencilIcon,
-  TrashIcon,
-} from "@heroicons/react/24/outline";
+import { PencilIcon, TrashIcon } from "@heroicons/react/24/outline";
 
 import DeleteConfirmationDialog from "../../../../components/delete-confirmation-dialog";
 import CreateUpdateStudentModal from "../student-modal/create-update-student-modal";
@@ -75,9 +72,7 @@ const StudentDetails = () => {
         <PageLoader />
       ) : isErrorStudentDetail ? (
         <div className="text-center py-12">
-          <h2 className="text-xl font-semibold text-gray-900">
-            Student not found
-          </h2>
+          <h2 className="text-xl font-semibold text-gray-900">Student not found</h2>
           <button
             onClick={onBackClick}
             className="mt-4 inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700"
@@ -93,12 +88,8 @@ const StudentDetails = () => {
               <div className="flex items-center space-x-3">
                 <Avatar name={studentDetails?.name || ""} size={40} />
                 <div>
-                  <h3 className="text-lg leading-6 font-medium text-gray-900">
-                    {studentDetails?.name}
-                  </h3>
-                  <p className="mt-1 max-w-2xl text-sm text-gray-500">
-                    Personal details and information.
-                  </p>
+                  <h3 className="text-lg leading-6 font-medium text-gray-900">{studentDetails?.name}</h3>
+                  <p className="mt-1 max-w-2xl text-sm text-gray-500">Personal details and information.</p>
                 </div>
               </div>
               <div className="flex space-x-3">
@@ -123,17 +114,11 @@ const StudentDetails = () => {
             <div className="border-t border-gray-200">
               <dl>
                 <div className="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                  <dt className="text-sm font-medium text-gray-500">
-                    Full name
-                  </dt>
-                  <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                    {studentDetails?.name}
-                  </dd>
+                  <dt className="text-sm font-medium text-gray-500">Full name</dt>
+                  <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">{studentDetails?.name}</dd>
                 </div>
                 <div className="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                  <dt className="text-sm font-medium text-gray-500">
-                    Admission Number
-                  </dt>
+                  <dt className="text-sm font-medium text-gray-500">Admission Number</dt>
                   <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
                     {studentDetails?.admissionNumber}
                   </dd>
@@ -148,29 +133,21 @@ const StudentDetails = () => {
                   </dd>
                 </div>
                 <div className="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                  <dt className="text-sm font-medium text-gray-500">
-                    Roll Number
-                  </dt>
+                  <dt className="text-sm font-medium text-gray-500">Roll Number</dt>
                   <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
                     {studentDetails?.currentEnrollment?.rollNumber}
                   </dd>
                 </div>
                 <div className="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                  <dt className="text-sm font-medium text-gray-500">
-                    Date of Birth
-                  </dt>
+                  <dt className="text-sm font-medium text-gray-500">Date of Birth</dt>
                   <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                    {studentDetails?.dateOfBirth &&
-                      new Date(
-                        studentDetails?.dateOfBirth
-                      ).toLocaleDateString()}
+                    {studentDetails?.dateOfBirth && new Date(studentDetails?.dateOfBirth).toLocaleDateString()}
                   </dd>
                 </div>
                 <div className="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                   <dt className="text-sm font-medium text-gray-500">Address</dt>
                   <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                    {studentDetails?.address}, {studentDetails?.city},{" "}
-                    {studentDetails?.state}
+                    {studentDetails?.address}, {studentDetails?.city}, {studentDetails?.state}
                   </dd>
                 </div>
               </dl>
@@ -181,12 +158,8 @@ const StudentDetails = () => {
           <div className="bg-white shadow overflow-hidden sm:rounded-lg mb-6">
             <div className="px-4 py-5 sm:px-6 flex justify-between items-center">
               <div>
-                <h3 className="text-lg leading-6 font-medium text-gray-900">
-                  Guardians
-                </h3>
-                <p className="mt-1 max-w-2xl text-sm text-gray-500">
-                  Parents and guardians linked to this student.
-                </p>
+                <h3 className="text-lg leading-6 font-medium text-gray-900">Guardians</h3>
+                <p className="mt-1 max-w-2xl text-sm text-gray-500">Parents and guardians linked to this student.</p>
               </div>
               <button
                 onClick={() => setIsGuardianModalOpen(true)}
@@ -213,13 +186,19 @@ const StudentDetails = () => {
                       </p>
                       <div className="mt-1 flex gap-2">
                         {g.isPrimaryGuardian && (
-                          <span className="bg-indigo-100 text-indigo-800 text-xs font-medium px-2 py-0.5 rounded-full">Primary</span>
+                          <span className="bg-indigo-100 text-indigo-800 text-xs font-medium px-2 py-0.5 rounded-full">
+                            Primary
+                          </span>
                         )}
                         {g.isEmergencyContact && (
-                          <span className="bg-amber-100 text-amber-800 text-xs font-medium px-2 py-0.5 rounded-full">Emergency contact</span>
+                          <span className="bg-amber-100 text-amber-800 text-xs font-medium px-2 py-0.5 rounded-full">
+                            Emergency contact
+                          </span>
                         )}
                         {g.canPickup && (
-                          <span className="bg-green-100 text-green-800 text-xs font-medium px-2 py-0.5 rounded-full">Can pick up</span>
+                          <span className="bg-green-100 text-green-800 text-xs font-medium px-2 py-0.5 rounded-full">
+                            Can pick up
+                          </span>
                         )}
                       </div>
                     </div>
@@ -251,9 +230,7 @@ const StudentDetails = () => {
           <div className="bg-white shadow overflow-hidden sm:rounded-lg mb-6">
             <div className="px-4 py-5 sm:px-6 flex justify-between items-center">
               <div>
-                <h3 className="text-lg leading-6 font-medium text-gray-900">
-                  Enrollment Lifecycle
-                </h3>
+                <h3 className="text-lg leading-6 font-medium text-gray-900">Enrollment Lifecycle</h3>
                 <p className="mt-1 max-w-2xl text-sm text-gray-500">
                   Transfer, withdraw, and year-over-year enrollment history.
                 </p>
@@ -307,9 +284,7 @@ const StudentDetails = () => {
           {/* Academic Records section */}
           <div className="bg-white shadow overflow-hidden sm:rounded-lg">
             <div className="px-4 py-5 sm:px-6">
-              <h3 className="text-lg leading-6 font-medium text-gray-900">
-                Academic Records
-              </h3>
+              <h3 className="text-lg leading-6 font-medium text-gray-900">Academic Records</h3>
               <p className="mt-1 max-w-2xl text-sm text-gray-500">
                 Exam results and attendance, from the school's real records.
               </p>
@@ -317,9 +292,7 @@ const StudentDetails = () => {
             <div className="border-t border-gray-200 px-4 py-5">
               {/* Current Enrollment Overview */}
               <div className="mb-6">
-                <h4 className="text-md font-medium text-gray-900 mb-3">
-                  Current Enrollment
-                </h4>
+                <h4 className="text-md font-medium text-gray-900 mb-3">Current Enrollment</h4>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                   <div className="bg-gray-50 p-3 rounded">
                     <p className="text-xs text-gray-500">Class</p>
@@ -347,9 +320,7 @@ const StudentDetails = () => {
 
               {/* Exam Results */}
               <div className="mb-6">
-                <h4 className="text-md font-medium text-gray-900 mb-3">
-                  Exam Results
-                </h4>
+                <h4 className="text-md font-medium text-gray-900 mb-3">Exam Results</h4>
                 {isLoadingExamResults ? (
                   <p className="text-sm text-gray-500">Loading...</p>
                 ) : examResults.length === 0 ? (
@@ -359,22 +330,40 @@ const StudentDetails = () => {
                     <table className="min-w-full divide-y divide-gray-200">
                       <thead className="bg-gray-50">
                         <tr>
-                          <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          <th
+                            scope="col"
+                            className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                          >
                             Exam
                           </th>
-                          <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          <th
+                            scope="col"
+                            className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                          >
                             Date
                           </th>
-                          <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          <th
+                            scope="col"
+                            className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                          >
                             Result
                           </th>
-                          <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          <th
+                            scope="col"
+                            className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                          >
                             Marks
                           </th>
-                          <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          <th
+                            scope="col"
+                            className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                          >
                             Percentage
                           </th>
-                          <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          <th
+                            scope="col"
+                            className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                          >
                             Grade
                           </th>
                         </tr>
@@ -384,9 +373,7 @@ const StudentDetails = () => {
                           const exam = typeof result.examId === "object" ? result.examId : null;
                           return (
                             <tr key={result.id}>
-                              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                {exam?.name || "-"}
-                              </td>
+                              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{exam?.name || "-"}</td>
                               <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                 {exam?.startDate ? new Date(exam.startDate).toLocaleDateString() : "-"}
                               </td>
@@ -423,9 +410,7 @@ const StudentDetails = () => {
 
               {/* Attendance Summary */}
               <div>
-                <h4 className="text-md font-medium text-gray-900 mb-3">
-                  Attendance Summary
-                </h4>
+                <h4 className="text-md font-medium text-gray-900 mb-3">Attendance Summary</h4>
                 {isLoadingAttendance ? (
                   <p className="text-sm text-gray-500">Loading...</p>
                 ) : !attendanceSummary || attendanceSummary.total === 0 ? (
@@ -466,7 +451,7 @@ const StudentDetails = () => {
             currentStep={currentStep}
             isParentExist={false}
             isLoadingAddStudent={false}
-            isLoadingUpdateStudent={updateStudent.isLoading}
+            isLoadingUpdateStudent={updateStudent.isPending}
             nextStep={nextStep}
             prevStep={prevStep}
             onClose={() => setIsEditModalOpen(false)}
@@ -482,10 +467,8 @@ const StudentDetails = () => {
             description={
               <>
                 Are you sure you want to delete{" "}
-                <span className="font-medium italic text-gray-700">
-                  {studentDetails?.name || "this student"}
-                </span>
-                ? This action cannot be undone.
+                <span className="font-medium italic text-gray-700">{studentDetails?.name || "this student"}</span>? This
+                action cannot be undone.
               </>
             }
             isLoading={isDeletingStudent}
@@ -525,7 +508,7 @@ const StudentDetails = () => {
 
           <GuardianModal
             isOpen={isGuardianModalOpen}
-            isSubmitting={addGuardian.isLoading}
+            isSubmitting={addGuardian.isPending}
             onClose={() => setIsGuardianModalOpen(false)}
             onSubmit={(value) => addGuardian.mutate(value)}
           />

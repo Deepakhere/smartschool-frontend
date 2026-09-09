@@ -29,7 +29,8 @@ school-scoped screen is scoped to that id.
 ## 2. Stack
 
 - **Vite 6 + React 18 + TypeScript**
-- **`react-query` v3** — the data layer actually in use (see §7 for the v5 migration status)
+- **`@tanstack/react-query` v5** — the data layer (migrated from v3; see §7 for what the migration
+  did and didn't change)
 - **`react-router-dom` v6**
 - **Tailwind 3** + Headless UI + a handful of Radix primitives (`@radix-ui/react-dialog`,
   `-alert-dialog`, `-avatar`, `-popover`, `-switch`) — Radix is used for the notification Sheet and
@@ -188,25 +189,35 @@ active development.
 
 ## 7. Known, deliberately-deferred debt
 
+**`react-query` v3 → `@tanstack/react-query` v5 — migrated.** Every one of the 49 files that used
+to import from `react-query` now imports from `@tanstack/react-query`, and every `useQuery`/
+`useMutation` call was converted from v3's positional-argument form to v5's single object-argument
+form (`{queryKey, queryFn, ...}` / `{mutationFn, ...}`), `cacheTime` renamed to `gcTime`,
+`invalidateQueries(key)` calls updated to `invalidateQueries({queryKey: key})`, and every
+`.isLoading` read on a **mutation** result renamed to `.isPending` (queries keep `.isLoading` — v5
+retains it there as an alias). Two real v3→v5 API removals were fixed in the same pass: `useQuery`
+no longer exposes `.remove()` (the handful of call sites that used it to force a refetch after a
+mutation now call `.refetch()` instead, which was already the pattern used elsewhere in the same
+files). **What this migration deliberately did *not* do**: turn caching on. Every query still runs
+with `gcTime: 0`, exactly as before — flipping that on safely needs tenant-scoped query keys and a
+`TenantProvider` done at the same time (see the bullet below), not as a side effect of a version
+bump. Verified via a full `tsc -b` across the whole app (not just the changed files — the compiler
+checks every hook's return type against every place it's used, which is what caught both `.remove()`
+call sites and all 54 mutation `.isLoading` reads), a clean production build, and the existing test
+suite still green.
+
 These were identified and explicitly scoped, not accidental oversights:
 
-- **`react-query` v3 → `@tanstack/react-query` v5 migration — not started.** `@tanstack/react-query`
-  v5 is already installed (`package.json` has it) but genuinely unused; every actual data hook in
-  the app still imports from `react-query` v3 (confirmed via grep across the codebase — 49 files).
-  14 of those files use `onSuccess`/`onError` directly inside a `useQuery` call, which v5 removes
-  from `useQuery` entirely (only `useMutation` keeps them) — migrating those needs real logic
-  restructuring (moving side effects into a `useEffect` watching `data`/`isSuccess`, or into the
-  calling component), not a mechanical import rename. This is the single largest piece of frontend
-  debt in the app.
 - **`react-hook-form` + `zod` — not installed at all.** Every form in the app is still raw
   `useState` + manual validation. No shared schema with the backend's zod schemas, no field-level
   error UX, and (per the original architecture plan) failed submissions don't reliably preserve
   input or show per-field errors.
 - **No `TenantProvider` / no tenant-scoped react-query cache keys.** Each screen reads
   `organizationId` from the route independently; query keys are not consistently parameterized by
-  tenant. Not currently a proven data-leak (screens re-fetch on tenant switch in practice) but it's
-  exactly the kind of thing the react-query v5 migration should fix properly rather than patch
-  around.
+  tenant. Not currently a proven data-leak (every query still runs with `gcTime: 0`, i.e. caching is
+  still off everywhere — the v5 migration moved the data layer to v5's API shape but deliberately did
+  **not** turn caching on, since enabling it safely needs tenant-scoped keys done at the same time).
+  Worth doing as a deliberate follow-up, not a patch.
 - **No `@/` path alias.** Every import is relative (`../../../../types`), which makes moving files
   around painful. Worth adding before any large restructuring.
 
@@ -232,7 +243,7 @@ Mirrors the backend doc's gap list, frontend-side specifics:
   with a same-day export); there's no "attendance over a date range" view.
 - **No scheduled/automated exports** — every CSV export button is user-triggered and client-side;
   nothing is emailed or generated on a schedule.
-- **react-query v5 migration** and **react-hook-form + zod** — see §7.
+- **react-hook-form + zod** — see §7.
 - **Payment gateway UI** — no card/UPI checkout flow; blocked on the backend having real gateway
   credentials.
 

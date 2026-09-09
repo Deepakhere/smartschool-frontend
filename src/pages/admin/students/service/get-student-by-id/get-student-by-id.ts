@@ -1,4 +1,4 @@
-import { useQuery } from "react-query";
+import { useQuery } from "@tanstack/react-query";
 import apiClient from "../../../../../config";
 import { IAPIError, IAxiosResponse, IStudentEnrollment, IGuardian } from "../../../../../types";
 import { APIS_ROUTES, API_QUERY_KEY } from "../../../../../utils";
@@ -21,14 +21,8 @@ interface IStudentDetailResponse {
   status: "active" | "inactive" | "suspended";
 }
 
-const getStudentById = async (
-  organizationId: string,
-  studentId: string
-): Promise<{ item: IStudentDetailResponse }> => {
-  const result = await apiClient.get<
-    null,
-    IAxiosResponse<{ item: IStudentDetailResponse }>
-  >(
+const getStudentById = async (organizationId: string, studentId: string): Promise<{ item: IStudentDetailResponse }> => {
+  const result = await apiClient.get<null, IAxiosResponse<{ item: IStudentDetailResponse }>>(
     `${APIS_ROUTES.STUDENT_PROFILE}/${organizationId}/get-student-by-id/${studentId}`
   );
 
@@ -36,13 +30,11 @@ const getStudentById = async (
 };
 
 const useGetStudentById = (organizationId: string, studentId: string) =>
-  useQuery<{ item: IStudentDetailResponse }, IAPIError>(
-    [API_QUERY_KEY.GET_STUDENT_BY_ID, studentId],
-    () => getStudentById(organizationId, studentId),
-    {
-      enabled: !!studentId,
-      cacheTime: 0,
-    }
-  );
+  useQuery<{ item: IStudentDetailResponse }, IAPIError>({
+    queryKey: [API_QUERY_KEY.GET_STUDENT_BY_ID, studentId],
+    queryFn: () => getStudentById(organizationId, studentId),
+    enabled: !!studentId,
+    gcTime: 0,
+  });
 
 export default useGetStudentById;

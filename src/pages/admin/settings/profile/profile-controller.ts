@@ -78,7 +78,7 @@ const useProfileController = () => {
     smsNotifications,
     changeEmailNotifications,
     changeSmsNotifications,
-    isUploadingAvatar: uploadAvatar.isLoading,
+    isUploadingAvatar: uploadAvatar.isPending,
   };
 };
 

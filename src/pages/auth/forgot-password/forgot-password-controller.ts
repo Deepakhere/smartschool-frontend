@@ -92,10 +92,7 @@ const useForgotPasswordController = () => {
       recaptchaRef.current?.reset();
       const errorResponse = forgotPassword.error?.response?.Error;
 
-      if (
-        errorResponse?.code === "EX-00108" ||
-        errorResponse?.code === "EX-00166"
-      ) {
+      if (errorResponse?.code === "EX-00108" || errorResponse?.code === "EX-00166") {
         setDisplayError(true);
         setError(errorResponse.message);
       }
@@ -113,7 +110,7 @@ const useForgotPasswordController = () => {
     recaptchaRef,
     displayError,
     captchaToken,
-    isLoading: forgotPassword.isLoading,
+    isLoading: forgotPassword.isPending,
     isRequestCompleted: forgotPassword.isSuccess,
     onCaptchaLoaded,
     handleSubmit,

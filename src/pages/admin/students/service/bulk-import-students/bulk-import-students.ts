@@ -1,4 +1,4 @@
-import { useMutation } from "react-query";
+import { useMutation } from "@tanstack/react-query";
 
 import apiClient from "../../../../../config";
 import { IAPIError, IAxiosResponse } from "../../../../../types";
@@ -32,6 +32,8 @@ const bulkImportStudents = async (organizationId: string, value: IBulkImportValu
 };
 
 const useBulkImportStudents = (organizationId: string) =>
-  useMutation<IBulkImportResult, IAPIError, IBulkImportValue>((value) => bulkImportStudents(organizationId, value));
+  useMutation<IBulkImportResult, IAPIError, IBulkImportValue>({
+    mutationFn: (value) => bulkImportStudents(organizationId, value),
+  });
 
 export default useBulkImportStudents;

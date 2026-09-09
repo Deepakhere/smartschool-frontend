@@ -1,4 +1,4 @@
-import { useQuery } from "react-query";
+import { useQuery } from "@tanstack/react-query";
 
 import apiClient from "../../../../config";
 import { IAPIError, IAxiosResponse } from "../../../../types";
@@ -19,10 +19,11 @@ const getParentDashboard = async (organizationId: string): Promise<IParentDashbo
 };
 
 const useGetParentDashboard = (organizationId: string) =>
-  useQuery<IParentDashboardStats, IAPIError>(
-    [API_QUERY_KEY.GET_PARENT_DASHBOARD, organizationId],
-    () => getParentDashboard(organizationId),
-    { enabled: !!organizationId, cacheTime: 0 }
-  );
+  useQuery<IParentDashboardStats, IAPIError>({
+    queryKey: [API_QUERY_KEY.GET_PARENT_DASHBOARD, organizationId],
+    queryFn: () => getParentDashboard(organizationId),
+    enabled: !!organizationId,
+    gcTime: 0,
+  });
 
 export default useGetParentDashboard;

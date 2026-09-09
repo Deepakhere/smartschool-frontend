@@ -1,4 +1,4 @@
-import { useMutation } from "react-query";
+import { useMutation } from "@tanstack/react-query";
 
 import apiClient from "../../../../../../config";
 import { IAPIError, IAxiosResponse, IUserAvatar } from "../../../../../../types";
@@ -8,18 +8,15 @@ const uploadAvatar = async (file: File): Promise<IUserAvatar> => {
   const formData = new FormData();
   formData.append("avatar", file);
 
-  const result = await apiClient.post<
-    null,
-    IAxiosResponse<{ item: IUserAvatar }>
-  >(APIS_ROUTES.UPLOAD_AVATAR, formData);
+  const result = await apiClient.post<null, IAxiosResponse<{ item: IUserAvatar }>>(APIS_ROUTES.UPLOAD_AVATAR, formData);
 
   return result.data.Data.item;
 };
 
 export const useUploadAvatar = () =>
-  useMutation<IUserAvatar, IAPIError, File>(
-    [API_MUTATION_KEY.UPLOAD_AVATAR],
-    uploadAvatar
-  );
+  useMutation<IUserAvatar, IAPIError, File>({
+    mutationKey: [API_MUTATION_KEY.UPLOAD_AVATAR],
+    mutationFn: uploadAvatar,
+  });
 
 export default useUploadAvatar;

@@ -1,4 +1,4 @@
-import { useMutation, useQuery, useQueryClient } from "react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import apiClient from "../../../../config";
 import { IAPIError, IAxiosResponse, IEnrollmentHistoryEntry } from "../../../../types";
@@ -8,43 +8,40 @@ const base = (organizationId: string, studentId: string) =>
   `${APIS_ROUTES.STUDENT_PROFILE}/${organizationId}/student/${studentId}`;
 
 export const useGetEnrollmentHistory = (organizationId: string, studentId: string) =>
-  useQuery<{ items: IEnrollmentHistoryEntry[] }, IAPIError>(
-    ["get-enrollment-history", studentId],
-    async () => {
+  useQuery<{ items: IEnrollmentHistoryEntry[] }, IAPIError>({
+    queryKey: ["get-enrollment-history", studentId],
+    queryFn: async () => {
       const result = await apiClient.get<null, IAxiosResponse<{ items: IEnrollmentHistoryEntry[] }>>(
         `${base(organizationId, studentId)}/enrollment-history`
       );
       return result.data.Data;
     },
-    { enabled: !!organizationId && !!studentId, cacheTime: 0 }
-  );
+    enabled: !!organizationId && !!studentId,
+    gcTime: 0,
+  });
 
 export const useTransferStudent = (organizationId: string, studentId: string) => {
   const queryClient = useQueryClient();
-  return useMutation<void, IAPIError, void>(
-    async () => {
+  return useMutation<void, IAPIError, void>({
+    mutationFn: async () => {
       await apiClient.put(`${base(organizationId, studentId)}/transfer`);
     },
-    {
-      onSuccess: () => {
-        queryClient.invalidateQueries([API_QUERY_KEY.GET_STUDENT_BY_ID, studentId]);
-        queryClient.invalidateQueries(["get-enrollment-history", studentId]);
-      },
-    }
-  );
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [API_QUERY_KEY.GET_STUDENT_BY_ID, studentId] });
+      queryClient.invalidateQueries({ queryKey: ["get-enrollment-history", studentId] });
+    },
+  });
 };
 
 export const useWithdrawStudent = (organizationId: string, studentId: string) => {
   const queryClient = useQueryClient();
-  return useMutation<void, IAPIError, void>(
-    async () => {
+  return useMutation<void, IAPIError, void>({
+    mutationFn: async () => {
       await apiClient.put(`${base(organizationId, studentId)}/withdraw`);
     },
-    {
-      onSuccess: () => {
-        queryClient.invalidateQueries([API_QUERY_KEY.GET_STUDENT_BY_ID, studentId]);
-        queryClient.invalidateQueries(["get-enrollment-history", studentId]);
-      },
-    }
-  );
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [API_QUERY_KEY.GET_STUDENT_BY_ID, studentId] });
+      queryClient.invalidateQueries({ queryKey: ["get-enrollment-history", studentId] });
+    },
+  });
 };

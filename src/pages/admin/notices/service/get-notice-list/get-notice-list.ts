@@ -1,4 +1,4 @@
-import { useQuery } from "react-query";
+import { useQuery } from "@tanstack/react-query";
 
 import { IAPIError, IAxiosResponse } from "../../../../../types";
 import { APIS_ROUTES, API_QUERY_KEY } from "../../../../../utils";
@@ -26,17 +26,17 @@ const getNoticeList = async (
     return { items: [], total_count: 0 };
   }
 
-  const result = await apiClient.get<
-    null,
-    IAxiosResponse<{ items: INoticeResponse[]; total_count: number }>
-  >(`${APIS_ROUTES.SCHOOL_SERVICE}/notice/${organizationId}/get-notice-list`, {
-    params: {
-      search_term: searchTerm,
-      type: type,
-      limit: limit,
-      page: page,
-    },
-  });
+  const result = await apiClient.get<null, IAxiosResponse<{ items: INoticeResponse[]; total_count: number }>>(
+    `${APIS_ROUTES.SCHOOL_SERVICE}/notice/${organizationId}/get-notice-list`,
+    {
+      params: {
+        search_term: searchTerm,
+        type: type,
+        limit: limit,
+        page: page,
+      },
+    }
+  );
 
   return result.data.Data;
 };
@@ -48,12 +48,10 @@ const useGetNoticeList = (
   limit: number,
   page: number
 ) =>
-  useQuery<{ items: INoticeResponse[]; total_count: number }, IAPIError>(
-    [API_QUERY_KEY.GET_NOTICE_LIST],
-    () => getNoticeList(organizationId, searchTerm, type, limit, page),
-    {
-      cacheTime: 0,
-    }
-  );
+  useQuery<{ items: INoticeResponse[]; total_count: number }, IAPIError>({
+    queryKey: [API_QUERY_KEY.GET_NOTICE_LIST],
+    queryFn: () => getNoticeList(organizationId, searchTerm, type, limit, page),
+    gcTime: 0,
+  });
 
 export default useGetNoticeList;

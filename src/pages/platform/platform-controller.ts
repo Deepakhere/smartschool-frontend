@@ -67,12 +67,12 @@ export const usePlatformController = () => {
     isCreateModalOpen,
     setIsCreateModalOpen,
     handleCreateAccount,
-    isCreatingAccount: createAccount.isLoading,
+    isCreatingAccount: createAccount.isPending,
     addSchoolAccountId,
     setAddSchoolAccountId,
     handleAddOrganization,
-    isAddingOrganization: addOrganization.isLoading,
+    isAddingOrganization: addOrganization.isPending,
     handleToggleStatus,
-    isUpdatingStatus: updateStatus.isLoading,
+    isUpdatingStatus: updateStatus.isPending,
   };
 };

@@ -105,8 +105,8 @@ const useAddOrganizationModalController = (
     setDescription,
     handleLogoFileChange,
     handleSubmit,
-    isLoading: isEditMode ? updateOrganization.isLoading : createOrganization.isLoading,
-    isUploadingLogo: uploadLogo.isLoading,
+    isLoading: isEditMode ? updateOrganization.isPending : createOrganization.isPending,
+    isUploadingLogo: uploadLogo.isPending,
   };
 };
 

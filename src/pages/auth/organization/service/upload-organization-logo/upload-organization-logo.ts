@@ -1,4 +1,4 @@
-import { useMutation } from "react-query";
+import { useMutation } from "@tanstack/react-query";
 
 import apiClient from "../../../../../config";
 import { IAPIError, IAxiosResponse, IOrganization } from "../../../../../types";
@@ -14,18 +14,18 @@ const uploadOrganizationLogo = async ({
   const formData = new FormData();
   formData.append("logo", file);
 
-  const result = await apiClient.post<
-    null,
-    IAxiosResponse<{ item: IOrganization }>
-  >(`${APIS_ROUTES.ORGANIZATION_SERVICE}/${organizationId}/logo`, formData);
+  const result = await apiClient.post<null, IAxiosResponse<{ item: IOrganization }>>(
+    `${APIS_ROUTES.ORGANIZATION_SERVICE}/${organizationId}/logo`,
+    formData
+  );
 
   return result.data.Data.item;
 };
 
 export const useUploadOrganizationLogo = () =>
-  useMutation<IOrganization, IAPIError, { organizationId: string; file: File }>(
-    [API_MUTATION_KEY.UPLOAD_ORGANIZATION_LOGO],
-    uploadOrganizationLogo
-  );
+  useMutation<IOrganization, IAPIError, { organizationId: string; file: File }>({
+    mutationKey: [API_MUTATION_KEY.UPLOAD_ORGANIZATION_LOGO],
+    mutationFn: uploadOrganizationLogo,
+  });
 
 export default useUploadOrganizationLogo;

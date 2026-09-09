@@ -3,12 +3,7 @@ import { useTranslation } from "react-i18next";
 import toast from "react-hot-toast";
 import debounce from "lodash.debounce";
 
-import {
-  useAddStudent,
-  useDeleteStudent,
-  useGetStudentDetails,
-  useUpdateStudentDetail,
-} from "../service";
+import { useAddStudent, useDeleteStudent, useGetStudentDetails, useUpdateStudentDetail } from "../service";
 import { IStudentFormData } from "../../../../types";
 import { EMAIL_REGEX_PATTERN, TOTAL_STEPS } from "../../../../utils";
 import { useNavigate, useParams } from "react-router-dom";
@@ -24,9 +19,7 @@ const useStudentsListController = () => {
 
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isBulkModalOpen, setIsBulkModalOpen] = useState(false);
-  const [formData, setFormData] = useState<IStudentFormData>(
-    {} as IStudentFormData
-  );
+  const [formData, setFormData] = useState<IStudentFormData>({} as IStudentFormData);
   const [currentStep, setCurrentStep] = useState(1);
   const [isParentExist, setIsParentExist] = useState(false);
 
@@ -115,10 +108,7 @@ const useStudentsListController = () => {
 
   const updateStudentDetail = useUpdateStudentDetail(organizationId || "");
 
-  const getParentDetails = useGetParentByEmail(
-    organizationId || "",
-    formData.parentEmail
-  );
+  const getParentDetails = useGetParentByEmail(organizationId || "", formData.parentEmail);
 
   const deleteStudent = useDeleteStudent(organizationId || "");
 
@@ -247,10 +237,7 @@ const useStudentsListController = () => {
   // Close dropdown when clicking outside
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
-      if (
-        dropdownRef.current &&
-        !dropdownRef.current.contains(event.target as Node)
-      ) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
         setActiveDropdown(null);
       }
     }
@@ -272,7 +259,7 @@ const useStudentsListController = () => {
       setDeleteStudentId("");
       setSearchTerm("");
       setClassFilter("all");
-      getStudentDetails.remove();
+      getStudentDetails.refetch();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [deleteStudent.isSuccess]);
@@ -303,9 +290,9 @@ const useStudentsListController = () => {
     studentDetail: getStudentDetails?.data?.items,
     studentTotalCount: getStudentDetails?.data?.total_count,
     isLoadingGetStudentDetails: getStudentDetails.isLoading,
-    isLoadingAddStudent: addStudentProfile.isLoading,
-    isLoadingUpdateStudent: updateStudentDetail.isLoading,
-    isDeletingStudent: deleteStudent.isLoading,
+    isLoadingAddStudent: addStudentProfile.isPending,
+    isLoadingUpdateStudent: updateStudentDetail.isPending,
+    isDeletingStudent: deleteStudent.isPending,
     isFetchingStudentList: getStudentDetails.isFetching,
     handleChange,
     handleSubmit,
