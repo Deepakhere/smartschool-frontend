@@ -1,21 +1,25 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 
 import { useAuth } from "../../../context/auth-context";
 import { useSingIn } from "../service";
 import { useError } from "../../../hooks";
+import { loginSchema, LoginFormValues } from "./login.schema";
 
 const useLoginController = () => {
   const { t } = useTranslation();
   const { login } = useAuth();
   const navigate = useNavigate();
 
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [showPassword, setShowPassword] = useState<boolean>(false);
+  const [showPassword, setShowPassword] = useState(false);
 
-  const [error, setError] = useState("");
+  const form = useForm<LoginFormValues>({
+    resolver: zodResolver(loginSchema),
+    defaultValues: { email: "", password: "" },
+  });
 
   const signIn = useSingIn();
 
@@ -23,12 +27,9 @@ const useLoginController = () => {
     mutation: signIn,
   });
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError("");
-
-    signIn.mutate({ email, password });
-  };
+  const onSubmit = form.handleSubmit((values) => {
+    signIn.mutate(values);
+  });
 
   useEffect(() => {
     if (signIn.isSuccess && signIn.data) {
@@ -41,15 +42,11 @@ const useLoginController = () => {
 
   return {
     t,
-    email,
-    error,
-    password,
+    form,
     showPassword,
     isSigninLoading: signIn.isPending,
     setShowPassword,
-    setEmail,
-    setPassword,
-    handleSubmit,
+    onSubmit,
   };
 };
 
