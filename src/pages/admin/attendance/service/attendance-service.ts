@@ -38,6 +38,30 @@ export const useGetSectionAttendance = (organizationId: string, sectionId: strin
     enabled: !!organizationId && !!sectionId && !!date,
   });
 
+export interface ISectionAttendanceReportRow {
+  studentId: string;
+  studentName: string;
+  rollNumber: string;
+  present: number;
+  absent: number;
+  late: number;
+  excused: number;
+  total: number;
+}
+
+export const useGetSectionAttendanceReport = (organizationId: string, sectionId: string, from: string, to: string) =>
+  useQuery<{ items: ISectionAttendanceReportRow[]; totalSessions: number }, IAPIError>({
+    queryKey: [API_QUERY_KEY.GET_SECTION_ATTENDANCE_REPORT, organizationId, sectionId, from, to],
+    queryFn: async () => {
+      const result = await apiClient.get<
+        null,
+        IAxiosResponse<{ items: ISectionAttendanceReportRow[]; totalSessions: number }>
+      >(`${base(organizationId)}/section-report`, { params: { sectionId, from, to } });
+      return result.data.Data;
+    },
+    enabled: !!organizationId && !!sectionId && !!from && !!to,
+  });
+
 interface IMarkAttendanceValue {
   sectionId: string;
   date: string;

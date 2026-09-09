@@ -45,7 +45,14 @@ const useStudentDetailController = () => {
   const enrollmentHistory = useGetEnrollmentHistory(organizationId || "", studentId || "");
   const transferStudent = useTransferStudent(organizationId || "", studentId || "");
   const withdrawStudent = useWithdrawStudent(organizationId || "", studentId || "");
-  const attendanceHistory = useGetStudentAttendanceHistory(organizationId || "", studentId || "");
+  const [attendanceFrom, setAttendanceFrom] = useState("");
+  const [attendanceTo, setAttendanceTo] = useState("");
+  const attendanceHistory = useGetStudentAttendanceHistory(
+    organizationId || "",
+    studentId || "",
+    attendanceFrom || undefined,
+    attendanceTo || undefined
+  );
   const examResults = useGetResultsForStudent(organizationId || "", studentId || "");
 
   useError({
@@ -214,7 +221,12 @@ const useStudentDetailController = () => {
     isTransferring: transferStudent.isPending,
     isWithdrawing: withdrawStudent.isPending,
     attendanceSummary: attendanceHistory.data?.summary,
+    attendanceRecords: attendanceHistory.data?.items || [],
     isLoadingAttendance: attendanceHistory.isLoading,
+    attendanceFrom,
+    setAttendanceFrom,
+    attendanceTo,
+    setAttendanceTo,
     examResults: examResults.data?.items || [],
     isLoadingExamResults: examResults.isLoading,
   };

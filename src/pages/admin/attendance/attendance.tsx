@@ -24,7 +24,23 @@ const AdminAttendance = () => {
 
   return (
     <div className="max-w-7xl mx-auto space-y-6">
-      <SectionHeader title="Attendance" description="Mark and review daily attendance for a class section" />
+      <SectionHeader title="Attendance" description="Mark daily attendance, or review it over a date range" />
+
+      <div className="flex gap-6 border-b border-gray-200">
+        {(["mark", "report"] as const).map((tab) => (
+          <button
+            key={tab}
+            onClick={() => c.setActiveTab(tab)}
+            className={`whitespace-nowrap border-b-2 py-3 px-1 text-sm font-medium ${
+              c.activeTab === tab
+                ? "border-indigo-500 text-indigo-600"
+                : "border-transparent text-gray-500 hover:text-gray-700"
+            }`}
+          >
+            {tab === "mark" ? "Mark Attendance" : "Attendance Report"}
+          </button>
+        ))}
+      </div>
 
       <div className="bg-white shadow rounded-lg p-4">
         <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
@@ -66,18 +82,114 @@ const AdminAttendance = () => {
               onChange={(o) => c.setSectionId(String(o.id))}
             />
           </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700">Date</label>
-            <input type="date" className={inputClass} value={c.date} onChange={(e) => c.setDate(e.target.value)} />
-          </div>
+          {c.activeTab === "mark" ? (
+            <div>
+              <label className="block text-sm font-medium text-gray-700">Date</label>
+              <input type="date" className={inputClass} value={c.date} onChange={(e) => c.setDate(e.target.value)} />
+            </div>
+          ) : (
+            <div className="flex gap-2">
+              <div className="flex-1">
+                <label className="block text-sm font-medium text-gray-700">From</label>
+                <input
+                  type="date"
+                  className={inputClass}
+                  value={c.reportFrom}
+                  onChange={(e) => c.setReportFrom(e.target.value)}
+                />
+              </div>
+              <div className="flex-1">
+                <label className="block text-sm font-medium text-gray-700">To</label>
+                <input
+                  type="date"
+                  className={inputClass}
+                  value={c.reportTo}
+                  onChange={(e) => c.setReportTo(e.target.value)}
+                />
+              </div>
+            </div>
+          )}
         </div>
       </div>
 
-      {c.sectionId && (
+      {c.activeTab === "report" && c.sectionId && (
         <div className="bg-white shadow rounded-lg">
           <div className="px-4 py-4 border-b border-gray-200 flex justify-between items-center">
             <h2 className="text-lg font-medium text-gray-900">
-              Students {c.summary && <span className="text-sm text-gray-500 font-normal">— {c.summary.present} present / {c.summary.total} total</span>}
+              Attendance over {c.reportFrom} – {c.reportTo}
+              <span className="text-sm text-gray-500 font-normal"> — {c.reportTotalSessions} day(s) marked</span>
+            </h2>
+            {c.reportRows.length > 0 && (
+              <button
+                className={btnSecondary}
+                onClick={() =>
+                  exportToCsv(
+                    `attendance-report-${c.reportFrom}-to-${c.reportTo}`,
+                    c.reportRows.map((row) => ({
+                      roll_number: row.rollNumber,
+                      student: row.studentName,
+                      present: row.present,
+                      absent: row.absent,
+                      late: row.late,
+                      excused: row.excused,
+                      total_days: row.total,
+                      attendance_percent: row.total ? ((row.present / row.total) * 100).toFixed(1) : "0",
+                    }))
+                  )
+                }
+              >
+                Export CSV
+              </button>
+            )}
+          </div>
+
+          {c.isLoadingReport ? (
+            <Spinner />
+          ) : c.reportRows.length === 0 ? (
+            <p className="px-4 py-5 text-sm text-gray-500">No attendance marked for this section in this range.</p>
+          ) : (
+            <table className="min-w-full divide-y divide-gray-200">
+              <thead className="bg-gray-50">
+                <tr>
+                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Roll No.</th>
+                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Student</th>
+                  <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase">Present</th>
+                  <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase">Absent</th>
+                  <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase">Late</th>
+                  <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase">Excused</th>
+                  <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase">%</th>
+                </tr>
+              </thead>
+              <tbody className="bg-white divide-y divide-gray-200">
+                {c.reportRows.map((row) => (
+                  <tr key={row.studentId}>
+                    <td className="px-4 py-3 text-sm text-gray-500">{row.rollNumber}</td>
+                    <td className="px-4 py-3 text-sm font-medium text-gray-900">{row.studentName}</td>
+                    <td className="px-4 py-3 text-sm text-center text-green-700">{row.present}</td>
+                    <td className="px-4 py-3 text-sm text-center text-red-700">{row.absent}</td>
+                    <td className="px-4 py-3 text-sm text-center text-amber-700">{row.late}</td>
+                    <td className="px-4 py-3 text-sm text-center text-blue-700">{row.excused}</td>
+                    <td className="px-4 py-3 text-sm text-center font-medium text-gray-900">
+                      {row.total ? ((row.present / row.total) * 100).toFixed(1) : "0"}%
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
+        </div>
+      )}
+
+      {c.activeTab === "mark" && c.sectionId && (
+        <div className="bg-white shadow rounded-lg">
+          <div className="px-4 py-4 border-b border-gray-200 flex justify-between items-center">
+            <h2 className="text-lg font-medium text-gray-900">
+              Students{" "}
+              {c.summary && (
+                <span className="text-sm text-gray-500 font-normal">
+                  — {c.summary.present} present / {c.summary.total} total
+                </span>
+              )}
             </h2>
             <div className="flex gap-2">
               <button
@@ -97,8 +209,12 @@ const AdminAttendance = () => {
               >
                 Export CSV
               </button>
-              <button className={btnSecondary} onClick={() => c.markAll("present")}>Mark all present</button>
-              <button className={btnSecondary} onClick={() => c.markAll("absent")}>Mark all absent</button>
+              <button className={btnSecondary} onClick={() => c.markAll("present")}>
+                Mark all present
+              </button>
+              <button className={btnSecondary} onClick={() => c.markAll("absent")}>
+                Mark all absent
+              </button>
             </div>
           </div>
 
@@ -129,7 +245,9 @@ const AdminAttendance = () => {
                       </button>
                     ))}
                   </div>
-                  {(c.statuses[student.id] === "absent" || c.statuses[student.id] === "late" || c.statuses[student.id] === "excused") && (
+                  {(c.statuses[student.id] === "absent" ||
+                    c.statuses[student.id] === "late" ||
+                    c.statuses[student.id] === "excused") && (
                     <input
                       type="text"
                       placeholder="Reason (optional)"

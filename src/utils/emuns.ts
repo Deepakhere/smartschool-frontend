@@ -50,6 +50,7 @@ export const API_QUERY_KEY = {
   GET_PARENT_DASHBOARD: "get-parent-dashboard",
   GET_TEACHER_DIRECTORY: "get-teacher-directory",
   GET_SECTION_ATTENDANCE: "get-section-attendance",
+  GET_SECTION_ATTENDANCE_REPORT: "get-section-attendance-report",
   GET_HOMEWORK_LIST: "get-homework-list",
   GET_MY_TEACHING_LOAD: "get-my-teaching-load",
   GET_MY_NOTICES: "get-my-notices",

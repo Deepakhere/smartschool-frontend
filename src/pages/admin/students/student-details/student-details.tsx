@@ -49,7 +49,12 @@ const StudentDetails = () => {
     isTransferring,
     isWithdrawing,
     attendanceSummary,
+    attendanceRecords,
     isLoadingAttendance,
+    attendanceFrom,
+    setAttendanceFrom,
+    attendanceTo,
+    setAttendanceTo,
     examResults,
     isLoadingExamResults,
   } = useStudentDetailController();
@@ -408,7 +413,24 @@ const StudentDetails = () => {
 
               {/* Attendance Summary */}
               <div>
-                <h4 className="text-md font-medium text-gray-900 mb-3">Attendance Summary</h4>
+                <div className="flex items-center justify-between mb-3">
+                  <h4 className="text-md font-medium text-gray-900">Attendance</h4>
+                  <div className="flex items-center gap-2 text-sm">
+                    <input
+                      type="date"
+                      value={attendanceFrom}
+                      onChange={(e) => setAttendanceFrom(e.target.value)}
+                      className="rounded-md border border-gray-300 px-2 py-1 text-xs"
+                    />
+                    <span className="text-gray-400">to</span>
+                    <input
+                      type="date"
+                      value={attendanceTo}
+                      onChange={(e) => setAttendanceTo(e.target.value)}
+                      className="rounded-md border border-gray-300 px-2 py-1 text-xs"
+                    />
+                  </div>
+                </div>
                 {isLoadingAttendance ? (
                   <p className="text-sm text-gray-500">Loading...</p>
                 ) : !attendanceSummary || attendanceSummary.total === 0 ? (
@@ -433,6 +455,31 @@ const StudentDetails = () => {
                         {((attendanceSummary.present / attendanceSummary.total) * 100).toFixed(2)}%
                       </p>
                     </div>
+                  </div>
+                )}
+
+                {attendanceRecords.length > 0 && (
+                  <div className="mt-4 max-h-64 overflow-y-auto border border-gray-100 rounded-md">
+                    <table className="min-w-full divide-y divide-gray-100">
+                      <thead className="bg-gray-50 sticky top-0">
+                        <tr>
+                          <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase">Date</th>
+                          <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
+                          <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase">Reason</th>
+                        </tr>
+                      </thead>
+                      <tbody className="bg-white divide-y divide-gray-100">
+                        {attendanceRecords.map((record) => (
+                          <tr key={record.id}>
+                            <td className="px-3 py-2 text-sm text-gray-900">
+                              {record.date ? new Date(record.date).toLocaleDateString() : "-"}
+                            </td>
+                            <td className="px-3 py-2 text-sm capitalize">{record.status}</td>
+                            <td className="px-3 py-2 text-sm text-gray-500">{record.reason || "-"}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
                   </div>
                 )}
               </div>

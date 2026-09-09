@@ -3,18 +3,29 @@ import { useParams } from "react-router-dom";
 import toast from "react-hot-toast";
 
 import { useGetAcademicYears, useGetClasses, useGetSections } from "../classes/service/academics-service";
-import { useGetSectionRoster, useGetSectionAttendance, useMarkAttendance } from "./service/attendance-service";
+import {
+  useGetSectionRoster,
+  useGetSectionAttendance,
+  useMarkAttendance,
+  useGetSectionAttendanceReport,
+} from "./service/attendance-service";
 import { AttendanceStatus } from "../../../types";
 
 const today = () => new Date().toISOString().slice(0, 10);
+const firstOfMonth = () => `${today().slice(0, 7)}-01`;
+
+type Tab = "mark" | "report";
 
 const useAttendanceController = () => {
   const { organizationId = "" } = useParams();
 
+  const [activeTab, setActiveTab] = useState<Tab>("mark");
   const [academicYearId, setAcademicYearId] = useState("");
   const [classId, setClassId] = useState("");
   const [sectionId, setSectionId] = useState("");
   const [date, setDate] = useState(today());
+  const [reportFrom, setReportFrom] = useState(firstOfMonth());
+  const [reportTo, setReportTo] = useState(today());
 
   const academicYears = useGetAcademicYears(organizationId);
   const classes = useGetClasses(organizationId, academicYearId);
@@ -22,6 +33,7 @@ const useAttendanceController = () => {
   const roster = useGetSectionRoster(organizationId, sectionId);
   const existing = useGetSectionAttendance(organizationId, sectionId, date);
   const markAttendance = useMarkAttendance(organizationId);
+  const report = useGetSectionAttendanceReport(organizationId, sectionId, reportFrom, reportTo);
 
   const [statuses, setStatuses] = useState<Record<string, AttendanceStatus>>({});
   const [reasons, setReasons] = useState<Record<string, string>>({});
@@ -93,6 +105,15 @@ const useAttendanceController = () => {
   }, [markAttendance.isSuccess, markAttendance.isError]);
 
   return {
+    activeTab,
+    setActiveTab,
+    reportFrom,
+    setReportFrom,
+    reportTo,
+    setReportTo,
+    reportRows: report.data?.items || [],
+    reportTotalSessions: report.data?.totalSessions || 0,
+    isLoadingReport: report.isLoading,
     academicYears: academicYears.data?.items || [],
     classes: classes.data?.items || [],
     sections: sections.data?.items || [],

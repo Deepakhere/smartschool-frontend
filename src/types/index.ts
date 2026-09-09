@@ -691,6 +691,7 @@ export interface IAttendanceRecord {
   studentId: { id: string; name: string } | string;
   status: AttendanceStatus;
   reason?: string;
+  date?: string;
 }
 
 export interface IAttendanceSession {

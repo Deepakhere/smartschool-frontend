@@ -125,8 +125,20 @@ then.
 ### Attendance
 Daily marking screen: pick academic year → class → section → date, mark each student
 present/absent/late/excused with an optional reason, bulk "mark all present/absent", save. A
-same-day **CSV export** button was added (exports the currently-displayed roster + statuses) —
-there is currently no separate historical attendance report screen (see gap list, §9).
+same-day **CSV export** button exports the currently-displayed roster + statuses.
+
+**Attendance Report tab** (built this session) — the page now has two tabs, "Mark Attendance" and
+"Attendance Report". The report tab reuses the same academic-year/class/section pickers but swaps
+the single date field for a from/to range, and shows a per-student present/absent/late/excused/%
+table for that section over the range, with its own CSV export. This closes the gap where the only
+attendance view was one day at a time — a teacher or admin can now actually answer "who's below X%
+this term" instead of eyeballing daily screens one at a time. Backed by a new
+`GET .../section-report` endpoint (see the backend doc).
+
+Separately, the admin student-detail page's attendance card — previously a lifetime summary with
+no way to narrow it — now has its own from/to date filter and a scrollable day-by-day log
+(date/status/reason) beneath the summary tiles, using the existing per-student history endpoint's
+`from`/`to` query params, which the frontend simply hadn't been passing before.
 
 ### Homework
 Teacher creates homework with attachments and a due date; parent/student side lists and views it.
@@ -287,8 +299,6 @@ Mirrors the backend doc's gap list, frontend-side specifics:
 - **Accountant / Staff roles in the "Add User" screen** — the roles exist on the backend, but the
   admin UI to create such a user doesn't expose them.
 - **Parent self-service guardian management** — no parent-facing UI to add/edit a second guardian.
-- **No dedicated attendance history/report screen** — only the daily marking screen exists (now
-  with a same-day export); there's no "attendance over a date range" view.
 - **No scheduled/automated exports** — every CSV export button is user-triggered and client-side;
   nothing is emailed or generated on a schedule.
 - **Payment gateway UI** — no card/UPI checkout flow; blocked on the backend having real gateway
