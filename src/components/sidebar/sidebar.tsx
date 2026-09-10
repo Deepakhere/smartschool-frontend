@@ -40,8 +40,8 @@ const Sidebar = ({ isCollapsed }: SidebarProps) => {
                     className={({ isActive }) =>
                       `group flex items-center px-3 py-2 text-sm font-medium rounded-md ${
                         isActive
-                          ? "bg-gray-100 text-indigo-600"
-                          : "text-gray-600 hover:bg-gray-50 hover:text-indigo-600"
+                          ? "bg-gray-100 text-primary-600"
+                          : "text-gray-600 hover:bg-gray-50 hover:text-primary-600"
                       }`
                     }
                   >
@@ -50,8 +50,8 @@ const Sidebar = ({ isCollapsed }: SidebarProps) => {
                         <Icon
                           className={`h-5 w-5 flex-shrink-0 ${
                             isActive
-                              ? "text-indigo-600"
-                              : "text-gray-400 group-hover:text-indigo-600"
+                              ? "text-primary-600"
+                              : "text-gray-400 group-hover:text-primary-600"
                           }`}
                           aria-hidden="true"
                         />

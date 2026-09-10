@@ -46,7 +46,7 @@ const AdminNotices = () => {
     actions: (
       <button
         onClick={onClickCreateNotice}
-        className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+        className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
       >
         {t("labels.create_notice")}
       </button>
@@ -113,14 +113,14 @@ const AdminNotices = () => {
                               <>
                                 <button
                                   onClick={() => handleViewAttachment(notice.attachmentURL!, notice.title)}
-                                  className="text-indigo-600 hover:text-indigo-900"
+                                  className="text-primary-600 hover:text-primary-900"
                                   title="View attachment"
                                 >
                                   <EyeIcon className="h-5 w-5" />
                                 </button>
                                 <button
                                   onClick={() => handleDownloadAttachment(notice.attachmentURL!, `notice-${notice.id}`)}
-                                  className="text-indigo-600 hover:text-indigo-900"
+                                  className="text-primary-600 hover:text-primary-900"
                                   title="Download attachment"
                                 >
                                   <DocumentArrowDownIcon className="h-5 w-5" />

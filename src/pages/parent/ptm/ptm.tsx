@@ -62,7 +62,7 @@ const ParentPTM = () => {
                     <TableCell className="text-center">{slot ? new Date(slot.startAt).toLocaleString() : ""}</TableCell>
                     <TableCell className="text-center">
                       {slot?.meetingLink ? (
-                        <a href={slot.meetingLink} target="_blank" rel="noreferrer" className="text-indigo-600 hover:underline">
+                        <a href={slot.meetingLink} target="_blank" rel="noreferrer" className="text-primary-600 hover:underline">
                           Join link
                         </a>
                       ) : (
@@ -116,7 +116,7 @@ const ParentPTM = () => {
                           className={`px-3 py-2 rounded-md text-xs border text-left ${
                             full
                               ? "bg-gray-100 text-gray-400 border-gray-200 cursor-not-allowed"
-                              : "bg-white text-gray-700 border-gray-300 hover:bg-indigo-50"
+                              : "bg-white text-gray-700 border-gray-300 hover:bg-primary-50"
                           }`}
                         >
                           <div className="font-medium">{teacherName}</div>
@@ -147,7 +147,7 @@ const ParentPTM = () => {
               <button
                 onClick={confirmBooking}
                 disabled={isBooking}
-                className="px-4 py-2 rounded-md text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50"
+                className="px-4 py-2 rounded-md text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 disabled:opacity-50"
               >
                 Confirm
               </button>

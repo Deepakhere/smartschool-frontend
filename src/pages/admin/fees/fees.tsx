@@ -7,7 +7,7 @@ import { exportToCsv } from "@/utils";
 import useFeesController from "./fees-controller";
 
 const inputClass =
-  "mt-1 block w-full p-2 rounded-md border border-gray-300 bg-white text-gray-900 shadow-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 sm:text-sm";
+  "mt-1 block w-full p-2 rounded-md border border-gray-300 bg-white text-gray-900 shadow-sm focus:border-primary-500 focus:ring-1 focus:ring-primary-500 sm:text-sm";
 
 const formatMoney = (paise: number) => `${(paise / 100).toFixed(2)}`;
 
@@ -106,7 +106,7 @@ const AdminFees = () => {
             key={tab.key}
             onClick={() => setActiveTab(tab.key)}
             className={`px-4 py-2 text-sm font-medium border-b-2 ${
-              activeTab === tab.key ? "border-indigo-600 text-indigo-600" : "border-transparent text-gray-500 hover:text-gray-700"
+              activeTab === tab.key ? "border-primary-600 text-primary-600" : "border-transparent text-gray-500 hover:text-gray-700"
             }`}
           >
             {tab.label}
@@ -138,7 +138,7 @@ const AdminFees = () => {
             <button
               onClick={handleCreateFeeHead}
               disabled={isCreatingHead}
-              className="px-4 py-2 rounded-md text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50"
+              className="px-4 py-2 rounded-md text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 disabled:opacity-50"
             >
               Add
             </button>
@@ -189,7 +189,7 @@ const AdminFees = () => {
                     type="button"
                     onClick={() => toggleClass(c.id)}
                     className={`px-3 py-1 rounded-full text-xs border ${
-                      classIds.includes(c.id) ? "bg-indigo-100 text-indigo-800 border-indigo-300" : "bg-white text-gray-600 border-gray-300"
+                      classIds.includes(c.id) ? "bg-primary-100 text-primary-800 border-primary-300" : "bg-white text-gray-600 border-gray-300"
                     }`}
                   >
                     {c.name}
@@ -207,7 +207,7 @@ const AdminFees = () => {
                     type="button"
                     onClick={() => toggleSection(s.id)}
                     className={`px-3 py-1 rounded-full text-xs border ${
-                      sectionIds.includes(s.id) ? "bg-indigo-100 text-indigo-800 border-indigo-300" : "bg-white text-gray-600 border-gray-300"
+                      sectionIds.includes(s.id) ? "bg-primary-100 text-primary-800 border-primary-300" : "bg-white text-gray-600 border-gray-300"
                     }`}
                   >
                     {s.name}
@@ -219,7 +219,7 @@ const AdminFees = () => {
             <div className="mt-4">
               <div className="flex justify-between items-center mb-2">
                 <label className="block text-sm font-medium text-gray-700">Fee head items (amounts in your currency)</label>
-                <button type="button" onClick={addItemRow} className="text-xs text-indigo-600">
+                <button type="button" onClick={addItemRow} className="text-xs text-primary-600">
                   + Add item
                 </button>
               </div>
@@ -252,7 +252,7 @@ const AdminFees = () => {
             <div className="mt-4">
               <div className="flex justify-between items-center mb-2">
                 <label className="block text-sm font-medium text-gray-700">Installments</label>
-                <button type="button" onClick={addInstallmentRow} className="text-xs text-indigo-600">
+                <button type="button" onClick={addInstallmentRow} className="text-xs text-primary-600">
                   + Add installment
                 </button>
               </div>
@@ -285,7 +285,7 @@ const AdminFees = () => {
             <button
               onClick={handleCreateFeeStructure}
               disabled={isCreatingStructure}
-              className="mt-4 px-4 py-2 rounded-md text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50"
+              className="mt-4 px-4 py-2 rounded-md text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 disabled:opacity-50"
             >
               Create structure
             </button>
@@ -313,7 +313,7 @@ const AdminFees = () => {
                         <button
                           onClick={() => handleAssignStructure(s.id)}
                           disabled={isAssigning}
-                          className="text-sm text-indigo-600 hover:text-indigo-800 disabled:opacity-50"
+                          className="text-sm text-primary-600 hover:text-primary-800 disabled:opacity-50"
                         >
                           Assign to students
                         </button>
@@ -343,7 +343,7 @@ const AdminFees = () => {
                   key={s.id}
                   onClick={() => setSelectedStudentId(s.id)}
                   className={`px-3 py-1 rounded-full text-xs border ${
-                    selectedStudentId === s.id ? "bg-indigo-100 text-indigo-800 border-indigo-300" : "bg-white text-gray-600 border-gray-300"
+                    selectedStudentId === s.id ? "bg-primary-100 text-primary-800 border-primary-300" : "bg-white text-gray-600 border-gray-300"
                   }`}
                 >
                   {s.name}
@@ -425,7 +425,7 @@ const AdminFees = () => {
                   <button
                     onClick={handleRecordPayment}
                     disabled={isRecordingPayment}
-                    className="px-4 py-2 rounded-md text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50"
+                    className="px-4 py-2 rounded-md text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 disabled:opacity-50"
                   >
                     Record
                   </button>
@@ -470,7 +470,7 @@ const AdminFees = () => {
                   <button
                     onClick={handleGrantConcession}
                     disabled={isGrantingConcession}
-                    className="px-4 py-2 rounded-md text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50"
+                    className="px-4 py-2 rounded-md text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 disabled:opacity-50"
                   >
                     Grant
                   </button>

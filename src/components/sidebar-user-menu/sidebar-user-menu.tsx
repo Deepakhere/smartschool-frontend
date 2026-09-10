@@ -30,7 +30,7 @@ const SidebarUserMenu = ({ isCollapsed }: SidebarUserMenuProps) => {
         <PopoverTrigger asChild>
           <button
             type="button"
-            className="group flex w-full items-center justify-between rounded-xl border border-gray-200 bg-white px-2 py-2 shadow-sm transition-all duration-300 ease-in-out hover:-translate-y-0.5 hover:border-indigo-200 hover:shadow-md"
+            className="group flex w-full items-center justify-between rounded-xl border border-gray-200 bg-white px-2 py-2 shadow-sm transition-all duration-300 ease-in-out hover:-translate-y-0.5 hover:border-primary-200 hover:shadow-md"
           >
             <span className="flex items-center min-w-0 -ml-0.5">
               <Avatar name={user.name} src={user.avatar?.url} size={32} />

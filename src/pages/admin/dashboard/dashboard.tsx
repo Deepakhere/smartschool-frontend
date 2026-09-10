@@ -45,8 +45,8 @@ const Dashboard = () => {
                   key={index}
                   className="bg-white rounded-xl shadow-xl hover:shadow-md transition-shadow p-6 flex items-center space-x-4"
                 >
-                  <div className="p-3 bg-indigo-50 rounded-lg">
-                    <Icon className="h-6 w-6 text-indigo-600" />
+                  <div className="p-3 bg-primary-50 rounded-lg">
+                    <Icon className="h-6 w-6 text-primary-600" />
                   </div>
                   <div>
                     <p className="text-sm font-medium text-gray-500">
@@ -73,10 +73,10 @@ const Dashboard = () => {
                   <button
                     key={index}
                     onClick={action.action}
-                    className="flex items-center justify-center space-x-3 p-4 bg-indigo-50 rounded-lg hover:bg-indigo-100 transition-all hover:shadow-sm group"
+                    className="flex items-center justify-center space-x-3 p-4 bg-primary-50 rounded-lg hover:bg-primary-100 transition-all hover:shadow-sm group"
                   >
-                    <Icon className="h-6 w-6 text-indigo-600 group-hover:scale-110 transition-transform" />
-                    <span className="text-sm font-semibold text-indigo-700">
+                    <Icon className="h-6 w-6 text-primary-600 group-hover:scale-110 transition-transform" />
+                    <span className="text-sm font-semibold text-primary-700">
                       {action.title}
                     </span>
                   </button>

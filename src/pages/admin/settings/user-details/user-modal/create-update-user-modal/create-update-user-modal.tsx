@@ -97,8 +97,8 @@ const CreateUpdateUserModal = ({
                               isEditingSelf ? "opacity-50 cursor-not-allowed" : "cursor-pointer"
                             } ${
                               role === roleOption.value
-                                ? "border-indigo-500 bg-indigo-50"
-                                : "border-gray-300 hover:border-indigo-300"
+                                ? "border-primary-500 bg-primary-50"
+                                : "border-gray-300 hover:border-primary-300"
                             }`}
                             onClick={() => !isEditingSelf && form.setValue("role", roleOption.value)}
                           >
@@ -111,7 +111,7 @@ const CreateUpdateUserModal = ({
                             </div>
                             {role === roleOption.value && (
                               <div className="absolute top-2 right-2">
-                                <svg className="h-5 w-5 text-indigo-500" viewBox="0 0 20 20" fill="currentColor">
+                                <svg className="h-5 w-5 text-primary-500" viewBox="0 0 20 20" fill="currentColor">
                                   <path
                                     fillRule="evenodd"
                                     d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
@@ -136,8 +136,8 @@ const CreateUpdateUserModal = ({
                               key={permission.id}
                               className={`flex items-start space-x-3 p-3 rounded-md border ${
                                 permissions[permission.id]
-                                  ? "border-indigo-500 bg-indigo-50"
-                                  : "border-gray-200 hover:border-indigo-300"
+                                  ? "border-primary-500 bg-primary-50"
+                                  : "border-gray-200 hover:border-primary-300"
                               }`}
                             >
                               <div className="flex items-center h-5">
@@ -147,7 +147,7 @@ const CreateUpdateUserModal = ({
                                   disabled={isEditingSelf}
                                   checked={permissions[permission.id]}
                                   onChange={() => handlePermissionChange(permission.id)}
-                                  className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded disabled:opacity-50 disabled:cursor-not-allowed"
+                                  className="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded disabled:opacity-50 disabled:cursor-not-allowed"
                                 />
                               </div>
                               <div className="flex flex-col">
@@ -189,14 +189,14 @@ const CreateUpdateUserModal = ({
                       <button
                         type="submit"
                         disabled={isLoading}
-                        className="inline-flex w-full justify-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 sm:ml-3 sm:w-auto sm:text-sm disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="inline-flex w-full justify-center rounded-md border border-transparent bg-primary-600 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 sm:ml-3 sm:w-auto sm:text-sm disabled:opacity-50 disabled:cursor-not-allowed"
                       >
                         {isLoading ? <ButtonSpinner /> : isEditUser ? t("buttons.update_user") : t("buttons.save_user")}
                       </button>
                       <button
                         type="button"
                         onClick={onClose}
-                        className="mt-3 inline-flex w-full justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-base font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 sm:mt-0 sm:w-auto sm:text-sm"
+                        className="mt-3 inline-flex w-full justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-base font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 sm:mt-0 sm:w-auto sm:text-sm"
                       >
                         {t("buttons.cancel")}
                       </button>

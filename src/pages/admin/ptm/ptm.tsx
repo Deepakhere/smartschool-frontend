@@ -8,7 +8,7 @@ import SectionHeader from "@/components/section-header";
 import usePTMController from "./ptm-controller";
 
 const inputClass =
-  "mt-1 block w-full p-2 rounded-md border border-gray-300 bg-white text-gray-900 shadow-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 sm:text-sm";
+  "mt-1 block w-full p-2 rounded-md border border-gray-300 bg-white text-gray-900 shadow-sm focus:border-primary-500 focus:ring-1 focus:ring-primary-500 sm:text-sm";
 
 const modeOptions: SelectOption[] = [
   { id: "onsite", name: "Onsite" },
@@ -44,7 +44,7 @@ const AdminPTM = () => {
     actions: (
       <button
         onClick={() => setIsCreateModalOpen(true)}
-        className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700"
+        className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary-600 hover:bg-primary-700"
       >
         Schedule PTM
       </button>
@@ -59,7 +59,7 @@ const AdminPTM = () => {
       />
 
       {isCreateModalOpen && (
-        <div className="bg-white rounded-lg shadow p-6 mb-6 border border-indigo-100">
+        <div className="bg-white rounded-lg shadow p-6 mb-6 border border-primary-100">
           <h2 className="text-lg font-medium text-gray-900 mb-4">New PTM Event</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
@@ -116,7 +116,7 @@ const AdminPTM = () => {
                     type="button"
                     onClick={() => toggleSection(s.id)}
                     className={`px-3 py-1 rounded-full text-xs border ${
-                      selected ? "bg-indigo-100 text-indigo-800 border-indigo-300" : "bg-white text-gray-600 border-gray-300"
+                      selected ? "bg-primary-100 text-primary-800 border-primary-300" : "bg-white text-gray-600 border-gray-300"
                     }`}
                   >
                     {cls?.name || ""} - {s.name}
@@ -130,7 +130,7 @@ const AdminPTM = () => {
             <button
               onClick={handleCreateEvent}
               disabled={isCreatingEvent}
-              className="px-4 py-2 rounded-md text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50"
+              className="px-4 py-2 rounded-md text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 disabled:opacity-50"
             >
               Create
             </button>
@@ -160,7 +160,7 @@ const AdminPTM = () => {
                       {new Date(event.date).toLocaleDateString()} · {event.mode} · {event.slotDurationMins} min slots
                     </p>
                   </div>
-                  <span className="text-sm text-indigo-600">{expandedEventId === event.id ? "Hide" : "Manage slots"}</span>
+                  <span className="text-sm text-primary-600">{expandedEventId === event.id ? "Hide" : "Manage slots"}</span>
                 </div>
 
                 {expandedEventId === event.id && (
@@ -207,7 +207,7 @@ const AdminPTM = () => {
                     <button
                       onClick={() => handleGenerateSlots(event.id)}
                       disabled={isGeneratingSlots}
-                      className="mt-3 px-4 py-2 rounded-md text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50"
+                      className="mt-3 px-4 py-2 rounded-md text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 disabled:opacity-50"
                     >
                       Generate slots
                     </button>

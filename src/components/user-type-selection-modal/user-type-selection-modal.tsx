@@ -22,10 +22,10 @@ const UserTypeSelectionModal = ({ isOpen, onClose, onSelectStudent, onSelectTeac
               {/* Student Option */}
               <button
                 onClick={onSelectStudent}
-                className="flex flex-col items-center justify-center p-6 border-2 border-gray-200 rounded-xl hover:border-indigo-500 hover:bg-indigo-50 transition-all group"
+                className="flex flex-col items-center justify-center p-6 border-2 border-gray-200 rounded-xl hover:border-primary-500 hover:bg-primary-50 transition-all group"
               >
-                <div className="p-4 bg-indigo-100 rounded-full mb-4 group-hover:bg-indigo-200 transition-colors">
-                  <UserGroupIcon className="h-8 w-8 text-indigo-600" />
+                <div className="p-4 bg-primary-100 rounded-full mb-4 group-hover:bg-primary-200 transition-colors">
+                  <UserGroupIcon className="h-8 w-8 text-primary-600" />
                 </div>
                 <h4 className="text-lg font-medium text-gray-900 mb-2">Student</h4>
                 <p className="text-sm text-gray-500 text-center">Add a new student to the system</p>
@@ -34,10 +34,10 @@ const UserTypeSelectionModal = ({ isOpen, onClose, onSelectStudent, onSelectTeac
               {/* Teacher Option */}
               <button
                 onClick={onSelectTeacher}
-                className="flex flex-col items-center justify-center p-6 border-2 border-gray-200 rounded-xl hover:border-indigo-500 hover:bg-indigo-50 transition-all group"
+                className="flex flex-col items-center justify-center p-6 border-2 border-gray-200 rounded-xl hover:border-primary-500 hover:bg-primary-50 transition-all group"
               >
-                <div className="p-4 bg-indigo-100 rounded-full mb-4 group-hover:bg-indigo-200 transition-colors">
-                  <UserIcon className="h-8 w-8 text-indigo-600" />
+                <div className="p-4 bg-primary-100 rounded-full mb-4 group-hover:bg-primary-200 transition-colors">
+                  <UserIcon className="h-8 w-8 text-primary-600" />
                 </div>
                 <h4 className="text-lg font-medium text-gray-900 mb-2">Teacher</h4>
                 <p className="text-sm text-gray-500 text-center">Add a new teacher to the system</p>

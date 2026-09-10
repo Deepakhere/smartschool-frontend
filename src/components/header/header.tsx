@@ -1,7 +1,6 @@
 import { Link } from "react-router-dom";
 import { Bars3Icon, ChevronLeftIcon, ChevronRightIcon, ArrowLeftIcon } from "@heroicons/react/24/outline";
 
-import KidSight from "@/icons/kidsight.png";
 import { useHeaderController } from "./header-controller";
 
 interface HeaderProps {
@@ -24,7 +23,7 @@ const Header = ({ onToggleSidebar, isCollapsed, onToggleCollapse }: HeaderProps)
         >
           <button
             type="button"
-            className="lg:hidden p-2 -ml-1 rounded-md text-gray-500 hover:text-gray-600 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500"
+            className="lg:hidden p-2 -ml-1 rounded-md text-gray-500 hover:text-gray-600 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary-500"
             onClick={onToggleSidebar}
           >
             <Bars3Icon className="h-6 w-6" aria-hidden="true" />
@@ -35,12 +34,16 @@ const Header = ({ onToggleSidebar, isCollapsed, onToggleCollapse }: HeaderProps)
               isCollapsed ? "max-w-0 opacity-0" : "max-w-xs opacity-100"
             }`}
           >
-            <img src={KidSight} className="h-12 w-auto shrink-0 dark:invert" alt="Kidsight Logo" />
+            {/* the logo's text is baked-in navy pixels — near-invisible on the dark-mode
+                header background, so give it a light backdrop in dark mode only */}
+            <div className="dark:bg-white dark:rounded-lg dark:p-1.5">
+              <img src="/schoolyn.png" className="h-12 w-auto shrink-0" alt="Schoolyn Logo" />
+            </div>
           </Link>
           <button
             type="button"
             onClick={onToggleCollapse}
-            className="hidden lg:flex p-1.5 rounded-md text-gray-400 hover:text-indigo-600 hover:bg-gray-100"
+            className="hidden lg:flex p-1.5 rounded-md text-gray-400 hover:text-primary-600 hover:bg-gray-100"
             title={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
           >
             {isCollapsed ? (

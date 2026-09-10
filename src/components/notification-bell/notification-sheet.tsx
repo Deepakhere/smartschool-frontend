@@ -35,7 +35,7 @@ const NotificationSheet = () => {
             <button
               type="button"
               onClick={() => markAllAsRead()}
-              className="mr-6 text-xs font-medium text-indigo-600 hover:text-indigo-700"
+              className="mr-6 text-xs font-medium text-primary-600 hover:text-primary-700"
             >
               {t("labels.mark_all_as_read")}
             </button>
@@ -59,11 +59,11 @@ const NotificationSheet = () => {
                   key={notification.id}
                   onClick={() => handleItemClick(notification)}
                   className={`cursor-pointer px-4 py-3 hover:bg-gray-50 ${
-                    !notification.readAt ? "bg-indigo-50/60" : ""
+                    !notification.readAt ? "bg-primary-50/60" : ""
                   }`}
                 >
                   <div className="flex items-start gap-2">
-                    {!notification.readAt && <span className="mt-1.5 h-2 w-2 shrink-0 rounded-full bg-indigo-600" />}
+                    {!notification.readAt && <span className="mt-1.5 h-2 w-2 shrink-0 rounded-full bg-primary-600" />}
                     <div className={`min-w-0 ${notification.readAt ? "ml-4" : ""}`}>
                       <p className="text-sm font-medium text-gray-900">{notification.title}</p>
                       <p className="mt-0.5 text-sm text-gray-600 line-clamp-2">{notification.body}</p>

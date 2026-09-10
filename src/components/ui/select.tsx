@@ -15,7 +15,7 @@ const SelectTrigger = React.forwardRef<
   <SelectPrimitive.Trigger
     ref={ref}
     className={cn(
-      "relative flex w-full cursor-default items-center justify-between rounded-md border border-gray-300 bg-white py-2 pl-3 pr-10 text-left shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 disabled:cursor-not-allowed disabled:opacity-50 sm:text-sm",
+      "relative flex w-full cursor-default items-center justify-between rounded-md border border-gray-300 bg-white py-2 pl-3 pr-10 text-left shadow-sm focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500 disabled:cursor-not-allowed disabled:opacity-50 sm:text-sm",
       className
     )}
     {...props}
@@ -61,13 +61,13 @@ const SelectItem = React.forwardRef<
   <SelectPrimitive.Item
     ref={ref}
     className={cn(
-      "relative flex cursor-default select-none items-center rounded py-2 pl-3 pr-9 text-gray-900 outline-none data-[highlighted]:bg-indigo-50 data-[highlighted]:text-indigo-900",
+      "relative flex cursor-default select-none items-center rounded py-2 pl-3 pr-9 text-gray-900 outline-none data-[highlighted]:bg-primary-50 data-[highlighted]:text-primary-900",
       className
     )}
     {...props}
   >
     <SelectPrimitive.ItemText>{children}</SelectPrimitive.ItemText>
-    <SelectPrimitive.ItemIndicator className="absolute inset-y-0 right-0 flex items-center pr-4 text-indigo-600">
+    <SelectPrimitive.ItemIndicator className="absolute inset-y-0 right-0 flex items-center pr-4 text-primary-600">
       <CheckIcon className="h-5 w-5" aria-hidden="true" />
     </SelectPrimitive.ItemIndicator>
   </SelectPrimitive.Item>

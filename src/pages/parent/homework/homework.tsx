@@ -41,7 +41,7 @@ const ParentHomework = () => {
             {homeworkList.map((hw) => (
               <div key={hw.id} className="border-b pb-4 last:border-b-0">
                 <div className="flex items-center gap-2">
-                  <BookOpenIcon className="h-5 w-5 text-indigo-500 shrink-0" />
+                  <BookOpenIcon className="h-5 w-5 text-primary-500 shrink-0" />
                   <h2 className="text-lg font-semibold text-gray-900">
                     {hw.title}{" "}
                     <span className="text-xs font-normal text-gray-500">
@@ -56,7 +56,7 @@ const ParentHomework = () => {
                     href={hw.attachmentURL}
                     target="_blank"
                     rel="noreferrer"
-                    className="mt-2 inline-block text-sm text-indigo-600 hover:underline"
+                    className="mt-2 inline-block text-sm text-primary-600 hover:underline"
                   >
                     View attachment
                   </a>

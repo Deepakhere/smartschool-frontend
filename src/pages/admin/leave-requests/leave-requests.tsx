@@ -15,7 +15,7 @@ const STATUS_OPTIONS: SelectOption[] = [
 ];
 
 const inputClass =
-  "mt-1 block w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-gray-900 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm";
+  "mt-1 block w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-gray-900 shadow-sm focus:border-primary-500 focus:outline-none focus:ring-primary-500 sm:text-sm";
 const btnApprove =
   "inline-flex items-center px-3 py-1.5 border border-transparent rounded-md text-xs font-medium text-white bg-green-600 hover:bg-green-700 disabled:opacity-50";
 const btnReject =
@@ -67,7 +67,7 @@ const LeaveRequests = () => {
                         href={lr.attachmentURL}
                         target="_blank"
                         rel="noreferrer"
-                        className="mt-1 inline-block text-xs text-indigo-600 hover:underline"
+                        className="mt-1 inline-block text-xs text-primary-600 hover:underline"
                       >
                         {t("labels.attachment")}
                       </a>

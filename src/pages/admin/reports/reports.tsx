@@ -11,9 +11,9 @@ import { exportToCsv } from "@/utils";
 import { useReportsController } from "./reports-controller";
 
 const inputClass =
-  "mt-1 block w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-gray-900 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm";
+  "mt-1 block w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-gray-900 shadow-sm focus:border-primary-500 focus:outline-none focus:ring-primary-500 sm:text-sm";
 const btnPrimary =
-  "inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50";
+  "inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 disabled:opacity-50";
 const btnSecondary =
   "inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50";
 
@@ -57,7 +57,7 @@ const AdminReports = () => {
               key={tab.key}
               onClick={() => c.setActiveTab(tab.key)}
               className={`whitespace-nowrap border-b-2 py-3 px-1 text-sm font-medium ${
-                c.activeTab === tab.key ? "border-indigo-500 text-indigo-600" : "border-transparent text-gray-500 hover:text-gray-700"
+                c.activeTab === tab.key ? "border-primary-500 text-primary-600" : "border-transparent text-gray-500 hover:text-gray-700"
               }`}
             >
               {tab.label}
@@ -88,7 +88,7 @@ const AdminReports = () => {
 
             <div className="flex justify-between items-center mb-2">
               <label className="block text-sm font-medium text-gray-700">Grade Bands</label>
-              <button type="button" onClick={c.addBandRow} className="text-xs text-indigo-600">
+              <button type="button" onClick={c.addBandRow} className="text-xs text-primary-600">
                 + Add band
               </button>
             </div>
@@ -212,7 +212,7 @@ const AdminReports = () => {
                         onClick={() => c.toggleExamClass(k.id)}
                         className={`px-3 py-1 rounded-full text-xs border ${
                           c.examClassIds.includes(k.id)
-                            ? "bg-indigo-100 text-indigo-800 border-indigo-300"
+                            ? "bg-primary-100 text-primary-800 border-primary-300"
                             : "bg-white text-gray-600 border-gray-300"
                         }`}
                       >
@@ -255,13 +255,13 @@ const AdminReports = () => {
                           <button
                             onClick={() => c.handlePublishExam(exam.id)}
                             disabled={c.isPublishing}
-                            className="text-sm text-indigo-600 hover:text-indigo-800"
+                            className="text-sm text-primary-600 hover:text-primary-800"
                           >
                             Publish
                           </button>
                         )}
                         <span
-                          className="text-sm text-indigo-600 cursor-pointer"
+                          className="text-sm text-primary-600 cursor-pointer"
                           onClick={() => c.toggleExpandExam(exam.id, exam.classIds[0]?.id)}
                         >
                           {c.expandedExamId === exam.id ? "Hide" : "Manage subjects"}
@@ -281,7 +281,7 @@ const AdminReports = () => {
                                 onClick={() => c.setSubjectClassId(k.id)}
                                 className={`px-3 py-1 rounded-full text-xs border ${
                                   c.subjectClassId === k.id
-                                    ? "bg-indigo-100 text-indigo-800 border-indigo-300"
+                                    ? "bg-primary-100 text-primary-800 border-primary-300"
                                     : "bg-white text-gray-600 border-gray-300"
                                 }`}
                               >
@@ -293,7 +293,7 @@ const AdminReports = () => {
 
                         <div className="flex justify-between items-center mb-2">
                           <p className="text-sm font-medium text-gray-700">Add subjects</p>
-                          <button type="button" onClick={c.addSubjectRow} className="text-xs text-indigo-600">
+                          <button type="button" onClick={c.addSubjectRow} className="text-xs text-primary-600">
                             + Add row
                           </button>
                         </div>

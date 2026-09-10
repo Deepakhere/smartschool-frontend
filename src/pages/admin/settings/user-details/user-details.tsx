@@ -57,7 +57,7 @@ const UserDetails = () => {
               e.preventDefault();
               onSearchInputChange(e.target.value);
             }}
-            className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+            className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
           />
         </div>
 
@@ -84,7 +84,7 @@ const UserDetails = () => {
           {/* Add user  */}
           <button
             onClick={() => setIsModalOpen(true)}
-            className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors duration-200"
+            className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition-colors duration-200"
           >
             <PlusIcon className="h-5 w-5 mr-2" />
             {t("labels.add_user")}
@@ -110,7 +110,7 @@ const UserDetails = () => {
               <tr>
                 <td colSpan={4} className="px-6 py-10 text-center">
                   <div className="flex justify-center items-center">
-                    <div className="h-8 w-8 border-t-2 border-b-2 border-indigo-500 rounded-full animate-spin"></div>
+                    <div className="h-8 w-8 border-t-2 border-b-2 border-primary-500 rounded-full animate-spin"></div>
                   </div>
                 </td>
               </tr>
@@ -132,7 +132,7 @@ const UserDetails = () => {
                   </TableCell>
                   <TableCell className="text-center">
                     <button
-                      className={`text-indigo-600 mr-4 ${
+                      className={`text-primary-600 mr-4 ${
                         user.permissions?.canUpdate ? "" : "cursor-not-allowed opacity-50"
                       }`}
                       title={t("messages.you_dont_have_permission_to_edit_user")}

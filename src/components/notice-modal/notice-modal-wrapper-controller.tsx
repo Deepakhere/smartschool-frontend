@@ -81,7 +81,7 @@ const useNoticeModalWrapperController = (
       id: "announcement",
       name: t("common.notice_types.announcement"),
       description: t("common.notice_types.announcement_description"),
-      icon: <BellIcon className="h-5 w-5 text-indigo-500" />,
+      icon: <BellIcon className="h-5 w-5 text-primary-500" />,
     },
     {
       id: "holiday",

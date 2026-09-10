@@ -61,7 +61,7 @@ const StudentDetails = () => {
 
   const enrollmentStatusBadgeClass: Record<string, string> = {
     ACTIVE: "bg-green-100 text-green-800",
-    PROMOTED: "bg-indigo-100 text-indigo-800",
+    PROMOTED: "bg-primary-100 text-primary-800",
     DETAINED: "bg-amber-100 text-amber-800",
     TRANSFERRED: "bg-gray-100 text-gray-600",
     WITHDRAWN: "bg-red-100 text-red-800",
@@ -78,7 +78,7 @@ const StudentDetails = () => {
           <h2 className="text-xl font-semibold text-gray-900">Student not found</h2>
           <button
             onClick={onBackClick}
-            className="mt-4 inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700"
+            className="mt-4 inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary-600 hover:bg-primary-700"
           >
             Back to Students
           </button>
@@ -98,7 +98,7 @@ const StudentDetails = () => {
               <div className="flex space-x-3">
                 <button
                   onClick={() => setIsEditModalOpen(true)}
-                  className="inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                  className="inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
                 >
                   <PencilIcon className="h-4 w-4 mr-1" />
                   Edit
@@ -189,7 +189,7 @@ const StudentDetails = () => {
                       </p>
                       <div className="mt-1 flex gap-2">
                         {g.isPrimaryGuardian && (
-                          <span className="bg-indigo-100 text-indigo-800 text-xs font-medium px-2 py-0.5 rounded-full">
+                          <span className="bg-primary-100 text-primary-800 text-xs font-medium px-2 py-0.5 rounded-full">
                             Primary
                           </span>
                         )}
@@ -209,7 +209,7 @@ const StudentDetails = () => {
                       {!g.isPrimaryGuardian && (
                         <button
                           onClick={() => handleSetPrimaryGuardian(g.id)}
-                          className="text-sm text-indigo-600 hover:text-indigo-800"
+                          className="text-sm text-primary-600 hover:text-primary-800"
                         >
                           Set as primary
                         </button>

@@ -28,7 +28,7 @@ const ParentNotices = () => {
                   {notice.type === "holiday" ? (
                     <CalendarDaysIcon className="h-5 w-5 text-green-500 shrink-0" />
                   ) : (
-                    <BellIcon className="h-5 w-5 text-indigo-500 shrink-0" />
+                    <BellIcon className="h-5 w-5 text-primary-500 shrink-0" />
                   )}
                   <h2 className="text-lg font-semibold text-gray-900">{notice.title}</h2>
                   {notice.pinned && (
@@ -48,7 +48,7 @@ const ParentNotices = () => {
                     href={notice.attachmentURL}
                     target="_blank"
                     rel="noreferrer"
-                    className="mt-2 inline-block text-sm text-indigo-600 hover:underline"
+                    className="mt-2 inline-block text-sm text-primary-600 hover:underline"
                   >
                     View attachment
                   </a>

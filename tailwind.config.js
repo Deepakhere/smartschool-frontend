@@ -5,8 +5,22 @@ export default {
   theme: {
     extend: {
       colors: {
+        // brand accent — every button/link/CTA that needs the app's primary color
+        // uses primary-* instead of a hardcoded Tailwind color family (previously
+        // indigo-*), so changing the brand color is a one-line edit here.
         primary: {
           yankees: "#201F37",
+          50: "#f0f7fe",
+          100: "#ddecfe",
+          200: "#b5d6fd",
+          300: "#78b6fc",
+          400: "#3692fc",
+          500: "#0377fc",
+          600: "#0276FC",
+          700: "#045fc8",
+          800: "#084d9b",
+          900: "#0d3f77",
+          950: "#0a2747",
         },
         base: {
           900: "#9D9CAF",
