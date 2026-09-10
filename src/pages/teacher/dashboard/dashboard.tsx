@@ -75,7 +75,7 @@ const TeacherDashboard = () => {
                   {a.classId?.name} {a.sectionId?.name}
                   {a.subjectId && <span className="text-gray-500"> — {a.subjectId.name}</span>}
                 </p>
-                <span className="bg-indigo-100 text-indigo-800 text-xs font-medium px-2.5 py-0.5 rounded-full">
+                <span className="bg-primary-100 text-primary-800 text-xs font-medium px-2.5 py-0.5 rounded-full">
                   {a.assignmentRole === "CLASS_TEACHER" ? "Class Teacher" : "Subject Teacher"}
                 </span>
               </div>

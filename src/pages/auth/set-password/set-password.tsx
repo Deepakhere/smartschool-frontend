@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 
 import { Form, FormControl, FormField, FormItem, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import BrandLogo from "@/components/brand-logo";
 import EyeON from "@/icons/eye-on-icon";
 import EyeOff from "@/icons/eye-off";
 import ButtonSpinner from "@/icons/button-spinner";
@@ -12,7 +13,7 @@ const SetPassword = () => {
 
   return (
     <div className="min-h-screen flex items-center justify-center flex-col bg-gray-100">
-      <img src="./kidsight.png" alt="" className="dark:invert" />
+      <BrandLogo className="h-12 w-auto mb-2" />
       <div className="max-w-sm w-full space-y-8 p-8 bg-white rounded-lg shadow">
         <div>
           <h2 className="mt-2 text-xl font-bold text-gray-900">Set Your Password</h2>
@@ -22,7 +23,7 @@ const SetPassword = () => {
         {!hasToken ? (
           <div className="text-center space-y-4">
             <p className="text-sm text-red-600">This link is invalid or missing its token.</p>
-            <Link to="/login" className="text-xs text-indigo-600">
+            <Link to="/login" className="text-xs text-primary-600">
               Return to login
             </Link>
           </div>
@@ -87,7 +88,7 @@ const SetPassword = () => {
                 <button
                   type="submit"
                   disabled={isLoading}
-                  className="group relative w-full flex justify-center items-center gap-2 py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50"
+                  className="group relative w-full flex justify-center items-center gap-2 py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 disabled:opacity-50"
                 >
                   {isLoading && <ButtonSpinner />}
                   Set Password

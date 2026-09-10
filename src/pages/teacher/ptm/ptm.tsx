@@ -7,7 +7,7 @@ import SectionHeader from "@/components/section-header";
 import useTeacherPTMController from "./ptm-controller";
 
 const inputClass =
-  "mt-1 block w-full p-2 rounded-md border border-gray-300 bg-white text-gray-900 shadow-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 sm:text-sm";
+  "mt-1 block w-full p-2 rounded-md border border-gray-300 bg-white text-gray-900 shadow-sm focus:border-primary-500 focus:ring-1 focus:ring-primary-500 sm:text-sm";
 
 const TeacherPTM = () => {
   const {
@@ -67,7 +67,7 @@ const TeacherPTM = () => {
         <button
           onClick={handleGenerateSlots}
           disabled={isGeneratingSlots}
-          className="mt-4 px-4 py-2 rounded-md text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50"
+          className="mt-4 px-4 py-2 rounded-md text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 disabled:opacity-50"
         >
           Generate slots
         </button>

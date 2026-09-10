@@ -166,7 +166,7 @@ const GuardianModal = ({ isOpen, isSubmitting, onClose, onSubmit }: GuardianModa
                   <button
                     type="submit"
                     disabled={isSubmitting}
-                    className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50"
+                    className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 disabled:opacity-50"
                   >
                     {isSubmitting && <ButtonSpinner />}
                     Save

@@ -65,7 +65,7 @@ const AttachmentPreviewModal = ({
                   <a
                     href={attachmentURL}
                     download
-                    className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700"
+                    className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-primary-600 hover:bg-primary-700"
                   >
                     Download Instead
                   </a>
@@ -78,7 +78,7 @@ const AttachmentPreviewModal = ({
             <a
               href={attachmentURL}
               download
-              className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700"
+              className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-primary-600 hover:bg-primary-700"
             >
               Download
             </a>

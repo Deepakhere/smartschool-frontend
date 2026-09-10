@@ -76,13 +76,13 @@
   @apply bg-gray-700;
 }
 
-.dark .bg-indigo-50 {
-  @apply bg-indigo-900 bg-opacity-30;
+.dark .bg-primary-50 {
+  @apply bg-primary-900 bg-opacity-30;
 }
 
-.dark .text-indigo-700,
-.dark .text-indigo-800 {
-  @apply text-indigo-300;
+.dark .text-primary-700,
+.dark .text-primary-800 {
+  @apply text-primary-300;
 }
 
 /* Row/element hover states — left un-remapped these flash bright light-gray
@@ -184,11 +184,11 @@
 
 /* Headless UI's default "selected option" and "darken further on hover" patterns use the
    -900 shade, which is unreadable against the now-dark tinted backgrounds/page above */
-.dark .text-indigo-900 {
-  @apply text-indigo-200;
+.dark .text-primary-900 {
+  @apply text-primary-200;
 }
-.dark .hover\:text-indigo-900:hover {
-  @apply text-indigo-200;
+.dark .hover\:text-primary-900:hover {
+  @apply text-primary-200;
 }
 .dark .hover\:text-red-900:hover {
   @apply text-red-300;
@@ -214,33 +214,36 @@
   @apply text-gray-100;
 }
 
-/* Selection chips, icon badges and file-input buttons all use the indigo-100/200/300
+/* Selection chips, icon badges and file-input buttons all use the primary-100/200/300
    trio designed for a white page; on dark surfaces they need the same treatment as the
    other status-badge colors already handled above */
-.dark .bg-indigo-100,
-.dark .file\:bg-indigo-50::file-selector-button {
-  @apply bg-indigo-900 bg-opacity-40;
+.dark .bg-primary-100,
+.dark .file\:bg-primary-50::file-selector-button {
+  @apply bg-primary-900 bg-opacity-40;
 }
-.dark .group:hover .group-hover\:bg-indigo-200,
-.dark .hover\:file\:bg-indigo-100:hover::file-selector-button {
-  @apply bg-indigo-900 bg-opacity-60;
+.dark .group:hover .group-hover\:bg-primary-200,
+.dark .hover\:file\:bg-primary-100:hover::file-selector-button {
+  @apply bg-primary-900 bg-opacity-60;
 }
-.dark .border-indigo-300 {
-  @apply border-indigo-700;
+.dark .hover\:bg-primary-100:hover {
+  @apply bg-primary-900 bg-opacity-60;
 }
-.dark .file\:text-indigo-700::file-selector-button {
-  @apply text-indigo-300;
+.dark .border-primary-300 {
+  @apply border-primary-700;
+}
+.dark .file\:text-primary-700::file-selector-button {
+  @apply text-primary-300;
 }
 
 /* Global focus styles */
 /* @layer base {
   *:focus-visible {
-    @apply outline-none ring-2 ring-indigo-500 ring-offset-2;
+    @apply outline-none ring-2 ring-primary-500 ring-offset-2;
   }
   
   input:focus, 
   textarea:focus, 
   select:focus {
-    @apply border-indigo-500 ring-1 ring-indigo-500;
+    @apply border-primary-500 ring-1 ring-primary-500;
   }
 } */

@@ -19,6 +19,7 @@ import {
 import { ICreateNoticeRequest } from "@/types";
 import { useGetNoticeList, useCreateNotice } from "../notices/service";
 import { useError } from "@/hooks";
+import { useTheme } from "@/context/theme-context";
 import useGetDashboardStats from "./service/get-dashboard-stats";
 import useGetDashboardCharts from "./service/get-dashboard-charts";
 
@@ -27,6 +28,15 @@ const formatMoney = (paise: number) => `${(paise / 100).toFixed(2)}`;
 export const useDashboardController = () => {
   const navigate = useNavigate();
   const { t } = useTranslation();
+  const { theme } = useTheme();
+
+  // Highcharts renders its own inline SVG styling — Tailwind's dark-mode CSS can't
+  // reach it, so the chart options themselves have to switch colors on theme change
+  const isDark = theme === "dark";
+  const chartAxisLabelColor = isDark ? "#9CA3AF" : "#6B7280";
+  const chartLegendColor = isDark ? "#D1D5DB" : "#4B5563";
+  const chartTitleColor = isDark ? "#F9FAFB" : "#1F2937";
+  const chartGridLineColor = isDark ? "#374151" : "#E5E7EB";
 
   const { organizationId } = useParams();
   const [isNoticeModalOpen, setIsNoticeModalOpen] = useState(false);
@@ -60,34 +70,49 @@ export const useDashboardController = () => {
 
   const studentPerformanceOptions = {
     credits: { enabled: false },
-    chart: { type: "line", height: 300, style: { fontFamily: "inherit" } },
-    title: { text: "Exam Performance Trend", style: { fontSize: "16px", fontWeight: "500" } },
+    chart: { type: "line", height: 300, style: { fontFamily: "inherit" }, backgroundColor: "transparent" },
+    title: {
+      text: "Exam Performance Trend",
+      style: { fontSize: "16px", fontWeight: "500", color: chartTitleColor },
+    },
     xAxis: {
       categories: examTrend.length ? examTrend.map((e) => e.name) : ["No published exams yet"],
-      labels: { style: { color: "#6B7280" } },
+      labels: { style: { color: chartAxisLabelColor } },
+      lineColor: chartGridLineColor,
+      tickColor: chartGridLineColor,
     },
-    yAxis: { title: { text: "Average %" }, labels: { style: { color: "#6B7280" } }, max: 100, min: 0 },
+    yAxis: {
+      title: { text: "Average %", style: { color: chartAxisLabelColor } },
+      labels: { style: { color: chartAxisLabelColor } },
+      gridLineColor: chartGridLineColor,
+      max: 100,
+      min: 0,
+    },
     series: [
       {
         name: "Average score",
         data: examTrend.length ? examTrend.map((e) => e.percentage) : [0],
-        color: "#4F46E5",
+        color: "#0276FC",
       },
     ],
-    legend: { itemStyle: { color: "#4B5563" } },
+    legend: { itemStyle: { color: chartLegendColor } },
   };
 
   const teacherStudentRatioOptions = {
     credits: { enabled: false },
-    chart: { type: "pie", height: 300, style: { fontFamily: "inherit" } },
-    title: { text: "Teacher-Student Ratio", style: { fontSize: "16px", fontWeight: "500" } },
+    chart: { type: "pie", height: 300, style: { fontFamily: "inherit" }, backgroundColor: "transparent" },
+    title: {
+      text: "Teacher-Student Ratio",
+      style: { fontSize: "16px", fontWeight: "500", color: chartTitleColor },
+    },
     series: [
       {
         name: "Count",
         data: [
-          { name: "Teachers", y: stats.totalTeachers, color: "#4F46E5" },
-          { name: "Students", y: stats.totalStudents, color: "#818CF8" },
+          { name: "Teachers", y: stats.totalTeachers, color: "#0276FC" },
+          { name: "Students", y: stats.totalStudents, color: "#3692fc" },
         ],
+        dataLabels: { style: { color: chartTitleColor, textOutline: "none" } },
       },
     ],
     plotOptions: {
@@ -101,18 +126,29 @@ export const useDashboardController = () => {
 
   const monthlyAttendanceOptions = {
     credits: { enabled: false },
-    chart: { type: "column", height: 300, style: { fontFamily: "inherit" } },
-    title: { text: "Monthly Attendance Summary", style: { fontSize: "16px", fontWeight: "500" } },
+    chart: { type: "column", height: 300, style: { fontFamily: "inherit" }, backgroundColor: "transparent" },
+    title: {
+      text: "Monthly Attendance Summary",
+      style: { fontSize: "16px", fontWeight: "500", color: chartTitleColor },
+    },
     xAxis: {
       categories: monthlyAttendance.length ? monthlyAttendance.map((m) => m.month) : ["No attendance marked yet"],
-      labels: { style: { color: "#6B7280" } },
+      labels: { style: { color: chartAxisLabelColor } },
+      lineColor: chartGridLineColor,
+      tickColor: chartGridLineColor,
     },
-    yAxis: { title: { text: "Attendance %" }, labels: { style: { color: "#6B7280" } }, max: 100, min: 0 },
+    yAxis: {
+      title: { text: "Attendance %", style: { color: chartAxisLabelColor } },
+      labels: { style: { color: chartAxisLabelColor } },
+      gridLineColor: chartGridLineColor,
+      max: 100,
+      min: 0,
+    },
     series: [
       {
         name: "Attendance",
         data: monthlyAttendance.length ? monthlyAttendance.map((m) => m.percentage) : [0],
-        color: "#4F46E5",
+        color: "#0276FC",
       },
     ],
     plotOptions: { column: { borderRadius: 5 } },

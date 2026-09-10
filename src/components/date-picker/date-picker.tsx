@@ -87,9 +87,9 @@ const DatePicker = ({
         <div
           className={`relative w-full cursor-pointer rounded-md border ${
             isOpen
-              ? "border-indigo-500 ring-1 ring-indigo-500"
+              ? "border-primary-500 ring-1 ring-primary-500"
               : "border-gray-300"
-          } bg-white py-2 pl-3 pr-10 text-left shadow-sm focus-within:border-indigo-500 focus-within:ring-1 focus-within:ring-indigo-500 sm:text-sm`}
+          } bg-white py-2 pl-3 pr-10 text-left shadow-sm focus-within:border-primary-500 focus-within:ring-1 focus-within:ring-primary-500 sm:text-sm`}
           onClick={toggleCalendar}
         >
           <div className="flex items-center">

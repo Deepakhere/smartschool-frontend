@@ -15,7 +15,7 @@ const LogoSpinner = () => {
     <div className="fixed inset-0 flex items-center justify-center bg-white z-10">
       <div className="relative w-32 h-32">
         {/* Spinning border */}
-        <div className="absolute inset-0 border-4 border-gray-200 rounded-full border-t-indigo-600 animate-spin"></div>
+        <div className="absolute inset-0 border-4 border-gray-200 rounded-full border-t-primary-600 animate-spin"></div>
 
         {/* Centered logo */}
         <div className="absolute inset-0 flex items-center justify-center">
@@ -26,7 +26,7 @@ const LogoSpinner = () => {
           >
             <img
               src={logo}
-              alt="Kidsight Logo"
+              alt="Schoolyn Logo"
               className="w-full h-full object-contain dark:invert"
             />
           </div>

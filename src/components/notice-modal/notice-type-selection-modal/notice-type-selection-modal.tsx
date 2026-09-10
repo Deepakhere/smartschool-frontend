@@ -23,10 +23,10 @@ const NoticeTypeSelectionModal = ({ isOpen, onClose, onSelectAI, onSelectCustom 
                   {/* AI-Generated Option */}
                   <button
                     onClick={onSelectAI}
-                    className="flex flex-col items-center justify-center p-6 border-2 border-gray-200 rounded-xl hover:border-indigo-500 hover:bg-indigo-50 transition-all group"
+                    className="flex flex-col items-center justify-center p-6 border-2 border-gray-200 rounded-xl hover:border-primary-500 hover:bg-primary-50 transition-all group"
                   >
-                    <div className="p-4 bg-indigo-100 rounded-full mb-4 group-hover:bg-indigo-200 transition-colors">
-                      <SparklesIcon className="h-8 w-8 text-indigo-600" />
+                    <div className="p-4 bg-primary-100 rounded-full mb-4 group-hover:bg-primary-200 transition-colors">
+                      <SparklesIcon className="h-8 w-8 text-primary-600" />
                     </div>
                     <h4 className="text-lg font-medium text-gray-900 mb-2">AI-Generated</h4>
                     <p className="text-sm text-gray-500 text-center">
@@ -37,10 +37,10 @@ const NoticeTypeSelectionModal = ({ isOpen, onClose, onSelectAI, onSelectCustom 
                   {/* Custom Option */}
                   <button
                     onClick={onSelectCustom}
-                    className="flex flex-col items-center justify-center p-6 border-2 border-gray-200 rounded-xl hover:border-indigo-500 hover:bg-indigo-50 transition-all group"
+                    className="flex flex-col items-center justify-center p-6 border-2 border-gray-200 rounded-xl hover:border-primary-500 hover:bg-primary-50 transition-all group"
                   >
-                    <div className="p-4 bg-indigo-100 rounded-full mb-4 group-hover:bg-indigo-200 transition-colors">
-                      <PencilSquareIcon className="h-8 w-8 text-indigo-600" />
+                    <div className="p-4 bg-primary-100 rounded-full mb-4 group-hover:bg-primary-200 transition-colors">
+                      <PencilSquareIcon className="h-8 w-8 text-primary-600" />
                     </div>
                     <h4 className="text-lg font-medium text-gray-900 mb-2">Custom Notice</h4>
                     <p className="text-sm text-gray-500 text-center">Create your notice content manually</p>

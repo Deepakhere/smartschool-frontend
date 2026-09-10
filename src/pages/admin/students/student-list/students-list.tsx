@@ -82,19 +82,19 @@ const StudentsList = () => {
       <>
         <button
           onClick={handleExportCsv}
-          className="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+          className="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
         >
           Export CSV
         </button>
         <button
           onClick={onClickBulkUpload}
-          className="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+          className="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
         >
           Bulk Upload (CSV)
         </button>
         <button
           onClick={onClickAddStudent}
-          className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+          className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
         >
           {t("labels.add_new_student")}
         </button>
@@ -121,7 +121,7 @@ const StudentsList = () => {
                 e.preventDefault();
                 handleSearchChange(e.target.value);
               }}
-              className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
             />
           </div>
           {studentTotalCount !== undefined && studentTotalCount > 0 && (
@@ -176,7 +176,7 @@ const StudentsList = () => {
                   <tr>
                     <td colSpan={5} className="px-6 py-10 text-center">
                       <div className="flex justify-center items-center">
-                        <div className="h-8 w-8 border-t-2 border-b-2 border-indigo-500 rounded-full animate-spin"></div>
+                        <div className="h-8 w-8 border-t-2 border-b-2 border-primary-500 rounded-full animate-spin"></div>
                       </div>
                     </td>
                   </tr>
@@ -187,12 +187,12 @@ const StudentsList = () => {
                     <TableRow key={student.id}>
                       <TableCell>
                         <div className="flex items-center">
-                          <div className="flex-shrink-0 h-10 w-10 rounded-full bg-indigo-100 flex items-center justify-center">
-                            <span className="text-indigo-600 font-medium">{student.name.charAt(0)}</span>
+                          <div className="flex-shrink-0 h-10 w-10 rounded-full bg-primary-100 flex items-center justify-center">
+                            <span className="text-primary-600 font-medium">{student.name.charAt(0)}</span>
                           </div>
                           <div className="ml-4">
                             <div
-                              className="text-sm font-medium text-gray-900 hover:text-indigo-600 cursor-pointer"
+                              className="text-sm font-medium text-gray-900 hover:text-primary-600 cursor-pointer"
                               onClick={() => navigateToStudentDetails(student.id)}
                             >
                               {student.name}
@@ -324,7 +324,7 @@ const StudentsList = () => {
                           onClick={() => paginate(index + 1)}
                           className={`relative inline-flex items-center px-4 py-2 text-sm font-semibold ${
                             currentPage === index + 1
-                              ? "bg-indigo-600 text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                              ? "bg-primary-600 text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-600"
                               : "text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0"
                           }`}
                         >

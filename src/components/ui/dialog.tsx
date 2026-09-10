@@ -48,7 +48,7 @@ const DialogContent = React.forwardRef<React.ElementRef<typeof DialogPrimitive.C
       >
         {children}
         {showDefaultClose && (
-          <DialogPrimitive.Close className="absolute right-4 top-4 rounded-md p-1.5 text-gray-400 hover:bg-gray-100 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+          <DialogPrimitive.Close className="absolute right-4 top-4 rounded-md p-1.5 text-gray-400 hover:bg-gray-100 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500">
             <XMarkIcon className="h-5 w-5" />
             <span className="sr-only">Close</span>
           </DialogPrimitive.Close>

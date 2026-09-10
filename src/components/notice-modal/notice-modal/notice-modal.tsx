@@ -112,7 +112,7 @@ const NoticeModal = ({
                                     type="button"
                                     onClick={generateContentWithAI}
                                     disabled={!formData.title.trim() || isGeneratingContent}
-                                    className="mt-1 inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed"
+                                    className="mt-1 inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 disabled:opacity-50 disabled:cursor-not-allowed"
                                     title="Generate content with AI"
                                   >
                                     {isGeneratingContent ? <ButtonSpinner /> : <SparklesIcon className="h-4 w-4" />}
@@ -155,7 +155,7 @@ const NoticeModal = ({
                                 onClick={() => handleAudienceScopeChange(s.value)}
                                 className={`px-3 py-1.5 rounded-md text-sm border ${
                                   audienceScope === s.value
-                                    ? "bg-indigo-600 text-white border-indigo-600"
+                                    ? "bg-primary-600 text-white border-primary-600"
                                     : "bg-white text-gray-700 border-gray-300 hover:bg-gray-50"
                                 }`}
                               >
@@ -175,7 +175,7 @@ const NoticeModal = ({
                                     onClick={() => handleAudienceRoleToggle(role)}
                                     className={`px-3 py-1 rounded-full text-xs border ${
                                       selected
-                                        ? "bg-indigo-100 text-indigo-800 border-indigo-300"
+                                        ? "bg-primary-100 text-primary-800 border-primary-300"
                                         : "bg-white text-gray-600 border-gray-300"
                                     }`}
                                   >
@@ -198,7 +198,7 @@ const NoticeModal = ({
                                     onClick={() => handleAudienceClassToggle(c.id)}
                                     className={`px-3 py-1 rounded-full text-xs border ${
                                       selected
-                                        ? "bg-indigo-100 text-indigo-800 border-indigo-300"
+                                        ? "bg-primary-100 text-primary-800 border-primary-300"
                                         : "bg-white text-gray-600 border-gray-300"
                                     }`}
                                   >
@@ -214,7 +214,7 @@ const NoticeModal = ({
                               <select
                                 value={sectionPickerClassId}
                                 onChange={(e) => setSectionPickerClassId(e.target.value)}
-                                className="block w-full p-2 rounded-md border border-gray-300 bg-white text-gray-900 shadow-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 sm:text-sm"
+                                className="block w-full p-2 rounded-md border border-gray-300 bg-white text-gray-900 shadow-sm focus:border-primary-500 focus:ring-1 focus:ring-primary-500 sm:text-sm"
                               >
                                 <option value="">Select a class first</option>
                                 {classOptions.map((c) => (
@@ -236,7 +236,7 @@ const NoticeModal = ({
                                       onClick={() => handleAudienceSectionToggle(sec.id)}
                                       className={`px-3 py-1 rounded-full text-xs border ${
                                         selected
-                                          ? "bg-indigo-100 text-indigo-800 border-indigo-300"
+                                          ? "bg-primary-100 text-primary-800 border-primary-300"
                                           : "bg-white text-gray-600 border-gray-300"
                                       }`}
                                     >
@@ -294,7 +294,7 @@ const NoticeModal = ({
                             ref={fileInputRef}
                             accept=".pdf"
                             onChange={handleFileChange}
-                            className="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                            className="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-primary-50 file:text-primary-700 hover:file:bg-primary-100 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
                           />
                           {file && (
                             <p className="mt-2 text-sm text-gray-500">
@@ -308,13 +308,13 @@ const NoticeModal = ({
                         <button
                           type="submit"
                           disabled={isLoading}
-                          className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-indigo-600 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:ml-3 sm:w-auto sm:text-sm disabled:opacity-50"
+                          className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-primary-600 text-base font-medium text-white hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 sm:ml-3 sm:w-auto sm:text-sm disabled:opacity-50"
                         >
                           {isLoading ? <ButtonSpinner /> : t("buttons.add_notice")}
                         </button>
                         <button
                           type="button"
-                          className="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:w-auto sm:text-sm"
+                          className="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 sm:mt-0 sm:w-auto sm:text-sm"
                           onClick={onClose}
                         >
                           {t("buttons.cancel")}

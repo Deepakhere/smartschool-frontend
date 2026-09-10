@@ -4,6 +4,7 @@ import ReCAPTCHA from "react-google-recaptcha";
 
 import { Form, FormControl, FormField, FormItem, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import BrandLogo from "@/components/brand-logo";
 import { GOOGLE_CAPTCHA_KEY } from "@/utils";
 import useForgotPasswordController from "./forgot-password-controller";
 import ForgotPasswordEmail from "./success/forgot-password-email";
@@ -30,7 +31,7 @@ const ForgotPassword: React.FC = () => {
 
   return (
     <div className="min-h-screen flex items-center justify-center flex-col bg-gray-100">
-      <img src="./kidsight.png" alt="" className="dark:invert" />
+      <BrandLogo className="h-12 w-auto mb-2" />
       <div className="max-w-sm w-full space-y-8 p-8 bg-white rounded-lg shadow">
         <div>
           <h2 className="mt-2 text-xl font-bold text-gray-900">{t("labels.forgot_password")}</h2>
@@ -91,7 +92,7 @@ const ForgotPassword: React.FC = () => {
             <div>
               <button
                 type="submit"
-                className={`group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 ${
+                className={`group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-primary-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 ${
                   captchaToken === "" || captchaToken === null ? "opacity-50 cursor-not-allowed" : ""
                 }`}
               >

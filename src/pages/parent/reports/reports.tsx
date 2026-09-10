@@ -67,7 +67,7 @@ const ParentReports = () => {
                             <button
                               type="button"
                               onClick={() => handleDownload(typeof result.examId === "object" ? result.examId.id : result.examId, item.studentId)}
-                              className="text-xs text-indigo-600 hover:text-indigo-800 mt-1"
+                              className="text-xs text-primary-600 hover:text-primary-800 mt-1"
                             >
                               Download report card
                             </button>

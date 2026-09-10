@@ -2,7 +2,10 @@ import { PrinterIcon, XMarkIcon } from "@heroicons/react/24/outline";
 
 import { Dialog, DialogContent, DialogHeader, DialogBody, DialogTitle } from "../ui/dialog";
 import { ICreateNoticeRequest } from "@/types";
-import organisationLogo from "@/icons/kidsight.png";
+
+// platform-default letterhead logo for the print view — a school's own uploaded
+// logo (organizationLogo prop) is a separate, unrelated default further below
+const organisationLogo = "/schoolyn.png";
 
 interface NoticePreviewModalProps {
   isOpen: boolean;
@@ -75,7 +78,7 @@ const NoticePreviewModal = ({
           <div className="flex items-center gap-1">
             <button
               type="button"
-              className="rounded-md p-1.5 text-gray-400 hover:bg-gray-100 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+              className="rounded-md p-1.5 text-gray-400 hover:bg-gray-100 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
               onClick={handlePrint}
             >
               <span className="sr-only">Print</span>
@@ -83,7 +86,7 @@ const NoticePreviewModal = ({
             </button>
             <button
               type="button"
-              className="rounded-md p-1.5 text-gray-400 hover:bg-gray-100 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+              className="rounded-md p-1.5 text-gray-400 hover:bg-gray-100 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
               onClick={onClose}
             >
               <span className="sr-only">Close</span>

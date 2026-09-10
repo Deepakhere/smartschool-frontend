@@ -42,8 +42,8 @@ const ParentDashboard = () => {
                 key={index}
                 className="bg-white rounded-xl shadow p-6 flex items-center space-x-4"
               >
-                <div className="p-3 bg-indigo-50 rounded-lg">
-                  <Icon className="h-6 w-6 text-indigo-600" />
+                <div className="p-3 bg-primary-50 rounded-lg">
+                  <Icon className="h-6 w-6 text-primary-600" />
                 </div>
                 <div>
                   <p className="text-sm font-medium text-gray-500">{card.title}</p>
