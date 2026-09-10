@@ -11,10 +11,11 @@ const mockSocket = {
   }),
   disconnect: vi.fn(),
 };
-const ioMock = vi.fn((_url: unknown, _opts: unknown) => mockSocket);
+const ioMock = vi.fn();
+ioMock.mockReturnValue(mockSocket);
 
 vi.mock("socket.io-client", () => ({
-  io: (url: unknown, opts: unknown) => ioMock(url, opts),
+  io: (...args: unknown[]) => ioMock(...args),
 }));
 
 vi.mock("js-cookie", () => ({
