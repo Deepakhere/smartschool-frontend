@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 
 import { Form, FormControl, FormField, FormItem, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import BrandLogo from "@/components/brand-logo";
 import EyeON from "@/icons/eye-on-icon";
 import EyeOff from "@/icons/eye-off";
 import ButtonSpinner from "@/icons/button-spinner";
@@ -12,11 +13,7 @@ const SetPassword = () => {
 
   return (
     <div className="min-h-screen flex items-center justify-center flex-col bg-gray-100">
-      {/* the logo's text is baked-in navy pixels — near-invisible on a dark background,
-          so give it a light backdrop in dark mode only */}
-      <div className="mb-2 dark:bg-white dark:rounded-lg dark:p-2">
-        <img src="./schoolyn.png" alt="Schoolyn" className="h-12 w-auto" />
-      </div>
+      <BrandLogo className="h-12 w-auto mb-2" />
       <div className="max-w-sm w-full space-y-8 p-8 bg-white rounded-lg shadow">
         <div>
           <h2 className="mt-2 text-xl font-bold text-gray-900">Set Your Password</h2>

@@ -1,6 +1,8 @@
 import { Link } from "react-router-dom";
-import { Bars3Icon, ChevronLeftIcon, ChevronRightIcon, ArrowLeftIcon } from "@heroicons/react/24/outline";
+import { Bars3Icon, ArrowLeftIcon } from "@heroicons/react/24/outline";
 
+import PanelLeftIcon from "@/icons/panel-left-icon";
+import BrandLogo from "@/components/brand-logo";
 import { useHeaderController } from "./header-controller";
 
 interface HeaderProps {
@@ -34,11 +36,7 @@ const Header = ({ onToggleSidebar, isCollapsed, onToggleCollapse }: HeaderProps)
               isCollapsed ? "max-w-0 opacity-0" : "max-w-xs opacity-100"
             }`}
           >
-            {/* the logo's text is baked-in navy pixels — near-invisible on the dark-mode
-                header background, so give it a light backdrop in dark mode only */}
-            <div className="dark:bg-white dark:rounded-lg dark:p-1.5">
-              <img src="/schoolyn.png" className="h-12 w-auto shrink-0" alt="Schoolyn Logo" />
-            </div>
+            <BrandLogo className="h-12 w-auto shrink-0" />
           </Link>
           <button
             type="button"
@@ -46,11 +44,7 @@ const Header = ({ onToggleSidebar, isCollapsed, onToggleCollapse }: HeaderProps)
             className="hidden lg:flex p-1.5 rounded-md text-gray-400 hover:text-primary-600 hover:bg-gray-100"
             title={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
           >
-            {isCollapsed ? (
-              <ChevronRightIcon className="h-4 w-4" aria-hidden="true" />
-            ) : (
-              <ChevronLeftIcon className="h-4 w-4" aria-hidden="true" />
-            )}
+            <PanelLeftIcon className="h-4 w-4" />
           </button>
         </div>
 
