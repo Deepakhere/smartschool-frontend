@@ -7,7 +7,7 @@
 const PageLoader = () => {
   return (
     <div className="absolute inset-0 flex justify-center items-center bg-white/70 z-10">
-      <div className="h-10 w-10 border-t-2 border-b-2 border-primary-500 rounded-full animate-spin"></div>
+      <div className="h-10 w-10 rounded-full border-2 border-gray-200 border-t-gray-800 animate-spin"></div>
     </div>
   );
 };

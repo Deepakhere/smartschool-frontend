@@ -3,6 +3,7 @@ import { Bars3Icon, ArrowLeftIcon } from "@heroicons/react/24/outline";
 
 import PanelLeftIcon from "@/icons/panel-left-icon";
 import BrandLogo from "@/components/brand-logo";
+import NotificationBell from "@/components/notification-bell";
 import { useHeaderController } from "./header-controller";
 
 interface HeaderProps {
@@ -68,7 +69,10 @@ const Header = ({ onToggleSidebar, isCollapsed, onToggleCollapse }: HeaderProps)
             </h1>
           </div>
 
-          <div className="flex items-center gap-3 shrink-0">{pageHeaderConfig?.actions}</div>
+          <div className="flex items-center gap-3 shrink-0">
+            {pageHeaderConfig?.actions}
+            <NotificationBell variant="header" />
+          </div>
         </div>
       </div>
     </header>

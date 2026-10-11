@@ -23,7 +23,7 @@ const Notifications = () => {
           <div>
             <p className="text-sm font-medium text-gray-900">{t("labels.email_notifications")}</p>
             <p className="text-sm text-gray-500 mt-1">
-              Turn off to stop every email SmartSchool sends for this school - fee receipts, notices, homework,
+              Turn off to stop every email Opscul sends for this school - fee receipts, notices, homework,
               attendance, results and leave-request updates. A parent or staff member can still turn their own
               email notifications off separately regardless of this setting.
             </p>

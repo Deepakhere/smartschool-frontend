@@ -37,10 +37,12 @@ export const useDashboardController = () => {
   const chartLegendColor = isDark ? "#D1D5DB" : "#4B5563";
   const chartTitleColor = isDark ? "#F9FAFB" : "#1F2937";
   const chartGridLineColor = isDark ? "#374151" : "#E5E7EB";
-  // monochrome series colors: near-black on light surfaces, near-white on dark ones
-  const chartPrimaryColor = isDark ? "#fafafa" : "#171717";
-  const chartPrimaryFillRgb = isDark ? "250, 250, 250" : "23, 23, 23";
-  const chartSecondaryColor = "#a3a3a3";
+  // one accent color per chart, lightened a touch in dark mode so it still reads on a dark card
+  const examTrendColor = isDark ? "#60A5FA" : "#2563EB";
+  const examTrendFillRgb = isDark ? "96, 165, 250" : "37, 99, 235";
+  const attendanceFillRgb = isDark ? "74, 222, 128" : "22, 163, 74";
+  const teacherSliceColor = isDark ? "#60A5FA" : "#2563EB";
+  const studentSliceColor = isDark ? "#FBBF24" : "#F59E0B";
 
   const { organizationId } = useParams();
   const [isNoticeModalOpen, setIsNoticeModalOpen] = useState(false);
@@ -96,22 +98,26 @@ export const useDashboardController = () => {
       {
         name: "Average score",
         data: examTrend.length ? examTrend.map((e) => e.percentage) : [0],
-        color: chartPrimaryColor,
+        color: examTrendColor,
         lineWidth: 3,
         marker: { enabled: true, radius: 5, lineWidth: 2, lineColor: isDark ? "#262626" : "#ffffff" },
         // a gradient fill under the curve, rather than a flat single color: real Highcharts
-        // config, not a static image effect. Single neutral tone fading to transparent.
+        // config, not a static image effect.
         fillColor: {
           linearGradient: { x1: 0, y1: 0, x2: 0, y2: 1 },
           stops: [
-            [0, `rgba(${chartPrimaryFillRgb}, 0.22)`],
-            [1, `rgba(${chartPrimaryFillRgb}, 0.01)`],
+            [0, `rgba(${examTrendFillRgb}, 0.3)`],
+            [1, `rgba(${examTrendFillRgb}, 0.02)`],
           ],
         },
       },
     ],
     legend: { itemStyle: { color: chartLegendColor } },
   };
+
+  // a pie of two zero-value slices has nothing to show percentages of; Highcharts still draws
+  // connector lines pointing at an empty circle, which reads as broken rather than empty
+  const hasTeacherStudentData = stats.totalTeachers > 0 || stats.totalStudents > 0;
 
   const teacherStudentRatioOptions = {
     credits: { enabled: false },
@@ -124,8 +130,8 @@ export const useDashboardController = () => {
       {
         name: "Count",
         data: [
-          { name: "Teachers", y: stats.totalTeachers, color: chartPrimaryColor },
-          { name: "Students", y: stats.totalStudents, color: chartSecondaryColor },
+          { name: "Teachers", y: stats.totalTeachers, color: teacherSliceColor },
+          { name: "Students", y: stats.totalStudents, color: studentSliceColor },
         ],
         dataLabels: { style: { color: chartTitleColor, textOutline: "none" } },
       },
@@ -163,7 +169,13 @@ export const useDashboardController = () => {
       {
         name: "Attendance",
         data: monthlyAttendance.length ? monthlyAttendance.map((m) => m.percentage) : [0],
-        color: chartPrimaryColor,
+        color: {
+          linearGradient: { x1: 0, y1: 0, x2: 0, y2: 1 },
+          stops: [
+            [0, `rgba(${attendanceFillRgb}, 1)`],
+            [1, `rgba(${attendanceFillRgb}, 0.55)`],
+          ],
+        },
       },
     ],
     plotOptions: { column: { borderRadius: 5 } },
@@ -246,6 +258,7 @@ export const useDashboardController = () => {
     studentPerformanceOptions,
     teacherStudentRatioOptions,
     monthlyAttendanceOptions,
+    hasTeacherStudentData,
     isStatsLoading: dashboardStats.isLoading,
     // failed stats must not show as zero students and zero teachers
     statsError: dashboardStats.isError ? dashboardStats.error : null,
