@@ -18,11 +18,20 @@ export const useGetMyNotices = (organizationId: string) =>
 
 export const useMarkNoticeRead = (organizationId: string) => {
   const queryClient = useQueryClient();
+  const queryKey = [API_QUERY_KEY.GET_MY_NOTICES, organizationId];
   return useMutation<void, IAPIError, string>({
     mutationKey: [API_MUTATION_KEY.MARK_NOTICE_READ],
     mutationFn: async (noticeId: string) => {
       await apiClient.post(`${APIS_ROUTES.SCHOOL_SERVICE}/notice/${organizationId}/notice/${noticeId}/read`);
     },
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: [API_QUERY_KEY.GET_MY_NOTICES, organizationId] }),
+    // the whole list is already in cache and only one notice's read state changed, so flip
+    // it there instead of refetching every notice just to mark one of them read
+    onSuccess: (_data, noticeId) => {
+      queryClient.setQueryData<{ items: INotice[] }>(queryKey, (current) =>
+        current
+          ? { ...current, items: current.items.map((notice) => (notice.id === noticeId ? { ...notice, isRead: true } : notice)) }
+          : current
+      );
+    },
   });
 };

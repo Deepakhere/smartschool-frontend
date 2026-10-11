@@ -12,8 +12,9 @@ const useNoticesController = () => {
 
   const notices = getMyNotices.data?.items || [];
 
-  const handleMarkRead = (noticeId: string) => {
-    markNoticeRead.mutate(noticeId);
+  const handleMarkRead = (notice: { id: string; isRead?: boolean }) => {
+    if (notice.isRead) return;
+    markNoticeRead.mutate(notice.id);
   };
 
   return {

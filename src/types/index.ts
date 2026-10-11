@@ -21,6 +21,7 @@ export interface INotice {
   attachmentURL: string;
   audience?: INoticeAudience;
   pinned?: boolean;
+  isRead?: boolean;
 }
 
 export interface INotification {
