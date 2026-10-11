@@ -5,6 +5,7 @@ import { ErrorBoundary } from "react-error-boundary";
 import "./i18n";
 import App from "./app";
 import ErrorFallback from "./components/error-fallback/error-fallback";
+import { trackAppOpen } from "./lib/analytics";
 import "./index.css";
 
 // one place for cache policy — every query gets this unless a query has a genuine reason to
@@ -23,6 +24,8 @@ const queryClient = new QueryClient({
     },
   },
 });
+
+trackAppOpen();
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
