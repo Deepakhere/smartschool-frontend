@@ -18,7 +18,7 @@ export const ThemeProvider = ({ children }: { children: ReactNode }) => {
   const updateServerPreferences = useUpdateUserPreferences();
 
   // no local state to keep in sync: once logged in, the server preference is the
-  // value; before that (or as an offline fallback), localStorage is read directly —
+  // value; before that (or as an offline fallback), localStorage is read directly -
   // it never changes except through setTheme below, so there's nothing to watch
   const theme: ThemeType = user?.preferences?.theme || (localStorage.getItem("theme") as ThemeType) || "light";
 

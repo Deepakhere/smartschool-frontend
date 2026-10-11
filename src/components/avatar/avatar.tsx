@@ -8,7 +8,7 @@ interface AvatarProps {
 
 // built on Radix's Avatar: the fallback (initials) shows immediately and stays
 // up if the image is missing, still loading, or fails to load (a broken/expired
-// URL) — a plain <img src> can't do that on its own, it just shows a broken-image
+// URL) - a plain <img src> can't do that on its own, it just shows a broken-image
 // icon forever once src is set, even if it 404s
 const Avatar = ({ name, src, size = 40 }: AvatarProps) => {
   const initials = name

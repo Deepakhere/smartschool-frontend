@@ -10,7 +10,7 @@ vi.mock("../../context/notification-context", () => ({
   useNotifications: () => ({ unreadCount, openSheet }),
 }));
 
-// the sheet reads from the same mocked context — rendering it is fine, it just stays closed
+// the sheet reads from the same mocked context - rendering it is fine, it just stays closed
 vi.mock("./notification-sheet", () => ({ default: () => null }));
 
 describe("NotificationBell", () => {

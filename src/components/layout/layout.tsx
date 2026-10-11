@@ -15,7 +15,7 @@ const Layout = () => {
         <div className="h-screen flex flex-col">
           <Header onToggleSidebar={toggleSidebar} isCollapsed={isCollapsed} onToggleCollapse={toggleCollapse} />
           <div className="flex flex-1 overflow-hidden relative">
-            {/* mobile-only backdrop — tapping it closes the drawer; irrelevant on
+            {/* mobile-only backdrop - tapping it closes the drawer; irrelevant on
                 lg+ where the sidebar is a normal in-flow column, not an overlay */}
             {isSidebarOpen && (
               <div

@@ -25,12 +25,12 @@ const SheetOverlay = React.forwardRef<
 SheetOverlay.displayName = DialogPrimitive.Overlay.displayName;
 
 const sheetSideClasses = {
-  // notification panel etc. — unaffected by adding "bottom"
+  // notification panel etc. - unaffected by adding "bottom"
   right: cn(
     "inset-y-0 right-0 h-full w-full max-w-sm border-l",
     "data-[state=closed]:slide-out-to-right data-[state=open]:slide-in-from-right"
   ),
-  // mobile action sheets (e.g. the sidebar user menu on small screens) — slides up
+  // mobile action sheets (e.g. the sidebar user menu on small screens) - slides up
   // from the bottom, capped short of the full viewport so it reads as a sheet, not
   // a full-screen takeover; content scrolls internally if it's taller than that
   bottom: cn(

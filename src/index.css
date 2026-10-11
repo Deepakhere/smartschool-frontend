@@ -11,7 +11,7 @@
    rely on the browser's native white input background instead of a Tailwind bg-white
    class, so the blanket .dark .bg-white rule below never matches them). Low specificity
    (element selectors, not classes) so any input that DOES carry an explicit background
-   or text color class still wins via the more specific rules further down — this only
+   or text color class still wins via the more specific rules further down - this only
    fills the gap where nothing else would apply, which is exactly what was leaving
    white-on-white text: the ancestor's white text color from .dark above applied, but
    the background stayed the browser's native white since no matching class existed
@@ -47,7 +47,7 @@
 }
 
 /* base-400/600 (tailwind.config.js's custom near-black/gray text pair) had no dark
-   override at all — near-black text on a dark card background was invisible */
+   override at all - near-black text on a dark card background was invisible */
 .dark .text-base-400 {
   @apply text-white;
 }
@@ -95,7 +95,7 @@
   @apply text-primary-300;
 }
 
-/* Row/element hover states — left un-remapped these flash bright light-gray
+/* Row/element hover states - left un-remapped these flash bright light-gray
    against the dark page background on hover */
 .dark .hover\:bg-gray-50:hover {
   @apply bg-gray-700;
@@ -109,7 +109,7 @@
   @apply bg-gray-700;
 }
 
-/* Table row/column dividers — `divide-*` generates a different selector shape
+/* Table row/column dividers - `divide-*` generates a different selector shape
    than `border-*`, so it needs its own override */
 .dark .divide-gray-100 > :not([hidden]) ~ :not([hidden]) {
   @apply border-gray-700;
@@ -119,7 +119,7 @@
   @apply border-gray-700;
 }
 
-/* Status/role/type badges and alert banners — every one of these pairs a light-50/100
+/* Status/role/type badges and alert banners - every one of these pairs a light-50/100
    background with dark-600/700/800 text. Left alone, the background goes translucent-dark
    (below) while the text stays just as dark, which is the actual "invisible in dark mode"
    bug: dark text on a near-black tinted background. Both halves of each pair move together. */
@@ -205,19 +205,19 @@
 }
 
 /* Popover/dropdown menus (user menu, select options, "..." row menus) use a 5%-opacity
-   black ring for a barely-there edge on a white surface — on a dark surface that's
+   black ring for a barely-there edge on a white surface - on a dark surface that's
    effectively invisible, so the panel has no visible boundary */
 .dark .ring-black {
   @apply ring-white ring-opacity-10;
 }
 
-/* PageLoader's section-level overlay is a semi-transparent WHITE wash — in dark mode
+/* PageLoader's section-level overlay is a semi-transparent WHITE wash - in dark mode
    that's a bright flash over whatever's still loading instead of a dark scrim */
 .dark .bg-white\/70 {
   @apply bg-gray-900 bg-opacity-70;
 }
 
-/* text-gray-800 was never covered (only -900 and -600/-700/-500 were) — against the
+/* text-gray-800 was never covered (only -900 and -600/-700/-500 were) - against the
    gray-800 card background used everywhere, that's literally the same color as its own
    background: invisible text */
 .dark .text-gray-800 {

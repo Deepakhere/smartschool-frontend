@@ -17,7 +17,7 @@ const Header = ({ onToggleSidebar, isCollapsed, onToggleCollapse }: HeaderProps)
   return (
     <header className="app-shell-surface bg-white z-40">
       <div className="flex h-16">
-        {/* App brand segment — width matches the sidebar so the divider lines up with it */}
+        {/* App brand segment - width matches the sidebar so the divider lines up with it */}
         <div
           className={`flex items-center ${isCollapsed ? "justify-center" : "justify-between"} shrink-0 px-3 border-r border-gray-200 transition-[width] duration-300 ease-in-out ${
             isCollapsed ? "lg:w-16" : "lg:w-56"
@@ -48,8 +48,8 @@ const Header = ({ onToggleSidebar, isCollapsed, onToggleCollapse }: HeaderProps)
           </button>
         </div>
 
-        {/* Page header segment — each page registers its own title/back/actions via usePageHeader().
-            The user menu used to live at the far right here — it now lives at the bottom of the
+        {/* Page header segment - each page registers its own title/back/actions via usePageHeader().
+            The user menu used to live at the far right here - it now lives at the bottom of the
             Sidebar instead. */}
         <div className="flex-1 flex items-center justify-between px-4 min-w-0 border-b border-gray-200">
           <div className="flex items-center gap-2 min-w-0">

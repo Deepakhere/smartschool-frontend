@@ -3,7 +3,7 @@ import { PrinterIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import { Dialog, DialogContent, DialogHeader, DialogBody, DialogTitle } from "../ui/dialog";
 import { ICreateNoticeRequest } from "@/types";
 
-// platform-default letterhead logo for the print view — a school's own uploaded
+// platform-default letterhead logo for the print view - a school's own uploaded
 // logo (organizationLogo prop) is a separate, unrelated default further below
 const organisationLogo = "/opscul.png";
 

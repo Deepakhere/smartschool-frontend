@@ -10,7 +10,7 @@ const apiClient = axios.create({
   baseURL: import.meta.env.VITE_API_URL,
 });
 
-// separate instance for the refresh call itself — must never go through
+// separate instance for the refresh call itself - must never go through
 // apiClient's own interceptors, or a failed refresh would recurse into itself
 const refreshClient = axios.create({
   baseURL: import.meta.env.VITE_API_URL,

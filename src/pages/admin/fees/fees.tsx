@@ -11,7 +11,7 @@ import useFeesController from "./fees-controller";
 const inputClass =
   "mt-1 block w-full p-2 rounded-md border border-gray-300 bg-white text-gray-900 shadow-sm focus:border-primary-500 focus:ring-1 focus:ring-primary-500 sm:text-sm";
 
-const formatMoney = (paise: number) => `${(paise / 100).toFixed(2)}`;
+import { formatMoney } from "@/utils";
 
 const categoryOptions: SelectOption[] = [
   { id: "tuition", name: "Tuition" },

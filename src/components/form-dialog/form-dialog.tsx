@@ -3,7 +3,7 @@ import { FieldValues, UseFormReturn } from "react-hook-form";
 
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from "@/components/ui/dialog";
 import { Form } from "@/components/ui/form";
-import ButtonSpinner from "@/icons/button-spinner";
+import { Button } from "@/components/ui/button";
 
 interface FormDialogProps<T extends FieldValues> {
   // the react-hook-form instance behind the fields, shared with them through the form provider
@@ -17,6 +17,8 @@ interface FormDialogProps<T extends FieldValues> {
   // blocks only the submit button, for example while data it depends on is still loading
   submitDisabled?: boolean;
   onSubmit: FormEventHandler<HTMLFormElement>;
+  // width override, for example "max-w-md" or "max-w-2xl"
+  className?: string;
   children: ReactNode;
 }
 
@@ -32,10 +34,11 @@ const FormDialog = <T extends FieldValues>({
   isSubmitting = false,
   submitDisabled = false,
   onSubmit,
+  className,
   children,
 }: FormDialogProps<T>) => (
   <Dialog open={open} onOpenChange={(next) => !next && !isSubmitting && onClose()}>
-    <DialogContent showDefaultClose>
+    <DialogContent showDefaultClose className={className}>
       <Form {...form}>
         <form onSubmit={onSubmit} noValidate className="flex min-h-0 flex-col">
           <div className="space-y-4 overflow-y-auto p-6">
@@ -48,22 +51,12 @@ const FormDialog = <T extends FieldValues>({
             {children}
           </div>
           <div className="flex justify-end gap-3 border-t border-gray-100 bg-gray-50 px-6 py-3">
-            <button
-              type="button"
-              onClick={onClose}
-              disabled={isSubmitting}
-              className="inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 disabled:opacity-50"
-            >
+            <Button variant="secondary" onClick={onClose} disabled={isSubmitting}>
               Cancel
-            </button>
-            <button
-              type="submit"
-              disabled={isSubmitting || submitDisabled}
-              className="inline-flex items-center gap-2 rounded-md bg-primary-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-primary-700 disabled:opacity-50"
-            >
-              {isSubmitting && <ButtonSpinner />}
+            </Button>
+            <Button type="submit" loading={isSubmitting} disabled={submitDisabled}>
               {submitLabel}
-            </button>
+            </Button>
           </div>
         </form>
       </Form>

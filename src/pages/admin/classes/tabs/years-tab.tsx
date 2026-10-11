@@ -14,7 +14,7 @@ import { useMutationFeedback } from "@/hooks";
 import { IAcademicYear } from "@/types";
 import { useCreateAcademicYear, useGetAcademicYears, useUpdateAcademicYear } from "../service/academics-service";
 import { defaultYearFormValues, yearFormSchema, YearFormValues } from "../classes.schema";
-import { TextField } from "../components/form-fields";
+import { TextField } from "@/components/form-fields";
 import RolloverDialog from "../components/rollover-dialog";
 import Toolbar, { PrimaryButton } from "../components/toolbar";
 

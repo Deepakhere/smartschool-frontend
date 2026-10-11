@@ -90,7 +90,7 @@ const TeacherPTM = () => {
               {agenda.map(({ slot, booking }) => (
                 <TableRow key={slot.id}>
                   <TableCell className="font-medium text-gray-900">{new Date(slot.startAt).toLocaleString()}</TableCell>
-                  <TableCell className="text-center">{booking && typeof booking.studentId === "object" ? booking.studentId.name : "—"}</TableCell>
+                  <TableCell className="text-center">{booking && typeof booking.studentId === "object" ? booking.studentId.name : "-"}</TableCell>
                   <TableCell className="text-center">
                     {booking ? (
                       <span className="px-2 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">Booked</span>

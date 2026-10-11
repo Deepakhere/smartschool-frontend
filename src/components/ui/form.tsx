@@ -13,7 +13,7 @@ import {
 
 import { cn } from "@/lib/utils";
 
-// the shared react-hook-form + zod wiring — every new form uses Form/FormField/FormItem/
+// the shared react-hook-form + zod wiring - every new form uses Form/FormField/FormItem/
 // FormLabel/FormControl/FormMessage instead of hand-rolling useState + manual validation
 
 const Form = FormProvider;
@@ -125,4 +125,12 @@ const FormMessage = React.forwardRef<HTMLParagraphElement, React.HTMLAttributes<
 );
 FormMessage.displayName = "FormMessage";
 
-export { useFormField, Form, FormItem, FormLabel, FormControl, FormField, FormMessage };
+const FormDescription = React.forwardRef<HTMLParagraphElement, React.HTMLAttributes<HTMLParagraphElement>>(
+  ({ className, ...props }, ref) => {
+    const { formDescriptionId } = useFormField();
+    return <p ref={ref} id={formDescriptionId} className={cn("text-xs text-gray-500 mt-1", className)} {...props} />;
+  }
+);
+FormDescription.displayName = "FormDescription";
+
+export { useFormField, Form, FormItem, FormLabel, FormControl, FormField, FormMessage, FormDescription };

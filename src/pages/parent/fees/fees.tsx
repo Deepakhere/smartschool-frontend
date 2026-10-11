@@ -10,7 +10,7 @@ import SectionHeader from "@/components/section-header";
 import { downloadFeeReceipt, useEmailFeeReceipt } from "@/pages/admin/fees/service/fees-service";
 import useParentFeesController from "./fees-controller";
 
-const formatMoney = (paise: number) => `${(paise / 100).toFixed(2)}`;
+import { formatMoney } from "@/utils";
 
 const ParentFees = () => {
   const { t, fees, isLoading, loadError, retryLoad } = useParentFeesController();

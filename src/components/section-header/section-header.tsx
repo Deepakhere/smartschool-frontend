@@ -7,7 +7,7 @@ interface SectionHeaderProps {
   className?: string;
 }
 
-// plain title + one-line description, no card background — the consistent
+// plain title + one-line description, no card background - the consistent
 // "what is this section" block used at the top of a page's content area
 const SectionHeader = ({ title, description, actions, className = "" }: SectionHeaderProps) => (
   <div className={`flex justify-between items-start gap-4 mb-6 ${className}`}>

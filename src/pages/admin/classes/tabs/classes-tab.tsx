@@ -13,7 +13,7 @@ import { useMutationFeedback } from "@/hooks";
 import { IAcademicYear, IClass } from "@/types";
 import { useCreateClass, useDeactivateClass, useGetClasses, useUpdateClass } from "../service/academics-service";
 import { classFormSchema, ClassFormValues, defaultClassFormValues } from "../classes.schema";
-import { TextField } from "../components/form-fields";
+import { TextField } from "@/components/form-fields";
 import ShowInactiveToggle from "../components/show-inactive-toggle";
 import Toolbar, { PrimaryButton } from "../components/toolbar";
 import YearPicker from "../components/year-picker";

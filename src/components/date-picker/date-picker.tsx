@@ -38,7 +38,7 @@ const DatePicker = ({
         year: "numeric",
         month: "long",
         day: "numeric",
-      }).format(new Date(value))
+      }).format(new Date(`${value.slice(0, 10)}T00:00:00`))
     : "";
 
   const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {

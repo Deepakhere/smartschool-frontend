@@ -4,7 +4,7 @@ import { XMarkIcon } from "@heroicons/react/24/outline";
 
 import { cn } from "@/lib/utils";
 
-// the shared centered-modal primitive — replaces Headless UI's Dialog+Transition
+// the shared centered-modal primitive - replaces Headless UI's Dialog+Transition
 // so every modal in the app is built on one primitive library (Radix), matching
 // AlertDialog and Sheet
 const Dialog = DialogPrimitive.Root;
@@ -29,7 +29,7 @@ DialogOverlay.displayName = DialogPrimitive.Overlay.displayName;
 
 interface DialogContentProps extends React.ComponentPropsWithoutRef<typeof DialogPrimitive.Content> {
   // most modals compose their own header/close button (some need extra actions next to it,
-  // e.g. a Print button) — pass this to get the plain default close button instead
+  // e.g. a Print button) - pass this to get the plain default close button instead
   showDefaultClose?: boolean;
 }
 

@@ -32,7 +32,7 @@ const TeacherDashboard = () => {
                 <div key={slot.id} className="px-4 py-4 flex justify-between items-center">
                   <div>
                     <p className="text-sm font-medium text-gray-900">
-                      {slot.subjectId?.name} — {slot.classId?.name} {slot.sectionId?.name}
+                      {slot.subjectId?.name} - {slot.classId?.name} {slot.sectionId?.name}
                     </p>
                     {slot.room && <p className="text-xs text-gray-500">Room {slot.room}</p>}
                   </div>
@@ -78,7 +78,7 @@ const TeacherDashboard = () => {
               <div key={a.id} className="px-4 py-4 flex justify-between items-center">
                 <p className="text-sm font-medium text-gray-900">
                   {a.classId?.name} {a.sectionId?.name}
-                  {a.subjectId && <span className="text-gray-500"> — {a.subjectId.name}</span>}
+                  {a.subjectId && <span className="text-gray-500"> - {a.subjectId.name}</span>}
                 </p>
                 <span className="bg-primary-100 text-primary-800 text-xs font-medium px-2.5 py-0.5 rounded-full">
                   {a.assignmentRole === "CLASS_TEACHER" ? "Class Teacher" : "Subject Teacher"}

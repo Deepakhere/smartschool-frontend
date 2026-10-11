@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import logo from "@/icons/logo.png";
 
-// full-viewport loading overlay — reserved for the app's own boot-time session
+// full-viewport loading overlay - reserved for the app's own boot-time session
 // check (AuthProvider) and the org picker's initial load. Every other loading
 // state in the app is a normal in-page Spinner, never this one.
 const LogoSpinner = () => {

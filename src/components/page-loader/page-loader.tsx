@@ -1,5 +1,5 @@
 // use when a WHOLE page's content isn't ready yet (e.g. dashboard, a full-page
-// detail view) — not for a single card/table's data. Covers exactly the content
+// detail view) - not for a single card/table's data. Covers exactly the content
 // area (its nearest positioned ancestor is <main> in Layout), so it never
 // touches the sidebar or header, only the section that's actually loading.
 // For a table/card that's already rendered and just needs a loading state

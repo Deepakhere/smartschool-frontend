@@ -1,12 +1,12 @@
 import { FallbackProps } from "react-error-boundary";
 
-// last-resort UI for an uncaught render error — without this the user saw a blank white screen
+// last-resort UI for an uncaught render error - without this the user saw a blank white screen
 const ErrorFallback = ({ resetErrorBoundary }: FallbackProps) => (
   <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
     <div className="max-w-sm w-full bg-white rounded-lg shadow p-6 text-center">
       <h1 className="text-lg font-semibold text-gray-900">Something went wrong</h1>
       <p className="mt-2 text-sm text-gray-500">
-        An unexpected error occurred. Try reloading the page — if it keeps happening, please contact support.
+        An unexpected error occurred. Try reloading the page - if it keeps happening, please contact support.
       </p>
       <button
         onClick={resetErrorBoundary}

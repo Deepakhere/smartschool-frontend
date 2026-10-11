@@ -123,7 +123,7 @@ const AdminAttendance = () => {
           <div className="px-4 py-4 border-b border-gray-200 flex justify-between items-center">
             <h2 className="text-lg font-medium text-gray-900">
               Attendance over {c.reportFrom} – {c.reportTo}
-              <span className="text-sm text-gray-500 font-normal"> — {c.reportTotalSessions} day(s) marked</span>
+              <span className="text-sm text-gray-500 font-normal"> - {c.reportTotalSessions} day(s) marked</span>
             </h2>
             {c.reportRows.length > 0 && (
               <button
@@ -195,7 +195,7 @@ const AdminAttendance = () => {
               Students{" "}
               {c.summary && (
                 <span className="text-sm text-gray-500 font-normal">
-                  — {c.summary.present} present / {c.summary.total} total
+                  - {c.summary.present} present / {c.summary.total} total
                 </span>
               )}
             </h2>

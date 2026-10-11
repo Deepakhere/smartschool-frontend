@@ -84,7 +84,7 @@ const NoticeModal = ({
     <>
       <Dialog open={isOpen} onOpenChange={(next) => !next && onClose()}>
         <DialogContent showDefaultClose className="sm:max-w-lg">
-          {/* padding lives here, on the non-scrolling wrapper — putting it on the same
+          {/* padding lives here, on the non-scrolling wrapper - putting it on the same
               element as overflow-y-auto lets the scrollbar eat into the right-side
               padding, making it look thinner than the left */}
           <div className="p-4 sm:p-6">

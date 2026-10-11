@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useParams } from "react-router-dom";
@@ -33,23 +33,23 @@ const useTeachersController = () => {
 
   const submitProfile = form.handleSubmit((values) => {
     if (!editingTeacher) return;
-    upsertStaffProfile.mutate({ userId: editingTeacher.userId, ...values });
+    upsertStaffProfile.mutate(
+      { userId: editingTeacher.userId, ...values },
+      {
+        onSuccess: () => {
+          toast.success("Staff profile saved.");
+          setEditingTeacher(null);
+        },
+        onError: (error) => toast.error(error?.response?.Error?.message || "Failed to save profile"),
+      }
+    );
   });
-
-  useEffect(() => {
-    if (upsertStaffProfile.isSuccess) {
-      toast.success("Staff profile saved.");
-      setEditingTeacher(null);
-    }
-    if (upsertStaffProfile.isError) {
-      toast.error(upsertStaffProfile.error?.response?.Error?.message || "Failed to save profile");
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [upsertStaffProfile.isSuccess, upsertStaffProfile.isError]);
 
   return {
     teachers: teachers.data?.items || [],
     isLoading: teachers.isLoading,
+    loadError: teachers.isError ? teachers.error : null,
+    retryLoad: () => teachers.refetch(),
     editingTeacher,
     openEdit,
     closeEdit,

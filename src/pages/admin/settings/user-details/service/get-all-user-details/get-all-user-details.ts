@@ -30,7 +30,7 @@ const getAllUserDetails = async (
 const useGetAllUserDetails = (organizationId: string, searchTerm: string, filterRole: string, page = 1) =>
   useQuery<{ items: IAllUserDetails[]; total_count: number }, IAPIError>({
     // organizationId + the filters are part of the key so a tenant switch or a filter change is a
-    // genuinely different cache entry, not a stale one — and no manual refetch effect is needed
+    // genuinely different cache entry, not a stale one - and no manual refetch effect is needed
     queryKey: [API_QUERY_KEY.GET_ALL_USER, organizationId, searchTerm, filterRole, page],
     queryFn: () => getAllUserDetails(organizationId, searchTerm, filterRole, page),
     enabled: !!organizationId,

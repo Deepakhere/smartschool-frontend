@@ -9,7 +9,7 @@ import { IAcademicYear } from "@/types";
 import { rolloverFormSchema, RolloverFormValues } from "../classes.schema";
 import { suggestNextYear } from "../classes.helpers";
 import { useGetRolloverPreview, useRolloverAcademicYear } from "../service/academics-service";
-import { SelectField, TextField } from "./form-fields";
+import { SelectField, TextField } from "@/components/form-fields";
 
 interface RolloverDialogProps {
   organizationId: string;

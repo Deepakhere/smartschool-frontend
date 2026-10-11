@@ -4,7 +4,7 @@ import { useLocation } from 'react-router-dom';
 const COLLAPSE_STORAGE_KEY = 'sidebar_collapsed';
 
 export const useLayoutController = () => {
-  // mobile-drawer open/closed state only — on lg+ the sidebar is always visible
+  // mobile-drawer open/closed state only - on lg+ the sidebar is always visible
   // via CSS regardless of this flag (see Sidebar's lg: classes)
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isCollapsed, setIsCollapsed] = useState(() => localStorage.getItem(COLLAPSE_STORAGE_KEY) === 'true');
@@ -24,7 +24,7 @@ export const useLayoutController = () => {
     localStorage.setItem(COLLAPSE_STORAGE_KEY, String(isCollapsed));
   }, [isCollapsed]);
 
-  // a nav click should close the mobile drawer — harmless no-op on desktop,
+  // a nav click should close the mobile drawer - harmless no-op on desktop,
   // where the sidebar's visibility doesn't depend on this flag at all
   useEffect(() => {
     setIsSidebarOpen(false);

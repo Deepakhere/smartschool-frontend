@@ -11,21 +11,21 @@ import SectionHeader from "@/components/section-header";
 import Spinner from "@/components/spinner";
 import useGetParentDashboard from "./service/get-parent-dashboard";
 
-const formatMoney = (paise: number) => `${(paise / 100).toFixed(2)}`;
+import { formatMoney } from "@/utils";
 
 const ParentDashboard = () => {
   const { organizationId } = useParams();
   const { data, isLoading, isError, error, refetch } = useGetParentDashboard(organizationId || "");
 
   const cards = [
-    { title: "My Children", value: data?.childrenCount ?? "—", icon: UserGroupIcon },
-    { title: "Upcoming Homework", value: data?.upcomingHomeworkCount ?? "—", icon: BookOpenIcon },
+    { title: "My Children", value: data?.childrenCount ?? "-", icon: UserGroupIcon },
+    { title: "Upcoming Homework", value: data?.upcomingHomeworkCount ?? "-", icon: BookOpenIcon },
     {
       title: "Pending Fees",
-      value: data ? formatMoney(data.pendingFeesTotal) : "—",
+      value: data ? formatMoney(data.pendingFeesTotal) : "-",
       icon: CurrencyDollarIcon,
     },
-    { title: "Active Notices", value: data?.recentNoticesCount ?? "—", icon: BellIcon },
+    { title: "Active Notices", value: data?.recentNoticesCount ?? "-", icon: BellIcon },
   ];
 
   return (

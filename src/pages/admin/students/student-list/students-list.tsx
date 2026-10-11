@@ -15,6 +15,7 @@ import { exportToCsv } from "@/utils";
 import useStudentsListController from "./students-list-controller";
 import DeleteConfirmationDialog from "@/components/delete-confirmation-dialog";
 import CreateUpdateStudentModal from "../student-modal/create-update-student-modal";
+import { Button } from "@/components/ui/button";
 import BulkUploadModal from "../student-modal/bulk-upload-modal";
 import RowMenu from "@/components/row-menu";
 import { studentToCsvRow } from "../student-csv";
@@ -198,12 +199,13 @@ const StudentsList = () => {
                             <span className="text-primary-600 font-medium">{student.name.charAt(0)}</span>
                           </div>
                           <div className="ml-4">
-                            <div
-                              className="text-sm font-medium text-gray-900 hover:text-primary-600 cursor-pointer"
+                            <Button
+                              variant="link"
+                              className="font-medium text-gray-900 hover:text-primary-600"
                               onClick={() => navigateToStudentDetails(student.id)}
                             >
                               {student.name}
-                            </div>
+                            </Button>
                             {pendingParent(student) && (
                               <span className="mt-0.5 inline-block rounded-full bg-gray-100 px-2 py-0.5 text-xs text-gray-600">
                                 {t("labels.invite_pending")}

@@ -20,7 +20,7 @@ import {
 } from "../service/academics-service";
 import { useGetAllTeachers } from "../service/teachers-service";
 import { assignFormSchema, AssignFormValues, defaultAssignFormValues } from "../classes.schema";
-import { SelectField } from "../components/form-fields";
+import { SelectField } from "@/components/form-fields";
 import Toolbar, { PrimaryButton } from "../components/toolbar";
 
 const ROLE_OPTIONS = [

@@ -188,7 +188,7 @@ export const downloadFeeReceipt = async (organizationId: string, paymentId: stri
   window.URL.revokeObjectURL(url);
 };
 
-// emails the same PDF to the caller's own registered address — no arbitrary recipient
+// emails the same PDF to the caller's own registered address - no arbitrary recipient
 export const useEmailFeeReceipt = (organizationId: string) =>
   useMutation<void, IAPIError, string>({
     mutationKey: [API_MUTATION_KEY.EMAIL_FEE_RECEIPT],

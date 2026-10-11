@@ -1,10 +1,11 @@
+import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { Form } from "@/components/ui/form";
 import { TOTAL_STEPS } from "@/utils";
 import { ICreateUpdateStudentModalProps } from "@/types";
 import StepIndicator from "@/components/step-indicator";
 import StudentDetailsForm from "./student-details";
 import ParentDetailsForm from "./parent-details";
-import Spinner from "@/components/spinner";
 
 const CreateUpdateStudentModal = ({
   t,
@@ -21,17 +22,20 @@ const CreateUpdateStudentModal = ({
   prevStep,
   onSubmit,
 }: ICreateUpdateStudentModalProps) => {
-  if (!isOpen) return null;
-
   const isLoading = isEditStudent ? isLoadingUpdateStudent : isLoadingAddStudent;
 
   return (
-    <div className="fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-        <div className="p-6">
-          <h2 className="text-lg font-medium mb-4">
+    <Dialog open={isOpen} onOpenChange={(next) => !next && !isLoading && onClose()}>
+      <DialogContent
+        showDefaultClose
+        className="max-w-2xl"
+        // a two-step form: a stray click outside must not throw the typed details away
+        onInteractOutside={(e) => e.preventDefault()}
+      >
+        <div className="overflow-y-auto p-6">
+          <DialogTitle className="mb-4 text-lg font-medium text-gray-900">
             {isEditStudent ? t("labels.edit_student") : t("labels.add_new_student")}
-          </h2>
+          </DialogTitle>
 
           <StepIndicator currentStep={currentStep} />
 
@@ -42,28 +46,19 @@ const CreateUpdateStudentModal = ({
               )}
               {currentStep === 2 && <ParentDetailsForm t={t} form={form} isParentExist={isParentExist} />}
 
-              <div className="flex justify-end space-x-3 pt-4">
+              <div className="flex justify-end gap-3 pt-4">
                 {currentStep > 1 && (
-                  <button
-                    type="button"
-                    onClick={prevStep}
-                    className="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
-                  >
+                  <Button variant="secondary" onClick={prevStep}>
                     {t("buttons.previous")}
-                  </button>
+                  </Button>
                 )}
 
-                <button
-                  type="button"
-                  onClick={onClose}
-                  className="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
-                >
+                <Button variant="secondary" onClick={onClose} disabled={isLoading}>
                   {t("buttons.cancel")}
-                </button>
+                </Button>
 
                 {currentStep < TOTAL_STEPS ? (
-                  <button
-                    type="button"
+                  <Button
                     onClick={async (e) => {
                       e.preventDefault();
                       const fieldsToValidate =
@@ -85,26 +80,20 @@ const CreateUpdateStudentModal = ({
                       const isValid = fieldsToValidate ? await form.trigger(fieldsToValidate) : true;
                       if (isValid) nextStep();
                     }}
-                    className="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
                   >
                     {t("buttons.next")}
-                  </button>
+                  </Button>
                 ) : (
-                  <button
-                    type="submit"
-                    disabled={isLoading}
-                    className="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 disabled:bg-primary-400 disabled:cursor-not-allowed flex items-center"
-                  >
-                    {isLoading && <Spinner />}
+                  <Button type="submit" loading={isLoading}>
                     {isEditStudent ? t("buttons.update_student") : t("buttons.add_student")}
-                  </button>
+                  </Button>
                 )}
               </div>
             </form>
           </Form>
         </div>
-      </div>
-    </div>
+      </DialogContent>
+    </Dialog>
   );
 };
 

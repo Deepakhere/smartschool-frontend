@@ -21,7 +21,7 @@ import {
 } from "../service/academics-service";
 import { useGetAllTeachers } from "../service/teachers-service";
 import { defaultSectionFormValues, sectionFormSchema, SectionFormValues } from "../classes.schema";
-import { SelectField, TextField } from "../components/form-fields";
+import { SelectField, TextField } from "@/components/form-fields";
 import ShowInactiveToggle from "../components/show-inactive-toggle";
 import Toolbar, { PrimaryButton } from "../components/toolbar";
 

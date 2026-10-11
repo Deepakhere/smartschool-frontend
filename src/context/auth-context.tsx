@@ -32,7 +32,7 @@ interface IAuthContext {
   // forgets the session on this device without leaving the page, for example after a password reset
   endSession: () => void;
   user: User;
-  // merges a partial preferences update into the current user in place — the one
+  // merges a partial preferences update into the current user in place - the one
   // source of truth for "what does this user have set right now", so consumers
   // (theme, language, notification switches) don't each need their own local
   // state + a useEffect to keep it in sync with the server value
@@ -120,7 +120,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   }, [getUserDetails.isError]);
 
-  // a token cookie exists but we haven't yet confirmed it's still valid (page load / hard refresh) —
+  // a token cookie exists but we haven't yet confirmed it's still valid (page load / hard refresh) -
   // this is the ONLY place the full-page logo loader should show; every other loading state
   // in the app is a normal in-page spinner, not this one
   // it also covers the render between the server confirming the user and the effect above storing it, so route

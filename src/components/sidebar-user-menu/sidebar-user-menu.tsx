@@ -19,7 +19,7 @@ interface SidebarUserMenuProps {
   isCollapsed: boolean;
 }
 
-// shared between the desktop popover and the mobile bottom sheet — only the
+// shared between the desktop popover and the mobile bottom sheet - only the
 // container around this changes based on screen size
 const UserMenuBody = ({
   user,

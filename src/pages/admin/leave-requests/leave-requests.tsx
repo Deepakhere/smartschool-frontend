@@ -101,7 +101,7 @@ const LeaveRequests = () => {
                 ) : (
                   <p className="text-xs text-gray-500 capitalize">
                     {lr.status}
-                    {lr.decisionNote ? ` — ${lr.decisionNote}` : ""}
+                    {lr.decisionNote ? ` - ${lr.decisionNote}` : ""}
                   </p>
                 )}
               </div>

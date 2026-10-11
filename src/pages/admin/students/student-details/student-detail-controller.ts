@@ -77,7 +77,7 @@ const useStudentDetailController = () => {
         rollNumber: item.currentEnrollment?.rollNumber || "",
       } as IStudentFormData);
 
-      // arrived here via the list page's "Edit" action — open the edit modal
+      // arrived here via the list page's "Edit" action - open the edit modal
       // once the full student data is in, then clear the flag so a refresh/back doesn't reopen it
       const state = location.state as { openEdit?: boolean } | null;
       if (state?.openEdit) {

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-// matches Tailwind's `md` breakpoint (768px) — below it counts as mobile
+// matches Tailwind's `md` breakpoint (768px) - below it counts as mobile
 const MOBILE_BREAKPOINT = 768;
 
 export function useIsMobile() {

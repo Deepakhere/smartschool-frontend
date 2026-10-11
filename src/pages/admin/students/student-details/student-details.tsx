@@ -1,5 +1,6 @@
 import { PencilIcon, TrashIcon } from "@heroicons/react/24/outline";
 
+import { Button } from "@/components/ui/button";
 import DeleteConfirmationDialog from "@/components/delete-confirmation-dialog";
 import CreateUpdateStudentModal from "../student-modal/create-update-student-modal";
 import useStudentDetailController from "./student-detail-controller";
@@ -164,12 +165,9 @@ const StudentDetails = () => {
                 <h3 className="text-lg leading-6 font-medium text-gray-900">Guardians</h3>
                 <p className="mt-1 max-w-2xl text-sm text-gray-500">Parents and guardians linked to this student.</p>
               </div>
-              <button
-                onClick={() => setIsGuardianModalOpen(true)}
-                className="inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
-              >
+              <Button variant="secondary" size="sm" onClick={() => setIsGuardianModalOpen(true)}>
                 + Add Guardian
-              </button>
+              </Button>
             </div>
             <div className="border-t border-gray-200 divide-y divide-gray-200">
               {!studentDetails?.guardians?.length ? (
@@ -265,7 +263,7 @@ const StudentDetails = () => {
                   <div key={entry.id} className="px-4 py-4 sm:px-6 flex justify-between items-center">
                     <div>
                       <p className="text-sm font-medium text-gray-900">
-                        {entry.academicYearId?.name || "-"} — {entry.classId?.name || "-"}
+                        {entry.academicYearId?.name || "-"} - {entry.classId?.name || "-"}
                         {entry.sectionId?.name ? ` - ${entry.sectionId.name}` : ""}
                         <span
                           className={`ml-2 inline-block px-2 py-0.5 text-xs rounded-full capitalize ${enrollmentStatusBadgeClass[entry.status]}`}
