@@ -186,15 +186,7 @@ const StudentsList = () => {
                 <TableHead className="text-center">{t("labels.actions")}</TableHead>
               </TableHeader>
               {isFetchingStudentList ? (
-                <TableBody>
-                  <tr>
-                    <td colSpan={5} className="px-6 py-10 text-center">
-                      <div className="flex justify-center items-center">
-                        <div className="h-8 w-8 border-t-2 border-b-2 border-primary-500 rounded-full animate-spin"></div>
-                      </div>
-                    </td>
-                  </tr>
-                </TableBody>
+                <TableSkeleton columns={5} />
               ) : studentDetail && studentDetail.length > 0 ? (
                 <TableBody>
                   {studentDetail.map((student) => (

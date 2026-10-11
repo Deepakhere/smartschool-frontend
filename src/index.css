@@ -321,3 +321,24 @@
     animation: none;
   }
 }
+
+/* boot-time logo loader: a smooth breathe, no hard jump between frames */
+@keyframes logo-breathe {
+  0%,
+  100% {
+    opacity: 0.55;
+    transform: scale(0.94);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+.logo-breathe {
+  animation: logo-breathe 1.8s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .logo-breathe {
+    animation: none;
+  }
+}

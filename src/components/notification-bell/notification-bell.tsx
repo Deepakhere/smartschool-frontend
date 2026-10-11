@@ -5,12 +5,38 @@ import { useNotifications } from "@/context/notification-context";
 import NotificationSheet from "./notification-sheet";
 
 interface NotificationBellProps {
-  isCollapsed: boolean;
+  // "header": a plain round icon button for the top-right of the header.
+  // "sidebar": the full-width row with a label, for the sidebar footer.
+  variant?: "header" | "sidebar";
+  isCollapsed?: boolean;
 }
 
-const NotificationBell = ({ isCollapsed }: NotificationBellProps) => {
+const NotificationBell = ({ variant = "sidebar", isCollapsed = false }: NotificationBellProps) => {
   const { t } = useTranslation();
   const { unreadCount, openSheet } = useNotifications();
+
+  const badge = unreadCount > 0 && (
+    <span className="absolute -top-1.5 -right-1.5 flex h-4 min-w-[1rem] items-center justify-center rounded-full bg-red-500 px-1 text-[10px] font-semibold text-white">
+      {unreadCount > 9 ? "9+" : unreadCount}
+    </span>
+  );
+
+  if (variant === "header") {
+    return (
+      <>
+        <button
+          type="button"
+          onClick={openSheet}
+          title={t("labels.notifications")}
+          className="relative flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-gray-500 hover:bg-gray-100 hover:text-primary-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500"
+        >
+          <BellIcon className="h-5 w-5" aria-hidden="true" />
+          {badge}
+        </button>
+        <NotificationSheet />
+      </>
+    );
+  }
 
   return (
     <div className="px-2 pt-2">
@@ -22,11 +48,7 @@ const NotificationBell = ({ isCollapsed }: NotificationBellProps) => {
       >
         <span className="relative flex-shrink-0">
           <BellIcon className="h-5 w-5 text-gray-400 group-hover:text-primary-600" aria-hidden="true" />
-          {unreadCount > 0 && (
-            <span className="absolute -top-1.5 -right-1.5 flex h-4 min-w-[1rem] items-center justify-center rounded-full bg-red-500 px-1 text-[10px] font-semibold text-white">
-              {unreadCount > 9 ? "9+" : unreadCount}
-            </span>
-          )}
+          {badge}
         </span>
         <span
           className={`overflow-hidden whitespace-nowrap transition-all duration-300 ease-in-out ${

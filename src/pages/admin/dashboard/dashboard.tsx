@@ -9,6 +9,7 @@ import SectionHeader from "@/components/section-header";
 import { useDashboardController } from "./dashboard-controller";
 import UserTypeSelectionModal from "@/components/user-type-selection-modal";
 import StatCard from "./stat-card";
+import ChartEmptyState from "./chart-empty-state";
 import { ChartSkeleton, StatCardSkeleton, UpdatesSkeleton } from "./dashboard-skeletons";
 
 const Dashboard = () => {
@@ -20,6 +21,7 @@ const Dashboard = () => {
     studentPerformanceOptions,
     teacherStudentRatioOptions,
     monthlyAttendanceOptions,
+    hasTeacherStudentData,
     isStatsLoading,
     statsError,
     retryStats,
@@ -93,7 +95,15 @@ const Dashboard = () => {
         <div className="lg:col-span-2 space-y-8">
           {chartCard(studentPerformanceOptions)}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {chartCard(teacherStudentRatioOptions)}
+            <div className="bg-white rounded-xl shadow-xl p-6">
+              {isChartsLoading ? (
+                <ChartSkeleton />
+              ) : hasTeacherStudentData ? (
+                <HighchartsReact highcharts={Highcharts} options={teacherStudentRatioOptions} />
+              ) : (
+                <ChartEmptyState title="Teacher-Student Ratio" message="No teachers or students yet." />
+              )}
+            </div>
             {chartCard(monthlyAttendanceOptions)}
           </div>
         </div>
