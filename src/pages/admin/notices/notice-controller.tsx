@@ -7,11 +7,13 @@ import { useCreateNotice, useGetNoticeList, useDeleteNotice } from "./service";
 import { ICreateNoticeRequest, INotice } from "@/types";
 import { useError } from "@/hooks";
 
+const NOTICES_PAGE_SIZE = 20;
+
 const useNoticeController = () => {
   const { t } = useTranslation();
   const { organizationId } = useParams();
 
-  const [notices, setNotices] = useState<INotice[]>([]);
+  const [page, setPage] = useState(1);
   const [previewModalOpen, setPreviewModalOpen] = useState(false);
   const [previewAttachmentURL, setPreviewAttachmentURL] = useState("");
   const [previewFileName, setPreviewFileName] = useState("");
@@ -20,7 +22,8 @@ const useNoticeController = () => {
   const [previewNotice, setPreviewNotice] = useState<INotice | null>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  const getNoticeList = useGetNoticeList(organizationId, "", "", 10, 1);
+  const getNoticeList = useGetNoticeList(organizationId, "", "", NOTICES_PAGE_SIZE, page);
+  const notices: INotice[] = getNoticeList.data?.items ?? [];
   const createNotice = useCreateNotice(organizationId || "");
   const deleteNotice = useDeleteNotice(organizationId || "");
 
@@ -112,19 +115,17 @@ const useNoticeController = () => {
     if (!noticeIdPendingDelete) return;
     deleteNotice.mutate(noticeIdPendingDelete, {
       onSuccess: () => setNoticeIdPendingDelete(null),
+      onError: (error) => {
+        setNoticeIdPendingDelete(null);
+        toast.error(error?.response?.Error?.message || "The notice could not be deleted.");
+      },
     });
   };
 
   useEffect(() => {
-    if (getNoticeList.isSuccess && getNoticeList.data) {
-      setNotices(getNoticeList.data.items);
-    }
-  }, [getNoticeList.isSuccess, getNoticeList.data]);
-
-  useEffect(() => {
     if (createNotice.isSuccess) {
-      toast.success(t("messages.notice_created_successfully"));
-      getNoticeList.refetch();
+      // the server says whether it went out now or is scheduled for later
+      toast.success(createNotice.data?.message || t("messages.notice_created_successfully"));
       setIsNoticeModalOpen(false);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -133,7 +134,6 @@ const useNoticeController = () => {
   useEffect(() => {
     if (deleteNotice.isSuccess) {
       toast.success("Notice deleted successfully");
-      getNoticeList.refetch();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [deleteNotice.isSuccess]);
@@ -141,6 +141,10 @@ const useNoticeController = () => {
   return {
     t,
     notices,
+    page,
+    setPage,
+    pageSize: NOTICES_PAGE_SIZE,
+    totalNotices: getNoticeList.data?.total_count ?? 0,
     isNoticeModalOpen,
     isLoadingNoticeList: getNoticeList.isLoading,
     isFetchingNoticeList: getNoticeList.isFetching,

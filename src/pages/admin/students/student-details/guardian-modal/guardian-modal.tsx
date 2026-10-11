@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { XMarkIcon } from "@heroicons/react/24/outline";
@@ -28,6 +29,12 @@ const GuardianModal = ({ isOpen, isSubmitting, onClose, onSubmit }: GuardianModa
     resolver: zodResolver(guardianFormSchema),
     defaultValues: defaultGuardianFormValues,
   });
+
+  // every opening starts empty, never with the guardian added (or abandoned) last time
+  useEffect(() => {
+    if (isOpen) form.reset(defaultGuardianFormValues);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isOpen]);
 
   if (!isOpen) return null;
 

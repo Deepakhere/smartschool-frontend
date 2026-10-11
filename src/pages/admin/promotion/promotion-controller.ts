@@ -24,6 +24,12 @@ export const usePromotionController = () => {
   const [targetAcademicYearId, setTargetAcademicYearId] = useState("");
   const [targetClassId, setTargetClassId] = useState("");
   const [targetSectionId, setTargetSectionId] = useState("");
+  // detained students repeat a class, so they go into a (usually lower) class of the target year too
+  const [detainClassId, setDetainClassId] = useState("");
+  const [detainSectionId, setDetainSectionId] = useState("");
+  const [confirmOpen, setConfirmOpen] = useState(false);
+  // kept apart from the list: promoted students leave the section, and their outcome must still show
+  const [lastRun, setLastRun] = useState<{ name: string; action: PromotionAction; success: boolean; message?: string }[]>([]);
 
   const [rowsState, setRowsState] = useState<Record<string, RowState>>({});
   const [resultsByStudent, setResultsByStudent] = useState<Record<string, { success: boolean; message?: string }>>({});
@@ -33,6 +39,7 @@ export const usePromotionController = () => {
   const sourceSections = useGetSections(organizationId, sourceClassId);
   const targetClasses = useGetClasses(organizationId, targetAcademicYearId, "active");
   const targetSections = useGetSections(organizationId, targetClassId, "active");
+  const detainSections = useGetSections(organizationId, detainClassId, "active");
 
   const candidates = useGetPromotionCandidates(organizationId, sourceAcademicYearId, sourceSectionId);
   const processPromotions = useProcessPromotions(organizationId);
@@ -51,9 +58,14 @@ export const usePromotionController = () => {
       }
       return next;
     });
-    setResultsByStudent({});
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [candidates.data]);
+
+  // outcomes belong to one section's run, so they are cleared only when the section changes
+  useEffect(() => {
+    setResultsByStudent({});
+    setLastRun([]);
+  }, [sourceSectionId]);
 
   const setSourceAcademicYear = (id: string) => {
     setSourceAcademicYearId(id);
@@ -68,6 +80,12 @@ export const usePromotionController = () => {
     setTargetAcademicYearId(id);
     setTargetClassId("");
     setTargetSectionId("");
+    setDetainClassId("");
+    setDetainSectionId("");
+  };
+  const setDetainClass = (id: string) => {
+    setDetainClassId(id);
+    setDetainSectionId("");
   };
   const setTargetClass = (id: string) => {
     setTargetClassId(id);
@@ -81,30 +99,38 @@ export const usePromotionController = () => {
     setRowsState((prev) => ({ ...prev, [studentId]: { ...prev[studentId], rollNumber } }));
   };
 
-  const handleProcess = () => {
-    const items = candidates.data?.items || [];
-    if (!items.length) return;
+  const actionOf = (studentId: string): PromotionAction => rowsState[studentId]?.action || "promote";
+  const counts = (candidates.data?.items || []).reduce(
+    (acc, item) => ({ ...acc, [actionOf(item.student.id)]: (acc[actionOf(item.student.id)] || 0) + 1 }),
+    {} as Partial<Record<PromotionAction, number>>
+  );
 
-    const needsTarget = items.some((i) => {
-      const action = rowsState[i.student.id]?.action;
-      return action === "promote" || action === "detain";
-    });
-    if (needsTarget && (!targetAcademicYearId || !targetClassId || !targetSectionId)) {
-      toast.error("Select a target academic year, class and section for promote/detain decisions.");
+  // checks the destinations, then asks for confirmation: these changes cannot be undone from here
+  const handleProcess = () => {
+    if (!candidates.data?.items.length) return;
+    if (counts.promote && (!targetAcademicYearId || !targetClassId || !targetSectionId)) {
+      toast.error("Select the target year, class and section for promoted students.");
       return;
     }
+    if (counts.detain && (!targetAcademicYearId || !detainClassId || !detainSectionId)) {
+      toast.error("Select the class and section in the target year for detained students.");
+      return;
+    }
+    setConfirmOpen(true);
+  };
 
+  const confirmProcess = () => {
+    const items = candidates.data?.items || [];
     const decisions = items.map((item) => {
-      const row = rowsState[item.student.id];
-      const action = row?.action || "promote";
+      const action = actionOf(item.student.id);
       if (action === "promote" || action === "detain") {
         return {
           studentId: item.student.id,
           action,
           academicYearId: targetAcademicYearId,
-          classId: action === "promote" ? targetClassId : sourceClassId,
-          sectionId: action === "promote" ? targetSectionId : sourceSectionId,
-          rollNumber: row?.rollNumber || item.rollNumber,
+          classId: action === "promote" ? targetClassId : detainClassId,
+          sectionId: action === "promote" ? targetSectionId : detainSectionId,
+          rollNumber: rowsState[item.student.id]?.rollNumber || item.rollNumber,
         };
       }
       return { studentId: item.student.id, action };
@@ -115,12 +141,21 @@ export const usePromotionController = () => {
         const map: Record<string, { success: boolean; message?: string }> = {};
         for (const r of data.items) map[r.studentId] = { success: r.success, message: r.message };
         setResultsByStudent(map);
+        setLastRun(
+          items.map((item) => ({
+            name: item.student.name,
+            action: actionOf(item.student.id),
+            success: map[item.student.id]?.success ?? false,
+            message: map[item.student.id]?.message,
+          }))
+        );
+        setConfirmOpen(false);
         const failedCount = data.items.filter((r) => !r.success).length;
         if (failedCount === 0) toast.success("All students processed successfully.");
         else toast.error(`${failedCount} of ${data.items.length} failed, see details below.`);
-        candidates.refetch();
       },
       onError: (error) => {
+        setConfirmOpen(false);
         toast.error(error?.response?.Error?.message || "Failed to process promotions");
       },
     });
@@ -144,6 +179,16 @@ export const usePromotionController = () => {
     targetSections: targetSections.data?.items || [],
     targetSectionId,
     setTargetSectionId,
+    detainClassId,
+    setDetainClass,
+    detainSections: detainSections.data?.items || [],
+    detainSectionId,
+    setDetainSectionId,
+    counts,
+    confirmOpen,
+    setConfirmOpen,
+    confirmProcess,
+    lastRun,
     candidates: candidates.data?.items || [],
     isLoadingCandidates: candidates.isLoading,
     rowsState,

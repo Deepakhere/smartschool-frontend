@@ -4,10 +4,13 @@ import apiClient from "@/config/api-client";
 import { IAPIError, IAxiosResponse, IAllUserDetails } from "@/types";
 import { APIS_ROUTES, API_QUERY_KEY } from "@/utils";
 
+export const USERS_PAGE_SIZE = 50;
+
 const getAllUserDetails = async (
   organizationId: string,
   searchTerm: string,
-  filterRole: string
+  filterRole: string,
+  page: number
 ): Promise<{ items: IAllUserDetails[]; total_count: number }> => {
   const result = await apiClient.get<null, IAxiosResponse<{ items: IAllUserDetails[]; total_count: number }>>(
     `${APIS_ROUTES.GET_ALL_USER}/${organizationId}`,
@@ -15,6 +18,8 @@ const getAllUserDetails = async (
       params: {
         search_term: searchTerm,
         role: filterRole,
+        page,
+        limit: USERS_PAGE_SIZE,
       },
     }
   );
@@ -22,12 +27,12 @@ const getAllUserDetails = async (
   return result.data.Data;
 };
 
-const useGetAllUserDetails = (organizationId: string, searchTerm: string, filterRole: string) =>
+const useGetAllUserDetails = (organizationId: string, searchTerm: string, filterRole: string, page = 1) =>
   useQuery<{ items: IAllUserDetails[]; total_count: number }, IAPIError>({
     // organizationId + the filters are part of the key so a tenant switch or a filter change is a
     // genuinely different cache entry, not a stale one — and no manual refetch effect is needed
-    queryKey: [API_QUERY_KEY.GET_ALL_USER, organizationId, searchTerm, filterRole],
-    queryFn: () => getAllUserDetails(organizationId, searchTerm, filterRole),
+    queryKey: [API_QUERY_KEY.GET_ALL_USER, organizationId, searchTerm, filterRole, page],
+    queryFn: () => getAllUserDetails(organizationId, searchTerm, filterRole, page),
     enabled: !!organizationId,
   });
 

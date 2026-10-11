@@ -1,6 +1,8 @@
 import { z } from "zod";
 
-const today = () => new Date().toISOString().slice(0, 10);
+import { localDateString } from "@/utils";
+
+const today = () => localDateString();
 
 export const leaveRequestFormSchema = z
   .object({

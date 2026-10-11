@@ -1,4 +1,5 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import toast from "react-hot-toast";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import debounce from "lodash.debounce";
@@ -13,6 +14,7 @@ import {
   RoleOption,
 } from "@/types";
 import { useAddUserDetail, useDeleteUser, useGetAllUserDetails, useUpdateUserDetail } from "./service";
+import { USERS_PAGE_SIZE } from "./service/get-all-user-details/get-all-user-details";
 import { useError } from "@/hooks";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "@/context/auth-context";
@@ -31,15 +33,17 @@ const useUserDetailsController = () => {
     defaultValues: defaultUserFormValues,
   });
 
-  const [users, setUsers] = useState<IAllUserDetails[]>([]);
+  const [searchInput, setSearchInput] = useState<string>("");
   const [searchTerm, setSearchTerm] = useState<string>("");
+  const [page, setPage] = useState(1);
   const [filterRole, setFilterRole] = useState<string>("");
   const [isEditUser, setIsEditUser] = useState<boolean>(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [deleteUserId, setDeleteUserId] = useState<string>("");
 
   const addUserDetail = useAddUserDetail(organizationId || "");
-  const getAllUserDetails = useGetAllUserDetails(organizationId || "", searchTerm, filterRole);
+  const getAllUserDetails = useGetAllUserDetails(organizationId || "", searchTerm, filterRole, page);
+  const users: IAllUserDetails[] = getAllUserDetails.data?.items ?? [];
   const deleteUser = useDeleteUser(organizationId || "");
   const updateUserDetails = useUpdateUserDetail(organizationId || "");
 
@@ -51,22 +55,33 @@ const useUserDetailsController = () => {
     mutation: updateUserDetails,
   });
 
+  // a refused removal (yourself, a parent still linked to students) closes the confirmation and says why
   useError({
     mutation: deleteUser,
-    cb: () => {
-      setIsModalOpen(false);
-    },
+    cb: () => setIsDeleteModalOpen(false),
   });
 
   const onRoleChange = (role: string) => {
     setSortBy(role as "all" | "admin" | "parent");
     const roleVal = role === "all" ? "" : role;
     setFilterRole(roleVal);
+    setPage(1);
   };
 
-  const onSearchInputChange = debounce((searchVal: string) => {
-    setSearchTerm(searchVal);
-  }, 500);
+  const runSearch = useMemo(
+    () =>
+      debounce((value: string) => {
+        setSearchTerm(value);
+        setPage(1);
+      }, 500),
+    []
+  );
+  useEffect(() => () => runSearch.cancel(), [runSearch]);
+
+  const onSearchInputChange = (value: string) => {
+    setSearchInput(value);
+    runSearch(value);
+  };
 
   const roleOptionsDropDown: IRoleOptionDropDown[] = [
     {
@@ -217,7 +232,7 @@ const useUserDetailsController = () => {
   const handleSubmituserDetails = form.handleSubmit((values) => {
     if (isEditUser) {
       const userDetails: IUpdateUserValue = {
-        id: users.find((user) => user.email === values.email)?.id || "",
+        id: editingUserId,
         name: values.fullname,
         email: values.email,
         role: values.role,
@@ -269,6 +284,14 @@ const useUserDetailsController = () => {
     form.reset(defaultUserFormValues);
   };
 
+  // "Add user" always opens an empty form, never the last person edited
+  const openAddUser = () => {
+    form.reset(defaultUserFormValues);
+    setEditingUserId("");
+    setIsEditUser(false);
+    setIsModalOpen(true);
+  };
+
   const onClickDeleteUser = (userId: string) => {
     setDeleteUserId(userId);
     setIsDeleteModalOpen(true);
@@ -278,49 +301,36 @@ const useUserDetailsController = () => {
     setIsDeleteModalOpen(false);
   };
 
-  const handleDeleteUser = async () => {
+  const handleDeleteUser = () => {
     if (!deleteUserId) return;
-    deleteUser.mutate(deleteUserId);
+    deleteUser.mutate(deleteUserId, {
+      onSuccess: (message) => {
+        toast.success(message || "User removed.");
+        setIsDeleteModalOpen(false);
+      },
+    });
   };
 
   useEffect(() => {
     if (updateUserDetails.isSuccess) {
+      toast.success("User updated.");
       setIsModalOpen(false);
       setIsEditUser(false);
-      getAllUserDetails.refetch();
     }
-
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [updateUserDetails.isSuccess]);
 
   useEffect(() => {
-    if (deleteUser.isSuccess) {
-      setIsDeleteModalOpen(false);
-      getAllUserDetails.refetch();
-    }
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [deleteUser.isSuccess]);
-
-  useEffect(() => {
     if (addUserDetail.isSuccess) {
+      toast.success("Invitation sent.");
       setIsModalOpen(false);
-      getAllUserDetails.refetch();
     }
-
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [addUserDetail.isSuccess]);
 
-  useEffect(() => {
-    if (getAllUserDetails.isSuccess && getAllUserDetails.data) {
-      setUsers(getAllUserDetails.data.items);
-    }
-  }, [getAllUserDetails.isSuccess, getAllUserDetails.data]);
-
-  useEffect(() => {
-    getAllUserDetails.refetch();
-    //eslint-disable-next-line
-  }, [searchTerm, filterRole]);
+  // what the signed-in admin may do; nobody removes or re-roles themselves here
+  const canEdit = currentUser?.permissions?.canUpdate !== false;
+  const canDelete = (userId: string) => currentUser?.permissions?.canDelete !== false && userId !== currentUser?.id;
 
   return {
     t,
@@ -333,7 +343,15 @@ const useUserDetailsController = () => {
     permissionOptions,
     roleOptionsDropDown,
     searchTerm,
+    searchInput,
     onSearchInputChange,
+    page,
+    setPage,
+    pageSize: USERS_PAGE_SIZE,
+    totalUsers: getAllUserDetails.data?.total_count ?? 0,
+    openAddUser,
+    canEdit,
+    canDelete,
     isEditUser,
     isDeleteModalOpen,
     deleteUserId,

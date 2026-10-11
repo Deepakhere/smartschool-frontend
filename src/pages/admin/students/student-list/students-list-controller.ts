@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslation } from "react-i18next";
@@ -36,6 +36,8 @@ const useStudentsListController = () => {
   // Pagination state
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(10);
+  // what is typed shows at once; the search runs half a second after typing stops
+  const [searchInput, setSearchInput] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
   const [classFilter, setClassFilter] = useState("all");
   const [deleteStudentId, setDeleteStudentId] = useState<string>("");
@@ -53,10 +55,28 @@ const useStudentsListController = () => {
     });
   };
 
-  const handleSearchChange = debounce((searchVal: string) => {
-    setSearchTerm(searchVal);
+  const runSearch = useMemo(
+    () =>
+      debounce((value: string) => {
+        setSearchTerm(value);
+        setCurrentPage(1);
+      }, 500),
+    []
+  );
+  useEffect(() => () => runSearch.cancel(), [runSearch]);
+
+  const handleSearchChange = (value: string) => {
+    setSearchInput(value);
+    runSearch(value);
+  };
+
+  const clearFilters = () => {
+    runSearch.cancel();
+    setSearchInput("");
+    setSearchTerm("");
+    setClassFilter("all");
     setCurrentPage(1);
-  }, 500);
+  };
 
   // Handle class filter change
   const handleClassFilterChange = (classId: string) => {
@@ -71,9 +91,6 @@ const useStudentsListController = () => {
   const classesForFilter = useGetClasses(organizationId || "", currentAcademicYearId, "active");
   const CLASS_OPTIONS = classesForFilter.data?.items || [];
 
-  // Get current students for pagination
-  const indexOfLastItem = currentPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
 
   // Change page
   const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
@@ -110,6 +127,8 @@ const useStudentsListController = () => {
   const reinviteParent = useReinviteParent();
 
   useError({ mutation: reinviteParent });
+  // a full section or a roll number already taken must be shown, not fail silently
+  useError({ mutation: addStudentProfile });
 
   useError({
     mutation: deleteStudent,
@@ -194,17 +213,10 @@ const useStudentsListController = () => {
   }, [addStudentProfile.isSuccess]);
 
   useEffect(() => {
-    getStudentDetails.refetch();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [classFilter, searchTerm]);
-
-  useEffect(() => {
     if (deleteStudent.isSuccess) {
       setIsDeleteModalOpen(false);
       setDeleteStudentId("");
-      setSearchTerm("");
-      setClassFilter("all");
-      getStudentDetails.refetch();
+      clearFilters();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [deleteStudent.isSuccess]);
@@ -221,9 +233,9 @@ const useStudentsListController = () => {
     currentStep,
     isParentExist,
     handleSearchChange,
+    searchInput,
+    clearFilters,
     CLASS_OPTIONS,
-    indexOfLastItem,
-    indexOfFirstItem,
     currentPage,
     itemsPerPage,
     searchTerm,

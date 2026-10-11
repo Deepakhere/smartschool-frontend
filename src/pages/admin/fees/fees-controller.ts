@@ -14,12 +14,21 @@ import {
   useReversePayment,
   useGetPaymentLedger,
   useGrantConcession,
+  fetchWholeLedger,
+  LEDGER_PAGE_SIZE,
 } from "./service/fees-service";
 import { useGetAcademicYears, useGetClasses, useGetYearSections } from "../classes/service/academics-service";
 import useGetStudentDetails from "../students/service/get-student-details/get-student-details";
 import { useError } from "@/hooks";
+import { exportToCsv } from "@/utils";
 
 type Tab = "heads" | "structures" | "students" | "ledger";
+
+// the form takes rupees; the server keeps every amount in paise
+const toPaise = (rupees: string) => Math.round(Number(rupees) * 100);
+
+const emptyPayment = { studentFeeId: "", amount: "", method: "cash", instrumentRef: "", remarks: "" };
+const emptyConcession = { studentFeeId: "", amount: "", reason: "", installmentLabel: "" };
 
 const useFeesController = () => {
   const { t } = useTranslation();
@@ -40,19 +49,11 @@ const useFeesController = () => {
 
   const [studentSearch, setStudentSearch] = useState("");
   const [selectedStudentId, setSelectedStudentId] = useState("");
-  const [paymentForm, setPaymentForm] = useState({
-    studentFeeId: "",
-    amount: "",
-    method: "cash",
-    instrumentRef: "",
-    remarks: "",
-  });
-  const [concessionForm, setConcessionForm] = useState({
-    studentFeeId: "",
-    amount: "",
-    reason: "",
-    installmentLabel: "",
-  });
+  const [paymentForm, setPaymentForm] = useState(emptyPayment);
+  const [concessionForm, setConcessionForm] = useState(emptyConcession);
+  const [paymentToReverse, setPaymentToReverse] = useState<string | null>(null);
+  const [ledgerPage, setLedgerPage] = useState(1);
+  const [isExportingLedger, setIsExportingLedger] = useState(false);
 
   const getAcademicYears = useGetAcademicYears(org);
   const currentAcademicYearId = getAcademicYears.data?.items.find((y) => y.isCurrent)?.id;
@@ -62,7 +63,7 @@ const useFeesController = () => {
   const getFeeStructures = useGetFeeStructures(org);
   const getStudentSearch = useGetStudentDetails(org, "all", studentSearch, 10, 1);
   const getStudentFeeSummary = useGetStudentFeeSummary(org, selectedStudentId);
-  const getPaymentLedger = useGetPaymentLedger(org);
+  const getPaymentLedger = useGetPaymentLedger(org, ledgerPage);
 
   const createFeeHead = useCreateFeeHead(org);
   const createFeeStructure = useCreateFeeStructure(org);
@@ -152,10 +153,10 @@ const useFeesController = () => {
 
     const validItems = items
       .filter((i) => i.feeHeadId && i.amount)
-      .map((i) => ({ feeHeadId: i.feeHeadId, amount: Number(i.amount) }));
+      .map((i) => ({ feeHeadId: i.feeHeadId, amount: toPaise(i.amount) }));
     const validInstallments = installments
       .filter((i) => i.label && i.dueDate && i.amount)
-      .map((i) => ({ label: i.label, dueDate: i.dueDate, amount: Number(i.amount) }));
+      .map((i) => ({ label: i.label, dueDate: i.dueDate, amount: toPaise(i.amount) }));
 
     if (!validItems.length) {
       toast.error(
@@ -169,7 +170,7 @@ const useFeesController = () => {
       toast.error("Fill in label, due date and amount for at least one installment row.");
       return;
     }
-    if (itemsTotal !== installmentsTotal) {
+    if (toPaise(String(itemsTotal)) !== toPaise(String(installmentsTotal))) {
       toast.error("Installment total must match fee head items total.");
       return;
     }
@@ -204,8 +205,9 @@ const useFeesController = () => {
     });
   };
 
-  const handlePaymentFormChange = (field: string, value: string) => {
-    setPaymentForm({ ...paymentForm, [field]: value });
+  // one form is open at a time: typing into another student fee record's form starts a fresh one there
+  const handlePaymentFormChange = (studentFeeId: string, field: string, value: string) => {
+    setPaymentForm((prev) => ({ ...(prev.studentFeeId === studentFeeId ? prev : emptyPayment), studentFeeId, [field]: value }));
   };
 
   const handleRecordPayment = () => {
@@ -214,26 +216,29 @@ const useFeesController = () => {
       return;
     }
     recordPayment.mutate(
-      { ...paymentForm, amount: Math.round(Number(paymentForm.amount) * 100) },
+      { ...paymentForm, amount: toPaise(paymentForm.amount) },
       {
         onSuccess: () => {
           toast.success("Payment recorded.");
-          setPaymentForm({ studentFeeId: "", amount: "", method: "cash", instrumentRef: "", remarks: "" });
+          setPaymentForm(emptyPayment);
         },
       }
     );
   };
 
-  const handleReversePayment = (paymentId: string) => {
-    reversePayment.mutate(paymentId, {
+  // reversing cannot be undone, so it is confirmed first
+  const confirmReversePayment = () => {
+    if (!paymentToReverse) return;
+    reversePayment.mutate(paymentToReverse, {
       onSuccess: () => {
         toast.success("Payment reversed.");
+        setPaymentToReverse(null);
       },
     });
   };
 
-  const handleConcessionFormChange = (field: string, value: string) => {
-    setConcessionForm({ ...concessionForm, [field]: value });
+  const handleConcessionFormChange = (studentFeeId: string, field: string, value: string) => {
+    setConcessionForm((prev) => ({ ...(prev.studentFeeId === studentFeeId ? prev : emptyConcession), studentFeeId, [field]: value }));
   };
 
   const handleGrantConcession = () => {
@@ -244,17 +249,40 @@ const useFeesController = () => {
     grantConcession.mutate(
       {
         studentFeeId: concessionForm.studentFeeId,
-        amount: Math.round(Number(concessionForm.amount) * 100),
+        amount: toPaise(concessionForm.amount),
         reason: concessionForm.reason,
         installmentLabel: concessionForm.installmentLabel || undefined,
       },
       {
         onSuccess: () => {
           toast.success("Concession granted.");
-          setConcessionForm({ studentFeeId: "", amount: "", reason: "", installmentLabel: "" });
+          setConcessionForm(emptyConcession);
         },
       }
     );
+  };
+
+  // the export holds every payment, not just the page on screen
+  const handleExportLedger = async () => {
+    setIsExportingLedger(true);
+    try {
+      const payments = await fetchWholeLedger(org);
+      exportToCsv(
+        "payment-ledger",
+        payments.map((p) => ({
+          receipt: p.receiptNumber,
+          student: typeof p.studentId === "object" ? p.studentId.name : "",
+          type: p.entryType === "reversal" ? "Reversal" : "Payment",
+          amount: p.amount / 100,
+          method: p.method,
+          date: new Date(p.paidAt).toLocaleDateString(),
+        }))
+      );
+    } catch {
+      toast.error("The ledger could not be exported. Please try again.");
+    } finally {
+      setIsExportingLedger(false);
+    }
   };
 
   return {
@@ -300,7 +328,19 @@ const useFeesController = () => {
     handleRecordPayment,
     isRecordingPayment: recordPayment.isPending,
     paymentLedger,
-    handleReversePayment,
+    ledgerPage,
+    setLedgerPage,
+    ledgerTotal: getPaymentLedger.data?.total_count ?? 0,
+    ledgerPageSize: LEDGER_PAGE_SIZE,
+    isLoadingLedger: getPaymentLedger.isLoading,
+    handleExportLedger,
+    isExportingLedger,
+    isLoadingStudentFees: getStudentFeeSummary.isLoading,
+    studentFeesFailed: getStudentFeeSummary.isError,
+    paymentToReverse,
+    setPaymentToReverse,
+    confirmReversePayment,
+    isReversing: reversePayment.isPending,
     concessionForm,
     handleConcessionFormChange,
     handleGrantConcession,

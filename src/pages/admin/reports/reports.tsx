@@ -145,7 +145,7 @@ const AdminReports = () => {
                 </TableHeader>
                 <TableBody>
                   {c.gradingSchemes.length === 0 ? (
-                    <TableEmpty colSpan={3} message="No grading schemes yet — create one above." />
+                    <TableEmpty colSpan={3} message="No grading schemes yet. Create one above." />
                   ) : (
                     c.gradingSchemes.map((scheme) => (
                       <TableRow key={scheme.id}>
@@ -324,14 +324,27 @@ const AdminReports = () => {
                               value={row.passMarks}
                               onChange={(e) => c.updateSubjectRow(idx, "passMarks", e.target.value)}
                             />
-                            <label className="flex items-center gap-2 text-xs text-gray-700">
-                              <input
-                                type="checkbox"
-                                checked={row.hasPractical}
-                                onChange={(e) => c.updateSubjectRow(idx, "hasPractical", e.target.checked)}
-                              />
-                              Practical
-                            </label>
+                            <div className="flex items-center gap-2">
+                              <label className="flex items-center gap-2 text-xs text-gray-700">
+                                <input
+                                  type="checkbox"
+                                  checked={row.hasPractical}
+                                  onChange={(e) => c.updateSubjectRow(idx, "hasPractical", e.target.checked)}
+                                />
+                                Practical
+                              </label>
+                              {row.hasPractical && (
+                                <input
+                                  type="number"
+                                  min={1}
+                                  className={inputClass}
+                                  placeholder="Practical max"
+                                  aria-label="Practical max marks"
+                                  value={row.practicalMaxMarks === "0" ? "" : row.practicalMaxMarks}
+                                  onChange={(e) => c.updateSubjectRow(idx, "practicalMaxMarks", e.target.value)}
+                                />
+                              )}
+                            </div>
                             <button type="button" onClick={() => c.removeSubjectRow(idx)} className="text-sm text-red-600 justify-self-start">
                               Remove
                             </button>
@@ -466,14 +479,27 @@ const AdminReports = () => {
                   >
                     Export CSV
                   </button>
-                  <button onClick={c.handleVerifyMarks} disabled={c.isVerifyingMarks} className={btnSecondary}>
-                    Verify all
-                  </button>
-                  <button onClick={c.handleSaveMarks} disabled={c.isSavingMarks} className={btnPrimary}>
-                    Save marks
-                  </button>
+                  {!c.marksLocked && (
+                    <>
+                      <button onClick={c.handleVerifyMarks} disabled={c.isVerifyingMarks} className={btnSecondary}>
+                        Verify all
+                      </button>
+                      <button onClick={c.handleSaveMarks} disabled={c.isSavingMarks} className={btnPrimary}>
+                        Save marks
+                      </button>
+                    </>
+                  )}
                 </div>
               </div>
+
+              {c.marksLocked && (
+                <p className="mb-3 rounded-md bg-gray-50 p-3 text-sm text-gray-600">
+                  Results for this exam are published, so these marks can no longer be changed.
+                </p>
+              )}
+              {!c.marksLocked && c.hasUnsavedMarks && (
+                <p className="mb-3 text-sm text-amber-700">You have unsaved changes.</p>
+              )}
 
               {c.isLoadingMarksSheet ? (
                 <Spinner />
@@ -503,7 +529,9 @@ const AdminReports = () => {
                           <TableCell className="text-center">
                             <input
                               type="number"
-                              disabled={draft.isAbsent}
+                              min={0}
+                              max={c.marksExamSubject?.maxMarks}
+                              disabled={draft.isAbsent || c.marksLocked}
                               className="w-20 rounded-md border border-gray-300 px-2 py-1 text-sm text-center disabled:bg-gray-100"
                               value={draft.theoryMarks}
                               onChange={(e) => c.updateMarksDraft(item.student.id, "theoryMarks", e.target.value)}
@@ -512,7 +540,10 @@ const AdminReports = () => {
                           <TableCell className="text-center">
                             <input
                               type="number"
-                              disabled={draft.isAbsent}
+                              min={0}
+                              max={c.marksExamSubject?.practicalMaxMarks}
+                              disabled={draft.isAbsent || c.marksLocked || !c.marksExamSubject?.hasPractical}
+                              placeholder={c.marksExamSubject?.hasPractical ? "" : "-"}
                               className="w-20 rounded-md border border-gray-300 px-2 py-1 text-sm text-center disabled:bg-gray-100"
                               value={draft.practicalMarks}
                               onChange={(e) => c.updateMarksDraft(item.student.id, "practicalMarks", e.target.value)}
@@ -521,11 +552,12 @@ const AdminReports = () => {
                           <TableCell className="text-center">
                             <input
                               type="checkbox"
+                              disabled={c.marksLocked}
                               checked={draft.isAbsent}
                               onChange={(e) => c.updateMarksDraft(item.student.id, "isAbsent", e.target.checked)}
                             />
                           </TableCell>
-                          <TableCell className="text-center">{item.marks ? statusBadge(item.marks.status) : "—"}</TableCell>
+                          <TableCell className="text-center">{item.marks ? statusBadge(item.marks.status) : "-"}</TableCell>
                         </TableRow>
                       );
                     })}

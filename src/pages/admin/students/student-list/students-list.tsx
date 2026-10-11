@@ -1,3 +1,4 @@
+import Pager from "@/components/pager";
 import { useRef } from "react";
 import toast from "react-hot-toast";
 import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
@@ -41,9 +42,9 @@ const StudentsList = () => {
     isParentExist,
     studentTotalCount,
     handleSearchChange,
+    searchInput,
+    clearFilters,
     CLASS_OPTIONS,
-    indexOfLastItem,
-    indexOfFirstItem,
     currentPage,
     itemsPerPage,
     searchTerm,
@@ -62,8 +63,6 @@ const StudentsList = () => {
     setCurrentStep,
     onClickAddStudent,
     paginate,
-    setSearchTerm,
-    setClassFilter,
     handleClassFilterChange,
     handleDeleteAction,
     handleDeleteStudent,
@@ -127,10 +126,8 @@ const StudentsList = () => {
             <input
               type="text"
               placeholder={t("messages.search")}
-              onChange={(e) => {
-                e.preventDefault();
-                handleSearchChange(e.target.value);
-              }}
+              value={searchInput}
+              onChange={(e) => handleSearchChange(e.target.value)}
               className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
             />
           </div>
@@ -246,10 +243,7 @@ const StudentsList = () => {
                       <NoRecordFound
                         t={t}
                         searchTerm={searchTerm}
-                        clearFilters={() => {
-                          setSearchTerm("");
-                          setClassFilter("all");
-                        }}
+                        clearFilters={clearFilters}
                       />
                     </td>
                   </tr>
@@ -257,82 +251,7 @@ const StudentsList = () => {
               )}
             </Table>
 
-            {/* Pagination */}
-            {studentDetail && studentDetail.length > 10 && (
-              <div className="flex items-center justify-between border-t border-gray-200 bg-white px-4 py-3 sm:px-6 mt-4">
-                <div className="hidden sm:flex sm:flex-1 sm:items-center sm:justify-between">
-                  <div>
-                    <p className="text-sm text-gray-700">
-                      {t("labels.showing")}
-                      <span className="font-medium">{indexOfFirstItem + 1}</span>
-                      {t("labels.to")}
-                      <span className="font-medium">{Math.min(indexOfLastItem, studentDetail.length)}</span>
-                      {t("labels.of")}
-                      <span className="font-medium">{studentDetail.length}</span>
-                      {t("labels.results")}
-                    </p>
-                  </div>
-                  <div>
-                    <nav className="isolate inline-flex -space-x-px rounded-md shadow-sm" aria-label="Pagination">
-                      <button
-                        onClick={() => paginate(Math.max(1, currentPage - 1))}
-                        disabled={currentPage === 1}
-                        className={`relative inline-flex items-center rounded-l-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0 ${
-                          currentPage === 1 ? "cursor-not-allowed" : "hover:bg-gray-50"
-                        }`}
-                      >
-                        <span className="sr-only">{t("labels.previous")}</span>
-                        <svg className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                          <path
-                            fillRule="evenodd"
-                            d="M12.79 5.23a.75.75 0 01-.02 1.06L8.832 10l3.938 3.71a.75.75 0 11-1.04 1.08l-4.5-4.25a.75.75 0 010-1.08l4.5-4.25a.75.75 0 011.06.02z"
-                            clipRule="evenodd"
-                          />
-                        </svg>
-                      </button>
-
-                      {/* Page numbers */}
-                      {Array.from({
-                        length: Math.ceil(studentDetail.length / itemsPerPage),
-                      }).map((_, index) => (
-                        <button
-                          key={index}
-                          onClick={() => paginate(index + 1)}
-                          className={`relative inline-flex items-center px-4 py-2 text-sm font-semibold ${
-                            currentPage === index + 1
-                              ? "bg-primary-600 text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-600"
-                              : "text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0"
-                          }`}
-                        >
-                          {index + 1}
-                        </button>
-                      ))}
-
-                      <button
-                        onClick={() =>
-                          paginate(Math.min(Math.ceil(studentDetail.length / itemsPerPage), currentPage + 1))
-                        }
-                        disabled={currentPage === Math.ceil(studentDetail.length / itemsPerPage)}
-                        className={`relative inline-flex items-center rounded-r-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0 ${
-                          currentPage === Math.ceil(studentDetail.length / itemsPerPage)
-                            ? "cursor-not-allowed"
-                            : "hover:bg-gray-50"
-                        }`}
-                      >
-                        <span className="sr-only">{t("labels.next")}</span>
-                        <svg className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                          <path
-                            fillRule="evenodd"
-                            d="M7.21 14.77a.75.75 0 01.02-1.06L11.168 10 7.23 6.29a.75.75 0 111.04-1.08l4.5 4.25a.75.75 0 010 1.08l-4.5 4.25a.75.75 0 01-1.06-.02z"
-                            clipRule="evenodd"
-                          />
-                        </svg>
-                      </button>
-                    </nav>
-                  </div>
-                </div>
-              </div>
-            )}
+            <Pager page={currentPage} pageSize={itemsPerPage} total={studentTotalCount ?? 0} onPageChange={paginate} />
           </>
         )}
       </div>

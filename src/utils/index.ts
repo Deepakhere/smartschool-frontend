@@ -12,3 +12,4 @@ export { exportToCsv } from "./exportCsv";
 export { authCookieOptions } from "./cookie-options";
 
 export * from "./emuns";
+export { localDateString } from "./local-date";

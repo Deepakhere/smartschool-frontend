@@ -26,6 +26,12 @@ const AdminAttendance = () => {
     <div className="max-w-7xl mx-auto space-y-6">
       <SectionHeader title="Attendance" description="Mark daily attendance, or review it over a date range" />
 
+      {c.hasNoClasses && (
+        <p className="mb-4 rounded-lg bg-white p-4 text-sm text-gray-600 shadow">
+          You are not assigned to any class yet. Ask your school admin to assign you to a section.
+        </p>
+      )}
+
       <div className="flex gap-6 border-b border-gray-200">
         {(["mark", "report"] as const).map((tab) => (
           <button

@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next";
 import toast from "react-hot-toast";
 
 import { useGetPTMEvents, useGenerateSlots, useGetMyPTMAgenda } from "@/pages/admin/ptm/service/ptm-service";
-import { useGetSections } from "@/pages/admin/classes/service/academics-service";
+import { useGetMyTeacherAssignments } from "@/pages/admin/classes/service/academics-service";
 import { useAuth } from "@/context/auth-context";
 import { useError } from "@/hooks";
 
@@ -19,16 +19,22 @@ const useTeacherPTMController = () => {
 
   const getPTMEvents = useGetPTMEvents(org);
   const getMyAgenda = useGetMyPTMAgenda(org);
-  const getSections = useGetSections(org, undefined);
+  const getMyAssignments = useGetMyTeacherAssignments(org);
   const generateSlots = useGenerateSlots(org);
 
   useError({ mutation: generateSlots });
 
   const events = getPTMEvents.data?.items || [];
   const agenda = getMyAgenda.data?.items || [];
-  const sectionOptions = getSections.data?.items || [];
   const selectedEvent = events.find((e) => e.id === selectedEventId);
-  const eventSectionOptions = sectionOptions.filter((s) => selectedEvent?.sectionIds.includes(s.id));
+  // the sections of this event that the teacher teaches, each listed once and named with its class
+  const eventSectionOptions = [
+    ...new Map(
+      (getMyAssignments.data?.items || [])
+        .filter((a) => a.sectionId && selectedEvent?.sectionIds.includes(a.sectionId.id))
+        .map((a) => [a.sectionId.id, { id: a.sectionId.id, name: `${a.classId?.name ?? ""} - ${a.sectionId.name}` }])
+    ).values(),
+  ];
 
   const handleSlotFormChange = (field: string, value: string) => {
     setSlotForm({ ...slotForm, [field]: value });

@@ -2,6 +2,7 @@ import SectionHeader from "@/components/section-header";
 import Spinner from "@/components/spinner";
 import NoRecordFound from "@/components/no-record-found";
 import CustomSelectDropdown from "@/components/custom-select";
+import DeleteConfirmationDialog from "@/components/delete-confirmation-dialog";
 import { usePromotionController } from "./promotion-controller";
 import { PromotionAction, SelectOption } from "@/types";
 import { useTranslation } from "react-i18next";
@@ -110,8 +111,45 @@ const Promotion = () => {
               onChange={(o) => c.setTargetSectionId(String(o.id))}
             />
           </div>
+          <div className="hidden sm:block" />
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Class (for detained students)</label>
+            <CustomSelectDropdown
+              placeholder="Select"
+              disabled={!c.targetAcademicYearId}
+              options={asOptions(c.targetClasses)}
+              value={findOption(c.targetClasses, c.detainClassId)}
+              onChange={(o) => c.setDetainClass(String(o.id))}
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Section (for detained students)</label>
+            <CustomSelectDropdown
+              placeholder="Select"
+              disabled={!c.detainClassId}
+              options={asOptions(c.detainSections)}
+              value={findOption(c.detainSections, c.detainSectionId)}
+              onChange={(o) => c.setDetainSectionId(String(o.id))}
+            />
+          </div>
         </div>
       </div>
+
+      {c.lastRun.length > 0 && (
+        <div className="bg-white shadow rounded-lg p-4">
+          <h2 className="text-sm font-semibold text-gray-900 mb-2">Last run</h2>
+          <ul className="divide-y divide-gray-100 text-sm">
+            {c.lastRun.map((row) => (
+              <li key={row.name} className="flex justify-between gap-4 py-1.5">
+                <span className="text-gray-900">
+                  {row.name} <span className="text-gray-500">({row.action})</span>
+                </span>
+                <span className={row.success ? "text-green-700" : "text-red-600"}>{row.success ? "Done" : row.message}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
 
       {c.sourceSectionId && (
         <div className="bg-white shadow rounded-lg">
@@ -195,6 +233,25 @@ const Promotion = () => {
           )}
         </div>
       )}
+
+      <DeleteConfirmationDialog
+        open={c.confirmOpen}
+        onClose={() => c.setConfirmOpen(false)}
+        onConfirm={c.confirmProcess}
+        isLoading={c.isProcessing}
+        tone="neutral"
+        title="Process these students?"
+        description={
+          <>
+            {(["promote", "detain", "transfer", "withdraw"] as const)
+              .filter((action) => c.counts[action])
+              .map((action) => `${c.counts[action]} ${action}`)
+              .join(", ")}
+            . Students are moved into their new classes right away; this cannot be undone from here.
+          </>
+        }
+        confirmLabel="Process"
+      />
     </div>
   );
 };

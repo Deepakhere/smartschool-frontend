@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import toast from "react-hot-toast";
 
-import { useGetAcademicYears, useGetClasses, useGetSections } from "../classes/service/academics-service";
+import { useSectionPicker } from "../classes/service/use-section-picker";
 import {
   useGetSectionRoster,
   useGetSectionAttendance,
@@ -10,8 +10,9 @@ import {
   useGetSectionAttendanceReport,
 } from "./service/attendance-service";
 import { AttendanceStatus } from "@/types";
+import { localDateString } from "@/utils";
 
-const today = () => new Date().toISOString().slice(0, 10);
+const today = () => localDateString();
 const firstOfMonth = () => `${today().slice(0, 7)}-01`;
 
 type Tab = "mark" | "report";
@@ -20,18 +21,14 @@ const useAttendanceController = () => {
   const { organizationId = "" } = useParams();
 
   const [activeTab, setActiveTab] = useState<Tab>("mark");
-  const [academicYearId, setAcademicYearId] = useState("");
-  const [classId, setClassId] = useState("");
-  const [sectionId, setSectionId] = useState("");
   const [date, setDate] = useState(today());
   const [reportFrom, setReportFrom] = useState(firstOfMonth());
   const [reportTo, setReportTo] = useState(today());
 
-  const academicYears = useGetAcademicYears(organizationId);
-  // the report covers past records, so it also lists classes and sections that have since been switched off
-  const listStatus = activeTab === "report" ? undefined : "active";
-  const classes = useGetClasses(organizationId, academicYearId, listStatus);
-  const sections = useGetSections(organizationId, classId, listStatus);
+  // admins pick from the whole school, teachers from their own sections; the report covers past records, so it also
+  // lists classes and sections that have since been switched off
+  const picker = useSectionPicker(organizationId, { includeInactive: activeTab === "report" });
+  const { academicYearId, classId, sectionId, setSectionId } = picker;
   const roster = useGetSectionRoster(organizationId, sectionId);
   const existing = useGetSectionAttendance(organizationId, sectionId, date);
   const markAttendance = useMarkAttendance(organizationId);
@@ -60,23 +57,12 @@ const useAttendanceController = () => {
   // attendance can only be marked in active classes, so an inactive pick from the report is cleared
   const changeTab = (tab: Tab) => {
     if (tab === "mark") {
-      const klass = classes.data?.items.find((item) => item.id === classId);
-      const section = sections.data?.items.find((item) => item.id === sectionId);
-      if (klass?.status === "inactive") onClassChange("");
+      const klass = picker.classes.find((item) => item.id === classId);
+      const section = picker.sections.find((item) => item.id === sectionId);
+      if (klass?.status === "inactive") picker.setClassId("");
       else if (section?.status === "inactive") setSectionId("");
     }
     setActiveTab(tab);
-  };
-
-  const onAcademicYearChange = (id: string) => {
-    setAcademicYearId(id);
-    setClassId("");
-    setSectionId("");
-  };
-
-  const onClassChange = (id: string) => {
-    setClassId(id);
-    setSectionId("");
   };
 
   const setStatus = (studentId: string, status: AttendanceStatus) => {
@@ -127,15 +113,16 @@ const useAttendanceController = () => {
     reportRows: report.data?.items || [],
     reportTotalSessions: report.data?.totalSessions || 0,
     isLoadingReport: report.isLoading,
-    academicYears: academicYears.data?.items || [],
-    classes: classes.data?.items || [],
-    sections: sections.data?.items || [],
+    academicYears: picker.academicYears,
+    classes: picker.classes,
+    sections: picker.sections,
+    hasNoClasses: picker.hasNoClasses,
     students: roster.data?.items || [],
     isLoadingRoster: roster.isLoading || existing.isLoading,
     academicYearId,
-    setAcademicYearId: onAcademicYearChange,
+    setAcademicYearId: picker.setAcademicYearId,
     classId,
-    setClassId: onClassChange,
+    setClassId: picker.setClassId,
     sectionId,
     setSectionId,
     date,

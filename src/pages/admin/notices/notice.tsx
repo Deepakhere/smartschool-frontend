@@ -1,3 +1,4 @@
+import Pager from "@/components/pager";
 import { DocumentArrowDownIcon, EyeIcon, EllipsisHorizontalIcon, TrashIcon } from "@heroicons/react/24/outline";
 
 import NoticeModal from "@/components/notice-modal";
@@ -15,6 +16,10 @@ const AdminNotices = () => {
   const {
     t,
     notices,
+    page,
+    setPage,
+    pageSize,
+    totalNotices,
     isNoticeModalOpen,
     isLoadingNoticeList,
     isFetchingNoticeList,
@@ -175,6 +180,7 @@ const AdminNotices = () => {
                 )}
               </Table>
             )}
+            <Pager page={page} pageSize={pageSize} total={totalNotices} onPageChange={setPage} />
           </div>
         </div>
       </div>

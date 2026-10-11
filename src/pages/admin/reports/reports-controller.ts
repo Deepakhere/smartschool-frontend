@@ -183,6 +183,10 @@ export const useReportsController = () => {
       toast.error("Pick a class and fill every subject row.");
       return;
     }
+    if (subjectRows.some((r) => r.hasPractical && !(Number(r.practicalMaxMarks) > 0))) {
+      toast.error("Enter the practical maximum for every subject with a practical.");
+      return;
+    }
     addExamSubjects.mutate(
       {
         examId: expandedExamId,
@@ -192,7 +196,7 @@ export const useReportsController = () => {
           maxMarks: Number(r.maxMarks),
           passMarks: Number(r.passMarks),
           hasPractical: r.hasPractical,
-          practicalMaxMarks: Number(r.practicalMaxMarks) || 0,
+          practicalMaxMarks: r.hasPractical ? Number(r.practicalMaxMarks) : 0,
         })),
       },
       {
@@ -237,16 +241,37 @@ export const useReportsController = () => {
     });
   };
 
+  // Rows with nothing typed are left out rather than saved as 0: a student only gets marks once someone enters them
+  // (or ticks absent). Marks above the maximum are caught here, before the server refuses the whole save.
   const handleSaveMarks = () => {
-    const entries = marksSheet.map((item) => {
-      const draft = marksDraft[item.student.id] || { theoryMarks: "0", practicalMarks: "0", isAbsent: false };
-      return {
-        studentId: item.student.id,
-        theoryMarks: Number(draft.theoryMarks) || 0,
-        practicalMarks: Number(draft.practicalMarks) || 0,
-        isAbsent: draft.isAbsent,
-      };
+    const examSubject = getMarksSheet.data?.examSubject;
+    const practicalMax = examSubject?.hasPractical ? examSubject.practicalMaxMarks : 0;
+    const problems: string[] = [];
+    const entries = marksSheet.flatMap((item) => {
+      const draft = marksDraft[item.student.id];
+      if (!draft) return [];
+      if (draft.isAbsent) return [{ studentId: item.student.id, isAbsent: true }];
+      if (draft.theoryMarks.trim() === "" && draft.practicalMarks.trim() === "") return [];
+
+      const theory = Number(draft.theoryMarks || 0);
+      const practical = Number(draft.practicalMarks || 0);
+      if (!Number.isFinite(theory) || theory < 0 || (examSubject && theory > examSubject.maxMarks)) {
+        problems.push(`${item.student.name}: theory marks must be between 0 and ${examSubject?.maxMarks}.`);
+      }
+      if (!Number.isFinite(practical) || practical < 0 || practical > practicalMax) {
+        problems.push(`${item.student.name}: practical marks must be between 0 and ${practicalMax}.`);
+      }
+      return [{ studentId: item.student.id, theoryMarks: theory, practicalMarks: practical, isAbsent: false }];
     });
+
+    if (problems.length) {
+      toast.error(problems.slice(0, 3).join(" ") + (problems.length > 3 ? ` (and ${problems.length - 3} more)` : ""));
+      return;
+    }
+    if (!entries.length) {
+      toast.error("Enter marks for at least one student, or mark them absent.");
+      return;
+    }
     saveMarks.mutate(
       { examSubjectId: marksExamSubjectId, sectionId: marksSectionId, entries },
       {
@@ -257,7 +282,24 @@ export const useReportsController = () => {
     );
   };
 
+  // verifying applies to what is saved, so unsaved edits must be saved first rather than silently dropped
+  const hasUnsavedMarks = marksSheet.some((item) => {
+    const draft = marksDraft[item.student.id];
+    if (!draft) return false;
+    return (
+      draft.isAbsent !== (item.marks?.isAbsent ?? false) ||
+      draft.theoryMarks !== String(item.marks?.theoryMarks ?? "") ||
+      draft.practicalMarks !== String(item.marks?.practicalMarks ?? "")
+    );
+  });
+  const marksExam = exams.find((exam) => exam.id === getMarksSheet.data?.examSubject?.examId);
+  const marksLocked = marksExam?.status === "published";
+
   const handleVerifyMarks = () => {
+    if (hasUnsavedMarks) {
+      toast.error("Save the marks first, then verify them.");
+      return;
+    }
     verifyExamSubjectMarks.mutate(marksExamSubjectId, {
       onSuccess: () => {
         toast.success("Marks verified.");
@@ -335,6 +377,9 @@ export const useReportsController = () => {
     handleSaveMarks,
     isSavingMarks: saveMarks.isPending,
     handleVerifyMarks,
+    hasUnsavedMarks,
+    marksLocked,
+    marksExamSubject: getMarksSheet.data?.examSubject,
     isVerifyingMarks: verifyExamSubjectMarks.isPending,
   };
 };

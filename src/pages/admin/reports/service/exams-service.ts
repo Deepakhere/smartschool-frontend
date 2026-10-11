@@ -128,7 +128,8 @@ export const useGetMarksSheet = (organizationId: string, examSubjectId?: string,
 interface ISaveMarksPayload {
   examSubjectId: string;
   sectionId: string;
-  entries: { studentId: string; theoryMarks: number; practicalMarks?: number; isAbsent?: boolean }[];
+  // an absent student is sent without marks
+  entries: { studentId: string; theoryMarks?: number; practicalMarks?: number; isAbsent?: boolean }[];
 }
 
 export const useSaveMarks = (organizationId: string) => {

@@ -1,4 +1,4 @@
-import { useQuery, useMutation } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
 import apiClient from "@/config";
 import {
@@ -34,8 +34,9 @@ export interface IPromotionDecisionInput {
   rollNumber?: string;
 }
 
-export const useProcessPromotions = (organizationId: string) =>
-  useMutation<{ items: IPromotionDecisionResult[] }, IAPIError, IPromotionDecisionInput[]>({
+export const useProcessPromotions = (organizationId: string) => {
+  const queryClient = useQueryClient();
+  return useMutation<{ items: IPromotionDecisionResult[] }, IAPIError, IPromotionDecisionInput[]>({
     mutationFn: async (decisions) => {
       const result = await apiClient.post<
         { decisions: IPromotionDecisionInput[] },
@@ -43,4 +44,12 @@ export const useProcessPromotions = (organizationId: string) =>
       >(`${base(organizationId)}/promotion/process`, { decisions });
       return result.data.Data;
     },
+    // students moved: the candidates, the student lists and the sections' head counts all change
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [API_QUERY_KEY.GET_PROMOTION_CANDIDATES, organizationId] });
+      queryClient.invalidateQueries({ queryKey: [API_QUERY_KEY.GET_STUDENT_PROFILE, organizationId] });
+      queryClient.invalidateQueries({ queryKey: [API_QUERY_KEY.GET_SECTIONS, organizationId] });
+      queryClient.invalidateQueries({ queryKey: [API_QUERY_KEY.GET_CLASSES, organizationId] });
+    },
   });
+};

@@ -3,7 +3,9 @@ import DatePicker from "@/components/date-picker";
 import { Table, TableHeader, TableHead, TableBody, TableRow, TableCell, TableEmpty } from "@/components/table";
 import { SelectOption } from "@/types";
 import SectionHeader from "@/components/section-header";
-import { exportToCsv } from "@/utils";
+import DeleteConfirmationDialog from "@/components/delete-confirmation-dialog";
+import Pager from "@/components/pager";
+import Spinner from "@/components/spinner";
 import useFeesController from "./fees-controller";
 
 const inputClass =
@@ -87,7 +89,19 @@ const AdminFees = () => {
     handleRecordPayment,
     isRecordingPayment,
     paymentLedger,
-    handleReversePayment,
+    ledgerPage,
+    setLedgerPage,
+    ledgerTotal,
+    ledgerPageSize,
+    isLoadingLedger,
+    handleExportLedger,
+    isExportingLedger,
+    isLoadingStudentFees,
+    studentFeesFailed,
+    paymentToReverse,
+    setPaymentToReverse,
+    confirmReversePayment,
+    isReversing,
     concessionForm,
     handleConcessionFormChange,
     handleGrantConcession,
@@ -153,7 +167,7 @@ const AdminFees = () => {
               </TableHeader>
               <TableBody>
                 {feeHeads.length === 0 ? (
-                  <TableEmpty colSpan={3} message="No fee heads yet — add one above." />
+                  <TableEmpty colSpan={3} message="No fee heads yet. Add one above." />
                 ) : (
                   feeHeads.map((h) => (
                     <TableRow key={h.id}>
@@ -307,7 +321,7 @@ const AdminFees = () => {
               </TableHeader>
               <TableBody>
                 {feeStructures.length === 0 ? (
-                  <TableEmpty colSpan={4} message="No fee structures yet — create one above." />
+                  <TableEmpty colSpan={4} message="No fee structures yet. Create one above." />
                 ) : (
                   feeStructures.map((s) => (
                     <TableRow key={s.id}>
@@ -357,6 +371,16 @@ const AdminFees = () => {
             </div>
           </div>
 
+          {selectedStudentId && isLoadingStudentFees && <Spinner />}
+          {selectedStudentId && studentFeesFailed && (
+            <p className="rounded-lg bg-white p-6 text-sm text-red-600 shadow">This student's fees could not be loaded. Please try again.</p>
+          )}
+          {selectedStudentId && !isLoadingStudentFees && !studentFeesFailed && studentFeeSummaries.length === 0 && (
+            <p className="rounded-lg bg-white p-6 text-sm text-gray-600 shadow">
+              No fees are assigned to this student yet. Assign a fee structure to their class from the Fee Structures tab.
+            </p>
+          )}
+
           {studentFeeSummaries.map((summary) => (
             <div key={summary.studentFeeId} className="bg-white rounded-lg shadow p-6">
               <div className="flex justify-between items-center mb-4">
@@ -402,8 +426,7 @@ const AdminFees = () => {
                     placeholder="Amount"
                     value={paymentForm.studentFeeId === summary.studentFeeId ? paymentForm.amount : ""}
                     onChange={(e) => {
-                      handlePaymentFormChange("studentFeeId", summary.studentFeeId);
-                      handlePaymentFormChange("amount", e.target.value);
+                      handlePaymentFormChange(summary.studentFeeId, "amount", e.target.value);
                     }}
                   />
                   <CustomSelectDropdown
@@ -414,8 +437,7 @@ const AdminFees = () => {
                       ) || methodOptions[0]
                     }
                     onChange={(o) => {
-                      handlePaymentFormChange("studentFeeId", summary.studentFeeId);
-                      handlePaymentFormChange("method", String(o.id));
+                      handlePaymentFormChange(summary.studentFeeId, "method", String(o.id));
                     }}
                   />
                   <input
@@ -423,8 +445,7 @@ const AdminFees = () => {
                     placeholder="Reference (cheque no. / UTR)"
                     value={paymentForm.studentFeeId === summary.studentFeeId ? paymentForm.instrumentRef : ""}
                     onChange={(e) => {
-                      handlePaymentFormChange("studentFeeId", summary.studentFeeId);
-                      handlePaymentFormChange("instrumentRef", e.target.value);
+                      handlePaymentFormChange(summary.studentFeeId, "instrumentRef", e.target.value);
                     }}
                   />
                   <button
@@ -446,8 +467,7 @@ const AdminFees = () => {
                     placeholder="Amount"
                     value={concessionForm.studentFeeId === summary.studentFeeId ? concessionForm.amount : ""}
                     onChange={(e) => {
-                      handleConcessionFormChange("studentFeeId", summary.studentFeeId);
-                      handleConcessionFormChange("amount", e.target.value);
+                      handleConcessionFormChange(summary.studentFeeId, "amount", e.target.value);
                     }}
                   />
                   <input
@@ -455,8 +475,7 @@ const AdminFees = () => {
                     placeholder="Reason"
                     value={concessionForm.studentFeeId === summary.studentFeeId ? concessionForm.reason : ""}
                     onChange={(e) => {
-                      handleConcessionFormChange("studentFeeId", summary.studentFeeId);
-                      handleConcessionFormChange("reason", e.target.value);
+                      handleConcessionFormChange(summary.studentFeeId, "reason", e.target.value);
                     }}
                   />
                   <CustomSelectDropdown
@@ -468,8 +487,7 @@ const AdminFees = () => {
                         : null
                     }
                     onChange={(o) => {
-                      handleConcessionFormChange("studentFeeId", summary.studentFeeId);
-                      handleConcessionFormChange("installmentLabel", String(o.id));
+                      handleConcessionFormChange(summary.studentFeeId, "installmentLabel", String(o.id));
                     }}
                   />
                   <button
@@ -527,11 +545,12 @@ const AdminFees = () => {
                           <TableCell className="text-center">{formatMoney(p.amount)}</TableCell>
                           <TableCell className="text-center capitalize">{p.method.replace("_", " ")}</TableCell>
                           <TableCell className="text-center">
-                            {p.entryType === "payment" && (
-                              <button onClick={() => handleReversePayment(p.id)} className="text-red-600 hover:text-red-800">
-                                Reverse
-                              </button>
-                            )}
+                            {p.entryType === "payment" &&
+                              !summary.payments.some((other) => other.reversalOfPaymentId === p.id) && (
+                                <button onClick={() => setPaymentToReverse(p.id)} className="text-red-600 hover:text-red-800">
+                                  Reverse
+                                </button>
+                              )}
                           </TableCell>
                         </TableRow>
                       ))}
@@ -549,22 +568,11 @@ const AdminFees = () => {
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-lg font-medium text-gray-900">Payment Ledger</h2>
             <button
-              onClick={() =>
-                exportToCsv(
-                  "payment-ledger",
-                  paymentLedger.map((p) => ({
-                    receipt: p.receiptNumber,
-                    student: typeof p.studentId === "object" ? p.studentId.name : "",
-                    type: p.entryType === "reversal" ? "Reversal" : "Payment",
-                    amount: p.amount / 100,
-                    method: p.method,
-                    date: new Date(p.paidAt).toLocaleDateString(),
-                  }))
-                )
-              }
-              className="inline-flex items-center px-3 py-1.5 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50"
+              onClick={handleExportLedger}
+              disabled={isExportingLedger || ledgerTotal === 0}
+              className="inline-flex items-center px-3 py-1.5 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50"
             >
-              Export CSV
+              {isExportingLedger ? "Exporting..." : "Export CSV"}
             </button>
           </div>
           <Table>
@@ -577,7 +585,9 @@ const AdminFees = () => {
               <TableHead className="text-center">Date</TableHead>
             </TableHeader>
             <TableBody>
-              {paymentLedger.length === 0 ? (
+              {isLoadingLedger ? (
+                <TableEmpty colSpan={6} message="Loading payments..." />
+              ) : paymentLedger.length === 0 ? (
                 <TableEmpty colSpan={6} message="No payments recorded yet." />
               ) : (
                 paymentLedger.map((p) => (
@@ -599,8 +609,19 @@ const AdminFees = () => {
               )}
             </TableBody>
           </Table>
+          <Pager page={ledgerPage} pageSize={ledgerPageSize} total={ledgerTotal} onPageChange={setLedgerPage} />
         </div>
       )}
+
+      <DeleteConfirmationDialog
+        open={!!paymentToReverse}
+        onClose={() => setPaymentToReverse(null)}
+        onConfirm={confirmReversePayment}
+        isLoading={isReversing}
+        title="Reverse this payment?"
+        description="A reversal entry is added to the ledger and the amount becomes due again. This cannot be undone."
+        confirmLabel="Reverse payment"
+      />
     </div>
   );
 };
