@@ -20,9 +20,9 @@ describe("api-client 403 handling", () => {
     Object.defineProperty(window, "location", { value: { href: "/start" }, writable: true });
   });
 
-  it("sends a refused page load (GET) to the access-denied page", async () => {
-    await expect(apiClient.get("/something", { adapter: refuse })).rejects.toBeTruthy();
-    expect(window.location.href).toBe("/not-access");
+  it("keeps a refused page load (GET) on the page, so one refused request never throws the user out", async () => {
+    await expect(apiClient.get("/something", { adapter: refuse })).rejects.toMatchObject({ status: 403 });
+    expect(window.location.href).toBe("/start");
   });
 
   it("keeps a refused action (POST) on the current page and rejects with the server's message", async () => {

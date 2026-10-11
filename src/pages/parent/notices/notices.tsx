@@ -1,3 +1,4 @@
+import ErrorState from "@/components/error-state";
 import { BellIcon, CalendarDaysIcon } from "@heroicons/react/24/outline";
 
 import Spinner from "@/components/spinner";
@@ -6,13 +7,15 @@ import SectionHeader from "@/components/section-header";
 import useNoticesController from "./notices-controller";
 
 const ParentNotices = () => {
-  const { t, notices, isLoading, handleMarkRead } = useNoticesController();
+  const { t, notices, isLoading, handleMarkRead, loadError, retryLoad } = useNoticesController();
 
   return (
     <div className="max-w-7xl mx-auto">
       <SectionHeader title="Notices" description="School announcements and holidays relevant to you" />
       <div className="bg-white rounded-lg shadow p-6">
-        {isLoading ? (
+        {loadError ? (
+          <ErrorState error={loadError} onRetry={retryLoad} />
+        ) : isLoading ? (
           <Spinner />
         ) : notices.length === 0 ? (
           <NoRecordFound t={t} searchTerm="" clearFilters={() => {}} />

@@ -11,8 +11,13 @@ let mockUser: MockUser = null;
 let mockIsMobile = false;
 
 vi.mock("../context/auth-context", () => ({ useAuth: () => ({ user: mockUser }) }));
+// the real check of the role in a school is tested with TenantProvider itself; here it only has to receive it
+let receivedRole: string | undefined;
 vi.mock("../context/tenant-context", () => ({
-  TenantProvider: ({ children }: { children: React.ReactNode }) => children,
+  TenantProvider: ({ children, requiredRole }: { children: React.ReactNode; requiredRole?: string }) => {
+    receivedRole = requiredRole;
+    return children;
+  },
 }));
 vi.mock("../context/theme-context", () => ({ useTheme: () => ({ theme: "light" }) }));
 vi.mock("../hooks/is-mobile/is-mobile", () => ({ default: () => mockIsMobile }));
@@ -49,10 +54,10 @@ describe("ProtectedRoute", () => {
     expect(screen.getByText("login page")).toBeInTheDocument();
   });
 
-  it("sends a signed-in user with a different role to /not-access", () => {
+  it("hands the page's role to the school check, since a person's role differs from school to school", () => {
     mockUser = { role: "teacher" };
     renderAt("/page", page("admin"));
-    expect(screen.getByText("not access page")).toBeInTheDocument();
+    expect(receivedRole).toBe("admin");
   });
 
   it("renders the page for the matching role", () => {

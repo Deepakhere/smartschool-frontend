@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState, ReactNode } from "react";
+import { createContext, useContext, useEffect, useRef, useState, ReactNode } from "react";
 import { useParams } from "react-router-dom";
 import Cookies from "js-cookie";
 import { io, Socket } from "socket.io-client";
@@ -41,18 +41,25 @@ export const NotificationProvider = ({ children }: { children: ReactNode }) => {
     if (data) setLiveNotifications([]);
   }, [data]);
 
+  // switching school starts from that school's list
+  const currentOrganization = useRef(organizationId);
   useEffect(() => {
-    if (!user?.id) return;
+    currentOrganization.current = organizationId;
+    setLiveNotifications([]);
+  }, [organizationId]);
 
-    const token = Cookies.get(USER_ACCESS_KEY.TOKEN);
-    if (!token) return;
+  useEffect(() => {
+    if (!user?.id || !Cookies.get(USER_ACCESS_KEY.TOKEN)) return;
 
+    // the token is read on every (re)connect, so a reconnect after the token was refreshed still gets in
     const socket: Socket = io(import.meta.env.VITE_API_URL, {
-      auth: { token },
+      auth: (cb) => cb({ token: Cookies.get(USER_ACCESS_KEY.TOKEN) }),
       withCredentials: true,
     });
 
+    // the server sends a person's notifications from every school they belong to; only this school's show here
     socket.on("notification:new", (notification: INotification) => {
+      if (notification.organizationId && notification.organizationId !== currentOrganization.current) return;
       setLiveNotifications((prev) => [notification, ...prev]);
     });
 

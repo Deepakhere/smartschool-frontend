@@ -1,3 +1,4 @@
+import ErrorState from "@/components/error-state";
 import PageLoader from "@/components/page-loader";
 import SectionHeader from "@/components/section-header";
 import useTeacherDashboardController from "./dashboard-controller";
@@ -7,6 +8,10 @@ const TeacherDashboard = () => {
 
   if (c.isLoading) {
     return <PageLoader />;
+  }
+  // a failed load says so, rather than showing a teacher with no classes and no notices
+  if (c.loadError) {
+    return <ErrorState error={c.loadError} onRetry={c.retryLoad} />;
   }
 
   return (

@@ -6,6 +6,7 @@ import { ILoginResponse, IUserAvatar, IUserPreferences } from "../types";
 import LogoSpinner from "../components/logo-spinner";
 import apiClient from "../config/api-client";
 import { isAuthPage } from "../config/auth-pages";
+import { queryClient } from "../config/query-client";
 
 type User = {
   name?: string;
@@ -53,6 +54,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const getUserDetails = useGetUserDetails();
 
   const login = (data: ILoginResponse) => {
+    // nothing cached for whoever used this device before may show to the person signing in now
+    queryClient.clear();
     // expiries mirror the backend's own token lifetimes (1 day access / 30 day refresh)
     Cookies.set(USER_ACCESS_KEY.TOKEN, data.token, authCookieOptions(1));
     if (data.refreshToken) {
@@ -78,13 +81,20 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const endSession = () => {
     clearSessionCookies();
+    queryClient.clear();
     setUser(null);
   };
 
-  const logout = () => {
-    // best-effort session revocation — clear local cookies regardless of outcome
-    apiClient.post(APIS_ROUTES.LOGOUT).catch(() => {});
+  // Ends the session on the server too. The token is passed explicitly because the cookie is cleared before the
+  // request is actually sent; the redirect waits briefly for the server so the request is not cut off.
+  const logout = async () => {
+    const token = Cookies.get(USER_ACCESS_KEY.TOKEN);
+    const revoke = token
+      ? apiClient.post(APIS_ROUTES.LOGOUT, {}, { headers: { accesstoken: `Bearer ${token}` } }).catch(() => {})
+      : Promise.resolve();
     clearSessionCookies();
+    queryClient.clear();
+    await Promise.race([revoke, new Promise((resolve) => setTimeout(resolve, 1500))]);
     window.location.href = "/login";
   };
 

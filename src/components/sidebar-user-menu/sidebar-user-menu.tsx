@@ -118,7 +118,7 @@ const UserMenuBody = ({
 };
 
 const SidebarUserMenu = ({ isCollapsed }: SidebarUserMenuProps) => {
-  const { user, ...rest } = useSidebarUserMenuController();
+  const { user, role, ...rest } = useSidebarUserMenuController();
   const isMobile = useIsMobile();
 
   if (!user?.name) return null;
@@ -136,7 +136,7 @@ const SidebarUserMenu = ({ isCollapsed }: SidebarUserMenuProps) => {
           }`}
         >
           <span className="block truncate text-sm font-medium text-gray-900">{user.name}</span>
-          <span className="block truncate text-xs text-gray-500 capitalize">{user.role}</span>
+          <span className="block truncate text-xs text-gray-500 capitalize">{role ?? user.role}</span>
         </span>
       </span>
       <ChevronUpDownIcon
@@ -154,14 +154,14 @@ const SidebarUserMenu = ({ isCollapsed }: SidebarUserMenuProps) => {
         <Sheet>
           <SheetTrigger asChild>{trigger}</SheetTrigger>
           <SheetContent side="bottom" className="p-2">
-            <UserMenuBody user={user} {...rest} />
+            <UserMenuBody user={user} role={role} {...rest} />
           </SheetContent>
         </Sheet>
       ) : (
         <Popover>
           <PopoverTrigger asChild>{trigger}</PopoverTrigger>
           <PopoverContent side="top" align={isCollapsed ? "center" : "start"}>
-            <UserMenuBody user={user} {...rest} />
+            <UserMenuBody user={user} role={role} {...rest} />
           </PopoverContent>
         </Popover>
       )}

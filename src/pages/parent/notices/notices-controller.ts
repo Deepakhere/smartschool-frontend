@@ -20,6 +20,9 @@ const useNoticesController = () => {
     t,
     notices,
     isLoading: getMyNotices.isLoading,
+    // a failed load shows an error with a retry, not an empty page
+    loadError: getMyNotices.isError ? getMyNotices.error : null,
+    retryLoad: () => getMyNotices.refetch(),
     handleMarkRead,
   };
 };

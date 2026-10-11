@@ -1,14 +1,13 @@
 import { useEffect, useMemo, useState } from "react";
 
-import { useAuth } from "@/context/auth-context";
+import { useCurrentRole } from "@/context/tenant-context";
 import { useGetAcademicYears, useGetClasses, useGetSections, useGetMyTeacherAssignments } from "./academics-service";
 
 // The year, class and section pickers used wherever staff work on one section (attendance, homework, PTM).
 // Admins choose from the whole school; teachers only from the classes and sections they teach. The current year is
 // picked to start with, and choosing a year or class clears the choices below it.
 export const useSectionPicker = (organizationId: string, { includeInactive = false } = {}) => {
-  const { user } = useAuth();
-  const isTeacher = user?.role === "teacher";
+  const isTeacher = useCurrentRole() === "teacher";
 
   const [academicYearId, setYear] = useState("");
   const [classId, setClass] = useState("");

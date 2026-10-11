@@ -1,3 +1,4 @@
+import ErrorState from "@/components/error-state";
 import { useParams } from "react-router-dom";
 import {
   UserGroupIcon,
@@ -14,7 +15,7 @@ const formatMoney = (paise: number) => `${(paise / 100).toFixed(2)}`;
 
 const ParentDashboard = () => {
   const { organizationId } = useParams();
-  const { data, isLoading } = useGetParentDashboard(organizationId || "");
+  const { data, isLoading, isError, error, refetch } = useGetParentDashboard(organizationId || "");
 
   const cards = [
     { title: "My Children", value: data?.childrenCount ?? "—", icon: UserGroupIcon },
@@ -31,7 +32,9 @@ const ParentDashboard = () => {
     <div className="max-w-7xl mx-auto">
       <SectionHeader title="Dashboard" description="A quick overview of your child's school activity" />
 
-      {isLoading ? (
+      {(isError ? error : null) ? (
+        <ErrorState error={(isError ? error : null)} onRetry={() => refetch()} />
+      ) : isLoading ? (
         <Spinner />
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">

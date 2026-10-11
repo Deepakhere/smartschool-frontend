@@ -15,12 +15,13 @@ import {
   CalendarDaysIcon,
   ArrowTrendingUpIcon,
 } from "@heroicons/react/24/outline";
-import { useAuth } from "@/context/auth-context";
+import { useCurrentRole } from "@/context/tenant-context";
 
 export const useSidebarController = () => {
   const { organizationId } = useParams();
   const location = useLocation();
-  const { user } = useAuth();
+  // the role in the current school decides the menus and links
+  const role = useCurrentRole();
 
   const isActive = (path: string) => {
     return location.pathname.includes(path);
@@ -99,7 +100,7 @@ export const useSidebarController = () => {
   ];
 
   const sections =
-    user?.role === "teacher" ? teacherSections : user?.role === "parent" ? parentSections : adminSections;
+    role === "teacher" ? teacherSections : role === "parent" ? parentSections : adminSections;
 
   return {
     sections,

@@ -247,6 +247,9 @@ export const useDashboardController = () => {
     teacherStudentRatioOptions,
     monthlyAttendanceOptions,
     isStatsLoading: dashboardStats.isLoading,
+    // failed stats must not show as zero students and zero teachers
+    statsError: dashboardStats.isError ? dashboardStats.error : null,
+    retryStats: () => dashboardStats.refetch(),
     isNoticesLoading: recentNotices.isLoading,
     isChartsLoading: dashboardCharts.isLoading,
     greetingTitle,

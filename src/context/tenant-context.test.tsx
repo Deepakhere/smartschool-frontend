@@ -9,13 +9,13 @@ vi.mock("react-router-dom", () => ({
   Navigate: ({ to }: { to: string }) => <div data-testid="navigate">{to}</div>,
 }));
 
-let mockUser: { isPlatformAdmin?: boolean } | null = { isPlatformAdmin: false };
+let mockUser: { isPlatformAdmin?: boolean; role?: string } | null = { isPlatformAdmin: false };
 vi.mock("./auth-context", () => ({
   useAuth: () => ({ user: mockUser }),
 }));
 
 let mockIsLoading = false;
-let mockOrganizations: { id: string; name: string }[] = [{ id: "org-1", name: "School One" }];
+let mockOrganizations: { id: string; name: string; myRole?: string | null }[] = [{ id: "org-1", name: "School One" }];
 vi.mock("../pages/auth/service/get-all-organization/get-all-organization", () => ({
   default: () => ({ isLoading: mockIsLoading, data: { items: mockOrganizations } }),
 }));
@@ -76,5 +76,38 @@ describe("TenantProvider", () => {
     );
     expect(screen.getByTestId("consumer")).toBeInTheDocument();
     expect(screen.queryByTestId("navigate")).not.toBeInTheDocument();
+  });
+
+  describe("role in the school", () => {
+    const renderArea = (requiredRole: "admin" | "teacher" | "parent") =>
+      render(
+        <TenantProvider requiredRole={requiredRole}>
+          <Consumer />
+        </TenantProvider>
+      );
+
+    it("opens the area matching the person's role in this school, even if their account role is different", () => {
+      mockOrgId = "org-1";
+      mockUser = { role: "teacher" };
+      mockOrganizations = [{ id: "org-1", name: "School One", myRole: "admin" }];
+      renderArea("admin");
+      expect(screen.getByTestId("consumer")).toBeInTheDocument();
+    });
+
+    it("sends someone in another role's area to their own area of that school", () => {
+      mockOrgId = "org-1";
+      mockUser = { role: "admin" };
+      mockOrganizations = [{ id: "org-1", name: "School One", myRole: "parent" }];
+      renderArea("admin");
+      expect(screen.getByTestId("navigate")).toHaveTextContent("/org-1/parent/dashboard");
+    });
+
+    it("falls back to the account role for older accounts without a role per school", () => {
+      mockOrgId = "org-1";
+      mockUser = { role: "teacher" };
+      mockOrganizations = [{ id: "org-1", name: "School One", myRole: null }];
+      renderArea("teacher");
+      expect(screen.getByTestId("consumer")).toBeInTheDocument();
+    });
   });
 });

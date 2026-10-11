@@ -1,3 +1,4 @@
+import ErrorState from "@/components/error-state";
 import { PlusIcon, BuildingOffice2Icon } from "@heroicons/react/24/outline";
 
 import Spinner from "@/components/spinner";
@@ -31,7 +32,9 @@ const Platform = () => {
           </button>
         </div>
 
-        {c.isLoading ? (
+        {c.loadError ? (
+          <ErrorState error={c.loadError} onRetry={c.retryLoad} />
+        ) : c.isLoading ? (
           <Spinner />
         ) : c.accounts.length === 0 ? (
           <div className="bg-white rounded-lg shadow p-10 text-center text-gray-500">No customers yet.</div>

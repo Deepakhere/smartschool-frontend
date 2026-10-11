@@ -60,6 +60,8 @@ export const usePlatformController = () => {
   return {
     accounts: accounts.data?.items || [],
     isLoading: accounts.isLoading,
+    loadError: accounts.isError ? accounts.error : null,
+    retryLoad: () => accounts.refetch(),
     isCreateModalOpen,
     setIsCreateModalOpen,
     handleCreateAccount,

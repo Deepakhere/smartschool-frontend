@@ -81,7 +81,11 @@ describe("NotificationProvider", () => {
       </NotificationProvider>
     );
     expect(ioMock).toHaveBeenCalledTimes(1);
-    expect(ioMock).toHaveBeenCalledWith(expect.anything(), expect.objectContaining({ auth: { token: "fake-token" } }));
+    // the token is read on each (re)connect, so a refreshed token is used after a reconnect
+    const { auth } = ioMock.mock.calls[0][1];
+    const sent = vi.fn();
+    auth(sent);
+    expect(sent).toHaveBeenCalledWith({ token: "fake-token" });
   });
 
   it("renders notifications fetched from the server", () => {

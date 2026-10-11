@@ -48,13 +48,12 @@ export const ProtectedRoute = ({ children, role }: ProtectedRouteProps) => {
   const isMobile = useIsMobile();
 
   if (!user) return <Navigate to="/login" replace />;
-  if (user.role !== role) return <Navigate to="/not-access" replace />;
 
   // the signed-in app is not responsive yet, so phones get a notice for now
   if (isMobile) return <MobileNotice />;
 
-  // role checked out; TenantProvider still has to confirm the URL's :organizationId is real
-  return <TenantProvider>{children}</TenantProvider>;
+  // the role is per school, so TenantProvider checks it once it knows which school the URL is for
+  return <TenantProvider requiredRole={role}>{children}</TenantProvider>;
 };
 
 export const PlatformRoute = ({ children }: RouteGuardProps) => {

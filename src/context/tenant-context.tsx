@@ -5,17 +5,22 @@ import { useAuth } from "./auth-context";
 import useGetAllOrganizations from "../pages/auth/service/get-all-organization/get-all-organization";
 import LogoSpinner from "../components/logo-spinner";
 import { IOrganization } from "../types";
+import { homePathFor, UserRole } from "../routes/access";
 
 interface ITenantContext {
   organizationId: string;
   organization: IOrganization | undefined;
   organizations: IOrganization[];
+  // the signed-in person's role in this school
+  role: UserRole | undefined;
 }
 
 const TenantContext = createContext<ITenantContext | undefined>(undefined);
 
-// mounted by ProtectedRoute; confirms the route's :organizationId is one the user actually belongs to
-export const TenantProvider = ({ children }: { children: ReactNode }) => {
+// Mounted by ProtectedRoute. Confirms the route's :organizationId is one the user belongs to, and that the area of
+// the app (admin, teacher, parent) matches their role in that school; one person can be a teacher in one school and a
+// parent in another. Someone in the wrong area is sent to their own area of that school.
+export const TenantProvider = ({ children, requiredRole }: { children: ReactNode; requiredRole?: UserRole }) => {
   const { organizationId = "" } = useParams<{ organizationId: string }>();
   const { user } = useAuth();
   const getAllOrganizations = useGetAllOrganizations();
@@ -34,8 +39,13 @@ export const TenantProvider = ({ children }: { children: ReactNode }) => {
     return <Navigate to="/not-access" replace />;
   }
 
+  const role = (organization?.myRole ?? user?.role) as UserRole | undefined;
+  if (requiredRole && role !== requiredRole) {
+    return <Navigate to={role ? homePathFor(organizationId, role) : "/not-access"} replace />;
+  }
+
   return (
-    <TenantContext.Provider value={{ organizationId, organization, organizations }}>{children}</TenantContext.Provider>
+    <TenantContext.Provider value={{ organizationId, organization, organizations, role }}>{children}</TenantContext.Provider>
   );
 };
 
@@ -45,4 +55,11 @@ export const useTenant = () => {
     throw new Error("useTenant must be used within a TenantProvider");
   }
   return context;
+};
+
+// the signed-in person's role where they are now: their role in the current school, or their account role outside one
+export const useCurrentRole = (): UserRole | undefined => {
+  const tenant = useContext(TenantContext);
+  const { user } = useAuth();
+  return tenant?.role ?? (user?.role as UserRole | undefined);
 };
