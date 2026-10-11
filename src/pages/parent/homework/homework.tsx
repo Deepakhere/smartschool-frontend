@@ -1,3 +1,4 @@
+import ErrorState from "@/components/error-state";
 import { BookOpenIcon } from "@heroicons/react/24/outline";
 
 import Spinner from "@/components/spinner";
@@ -8,7 +9,7 @@ import { useHomeworkController } from "./homework-controller";
 import { SelectOption } from "@/types";
 
 const ParentHomework = () => {
-  const { t, children, studentId, setStudentId, homeworkList, isLoading } = useHomeworkController();
+  const { t, children, studentId, setStudentId, homeworkList, isLoading, loadError, retryLoad } = useHomeworkController();
 
   return (
     <div className="max-w-7xl mx-auto space-y-6">
@@ -32,7 +33,9 @@ const ParentHomework = () => {
       )}
 
       <div className="bg-white rounded-lg shadow p-6">
-        {isLoading ? (
+        {loadError ? (
+          <ErrorState error={loadError} onRetry={retryLoad} />
+        ) : isLoading ? (
           <Spinner />
         ) : homeworkList.length === 0 ? (
           <NoRecordFound t={t} searchTerm="" clearFilters={() => {}} />

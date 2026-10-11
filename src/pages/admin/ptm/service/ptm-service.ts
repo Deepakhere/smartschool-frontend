@@ -50,11 +50,19 @@ export const useGenerateSlots = (organizationId: string) => {
   const queryClient = useQueryClient();
   return useMutation<void, IAPIError, IGenerateSlotsPayload>({
     mutationKey: [API_MUTATION_KEY.GENERATE_PTM_SLOTS],
+    // the time pickers give local wall-clock times ("2026-10-11T10:00"); sent as exact instants so the server, which
+    // runs in UTC, puts the slots at the time the user meant
     mutationFn: async (value) => {
-      await apiClient.post(`${base(organizationId)}/event/${value.ptmEventId}/slot/generate`, value);
+      await apiClient.post(`${base(organizationId)}/event/${value.ptmEventId}/slot/generate`, {
+        ...value,
+        startAt: new Date(value.startAt).toISOString(),
+        endAt: new Date(value.endAt).toISOString(),
+      });
     },
-    onSuccess: (_data, variables) =>
-      queryClient.invalidateQueries({ queryKey: [API_QUERY_KEY.GET_PTM_SLOTS, organizationId, variables.ptmEventId] }),
+    onSuccess: (_data, variables) => {
+      queryClient.invalidateQueries({ queryKey: [API_QUERY_KEY.GET_PTM_SLOTS, organizationId, variables.ptmEventId] });
+      queryClient.invalidateQueries({ queryKey: [API_QUERY_KEY.GET_MY_PTM_AGENDA, organizationId] });
+    },
   });
 };
 
@@ -94,7 +102,11 @@ export const useCancelPTMBooking = (organizationId: string) => {
     mutationFn: async (bookingId) => {
       await apiClient.post(`${base(organizationId)}/booking/${bookingId}/cancel`);
     },
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: [API_QUERY_KEY.GET_MY_PTM_BOOKINGS, organizationId] }),
+    // the freed seat shows again in the slot lists
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [API_QUERY_KEY.GET_MY_PTM_BOOKINGS, organizationId] });
+      queryClient.invalidateQueries({ queryKey: [API_QUERY_KEY.GET_PTM_SLOTS, organizationId] });
+    },
   });
 };
 

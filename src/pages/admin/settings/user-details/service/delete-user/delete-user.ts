@@ -1,16 +1,20 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 import apiClient from "@/config";
-import { IAPIError } from "@/types";
+import { IAPIError, IAxiosResponse } from "@/types";
 import { API_MUTATION_KEY, API_QUERY_KEY, APIS_ROUTES } from "@/utils";
 
+// the server says whether the account was deleted or only taken out of this school (they belong to another)
 const deleteUser = async (organizationId: string, userId: string) => {
-  await apiClient.delete(`${APIS_ROUTES.DELETE_USER}/${organizationId}/user/${userId}`);
+  const result = await apiClient.delete<null, IAxiosResponse<{ message: string }>>(
+    `${APIS_ROUTES.DELETE_USER}/${organizationId}/user/${userId}`
+  );
+  return result.data.Data.message;
 };
 
 export const useDeleteUser = (organizationId: string) => {
   const queryClient = useQueryClient();
-  return useMutation<void, IAPIError, string>({
+  return useMutation<string, IAPIError, string>({
     mutationKey: [API_MUTATION_KEY.DELETE_USER],
     mutationFn: (userId) => deleteUser(organizationId, userId),
     onSuccess: () => {

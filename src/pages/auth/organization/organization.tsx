@@ -1,3 +1,4 @@
+import ErrorState from "@/components/error-state";
 import {
   PlusIcon,
   ArrowRightOnRectangleIcon,
@@ -26,6 +27,8 @@ function Organization() {
     organization,
     hasAnyOrganization,
     isLoading,
+    loadError,
+    retryLoad,
     navigateHome,
     signOut,
     isAddModalOpen,
@@ -39,7 +42,9 @@ function Organization() {
   } = useOrganizationController();
   return (
     <>
-      {isLoading ? (
+      {loadError ? (
+        <ErrorState error={loadError} onRetry={retryLoad} />
+      ) : isLoading ? (
         <LogoSpinner />
       ) : (
         <div className="min-h-screen bg-gray-50 font-sans">

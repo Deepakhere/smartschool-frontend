@@ -16,11 +16,14 @@ Vercel auto-detects Vite projects, no S3/CloudFront/IAM setup needed.
    the Production environment:
    ```
    VITE_API_URL=https://api.opscul.com
+   VITE_GA_ID=G-XXXXXXXXXX
    ```
    (see `smartschool-backend/deploy/DEPLOYMENT.md` for that URL once the
    backend is deployed; do that one first). This is baked into the built JS
    at build time (Vite's own behavior), so a change here needs a redeploy to
-   take effect, not just a restart.
+   take effect, not just a restart. `VITE_GA_ID` is optional: when set, each
+   browser session sends one anonymous `app_open` event to Google Analytics
+   (`src/lib/analytics.ts`); leave it empty to send nothing.
 5. **Deploy**. Vercel gives you a free `*.vercel.app` URL immediately.
 
 ## 2. Tell the backend about this URL

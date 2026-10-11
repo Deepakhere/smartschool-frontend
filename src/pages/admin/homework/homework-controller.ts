@@ -4,47 +4,27 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useParams } from "react-router-dom";
 import toast from "react-hot-toast";
 
-import {
-  useGetAcademicYears,
-  useGetClasses,
-  useGetSections,
-  useGetSubjects,
-} from "../classes/service/academics-service";
+import { useGetSubjects } from "../classes/service/academics-service";
+import { useSectionPicker } from "../classes/service/use-section-picker";
 import { useGetHomeworkList, useCreateHomework, useDeleteHomework } from "./service/homework-service";
 import { homeworkFormSchema, defaultHomeworkFormValues } from "./homework.schema";
 
+// shared by admins and teachers: the pickers offer a teacher only the sections they teach
 export const useHomeworkController = () => {
   const { organizationId = "" } = useParams();
-
-  const [academicYearId, setAcademicYearIdRaw] = useState("");
-  const [classId, setClassIdRaw] = useState("");
-  const [sectionId, setSectionId] = useState("");
+  const picker = useSectionPicker(organizationId);
+  const { academicYearId, classId, sectionId } = picker;
 
   const [showForm, setShowForm] = useState(false);
-  const form = useForm({ resolver: zodResolver(homeworkFormSchema), defaultValues: defaultHomeworkFormValues });
+  const form = useForm({ resolver: zodResolver(homeworkFormSchema), defaultValues: defaultHomeworkFormValues() });
 
-  const setAcademicYearId = (id: string) => {
-    setAcademicYearIdRaw(id);
-    setClassIdRaw("");
-    setSectionId("");
-  };
-
-  const setClassId = (id: string) => {
-    setClassIdRaw(id);
-    setSectionId("");
-  };
-
-  const academicYears = useGetAcademicYears(organizationId);
-  const classes = useGetClasses(organizationId, academicYearId, "active");
-  const sections = useGetSections(organizationId, classId, "active");
   const subjects = useGetSubjects(organizationId, academicYearId, "active");
   const homeworkList = useGetHomeworkList(organizationId, sectionId);
-
   const createHomework = useCreateHomework(organizationId, sectionId);
   const deleteHomework = useDeleteHomework(organizationId, sectionId);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    form.setValue("attachment", e.target.files?.[0] || null);
+    form.setValue("attachment", e.target.files?.[0] || null, { shouldValidate: true });
   };
 
   const onSubmit = form.handleSubmit((values) => {
@@ -71,7 +51,7 @@ export const useHomeworkController = () => {
     if (createHomework.isSuccess) {
       toast.success("Homework created.");
       setShowForm(false);
-      form.reset(defaultHomeworkFormValues);
+      form.reset(defaultHomeworkFormValues());
     }
     if (createHomework.isError) {
       toast.error(createHomework.error?.response?.Error?.message || "Failed to create homework");
@@ -81,40 +61,39 @@ export const useHomeworkController = () => {
 
   const [homeworkIdPendingDelete, setHomeworkIdPendingDelete] = useState<string | null>(null);
 
-  const handleDelete = (homeworkId: string) => {
-    setHomeworkIdPendingDelete(homeworkId);
-  };
-
-  const cancelDelete = () => setHomeworkIdPendingDelete(null);
-
   const confirmDelete = () => {
     if (!homeworkIdPendingDelete) return;
     deleteHomework.mutate(homeworkIdPendingDelete, {
-      onSuccess: () => setHomeworkIdPendingDelete(null),
+      onSuccess: () => {
+        toast.success("Homework deleted.");
+        setHomeworkIdPendingDelete(null);
+      },
+      onError: (error) => toast.error(error?.response?.Error?.message || "The homework could not be deleted."),
     });
   };
 
   return {
-    academicYears: academicYears.data?.items || [],
-    classes: classes.data?.items || [],
-    sections: sections.data?.items || [],
+    academicYears: picker.academicYears,
+    classes: picker.classes,
+    sections: picker.sections,
+    hasNoClasses: picker.hasNoClasses,
     subjects: subjects.data?.items || [],
     homeworkList: homeworkList.data?.items || [],
     isLoadingHomework: homeworkList.isLoading,
     academicYearId,
-    setAcademicYearId,
+    setAcademicYearId: picker.setAcademicYearId,
     classId,
-    setClassId,
+    setClassId: picker.setClassId,
     sectionId,
-    setSectionId,
+    setSectionId: picker.setSectionId,
     showForm,
     setShowForm,
     form,
     handleFileChange,
     onSubmit,
-    handleDelete,
+    handleDelete: setHomeworkIdPendingDelete,
     homeworkIdPendingDelete,
-    cancelDelete,
+    cancelDelete: () => setHomeworkIdPendingDelete(null),
     confirmDelete,
     isDeleting: deleteHomework.isPending,
     isCreating: createHomework.isPending,

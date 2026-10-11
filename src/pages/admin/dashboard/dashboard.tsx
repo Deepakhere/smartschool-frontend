@@ -1,3 +1,4 @@
+import ErrorState from "@/components/error-state";
 import Highcharts from "highcharts";
 import HighchartsReact from "highcharts-react-official";
 import { Link } from "react-router-dom";
@@ -20,6 +21,8 @@ const Dashboard = () => {
     teacherStudentRatioOptions,
     monthlyAttendanceOptions,
     isStatsLoading,
+    statsError,
+    retryStats,
     isNoticesLoading,
     isChartsLoading,
     greetingTitle,
@@ -48,7 +51,8 @@ const Dashboard = () => {
       <SectionHeader title={greetingTitle} description={`${todayLabel}. An overview of your school's activity.`} />
 
       {/* Stats Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      {statsError && <ErrorState title="The numbers could not be loaded" error={statsError} onRetry={retryStats} />}
+      <div className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 ${statsError ? "hidden" : ""}`}>
         {isStatsLoading
           ? statCards.map((stat) => <StatCardSkeleton key={stat.title} />)
           : statCards.map((stat, index) => (

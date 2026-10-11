@@ -18,7 +18,9 @@ const useOrganizationController = () => {
   const [searchTerm, setSearchTerm] = useState("");
 
   const navigateHome = (organizationId: string) => {
-    navigate(`/${organizationId}/${user?.role}`);
+    // each school opens in the person's own role there
+    const school = organization.find((w) => w.id === organizationId) ?? getAllOrganization.data?.items.find((w) => w.id === organizationId);
+    navigate(`/${organizationId}/${school?.myRole ?? user?.role}`);
     Cookies.set(USER_ACCESS_KEY.ORGANIZATION_ID, organizationId, authCookieOptions(30));
     const workspaceName = organization.find((w) => w.id === organizationId)?.name || "";
     Cookies.set(USER_ACCESS_KEY.ORGANIZATION_NAME, workspaceName, authCookieOptions(30));
@@ -51,6 +53,9 @@ const useOrganizationController = () => {
     organization: filteredOrganizations,
     hasAnyOrganization: organization.length > 0,
     isLoading: getAllOrganization.isLoading,
+    // a failed load shows an error with a retry, not an empty page
+    loadError: getAllOrganization.isError ? getAllOrganization.error : null,
+    retryLoad: () => getAllOrganization.refetch(),
     navigateHome,
     signOut,
     isAddModalOpen: isAddModalOpen || !!editingOrganization,

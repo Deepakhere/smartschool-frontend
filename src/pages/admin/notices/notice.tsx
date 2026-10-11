@@ -1,3 +1,4 @@
+import Pager from "@/components/pager";
 import { DocumentArrowDownIcon, EyeIcon, EllipsisHorizontalIcon, TrashIcon } from "@heroicons/react/24/outline";
 
 import NoticeModal from "@/components/notice-modal";
@@ -5,9 +6,8 @@ import NoticePreviewModal from "@/components/notice-preview-modal/notice-preview
 import DeleteConfirmationDialog from "@/components/delete-confirmation-dialog";
 import NoRecordFound from "@/components/no-record-found";
 import useNoticeController from "./notice-controller";
-import Spinner from "@/components/spinner";
 import AttachmentPreviewModal from "./preview-modal";
-import { Table, TableHeader, TableHead, TableBody, TableRow, TableCell } from "@/components/table";
+import { Table, TableHeader, TableHead, TableBody, TableRow, TableCell, TableSkeleton } from "@/components/table";
 import SectionHeader from "@/components/section-header";
 import { usePageHeader } from "@/hooks";
 
@@ -15,6 +15,10 @@ const AdminNotices = () => {
   const {
     t,
     notices,
+    page,
+    setPage,
+    pageSize,
+    totalNotices,
     isNoticeModalOpen,
     isLoadingNoticeList,
     isFetchingNoticeList,
@@ -62,7 +66,17 @@ const AdminNotices = () => {
         <div className="bg-white shadow overflow-hidden sm:rounded-lg">
           <div>
             {isLoadingNoticeList ? (
-              <Spinner />
+              <Table>
+                <TableHeader>
+                  <TableHead>Title</TableHead>
+                  <TableHead className="text-center">Type</TableHead>
+                  <TableHead className="text-center">Audience</TableHead>
+                  <TableHead className="text-center">Date</TableHead>
+                  <TableHead className="text-center">Created At</TableHead>
+                  <TableHead className="text-center">Actions</TableHead>
+                </TableHeader>
+                <TableSkeleton columns={6} />
+              </Table>
             ) : notices.length === 0 ? (
               <NoRecordFound t={t} searchTerm="" clearFilters={() => {}} />
             ) : (
@@ -171,10 +185,11 @@ const AdminNotices = () => {
                     ))}
                   </TableBody>
                 ) : (
-                  <Spinner />
+                  <TableSkeleton columns={6} />
                 )}
               </Table>
             )}
+            <Pager page={page} pageSize={pageSize} total={totalNotices} onPageChange={setPage} />
           </div>
         </div>
       </div>

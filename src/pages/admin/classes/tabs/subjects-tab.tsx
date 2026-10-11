@@ -6,14 +6,13 @@ import DeleteConfirmationDialog from "@/components/delete-confirmation-dialog";
 import EmptyState from "@/components/empty-state";
 import FormDialog from "@/components/form-dialog";
 import RowMenu, { RowMenuItem } from "@/components/row-menu";
-import Spinner from "@/components/spinner";
 import StatusBadge from "@/components/status-badge";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/table";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow, TableSkeleton } from "@/components/table";
 import { useMutationFeedback } from "@/hooks";
 import { IAcademicYear, ISubject } from "@/types";
 import { useCreateSubject, useDeactivateSubject, useGetSubjects, useUpdateSubject } from "../service/academics-service";
 import { defaultSubjectFormValues, SUBJECT_TYPES, subjectFormSchema, SubjectFormValues } from "../classes.schema";
-import { SelectField, TextField } from "../components/form-fields";
+import { SelectField, TextField } from "@/components/form-fields";
 import ShowInactiveToggle from "../components/show-inactive-toggle";
 import Toolbar, { PrimaryButton } from "../components/toolbar";
 import YearPicker from "../components/year-picker";
@@ -89,7 +88,18 @@ const SubjectsTab = ({ organizationId, years, yearId, onYearChange }: SubjectsTa
           description="Subjects are set up per academic year. Pick one above, or add a year first."
         />
       ) : subjects.isLoading ? (
-        <Spinner />
+        <div className="p-4">
+          <Table>
+            <TableHeader>
+              <TableHead>Subject</TableHead>
+              <TableHead>Code</TableHead>
+              <TableHead>Type</TableHead>
+              <TableHead>Status</TableHead>
+              <TableHead className="text-right">Actions</TableHead>
+            </TableHeader>
+            <TableSkeleton columns={5} />
+          </Table>
+        </div>
       ) : items.length === 0 ? (
         <EmptyState
           title="No subjects in this year"

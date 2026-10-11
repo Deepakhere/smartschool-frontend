@@ -9,7 +9,7 @@ import {
   AlertDialogDescription,
   AlertDialogTitle,
 } from "../ui/alert-dialog";
-import ButtonSpinner from "@/icons/button-spinner";
+import { Button } from "@/components/ui/button";
 
 interface DeleteConfirmationDialogProps {
   open: boolean;
@@ -56,20 +56,24 @@ const DeleteConfirmationDialog = ({
         <AlertDialogDescription className="mt-2">{description}</AlertDialogDescription>
 
         <div className="mt-6 flex w-full flex-col-reverse gap-3 sm:flex-row sm:justify-center">
-          <AlertDialogCancel disabled={isLoading} className="mt-0 sm:w-32">
-            {cancelLabel}
+          <AlertDialogCancel asChild>
+            <Button variant="secondary" disabled={isLoading} className="sm:w-32">
+              {cancelLabel}
+            </Button>
           </AlertDialogCancel>
-          <AlertDialogAction
-            disabled={isLoading}
-            className={`sm:w-32 ${tone === "neutral" ? "bg-primary-600 hover:bg-primary-700 focus:ring-primary-500" : ""}`}
-            onClick={(e) => {
-              // AlertDialogAction closes the dialog on click by default; the confirm
-              // handler decides when to close (only after the mutation succeeds)
-              e.preventDefault();
-              onConfirm();
-            }}
-          >
-            {isLoading ? <ButtonSpinner /> : confirmLabel}
+          <AlertDialogAction asChild>
+            <Button
+              variant={tone === "danger" ? "danger" : "primary"}
+              loading={isLoading}
+              className="sm:w-32"
+              onClick={(e) => {
+                // the confirm handler decides when to close (only after the mutation succeeds)
+                e.preventDefault();
+                onConfirm();
+              }}
+            >
+              {!isLoading && confirmLabel}
+            </Button>
           </AlertDialogAction>
         </div>
       </div>

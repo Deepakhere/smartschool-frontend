@@ -1,4 +1,4 @@
-// exports an array of flat objects as a downloaded CSV file — no backend round trip,
+// exports an array of flat objects as a downloaded CSV file - no backend round trip,
 // since every screen that needs this already has the data loaded for its table
 export const exportToCsv = (filename: string, rows: Record<string, string | number | null | undefined>[]) => {
   if (!rows.length) return;

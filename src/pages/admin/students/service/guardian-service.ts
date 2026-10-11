@@ -1,17 +1,19 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 import apiClient from "@/config";
-import { IAPIError, IAddGuardianValue } from "@/types";
+import { IAPIError, IAddGuardianValue, IAxiosResponse } from "@/types";
 import { API_QUERY_KEY, APIS_ROUTES } from "@/utils";
 
 const base = (organizationId: string, studentId: string) =>
   `${APIS_ROUTES.STUDENT_PROFILE}/${organizationId}/student/${studentId}/guardian`;
 
+// `invited` tells whether a new parent was emailed an invite to set their password
 export const useAddGuardian = (organizationId: string, studentId: string) => {
   const queryClient = useQueryClient();
-  return useMutation<void, IAPIError, IAddGuardianValue>({
+  return useMutation<{ invited: boolean }, IAPIError, IAddGuardianValue>({
     mutationFn: async (value) => {
-      await apiClient.post(base(organizationId, studentId), value);
+      const result = await apiClient.post<null, IAxiosResponse<{ invited: boolean }>>(base(organizationId, studentId), value);
+      return result.data.Data;
     },
     onSuccess: () => queryClient.invalidateQueries({ queryKey: [API_QUERY_KEY.GET_STUDENT_BY_ID, studentId] }),
   });
@@ -23,7 +25,11 @@ export const useSetPrimaryGuardian = (organizationId: string, studentId: string)
     mutationFn: async (guardianLinkId) => {
       await apiClient.put(`${base(organizationId, studentId)}/${guardianLinkId}`, { isPrimaryGuardian: true });
     },
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: [API_QUERY_KEY.GET_STUDENT_BY_ID, studentId] }),
+    // the primary guardian is the parent the student list and export show
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [API_QUERY_KEY.GET_STUDENT_BY_ID, studentId] });
+      queryClient.invalidateQueries({ queryKey: [API_QUERY_KEY.GET_STUDENT_PROFILE, organizationId] });
+    },
   });
 };
 

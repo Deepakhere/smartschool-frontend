@@ -1,14 +1,15 @@
 import { useParams } from "react-router-dom";
 
-import { useAuth } from "@/context/auth-context";
+import { useCurrentRole } from "@/context/tenant-context";
 import { usePageHeaderContext } from "@/context/page-header-context";
 
 export const useHeaderController = () => {
   const { organizationId } = useParams();
-  const { user } = useAuth();
+  // the role in the current school decides the menus and links
+  const role = useCurrentRole();
   const { config: pageHeaderConfig } = usePageHeaderContext();
 
-  const homePath = `/${organizationId}/${user?.role}/dashboard`;
+  const homePath = `/${organizationId}/${role}/dashboard`;
 
   return {
     homePath,

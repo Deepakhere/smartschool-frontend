@@ -14,6 +14,9 @@ const useParentFeesController = () => {
     t,
     fees,
     isLoading: getMyFees.isLoading,
+    // a failed load shows an error with a retry, not an empty page
+    loadError: getMyFees.isError ? getMyFees.error : null,
+    retryLoad: () => getMyFees.refetch(),
   };
 };
 

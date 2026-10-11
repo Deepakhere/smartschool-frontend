@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import toast from "react-hot-toast";
 
 import {
@@ -9,57 +9,64 @@ import {
 } from "./service/platform-service";
 import { ICreateAccountValue, IAddOrganizationToAccountValue } from "@/types";
 
+interface StatusTarget {
+  accountId: string;
+  name: string;
+  currentStatus: string;
+}
+
 export const usePlatformController = () => {
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [addSchoolAccountId, setAddSchoolAccountId] = useState<string | null>(null);
+  const [statusTarget, setStatusTarget] = useState<StatusTarget | null>(null);
 
   const accounts = useGetAccounts();
   const createAccount = useCreateAccount();
   const addOrganization = useAddOrganizationToAccount(addSchoolAccountId || "");
   const updateStatus = useUpdateAccountStatus();
 
-  useEffect(() => {
-    if (createAccount.isSuccess) {
-      toast.success(
-        createAccount.data?.ownerInvited
-          ? "Customer created — an invite email was sent to the owner."
-          : "Customer created — the existing owner now has access.",
-      );
-      setIsCreateModalOpen(false);
-    }
-    if (createAccount.isError) {
-      toast.error(createAccount.error?.response?.Error?.message || "Failed to create customer");
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [createAccount.isSuccess, createAccount.isError]);
+  const handleCreateAccount = (value: ICreateAccountValue) =>
+    createAccount.mutate(value, {
+      onSuccess: (data) => {
+        toast.success(
+          data?.ownerInvited
+            ? "Customer created. An invite email was sent to the owner."
+            : "Customer created. The existing owner now has access."
+        );
+        setIsCreateModalOpen(false);
+      },
+      onError: (error) => toast.error(error?.response?.Error?.message || "Failed to create customer"),
+    });
 
-  useEffect(() => {
-    if (addOrganization.isSuccess) {
-      toast.success("School added successfully.");
-      setAddSchoolAccountId(null);
-    }
-    if (addOrganization.isError) {
-      toast.error(addOrganization.error?.response?.Error?.message || "Failed to add school");
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [addOrganization.isSuccess, addOrganization.isError]);
+  const handleAddOrganization = (value: IAddOrganizationToAccountValue) =>
+    addOrganization.mutate(value, {
+      onSuccess: () => {
+        toast.success("School added successfully.");
+        setAddSchoolAccountId(null);
+      },
+      onError: (error) => toast.error(error?.response?.Error?.message || "Failed to add school"),
+    });
 
-  useEffect(() => {
-    if (updateStatus.isError) {
-      toast.error(updateStatus.error?.response?.Error?.message || "Failed to update status");
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [updateStatus.isError]);
-
-  const handleCreateAccount = (value: ICreateAccountValue) => createAccount.mutate(value);
-  const handleAddOrganization = (value: IAddOrganizationToAccountValue) => addOrganization.mutate(value);
-  const handleToggleStatus = (accountId: string, currentStatus: string) => {
-    updateStatus.mutate({ accountId, status: currentStatus === "suspended" ? "active" : "suspended" });
+  const confirmStatusChange = () => {
+    if (!statusTarget) return;
+    const status = statusTarget.currentStatus === "suspended" ? "active" : "suspended";
+    updateStatus.mutate(
+      { accountId: statusTarget.accountId, status },
+      {
+        onSuccess: () => {
+          toast.success(status === "suspended" ? "Customer suspended." : "Customer reactivated.");
+          setStatusTarget(null);
+        },
+        onError: (error) => toast.error(error?.response?.Error?.message || "Failed to update status"),
+      }
+    );
   };
 
   return {
     accounts: accounts.data?.items || [],
     isLoading: accounts.isLoading,
+    loadError: accounts.isError ? accounts.error : null,
+    retryLoad: () => accounts.refetch(),
     isCreateModalOpen,
     setIsCreateModalOpen,
     handleCreateAccount,
@@ -68,7 +75,9 @@ export const usePlatformController = () => {
     setAddSchoolAccountId,
     handleAddOrganization,
     isAddingOrganization: addOrganization.isPending,
-    handleToggleStatus,
+    statusTarget,
+    setStatusTarget,
+    confirmStatusChange,
     isUpdatingStatus: updateStatus.isPending,
   };
 };

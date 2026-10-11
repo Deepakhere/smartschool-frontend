@@ -14,6 +14,9 @@ const useTeacherDashboardController = () => {
   return {
     name: user?.name || "",
     isLoading: teachingLoad.isLoading,
+    // a failed load shows an error with a retry, not an empty page
+    loadError: teachingLoad.isError ? teachingLoad.error : null,
+    retryLoad: () => teachingLoad.refetch(),
     assignments: teachingLoad.data?.assignments || [],
     todaySlots: teachingLoad.data?.todaySlots || [],
     recentNotices: teachingLoad.data?.recentNotices || [],

@@ -1,9 +1,14 @@
 import Spinner from "@/components/spinner";
 import NoRecordFound from "@/components/no-record-found";
 import CustomSelectDropdown from "@/components/custom-select";
-import { Table, TableHeader, TableHead, TableBody, TableRow, TableCell } from "@/components/table";
+import { Table, TableHeader, TableHead, TableBody, TableRow, TableCell, TableSkeleton } from "@/components/table";
 import { SelectOption } from "@/types";
 import SectionHeader from "@/components/section-header";
+import DeleteConfirmationDialog from "@/components/delete-confirmation-dialog";
+import ErrorState from "@/components/error-state";
+import FormDialog from "@/components/form-dialog";
+import { SelectField } from "@/components/form-fields";
+import { Button } from "@/components/ui/button";
 import useParentPTMController from "./ptm-controller";
 
 const ParentPTM = () => {
@@ -11,27 +16,33 @@ const ParentPTM = () => {
     t,
     events,
     slots,
-    children,
+    bookingChildren,
     bookings,
+    isLoadingBookings,
+    bookingsError,
+    retryBookings,
     isLoadingEvents,
     isLoadingSlots,
     isBooking,
     selectedEventId,
     setSelectedEventId,
     bookingSlotId,
-    selectedStudentId,
-    setSelectedStudentId,
+    bookingSlot,
+    bookingForm,
     openBookingFor,
     closeBooking,
     confirmBooking,
-    handleCancelBooking,
+    bookingToCancel,
+    setBookingToCancel,
+    confirmCancelBooking,
+    isCancelling,
   } = useParentPTMController();
 
   const eventOptions: SelectOption[] = events.map((event) => ({
     id: event.id,
     name: `${event.title} (${new Date(event.date).toLocaleDateString()})`,
   }));
-  const childOptions: SelectOption[] = children.map((c) => ({ id: c.studentId.id, name: c.studentId.name }));
+  const childOptions: SelectOption[] = bookingChildren.map((c) => ({ id: c.studentId.id, name: c.studentId.name }));
 
   return (
     <div className="max-w-7xl mx-auto">
@@ -41,7 +52,19 @@ const ParentPTM = () => {
       />
       <div className="bg-white rounded-lg shadow p-6 mb-6">
         <h2 className="text-lg font-medium text-gray-900 mb-4">My bookings</h2>
-        {bookings.length === 0 ? (
+        {bookingsError ? (
+          <ErrorState error={bookingsError} onRetry={retryBookings} />
+        ) : isLoadingBookings ? (
+          <Table>
+            <TableHeader>
+              <TableHead>Student</TableHead>
+              <TableHead className="text-center">Time</TableHead>
+              <TableHead className="text-center">Join</TableHead>
+              <TableHead className="text-center">Action</TableHead>
+            </TableHeader>
+            <TableSkeleton columns={4} />
+          </Table>
+        ) : bookings.length === 0 ? (
           <p className="text-sm text-gray-500">No bookings yet.</p>
         ) : (
           <Table>
@@ -66,13 +89,17 @@ const ParentPTM = () => {
                           Join link
                         </a>
                       ) : (
-                        "—"
+                        "-"
                       )}
                     </TableCell>
                     <TableCell className="text-center">
-                      <button onClick={() => handleCancelBooking(b.id)} className="text-sm text-red-600 hover:text-red-800">
-                        Cancel
-                      </button>
+                      {slot && new Date(slot.startAt) > new Date() ? (
+                        <Button variant="link" onClick={() => setBookingToCancel(b.id)} className="text-red-600 hover:text-red-800">
+                          Cancel
+                        </Button>
+                      ) : (
+                        <span className="text-sm text-gray-400">Past</span>
+                      )}
                     </TableCell>
                   </TableRow>
                 );
@@ -110,6 +137,7 @@ const ParentPTM = () => {
                       const full = slot.bookedCount >= slot.capacity;
                       return (
                         <button
+                          type="button"
                           key={slot.id}
                           disabled={full}
                           onClick={() => openBookingFor(slot.id)}
@@ -132,36 +160,41 @@ const ParentPTM = () => {
         )}
       </div>
 
-      {bookingSlotId && (
-        <div className="fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center z-10 p-4">
-          <div className="bg-white rounded-lg shadow-xl max-w-sm w-full max-h-[90vh] overflow-y-auto">
-            <div className="p-6">
-            <h3 className="text-lg font-medium text-gray-900 mb-4">Confirm booking</h3>
-            <CustomSelectDropdown
-              label="Booking for"
-              options={childOptions}
-              value={childOptions.find((o) => o.id === selectedStudentId) || childOptions[0] || null}
-              onChange={(o) => setSelectedStudentId(String(o.id))}
-            />
-            <div className="mt-5 flex gap-2">
-              <button
-                onClick={confirmBooking}
-                disabled={isBooking}
-                className="px-4 py-2 rounded-md text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 disabled:opacity-50"
-              >
-                Confirm
-              </button>
-              <button
-                onClick={closeBooking}
-                className="px-4 py-2 rounded-md text-sm font-medium text-gray-700 bg-white border border-gray-300 hover:bg-gray-50"
-              >
-                Cancel
-              </button>
-            </div>
-            </div>
-          </div>
-        </div>
-      )}
+      <FormDialog
+        form={bookingForm}
+        open={!!bookingSlotId}
+        onClose={closeBooking}
+        title="Confirm booking"
+        description={
+          bookingSlot
+            ? `${typeof bookingSlot.teacherUserId === "object" ? bookingSlot.teacherUserId.name : ""}, ${new Date(
+                bookingSlot.startAt
+              ).toLocaleString([], { dateStyle: "medium", timeStyle: "short" })}`
+            : undefined
+        }
+        submitLabel="Confirm"
+        isSubmitting={isBooking}
+        submitDisabled={!childOptions.length}
+        onSubmit={confirmBooking}
+        className="max-w-sm"
+      >
+        {childOptions.length ? (
+          <SelectField form={bookingForm} name="studentId" label="Booking for" options={childOptions} />
+        ) : (
+          <p className="text-sm text-gray-600">None of your children are in this slot's section.</p>
+        )}
+      </FormDialog>
+
+      <DeleteConfirmationDialog
+        open={!!bookingToCancel}
+        onClose={() => setBookingToCancel(null)}
+        onConfirm={confirmCancelBooking}
+        isLoading={isCancelling}
+        title="Cancel this meeting?"
+        description="The slot is freed for other parents. You can book again while slots are open."
+        confirmLabel="Cancel meeting"
+        cancelLabel="Keep it"
+      />
     </div>
   );
 };

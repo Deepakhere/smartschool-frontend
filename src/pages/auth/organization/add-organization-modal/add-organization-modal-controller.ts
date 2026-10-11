@@ -11,7 +11,7 @@ import { IOrganization } from "@/types";
 import { organizationFormSchema, OrganizationFormValues } from "./add-organization-modal.schema";
 
 // `organization` present = edit an existing school; absent = create a new one.
-// Both modes share one form and one logo control — logo upload always needs a
+// Both modes share one form and one logo control - logo upload always needs a
 // real organization id, so in create mode it fires right after the create
 // succeeds, using the id the server just handed back.
 const useAddOrganizationModalController = (
@@ -51,6 +51,11 @@ const useAddOrganizationModalController = (
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOpen, organization]);
 
+  useEffect(() => {
+    if (!logoFile || !logoPreviewUrl) return;
+    return () => URL.revokeObjectURL(logoPreviewUrl);
+  }, [logoFile, logoPreviewUrl]);
+
   const handleLogoFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
@@ -62,7 +67,7 @@ const useAddOrganizationModalController = (
   const onSubmit = form.handleSubmit((values) => {
     const finishUp = async (organizationId: string) => {
       if (logoFile) {
-        // the organization itself is already saved at this point — a logo failure
+        // the organization itself is already saved at this point - a logo failure
         // shouldn't block the modal from closing, but the user still needs to know
         await uploadLogo.mutateAsync({ organizationId, file: logoFile }).catch(() => {
           toast.error(t("messages.organization_logo_upload_failed", "Logo upload failed. You can try again from the school settings."));
@@ -99,7 +104,8 @@ const useAddOrganizationModalController = (
     logoPreviewUrl,
     handleLogoFileChange,
     onSubmit,
-    isLoading: isEditMode ? updateOrganization.isPending : createOrganization.isPending,
+    // the dialog stays open until the logo upload after a save has finished too
+    isLoading: (isEditMode ? updateOrganization.isPending : createOrganization.isPending) || uploadLogo.isPending,
     isUploadingLogo: uploadLogo.isPending,
   };
 };

@@ -1,3 +1,4 @@
+import ErrorState from "@/components/error-state";
 import { useParams } from "react-router-dom";
 import {
   UserGroupIcon,
@@ -10,28 +11,30 @@ import SectionHeader from "@/components/section-header";
 import Spinner from "@/components/spinner";
 import useGetParentDashboard from "./service/get-parent-dashboard";
 
-const formatMoney = (paise: number) => `${(paise / 100).toFixed(2)}`;
+import { formatMoney } from "@/utils";
 
 const ParentDashboard = () => {
   const { organizationId } = useParams();
-  const { data, isLoading } = useGetParentDashboard(organizationId || "");
+  const { data, isLoading, isError, error, refetch } = useGetParentDashboard(organizationId || "");
 
   const cards = [
-    { title: "My Children", value: data?.childrenCount ?? "—", icon: UserGroupIcon },
-    { title: "Upcoming Homework", value: data?.upcomingHomeworkCount ?? "—", icon: BookOpenIcon },
+    { title: "My Children", value: data?.childrenCount ?? "-", icon: UserGroupIcon },
+    { title: "Upcoming Homework", value: data?.upcomingHomeworkCount ?? "-", icon: BookOpenIcon },
     {
       title: "Pending Fees",
-      value: data ? formatMoney(data.pendingFeesTotal) : "—",
+      value: data ? formatMoney(data.pendingFeesTotal) : "-",
       icon: CurrencyDollarIcon,
     },
-    { title: "Active Notices", value: data?.recentNoticesCount ?? "—", icon: BellIcon },
+    { title: "Active Notices", value: data?.recentNoticesCount ?? "-", icon: BellIcon },
   ];
 
   return (
     <div className="max-w-7xl mx-auto">
       <SectionHeader title="Dashboard" description="A quick overview of your child's school activity" />
 
-      {isLoading ? (
+      {(isError ? error : null) ? (
+        <ErrorState error={(isError ? error : null)} onRetry={() => refetch()} />
+      ) : isLoading ? (
         <Spinner />
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">

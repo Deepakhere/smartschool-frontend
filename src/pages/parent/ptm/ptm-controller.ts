@@ -2,6 +2,9 @@ import { useState } from "react";
 import { useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import toast from "react-hot-toast";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
 
 import {
   useGetPTMEvents,
@@ -13,6 +16,8 @@ import {
 import { useGetMyChildren } from "./service/my-children-service";
 import { useError } from "@/hooks";
 
+const bookingSchema = z.object({ studentId: z.string().min(1, "Select a child to book for.") });
+
 const useParentPTMController = () => {
   const { t } = useTranslation();
   const { organizationId } = useParams();
@@ -20,7 +25,11 @@ const useParentPTMController = () => {
 
   const [selectedEventId, setSelectedEventId] = useState("");
   const [bookingSlotId, setBookingSlotId] = useState("");
-  const [selectedStudentId, setSelectedStudentId] = useState("");
+  const bookingForm = useForm<z.infer<typeof bookingSchema>>({
+    resolver: zodResolver(bookingSchema),
+    defaultValues: { studentId: "" },
+  });
+  const [bookingToCancel, setBookingToCancel] = useState<string | null>(null);
 
   const getPTMEvents = useGetPTMEvents(org);
   const getSlotsForEvent = useGetSlotsForEvent(org, selectedEventId);
@@ -37,20 +46,24 @@ const useParentPTMController = () => {
   const children = getMyChildren.data?.items || [];
   const bookings = getMyBookings.data?.items || [];
 
+  // a slot belongs to one section, so only the children in that section can be booked into it
+  const childrenForSlot = (slotId: string) => {
+    const slot = slots.find((s) => s.id === slotId);
+    return children.filter((c) => c.studentId.currentEnrollment?.sectionId?.id === slot?.sectionId);
+  };
+  const bookingChildren = bookingSlotId ? childrenForSlot(bookingSlotId) : [];
+  const bookingSlot = slots.find((s) => s.id === bookingSlotId) ?? null;
+
   const openBookingFor = (slotId: string) => {
     setBookingSlotId(slotId);
-    setSelectedStudentId(children[0]?.studentId.id || "");
+    bookingForm.reset({ studentId: childrenForSlot(slotId)[0]?.studentId.id || "" });
   };
 
   const closeBooking = () => setBookingSlotId("");
 
-  const confirmBooking = () => {
-    if (!selectedStudentId) {
-      toast.error("Select a child to book for.");
-      return;
-    }
+  const confirmBooking = bookingForm.handleSubmit(({ studentId }) => {
     bookSlot.mutate(
-      { slotId: bookingSlotId, studentId: selectedStudentId, ptmEventId: selectedEventId },
+      { slotId: bookingSlotId, studentId, ptmEventId: selectedEventId },
       {
         onSuccess: () => {
           toast.success("Slot booked! Check your email for confirmation.");
@@ -58,12 +71,14 @@ const useParentPTMController = () => {
         },
       }
     );
-  };
+  });
 
-  const handleCancelBooking = (bookingId: string) => {
-    cancelBooking.mutate(bookingId, {
+  const confirmCancelBooking = () => {
+    if (!bookingToCancel) return;
+    cancelBooking.mutate(bookingToCancel, {
       onSuccess: () => {
         toast.success("Booking cancelled.");
+        setBookingToCancel(null);
       },
     });
   };
@@ -72,20 +87,26 @@ const useParentPTMController = () => {
     t,
     events,
     slots,
-    children,
+    bookingChildren,
     bookings,
+    isLoadingBookings: getMyBookings.isLoading,
+    bookingsError: getMyBookings.isError ? getMyBookings.error : null,
+    retryBookings: () => getMyBookings.refetch(),
     isLoadingEvents: getPTMEvents.isLoading,
     isLoadingSlots: getSlotsForEvent.isLoading,
     isBooking: bookSlot.isPending,
     selectedEventId,
     setSelectedEventId,
     bookingSlotId,
-    selectedStudentId,
-    setSelectedStudentId,
+    bookingSlot,
+    bookingForm,
     openBookingFor,
     closeBooking,
     confirmBooking,
-    handleCancelBooking,
+    bookingToCancel,
+    setBookingToCancel,
+    confirmCancelBooking,
+    isCancelling: cancelBooking.isPending,
   };
 };
 

@@ -240,6 +240,18 @@ export const useGetTeacherAssignments = (organizationId: string, academicYearId?
     enabled: !!organizationId,
   });
 
+// the signed-in teacher's own classes, sections and subjects (any role may ask for its own)
+export interface IMyAssignment extends Omit<ITeacherAssignment, "academicYearId"> {
+  academicYearId: { id: string; name: string; isCurrent: boolean };
+}
+
+export const useGetMyTeacherAssignments = (organizationId: string, enabled = true) =>
+  useQuery<{ items: IMyAssignment[] }, IAPIError>({
+    queryKey: [API_QUERY_KEY.GET_TEACHER_ASSIGNMENTS, organizationId, "mine"],
+    queryFn: () => getItems<IMyAssignment>(`${base(organizationId)}/my-teacher-assignments`),
+    enabled: !!organizationId && enabled,
+  });
+
 const ASSIGNMENT_LISTS = [API_QUERY_KEY.GET_TEACHER_ASSIGNMENTS, API_QUERY_KEY.GET_SECTIONS];
 
 export const useAssignTeacher = (organizationId: string) =>

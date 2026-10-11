@@ -12,15 +12,17 @@ export interface ISectionRosterStudent {
   currentEnrollment: { rollNumber: string } | null;
 }
 
+// the section's active students, from the attendance roster (open to the section's teachers, unlike the admin
+// student list, and without students who have left, whom the server would refuse to mark)
 export const useGetSectionRoster = (organizationId: string, sectionId: string) =>
   useQuery<{ items: ISectionRosterStudent[] }, IAPIError>({
     queryKey: ["get-section-roster", organizationId, sectionId],
     queryFn: async () => {
-      const result = await apiClient.get<null, IAxiosResponse<{ items: ISectionRosterStudent[] }>>(
-        `${APIS_ROUTES.STUDENT_PROFILE}/${organizationId}/get-student-profile`,
-        { params: { sectionId, limit: 200, page: 1 } }
+      const result = await apiClient.get<null, IAxiosResponse<{ items: { id: string; name: string; rollNumber: string }[] }>>(
+        `${base(organizationId)}/section-roster`,
+        { params: { sectionId } }
       );
-      return result.data.Data;
+      return { items: result.data.Data.items.map(({ rollNumber, ...student }) => ({ ...student, currentEnrollment: { rollNumber } })) };
     },
     enabled: !!organizationId && !!sectionId,
   });
@@ -74,9 +76,11 @@ export const useMarkAttendance = (organizationId: string) => {
     mutationFn: async (value) => {
       await apiClient.post(`${base(organizationId)}/mark`, value);
     },
-    onSuccess: (_data, variables) =>
-      queryClient.invalidateQueries({
-        queryKey: [API_QUERY_KEY.GET_SECTION_ATTENDANCE, organizationId, variables.sectionId, variables.date],
-      }),
+    // the day, the section's report and each student's history all change
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [API_QUERY_KEY.GET_SECTION_ATTENDANCE, organizationId] });
+      queryClient.invalidateQueries({ queryKey: [API_QUERY_KEY.GET_SECTION_ATTENDANCE_REPORT, organizationId] });
+      queryClient.invalidateQueries({ queryKey: ["get-student-attendance-history"] });
+    },
   });
 };

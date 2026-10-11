@@ -4,7 +4,7 @@ import { XMarkIcon } from "@heroicons/react/24/outline";
 
 import { cn } from "@/lib/utils";
 
-// the shared centered-modal primitive — replaces Headless UI's Dialog+Transition
+// the shared centered-modal primitive - replaces Headless UI's Dialog+Transition
 // so every modal in the app is built on one primitive library (Radix), matching
 // AlertDialog and Sheet
 const Dialog = DialogPrimitive.Root;
@@ -29,7 +29,7 @@ DialogOverlay.displayName = DialogPrimitive.Overlay.displayName;
 
 interface DialogContentProps extends React.ComponentPropsWithoutRef<typeof DialogPrimitive.Content> {
   // most modals compose their own header/close button (some need extra actions next to it,
-  // e.g. a Print button) — pass this to get the plain default close button instead
+  // e.g. a Print button) - pass this to get the plain default close button instead
   showDefaultClose?: boolean;
 }
 
@@ -42,6 +42,9 @@ const DialogContent = React.forwardRef<React.ElementRef<typeof DialogPrimitive.C
         className={cn(
           "fixed left-1/2 top-1/2 z-50 flex max-h-[90vh] w-full max-w-lg -translate-x-1/2 -translate-y-1/2 flex-col overflow-hidden rounded-lg bg-white text-left shadow-xl",
           "data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95",
+          // the animation replaces `transform`, so it must carry the -50% centring itself; without it the dialog
+          // starts off-centre and appears to come in from the bottom-right corner
+          "data-[state=open]:slide-in-from-left-1/2 data-[state=open]:slide-in-from-top-1/2 data-[state=closed]:slide-out-to-left-1/2 data-[state=closed]:slide-out-to-top-1/2",
           className
         )}
         {...props}

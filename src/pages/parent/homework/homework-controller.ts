@@ -28,5 +28,8 @@ export const useHomeworkController = () => {
     setStudentId,
     homeworkList: homework.data?.items || [],
     isLoading: homework.isLoading,
+    // a failed load shows an error with a retry, not an empty page
+    loadError: homework.isError ? homework.error : null,
+    retryLoad: () => homework.refetch(),
   };
 };

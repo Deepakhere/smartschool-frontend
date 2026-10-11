@@ -4,6 +4,8 @@ import { IAPIError, IAxiosResponse, ICreateNoticeRequest } from "@/types";
 import { API_MUTATION_KEY, API_QUERY_KEY, APIS_ROUTES } from "@/utils";
 
 interface ICreatNoticeResponse {
+  // "Notice created successfully." or "Notice scheduled successfully."
+  message?: string;
   id: string;
   title: string;
   content: string;

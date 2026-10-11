@@ -10,7 +10,7 @@ const apiClient = axios.create({
   baseURL: import.meta.env.VITE_API_URL,
 });
 
-// separate instance for the refresh call itself — must never go through
+// separate instance for the refresh call itself - must never go through
 // apiClient's own interceptors, or a failed refresh would recurse into itself
 const refreshClient = axios.create({
   baseURL: import.meta.env.VITE_API_URL,
@@ -22,24 +22,6 @@ const formatApiError = (error: unknown) => ({
   message: get(error, "response.data.Error.message"),
 });
 
-type PendingRequest = {
-  resolve: (token: string) => void;
-  reject: (error: unknown) => void;
-};
-
-let isRefreshing = false;
-let pendingQueue: PendingRequest[] = [];
-
-const resolveQueue = (token: string) => {
-  pendingQueue.forEach(({ resolve }) => resolve(token));
-  pendingQueue = [];
-};
-
-const rejectQueue = (error: unknown) => {
-  pendingQueue.forEach(({ reject }) => reject(error));
-  pendingQueue = [];
-};
-
 const clearSessionAndRedirect = () => {
   Cookies.remove(USER_ACCESS_KEY.TOKEN);
   Cookies.remove(USER_ACCESS_KEY.REFRESH_TOKEN);
@@ -47,6 +29,44 @@ const clearSessionAndRedirect = () => {
   if (!isAuthPage()) {
     window.location.href = "/login";
   }
+};
+
+const bearerOf = (headers: unknown) => String(get(headers, "accesstoken", "")).replace(/^Bearer /, "");
+
+// Swaps the refresh token for new tokens, one tab at a time. The server rotates refresh tokens (the old one stops
+// working at once), so two tabs refreshing together would make one of them fail and sign the user out; a browser lock
+// lets one tab refresh while the others wait, and the waiting ones then find the new token already saved.
+// `failedToken` is the access token the rejected request carried.
+let refreshInFlight: Promise<string> | null = null;
+
+const refreshTokens = (failedToken: string): Promise<string> => {
+  const run = async () => {
+    const current = Cookies.get(USER_ACCESS_KEY.TOKEN);
+    if (current && current !== failedToken) return current;
+
+    const refreshToken = Cookies.get(USER_ACCESS_KEY.REFRESH_TOKEN);
+    if (!refreshToken) throw new Error("No refresh token");
+    try {
+      const { data } = await refreshClient.post(APIS_ROUTES.REFRESH_TOKEN, { refreshToken });
+      const newToken = data?.Data?.token;
+      if (!newToken) throw new Error("Refresh did not return a token");
+
+      Cookies.set(USER_ACCESS_KEY.TOKEN, newToken, authCookieOptions(1));
+      if (data?.Data?.refreshToken) Cookies.set(USER_ACCESS_KEY.REFRESH_TOKEN, data.Data.refreshToken, authCookieOptions(30));
+      return newToken as string;
+    } catch (error) {
+      // another tab may have refreshed with this same token a moment earlier; its new token is still good
+      const latest = Cookies.get(USER_ACCESS_KEY.TOKEN);
+      if (latest && latest !== failedToken && Cookies.get(USER_ACCESS_KEY.REFRESH_TOKEN) !== refreshToken) return latest;
+      throw error;
+    }
+  };
+
+  // within this tab, requests that fail together share one refresh
+  refreshInFlight ??= (navigator.locks ? navigator.locks.request("opscul-token-refresh", run) : run()).finally(() => {
+    refreshInFlight = null;
+  });
+  return refreshInFlight;
 };
 
 // Request interceptor to add token to request headers
@@ -74,76 +94,52 @@ apiClient.interceptors.response.use(
 
   // Handle errors
   async (error) => {
+    // a failed file download (receipt, report card) carries its JSON error as a Blob; read it so callers get the message
+    const body = error?.response?.data;
+    if (typeof Blob !== "undefined" && body instanceof Blob && body.type.includes("json")) {
+      try {
+        error.response.data = JSON.parse(await body.text());
+      } catch {
+        // not JSON after all; keep the generic message
+      }
+    }
+
     const originalRequest = error.config;
     const status = error?.response?.status;
     const isAuthRoute =
       originalRequest?.url?.includes(APIS_ROUTES.REFRESH_TOKEN) ||
       originalRequest?.url?.includes(APIS_ROUTES.SIGNIN);
 
-    // 401 on any non-auth route: try one silent refresh before giving up.
-    // Everything that can end a session funnels through clearSessionAndRedirect
-    // so there's exactly one place that decides "the session is dead, go to /login".
+    // 401 on any non-auth route: refresh once and retry. Everything that ends a session goes through
+    // clearSessionAndRedirect, the one place that decides "the session is over, go to /login".
     if (status === 401 && !isAuthRoute) {
       if (originalRequest?._retry || !Cookies.get(USER_ACCESS_KEY.REFRESH_TOKEN)) {
         clearSessionAndRedirect();
         return Promise.reject(formatApiError(error));
       }
-
       originalRequest._retry = true;
 
-      if (isRefreshing) {
-        return new Promise((resolve, reject) => {
-          pendingQueue.push({
-            resolve: (newToken) => {
-              originalRequest.headers["accesstoken"] = `Bearer ${newToken}`;
-              resolve(apiClient(originalRequest));
-            },
-            reject,
-          });
-        });
-      }
-
-      isRefreshing = true;
       try {
-        const refreshToken = Cookies.get(USER_ACCESS_KEY.REFRESH_TOKEN);
-        const { data } = await refreshClient.post(APIS_ROUTES.REFRESH_TOKEN, {
-          refreshToken,
-        });
-        const newToken = data?.Data?.token;
-        const newRefreshToken = data?.Data?.refreshToken;
-
-        if (!newToken) {
-          throw new Error("Refresh did not return a token");
-        }
-
-        Cookies.set(USER_ACCESS_KEY.TOKEN, newToken, authCookieOptions(1));
-        if (newRefreshToken) {
-          Cookies.set(USER_ACCESS_KEY.REFRESH_TOKEN, newRefreshToken, authCookieOptions(30));
-        }
-
-        isRefreshing = false;
-        resolveQueue(newToken);
-
+        const newToken = await refreshTokens(bearerOf(originalRequest.headers));
         originalRequest.headers["accesstoken"] = `Bearer ${newToken}`;
         return apiClient(originalRequest);
       } catch {
-        isRefreshing = false;
-        const formatted = formatApiError(error);
-        rejectQueue(formatted);
         clearSessionAndRedirect();
-        return Promise.reject(formatted);
+        return Promise.reject(formatApiError(error));
       }
     }
 
-    if (status === 403) {
-      // a refused page load goes to the access-denied screen; a refused action (create, update,
-      // delete) stays where it happened so the caller can tell the user why it was refused
-      if (originalRequest?.method?.toLowerCase() === "get") window.location.href = "/not-access";
-    } else if (status === 405) {
-      toast.error("token is expired please login and continue");
+    // A refusal (403) is answered where it happened: the page shows it, and routes are already guarded by role.
+    // Sending the whole app to "access denied" because one background request was refused threw people off pages
+    // they were allowed to use.
+    if (status === 405) {
+      toast.error("Your session has expired. Please sign in again.");
       clearSessionAndRedirect();
-    } else if (status === 500 || status === 503) {
-      alert("Server under maintenance");
+    } else if (status && status >= 500) {
+      // one toast however many requests failed at once
+      toast.error(get(error, "response.data.Error.message") || "Something went wrong on our side. Please try again.", {
+        id: "server-error",
+      });
     }
 
     return Promise.reject(formatApiError(error));

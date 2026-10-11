@@ -1,11 +1,11 @@
 import { PlusIcon, MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 
-import Spinner from "@/components/spinner";
 import NoRecordFound from "@/components/no-record-found";
 import CustomSelectDropdown from "@/components/custom-select";
-import { Table, TableHeader, TableHead, TableBody, TableRow, TableCell } from "@/components/table";
+import { Table, TableHeader, TableHead, TableBody, TableRow, TableCell, TableSkeleton } from "@/components/table";
 import { CreateUpdateUserModal } from "./user-modal";
 import DeleteConfirmationDialog from "@/components/delete-confirmation-dialog";
+import Pager from "@/components/pager";
 import useUserDetailsController from "./user-details-controller";
 
 const UserDetails = () => {
@@ -21,8 +21,16 @@ const UserDetails = () => {
     permissionOptions,
     roleOptionsDropDown,
     searchTerm,
+    searchInput,
     isDeleteModalOpen,
     onSearchInputChange,
+    page,
+    setPage,
+    pageSize,
+    totalUsers,
+    openAddUser,
+    canEdit,
+    canDelete,
     deleteUserId,
     isFetchingGetAllUserDetails,
     isLoadingUpdateUserDetail,
@@ -31,11 +39,9 @@ const UserDetails = () => {
     isLoadingDeleteUser,
     onCancel,
     onRoleChange,
-    setSortBy,
-    setIsModalOpen,
+
     handleSubmituserDetails,
     handlePermissionChange,
-    setSearchTerm,
     handleDeleteUser,
     handleEditUserDetails,
     onClickDeleteUser,
@@ -53,10 +59,8 @@ const UserDetails = () => {
           <input
             type="text"
             placeholder="Search users..."
-            onChange={(e) => {
-              e.preventDefault();
-              onSearchInputChange(e.target.value);
-            }}
+            value={searchInput}
+            onChange={(e) => onSearchInputChange(e.target.value)}
             className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
           />
         </div>
@@ -83,7 +87,7 @@ const UserDetails = () => {
 
           {/* Add user  */}
           <button
-            onClick={() => setIsModalOpen(true)}
+            onClick={openAddUser}
             className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition-colors duration-200"
           >
             <PlusIcon className="h-5 w-5 mr-2" />
@@ -93,29 +97,16 @@ const UserDetails = () => {
       </div>
 
       {/* Table Section */}
-      {isLoadingGetAllUserDetails ? (
-        <div className="bg-white shadow rounded-lg border border-gray-200">
-          <Spinner />
-        </div>
-      ) : (
-        <Table>
-          <TableHeader>
-            <TableHead>{t("labels.username")}</TableHead>
-            <TableHead className="text-center">{t("labels.email")}</TableHead>
-            <TableHead className="text-center">{t("labels.role")}</TableHead>
-            <TableHead className="text-center">{t("labels.actions")}</TableHead>
-          </TableHeader>
-          {isFetchingGetAllUserDetails ? (
-            <TableBody>
-              <tr>
-                <td colSpan={4} className="px-6 py-10 text-center">
-                  <div className="flex justify-center items-center">
-                    <div className="h-8 w-8 border-t-2 border-b-2 border-primary-500 rounded-full animate-spin"></div>
-                  </div>
-                </td>
-              </tr>
-            </TableBody>
-          ) : users && users.length > 0 ? (
+      <Table>
+        <TableHeader>
+          <TableHead>{t("labels.username")}</TableHead>
+          <TableHead className="text-center">{t("labels.email")}</TableHead>
+          <TableHead className="text-center">{t("labels.role")}</TableHead>
+          <TableHead className="text-center">{t("labels.actions")}</TableHead>
+        </TableHeader>
+        {isLoadingGetAllUserDetails || isFetchingGetAllUserDetails ? (
+          <TableSkeleton columns={4} />
+        ) : users && users.length > 0 ? (
             <TableBody>
               {users.map((user) => (
                 <TableRow key={user.id}>
@@ -132,21 +123,18 @@ const UserDetails = () => {
                   </TableCell>
                   <TableCell className="text-center">
                     <button
-                      className={`text-primary-600 mr-4 ${
-                        user.permissions?.canUpdate ? "" : "cursor-not-allowed opacity-50"
-                      }`}
-                      title={t("messages.you_dont_have_permission_to_edit_user")}
+                      className="text-primary-600 mr-4 disabled:cursor-not-allowed disabled:opacity-50"
+                      disabled={!canEdit}
+                      title={canEdit ? undefined : t("messages.you_dont_have_permission_to_edit_user")}
                       onClick={() => handleEditUserDetails(user.id, true)}
                     >
                       {t("labels.edit")}
                     </button>
-                    <button
-                      className={`text-red-600 ${user.permissions?.canDelete ? "" : "cursor-not-allowed opacity-50"}`}
-                      title={t("messages.you_dont_have_permission_to_delete_user")}
-                      onClick={() => onClickDeleteUser(user.id)}
-                    >
-                      {t("labels.delete")}
-                    </button>
+                    {canDelete(user.id) && (
+                      <button className="text-red-600" onClick={() => onClickDeleteUser(user.id)}>
+                        Remove
+                      </button>
+                    )}
                   </TableCell>
                 </TableRow>
               ))}
@@ -159,16 +147,16 @@ const UserDetails = () => {
                     t={t}
                     searchTerm={searchTerm}
                     clearFilters={() => {
-                      setSearchTerm("");
-                      setSortBy("all");
+                      onSearchInputChange("");
+                      onRoleChange("all");
                     }}
                   />
                 </td>
               </tr>
             </TableBody>
-          )}
-        </Table>
-      )}
+        )}
+      </Table>
+      <Pager page={page} pageSize={pageSize} total={totalUsers} onPageChange={setPage} />
 
       <CreateUpdateUserModal
         t={t}
@@ -187,16 +175,17 @@ const UserDetails = () => {
 
       <DeleteConfirmationDialog
         open={isDeleteModalOpen}
-        title="Delete User"
+        title="Remove from this school?"
         description={
           <>
-            Are you sure you want to delete{" "}
             <span className="font-medium italic text-gray-700">
-              {users?.find((u) => u.id === deleteUserId)?.name || "this user"}
-            </span>
-            ? This action cannot be undone.
+              {users?.find((u) => u.id === deleteUserId)?.name || "This user"}
+            </span>{" "}
+            will lose access to this school. If they belong to no other school, their account is deleted too. This
+            cannot be undone.
           </>
         }
+        confirmLabel="Remove"
         isLoading={isLoadingDeleteUser}
         onClose={onCancelDeleteModal}
         onConfirm={handleDeleteUser}

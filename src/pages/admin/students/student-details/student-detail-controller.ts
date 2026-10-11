@@ -55,6 +55,10 @@ const useStudentDetailController = () => {
   );
   const examResults = useGetResultsForStudent(organizationId || "", studentId || "");
 
+  // a refused edit (section full, roll number taken) and a refused primary change must be shown
+  useError({ mutation: updateStudent });
+  useError({ mutation: setPrimaryGuardian });
+
   useError({
     mutation: deleteStudent,
     cb: () => {
@@ -73,7 +77,7 @@ const useStudentDetailController = () => {
         rollNumber: item.currentEnrollment?.rollNumber || "",
       } as IStudentFormData);
 
-      // arrived here via the list page's "Edit" action — open the edit modal
+      // arrived here via the list page's "Edit" action - open the edit modal
       // once the full student data is in, then clear the flag so a refresh/back doesn't reopen it
       const state = location.state as { openEdit?: boolean } | null;
       if (state?.openEdit) {
@@ -123,7 +127,7 @@ const useStudentDetailController = () => {
 
   useEffect(() => {
     if (addGuardian.isSuccess) {
-      toast.success("Guardian added successfully.");
+      toast.success(addGuardian.data?.invited ? "Guardian added. An invite email was sent to them." : "Guardian added successfully.");
       setIsGuardianModalOpen(false);
     }
     if (addGuardian.isError) {
@@ -140,7 +144,7 @@ const useStudentDetailController = () => {
   }, [removeGuardian.isError]);
 
   const handleSetPrimaryGuardian = (guardianLinkId: string) => {
-    setPrimaryGuardian.mutate(guardianLinkId);
+    setPrimaryGuardian.mutate(guardianLinkId, { onSuccess: () => toast.success("Primary guardian updated.") });
   };
 
   const handleRemoveGuardian = (guardianLinkId: string) => {

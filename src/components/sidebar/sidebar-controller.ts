@@ -15,12 +15,13 @@ import {
   CalendarDaysIcon,
   ArrowTrendingUpIcon,
 } from "@heroicons/react/24/outline";
-import { useAuth } from "@/context/auth-context";
+import { useCurrentRole } from "@/context/tenant-context";
 
 export const useSidebarController = () => {
   const { organizationId } = useParams();
   const location = useLocation();
-  const { user } = useAuth();
+  // the role in the current school decides the menus and links
+  const role = useCurrentRole();
 
   const isActive = (path: string) => {
     return location.pathname.includes(path);
@@ -92,6 +93,7 @@ export const useSidebarController = () => {
       items: [
         { name: "Attendance", href: `/${organizationId}/teacher/attendance`, icon: ClipboardDocumentCheckIcon, current: isActive("/attendance") },
         { name: "Homework", href: `/${organizationId}/teacher/homework`, icon: BookOpenIcon, current: isActive("/homework") },
+        { name: "Marks Entry", href: `/${organizationId}/teacher/marks`, icon: ChartBarIcon, current: isActive("/marks") },
         { name: "PTM", href: `/${organizationId}/teacher/ptm`, icon: UsersIcon, current: isActive("/ptm") },
         { name: "Leave Requests", href: `/${organizationId}/teacher/leave-requests`, icon: CalendarDaysIcon, current: isActive("/leave-requests") },
       ],
@@ -99,7 +101,7 @@ export const useSidebarController = () => {
   ];
 
   const sections =
-    user?.role === "teacher" ? teacherSections : user?.role === "parent" ? parentSections : adminSections;
+    role === "teacher" ? teacherSections : role === "parent" ? parentSections : adminSections;
 
   return {
     sections,

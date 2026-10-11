@@ -21,10 +21,12 @@ export interface INotice {
   attachmentURL: string;
   audience?: INoticeAudience;
   pinned?: boolean;
+  isRead?: boolean;
 }
 
 export interface INotification {
   id: string;
+  organizationId?: string;
   type: string;
   title: string;
   body: string;
@@ -337,6 +339,8 @@ export interface IOrganization {
     publicId: string;
     url: string;
   };
+  // the signed-in person's role in this school; it can differ from school to school
+  myRole?: "admin" | "teacher" | "parent" | null;
 }
 
 export interface IAccount {

@@ -1,3 +1,5 @@
+import { IAPIError } from "@/types";
+import ErrorState from "@/components/error-state";
 import { useParams } from "react-router-dom";
 import toast from "react-hot-toast";
 
@@ -18,8 +20,8 @@ const ParentReports = () => {
   const handleDownload = async (examId: string, studentId: string) => {
     try {
       await downloadReportCard(organizationId || "", examId, studentId);
-    } catch {
-      toast.error("Could not download the report card. Please try again.");
+    } catch (error) {
+      toast.error((error as IAPIError)?.response?.Error?.message || "Could not download the report card. Please try again.");
     }
   };
 
@@ -28,7 +30,8 @@ const ParentReports = () => {
       { examId, studentId },
       {
         onSuccess: () => toast.success("Report card emailed to your registered email address."),
-        onError: () => toast.error("Could not email the report card. Please try again."),
+        // for example "No registered email address found" says what to fix
+        onError: (error) => toast.error(error?.response?.Error?.message || "Could not email the report card. Please try again."),
       }
     );
   };
@@ -37,7 +40,9 @@ const ParentReports = () => {
     <div className="max-w-7xl mx-auto">
       <SectionHeader title="Results" description="Published exam results and report cards for your children" />
 
-      {getMyResults.isLoading ? (
+      {(getMyResults.isError ? getMyResults.error : null) ? (
+        <ErrorState error={(getMyResults.isError ? getMyResults.error : null)} onRetry={() => getMyResults.refetch()} />
+      ) : getMyResults.isLoading ? (
         <Spinner />
       ) : items.every((i) => i.results.length === 0) ? (
         <div className="bg-white rounded-lg shadow p-6">

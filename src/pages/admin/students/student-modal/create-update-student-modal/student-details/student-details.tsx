@@ -84,7 +84,14 @@ const StudentDetailsForm = ({ t, organizationId, form, isEditStudent }: IStudent
                           const y = (academicYears.data?.items || []).find((y) => y.id === field.value);
                           return y ? { id: y.id, name: y.name } : null;
                         })()}
-                        onChange={(o) => field.onChange(String(o.id))}
+                        onChange={(o) => {
+                          // a class and section from another year cannot stay picked
+                          if (String(o.id) !== field.value) {
+                            form.setValue("classId", "");
+                            form.setValue("sectionId", "");
+                          }
+                          field.onChange(String(o.id));
+                        }}
                       />
                     </FormControl>
                     <FormMessage />
@@ -107,7 +114,10 @@ const StudentDetailsForm = ({ t, organizationId, form, isEditStudent }: IStudent
                           const k = (classes.data?.items || []).find((k) => k.id === field.value);
                           return k ? { id: k.id, name: k.name } : null;
                         })()}
-                        onChange={(o) => field.onChange(String(o.id))}
+                        onChange={(o) => {
+                          if (String(o.id) !== field.value) form.setValue("sectionId", "");
+                          field.onChange(String(o.id));
+                        }}
                       />
                     </FormControl>
                     <FormMessage />

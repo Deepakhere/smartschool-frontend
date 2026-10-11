@@ -1,3 +1,5 @@
+import { IAPIError } from "@/types";
+import ErrorState from "@/components/error-state";
 import { useParams } from "react-router-dom";
 import toast from "react-hot-toast";
 
@@ -8,32 +10,35 @@ import SectionHeader from "@/components/section-header";
 import { downloadFeeReceipt, useEmailFeeReceipt } from "@/pages/admin/fees/service/fees-service";
 import useParentFeesController from "./fees-controller";
 
-const formatMoney = (paise: number) => `${(paise / 100).toFixed(2)}`;
+import { formatMoney } from "@/utils";
 
 const ParentFees = () => {
-  const { t, fees, isLoading } = useParentFeesController();
+  const { t, fees, isLoading, loadError, retryLoad } = useParentFeesController();
   const { organizationId } = useParams();
   const emailFeeReceipt = useEmailFeeReceipt(organizationId || "");
 
   const handleDownload = async (paymentId: string) => {
     try {
       await downloadFeeReceipt(organizationId || "", paymentId);
-    } catch {
-      toast.error("Could not download the receipt. Please try again.");
+    } catch (error) {
+      toast.error((error as IAPIError)?.response?.Error?.message || "Could not download the receipt. Please try again.");
     }
   };
 
   const handleEmail = (paymentId: string) => {
     emailFeeReceipt.mutate(paymentId, {
       onSuccess: () => toast.success("Receipt emailed to your registered email address."),
-      onError: () => toast.error("Could not email the receipt. Please try again."),
+      // for example "No registered email address found" says what to fix
+        onError: (error) => toast.error(error?.response?.Error?.message || "Could not email the receipt. Please try again."),
     });
   };
 
   return (
     <div className="max-w-7xl mx-auto">
       <SectionHeader title="Fees" description="View dues, installments and payment history for your children" />
-      {isLoading ? (
+      {loadError ? (
+        <ErrorState error={loadError} onRetry={retryLoad} />
+      ) : isLoading ? (
         <PageLoader />
       ) : fees.length === 0 ? (
         <div className="bg-white rounded-lg shadow p-6">

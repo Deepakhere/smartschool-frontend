@@ -2,7 +2,7 @@ import * as React from "react";
 
 import { cn } from "@/lib/utils";
 
-// the shared text-input primitive — matches the border/focus-ring style every
+// the shared text-input primitive - matches the border/focus-ring style every
 // form in the app already used inline; centralizing it here is what makes a
 // future design tweak a one-file change instead of a grep-and-replace
 const Input = React.forwardRef<HTMLInputElement, React.InputHTMLAttributes<HTMLInputElement>>(

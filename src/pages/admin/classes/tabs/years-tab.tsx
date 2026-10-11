@@ -6,15 +6,14 @@ import DeleteConfirmationDialog from "@/components/delete-confirmation-dialog";
 import EmptyState from "@/components/empty-state";
 import FormDialog from "@/components/form-dialog";
 import RowMenu, { RowMenuItem } from "@/components/row-menu";
-import Spinner from "@/components/spinner";
 import StatusBadge from "@/components/status-badge";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/table";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow, TableSkeleton } from "@/components/table";
 import { Switch } from "@/components/ui/switch";
 import { useMutationFeedback } from "@/hooks";
 import { IAcademicYear } from "@/types";
 import { useCreateAcademicYear, useGetAcademicYears, useUpdateAcademicYear } from "../service/academics-service";
 import { defaultYearFormValues, yearFormSchema, YearFormValues } from "../classes.schema";
-import { TextField } from "../components/form-fields";
+import { TextField } from "@/components/form-fields";
 import RolloverDialog from "../components/rollover-dialog";
 import Toolbar, { PrimaryButton } from "../components/toolbar";
 
@@ -132,7 +131,18 @@ const YearsTab = ({ organizationId }: { organizationId: string }) => {
       </Toolbar>
 
       {years.isLoading ? (
-        <Spinner />
+        <div className="p-4">
+          <Table>
+            <TableHeader>
+              <TableHead>Year</TableHead>
+              <TableHead>Starts</TableHead>
+              <TableHead>Ends</TableHead>
+              <TableHead>Status</TableHead>
+              <TableHead className="text-right">Actions</TableHead>
+            </TableHeader>
+            <TableSkeleton columns={5} />
+          </Table>
+        </div>
       ) : items.length === 0 ? (
         <EmptyState
           title="No academic years yet"

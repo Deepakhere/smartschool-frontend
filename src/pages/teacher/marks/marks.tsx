@@ -1,0 +1,66 @@
+import { useParams } from "react-router-dom";
+
+import CustomSelectDropdown from "@/components/custom-select";
+import SectionHeader from "@/components/section-header";
+import MarksSheetCard from "@/pages/admin/reports/components/marks-sheet-card";
+import { Card, CardTitle } from "@/components/ui/card";
+import useTeacherMarksController from "./marks-controller";
+
+const TeacherMarks = () => {
+  const { organizationId = "" } = useParams();
+  const c = useTeacherMarksController();
+
+  return (
+    <div className="mx-auto max-w-7xl">
+      <SectionHeader title="Marks Entry" description="Enter marks for the exams, classes and subjects you teach" />
+
+      <Card className="mb-6">
+        <CardTitle className="mb-4 font-medium">Select exam, class, section &amp; subject</CardTitle>
+        {!c.isLoading && c.examOptions.length === 0 ? (
+          <p className="text-sm text-gray-500">No open exam covers a class you're assigned to yet.</p>
+        ) : (
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-4">
+            <CustomSelectDropdown
+              placeholder="Select exam"
+              options={c.examOptions}
+              value={c.examOptions.find((o) => o.id === c.examId) ?? null}
+              onChange={(o) => c.onExamChange(String(o.id))}
+            />
+            <CustomSelectDropdown
+              placeholder="Select class"
+              disabled={!c.examId}
+              options={c.classOptions}
+              value={c.classOptions.find((o) => o.id === c.classId) ?? null}
+              onChange={(o) => c.onClassChange(String(o.id))}
+            />
+            <CustomSelectDropdown
+              placeholder="Select section"
+              disabled={!c.classId}
+              options={c.sectionOptions}
+              value={c.sectionOptions.find((o) => o.id === c.sectionId) ?? null}
+              onChange={(o) => c.onSectionChange(String(o.id))}
+            />
+            <CustomSelectDropdown
+              placeholder="Select subject"
+              disabled={!c.sectionId}
+              options={c.subjectOptions}
+              value={c.subjectOptions.find((o) => o.id === c.examSubjectId) ?? null}
+              onChange={(o) => c.setExamSubjectId(String(o.id))}
+            />
+          </div>
+        )}
+      </Card>
+
+      {c.sectionId && c.examSubjectId && (
+        <MarksSheetCard
+          organizationId={organizationId}
+          examSubjectId={c.examSubjectId}
+          sectionId={c.sectionId}
+          examPublished={c.examPublished}
+        />
+      )}
+    </div>
+  );
+};
+
+export default TeacherMarks;

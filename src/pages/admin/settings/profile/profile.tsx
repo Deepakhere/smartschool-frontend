@@ -1,3 +1,4 @@
+import { useCurrentRole } from "@/context/tenant-context";
 import {
   UserIcon,
   PencilIcon,
@@ -43,6 +44,7 @@ const AdminProfile = () => {
     onSubmitPasswordChange,
     isChangingPassword,
   } = useProfileController();
+  const currentRole = useCurrentRole();
 
   const languageOptions: SelectOption[] = [
     { id: "en", name: t("common.languages.english") },
@@ -134,7 +136,7 @@ const AdminProfile = () => {
                             <Input
                               type="text"
                               id="role"
-                              value={`${user?.role?.charAt(0).toUpperCase()}${user?.role?.slice(1)}`}
+                              value={`${currentRole?.charAt(0).toUpperCase()}${currentRole?.slice(1)}`}
                               disabled
                               className="mt-1 bg-gray-50 text-gray-500"
                             />
@@ -160,7 +162,7 @@ const AdminProfile = () => {
                         <div className="sm:col-span-1">
                           <dt className="text-sm font-medium text-gray-500">{t("labels.role")}</dt>
                           <dd className="mt-1 text-sm text-gray-900">
-                            {`${user?.role?.charAt(0).toUpperCase()}${user?.role?.slice(1)}`}
+                            {`${currentRole?.charAt(0).toUpperCase()}${currentRole?.slice(1)}`}
                           </dd>
                         </div>
                       </dl>

@@ -6,8 +6,7 @@ import DeleteConfirmationDialog from "@/components/delete-confirmation-dialog";
 import EmptyState from "@/components/empty-state";
 import FormDialog from "@/components/form-dialog";
 import RowMenu from "@/components/row-menu";
-import Spinner from "@/components/spinner";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/table";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow, TableSkeleton } from "@/components/table";
 import { useMutationFeedback } from "@/hooks";
 import { ITeacherAssignment } from "@/types";
 import {
@@ -20,7 +19,7 @@ import {
 } from "../service/academics-service";
 import { useGetAllTeachers } from "../service/teachers-service";
 import { assignFormSchema, AssignFormValues, defaultAssignFormValues } from "../classes.schema";
-import { SelectField } from "../components/form-fields";
+import { SelectField } from "@/components/form-fields";
 import Toolbar, { PrimaryButton } from "../components/toolbar";
 
 const ROLE_OPTIONS = [
@@ -84,7 +83,19 @@ const AssignmentsTab = ({ organizationId, yearId }: { organizationId: string; ye
       <Toolbar title="Teacher assignments">{yearId && items.length > 0 && addButton}</Toolbar>
 
       {assignments.isLoading ? (
-        <Spinner />
+        <div className="p-4">
+          <Table>
+            <TableHeader>
+              <TableHead>Teacher</TableHead>
+              <TableHead>Class</TableHead>
+              <TableHead>Section</TableHead>
+              <TableHead>Subject</TableHead>
+              <TableHead>Role</TableHead>
+              <TableHead className="text-right">Actions</TableHead>
+            </TableHeader>
+            <TableSkeleton columns={6} />
+          </Table>
+        </div>
       ) : items.length === 0 ? (
         <EmptyState
           title="No teachers assigned yet"

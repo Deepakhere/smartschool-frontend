@@ -128,7 +128,8 @@ export const useGetMarksSheet = (organizationId: string, examSubjectId?: string,
 interface ISaveMarksPayload {
   examSubjectId: string;
   sectionId: string;
-  entries: { studentId: string; theoryMarks: number; practicalMarks?: number; isAbsent?: boolean }[];
+  // an absent student is sent without marks
+  entries: { studentId: string; theoryMarks?: number; practicalMarks?: number; isAbsent?: boolean }[];
 }
 
 export const useSaveMarks = (organizationId: string) => {
@@ -192,7 +193,7 @@ export const useGetMyResults = (organizationId: string) =>
     enabled: !!organizationId,
   });
 
-// not a query/mutation hook — a report card is a PDF blob, not envelope JSON
+// not a query/mutation hook - a report card is a PDF blob, not envelope JSON
 export const downloadReportCard = async (organizationId: string, examId: string, studentId: string) => {
   const result = await apiClient.get(`${base(organizationId)}/exam/${examId}/student/${studentId}/report-card`, {
     responseType: "blob",
@@ -207,7 +208,7 @@ export const downloadReportCard = async (organizationId: string, examId: string,
   window.URL.revokeObjectURL(url);
 };
 
-// emails the same PDF to the caller's own registered address — no arbitrary recipient
+// emails the same PDF to the caller's own registered address - no arbitrary recipient
 export const useEmailReportCard = (organizationId: string) =>
   useMutation<void, IAPIError, { examId: string; studentId: string }>({
     mutationKey: [API_MUTATION_KEY.EMAIL_REPORT_CARD],

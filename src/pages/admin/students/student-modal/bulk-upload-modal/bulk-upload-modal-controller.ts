@@ -5,6 +5,7 @@ import toast from "react-hot-toast";
 
 import useBulkImportStudents, { IBulkImportResult } from "@/pages/admin/students/service/bulk-import-students";
 import { useGetAcademicYears, useGetClasses, useGetSections } from "@/pages/admin/classes/service/academics-service";
+import { SelectOption } from "@/types";
 import { bulkUploadFormSchema, defaultBulkUploadFormValues } from "./bulk-upload-modal.schema";
 
 const useBulkUploadModalController = (organizationId: string, onImported: () => void) => {
@@ -19,20 +20,12 @@ const useBulkUploadModalController = (organizationId: string, onImported: () => 
   const sections = useGetSections(organizationId, classId, "active");
   const bulkImport = useBulkImportStudents(organizationId);
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    form.setValue("file", e.target.files?.[0] || null);
-  };
-
-  const onAcademicYearChange = (id: string) => {
-    form.setValue("academicYearId", id);
+  // a new year or class invalidates the choices below it
+  const onAcademicYearChange = () => {
     form.setValue("classId", "");
     form.setValue("sectionId", "");
   };
-
-  const onClassChange = (id: string) => {
-    form.setValue("classId", id);
-    form.setValue("sectionId", "");
-  };
+  const onClassChange = () => form.setValue("sectionId", "");
 
   const reset = () => {
     form.reset(defaultBulkUploadFormValues);
@@ -53,26 +46,20 @@ const useBulkUploadModalController = (organizationId: string, onImported: () => 
           setResult(data);
           if (data.createdCount > 0) onImported();
         },
-        onError: () => {
-          toast.error("Failed to import students");
-        },
+        onError: (error) => toast.error(error?.response?.Error?.message || "Failed to import students"),
       }
     );
   });
 
   return {
     form,
+    onAcademicYearChange,
+    onClassChange,
+    academicYearOptions: (academicYears.data?.items || []).map((y): SelectOption => ({ id: y.id, name: y.name })),
+    classOptions: (classes.data?.items || []).map((k): SelectOption => ({ id: k.id, name: k.name })),
+    sectionOptions: (sections.data?.items || []).map((s): SelectOption => ({ id: s.id, name: s.name })),
     academicYearId,
-    setAcademicYearId: onAcademicYearChange,
     classId,
-    setClassId: onClassChange,
-    sectionId: form.watch("sectionId"),
-    setSectionId: (id: string) => form.setValue("sectionId", id),
-    file: form.watch("file"),
-    handleFileChange,
-    academicYears: academicYears.data?.items || [],
-    classes: classes.data?.items || [],
-    sections: sections.data?.items || [],
     result,
     reset,
     handleSubmit,

@@ -4,7 +4,7 @@ import { CheckIcon, ChevronUpDownIcon } from "@heroicons/react/20/solid";
 
 import { cn } from "@/lib/utils";
 
-// the shared dropdown-select primitive — replaces Headless UI's Listbox+Transition
+// the shared dropdown-select primitive - replaces Headless UI's Listbox+Transition
 const Select = SelectPrimitive.Root;
 const SelectValue = SelectPrimitive.Value;
 

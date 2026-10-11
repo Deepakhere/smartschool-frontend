@@ -1,9 +1,9 @@
-import { useRef } from "react";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { keepPreviousData, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import apiClient from "@/config";
 import { IAPIError, IAxiosResponse, IFeeHead, IFeeStructure, IStudentFeeSummary, IPayment } from "@/types";
 import { APIS_ROUTES, API_QUERY_KEY, API_MUTATION_KEY } from "@/utils";
+import { useIdempotencyKey } from "@/hooks";
 
 const base = (organizationId: string) => `${APIS_ROUTES.FEE_SERVICE}/${organizationId}`;
 
@@ -109,23 +109,19 @@ interface IRecordPaymentPayload {
   remarks?: string;
 }
 
-// the backend requires an Idempotency-Key on this route — the same key must survive
-// a double-click or a retried request (so the backend can recognize it as the same
-// attempt and replay the original response instead of recording a second payment),
-// so it's held in a ref for the mutation's lifetime and only rotated after a
-// successful submit, not regenerated on every call
+// the backend requires an Idempotency-Key on money routes; see useIdempotencyKey for when it changes
 export const useRecordPayment = (organizationId: string) => {
   const queryClient = useQueryClient();
-  const idempotencyKeyRef = useRef(crypto.randomUUID());
+  const idempotency = useIdempotencyKey();
   return useMutation<void, IAPIError, IRecordPaymentPayload>({
     mutationKey: [API_MUTATION_KEY.RECORD_PAYMENT],
     mutationFn: async (value) => {
       await apiClient.post(`${base(organizationId)}/payment`, value, {
-        headers: { "Idempotency-Key": idempotencyKeyRef.current },
+        headers: { "Idempotency-Key": idempotency.keyFor(value) },
       });
     },
     onSuccess: () => {
-      idempotencyKeyRef.current = crypto.randomUUID();
+      idempotency.reset();
       queryClient.invalidateQueries({ queryKey: [API_QUERY_KEY.GET_STUDENT_FEE_SUMMARY, organizationId] });
       queryClient.invalidateQueries({ queryKey: [API_QUERY_KEY.GET_PAYMENT_LEDGER, organizationId] });
     },
@@ -134,35 +130,51 @@ export const useRecordPayment = (organizationId: string) => {
 
 export const useReversePayment = (organizationId: string) => {
   const queryClient = useQueryClient();
-  const idempotencyKeyRef = useRef(crypto.randomUUID());
+  const idempotency = useIdempotencyKey();
   return useMutation<void, IAPIError, string>({
     mutationKey: [API_MUTATION_KEY.REVERSE_PAYMENT],
     mutationFn: async (paymentId) => {
       await apiClient.post(
         `${base(organizationId)}/payment/${paymentId}/reverse`,
         {},
-        { headers: { "Idempotency-Key": idempotencyKeyRef.current } }
+        { headers: { "Idempotency-Key": idempotency.keyFor({ paymentId }) } }
       );
     },
     onSuccess: () => {
-      idempotencyKeyRef.current = crypto.randomUUID();
+      idempotency.reset();
       queryClient.invalidateQueries({ queryKey: [API_QUERY_KEY.GET_STUDENT_FEE_SUMMARY, organizationId] });
       queryClient.invalidateQueries({ queryKey: [API_QUERY_KEY.GET_PAYMENT_LEDGER, organizationId] });
     },
   });
 };
 
-export const useGetPaymentLedger = (organizationId: string) =>
-  useQuery<{ items: IPayment[]; total_count: number }, IAPIError>({
-    queryKey: [API_QUERY_KEY.GET_PAYMENT_LEDGER, organizationId],
-    queryFn: async () => {
-      const result = await apiClient.get<null, IAxiosResponse<{ items: IPayment[]; total_count: number }>>(
-        `${base(organizationId)}/payment`
-      );
-      return result.data.Data;
-    },
-    enabled: !!organizationId,
+export const LEDGER_PAGE_SIZE = 50;
+
+const fetchLedgerPage = async (organizationId: string, page: number, limit: number) => {
+  const result = await apiClient.get<null, IAxiosResponse<{ items: IPayment[]; total_count: number }>>(`${base(organizationId)}/payment`, {
+    params: { page, limit },
   });
+  return result.data.Data;
+};
+
+export const useGetPaymentLedger = (organizationId: string, page: number) =>
+  useQuery<{ items: IPayment[]; total_count: number }, IAPIError>({
+    queryKey: [API_QUERY_KEY.GET_PAYMENT_LEDGER, organizationId, page],
+    queryFn: () => fetchLedgerPage(organizationId, page, LEDGER_PAGE_SIZE),
+    enabled: !!organizationId,
+    // the current page stays on screen while the next one loads
+    placeholderData: keepPreviousData,
+  });
+
+// every payment of the school, page by page, for the export
+export const fetchWholeLedger = async (organizationId: string) => {
+  const all: IPayment[] = [];
+  for (let page = 1; ; page++) {
+    const { items, total_count } = await fetchLedgerPage(organizationId, page, 100);
+    all.push(...items);
+    if (!items.length || all.length >= total_count) return all;
+  }
+};
 
 export const downloadFeeReceipt = async (organizationId: string, paymentId: string) => {
   const result = await apiClient.get(`${base(organizationId)}/payment/${paymentId}/receipt`, { responseType: "blob" });
@@ -176,7 +188,7 @@ export const downloadFeeReceipt = async (organizationId: string, paymentId: stri
   window.URL.revokeObjectURL(url);
 };
 
-// emails the same PDF to the caller's own registered address — no arbitrary recipient
+// emails the same PDF to the caller's own registered address - no arbitrary recipient
 export const useEmailFeeReceipt = (organizationId: string) =>
   useMutation<void, IAPIError, string>({
     mutationKey: [API_MUTATION_KEY.EMAIL_FEE_RECEIPT],
@@ -192,20 +204,19 @@ interface IGrantConcessionPayload {
   installmentLabel?: string;
 }
 
-// same idempotency-key-per-attempt convention as record/reverse payment above —
-// a double-click reuses the same key, so a retried request replays instead of double-granting
+// same idempotency convention as record/reverse payment above
 export const useGrantConcession = (organizationId: string) => {
   const queryClient = useQueryClient();
-  const idempotencyKeyRef = useRef(crypto.randomUUID());
+  const idempotency = useIdempotencyKey();
   return useMutation<void, IAPIError, IGrantConcessionPayload>({
     mutationKey: [API_MUTATION_KEY.GRANT_CONCESSION],
     mutationFn: async ({ studentFeeId, ...value }) => {
       await apiClient.post(`${base(organizationId)}/student-fee/${studentFeeId}/concession`, value, {
-        headers: { "Idempotency-Key": idempotencyKeyRef.current },
+        headers: { "Idempotency-Key": idempotency.keyFor({ studentFeeId, ...value }) },
       });
     },
     onSuccess: () => {
-      idempotencyKeyRef.current = crypto.randomUUID();
+      idempotency.reset();
       queryClient.invalidateQueries({ queryKey: [API_QUERY_KEY.GET_STUDENT_FEE_SUMMARY, organizationId] });
     },
   });

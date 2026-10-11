@@ -73,10 +73,10 @@ const useProfileController = () => {
   });
 
   // react-i18next already re-renders on language change, so i18n.language itself
-  // is the current language — no need to mirror it into its own state
+  // is the current language - no need to mirror it into its own state
   const currentLanguage = i18n.language || "en";
 
-  // derived straight from the shared user object, same as theme/notifications —
+  // derived straight from the shared user object, same as theme/notifications -
   // no local state, so a refresh (or another tab) always shows what's actually saved
   const imageUrl = user?.avatar?.url;
 
@@ -105,7 +105,7 @@ const useProfileController = () => {
     setTheme(newTheme);
   };
 
-  // derived straight from the shared user object — no local state to keep in sync,
+  // derived straight from the shared user object - no local state to keep in sync,
   // defaulting true (matches the backend default) until the user is known
   const emailNotifications = user?.preferences?.emailNotifications ?? true;
   const smsNotifications = user?.preferences?.smsNotifications ?? true;
