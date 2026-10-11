@@ -2,12 +2,11 @@ import ErrorState from "@/components/error-state";
 import { SelectField, TextField } from "@/components/form-fields";
 import NoRecordFound from "@/components/no-record-found";
 import SectionHeader from "@/components/section-header";
-import Spinner from "@/components/spinner";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardTitle } from "@/components/ui/card";
 import { Form } from "@/components/ui/form";
-import { Table, TableHeader, TableHead, TableBody, TableRow, TableCell } from "@/components/table";
+import { Table, TableHeader, TableHead, TableBody, TableRow, TableCell, TableSkeleton } from "@/components/table";
 import { SelectOption } from "@/types";
 import useTeacherPTMController from "./ptm-controller";
 
@@ -61,7 +60,14 @@ const TeacherPTM = () => {
         {agendaError ? (
           <ErrorState error={agendaError} onRetry={retryAgenda} />
         ) : isLoadingAgenda ? (
-          <Spinner />
+          <Table>
+            <TableHeader>
+              <TableHead>Time</TableHead>
+              <TableHead className="text-center">Student</TableHead>
+              <TableHead className="text-center">Status</TableHead>
+            </TableHeader>
+            <TableSkeleton columns={3} />
+          </Table>
         ) : agenda.length === 0 ? (
           <NoRecordFound t={t} searchTerm="" clearFilters={() => {}} />
         ) : (

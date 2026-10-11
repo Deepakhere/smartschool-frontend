@@ -1,5 +1,6 @@
-import Spinner from "@/components/spinner";
+import { Table, TableHeader, TableHead, TableBody, TableRow, TableCell, TableSkeleton } from "@/components/table";
 import SectionHeader from "@/components/section-header";
+import Spinner from "@/components/spinner";
 import CustomSelectDropdown from "@/components/custom-select";
 import useAttendanceController from "./attendance-controller";
 import { AttendanceStatus, SelectOption } from "@/types";
@@ -150,40 +151,47 @@ const AdminAttendance = () => {
           </div>
 
           {c.isLoadingReport ? (
-            <Spinner />
+            <Table>
+              <TableHeader>
+                <TableHead>Roll No.</TableHead>
+                <TableHead>Student</TableHead>
+                <TableHead className="text-center">Present</TableHead>
+                <TableHead className="text-center">Absent</TableHead>
+                <TableHead className="text-center">Late</TableHead>
+                <TableHead className="text-center">Excused</TableHead>
+                <TableHead className="text-center">%</TableHead>
+              </TableHeader>
+              <TableSkeleton columns={7} />
+            </Table>
           ) : c.reportRows.length === 0 ? (
             <p className="px-4 py-5 text-sm text-gray-500">No attendance marked for this section in this range.</p>
           ) : (
-            <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
-                <tr>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Roll No.</th>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Student</th>
-                  <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase">Present</th>
-                  <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase">Absent</th>
-                  <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase">Late</th>
-                  <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase">Excused</th>
-                  <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase">%</th>
-                </tr>
-              </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
+            <Table>
+              <TableHeader>
+                <TableHead>Roll No.</TableHead>
+                <TableHead>Student</TableHead>
+                <TableHead className="text-center">Present</TableHead>
+                <TableHead className="text-center">Absent</TableHead>
+                <TableHead className="text-center">Late</TableHead>
+                <TableHead className="text-center">Excused</TableHead>
+                <TableHead className="text-center">%</TableHead>
+              </TableHeader>
+              <TableBody>
                 {c.reportRows.map((row) => (
-                  <tr key={row.studentId}>
-                    <td className="px-4 py-3 text-sm text-gray-500">{row.rollNumber}</td>
-                    <td className="px-4 py-3 text-sm font-medium text-gray-900">{row.studentName}</td>
-                    <td className="px-4 py-3 text-sm text-center text-green-700">{row.present}</td>
-                    <td className="px-4 py-3 text-sm text-center text-red-700">{row.absent}</td>
-                    <td className="px-4 py-3 text-sm text-center text-amber-700">{row.late}</td>
-                    <td className="px-4 py-3 text-sm text-center text-gray-700">{row.excused}</td>
-                    <td className="px-4 py-3 text-sm text-center font-medium text-gray-900">
+                  <TableRow key={row.studentId}>
+                    <TableCell className="text-gray-500">{row.rollNumber}</TableCell>
+                    <TableCell className="font-medium text-gray-900">{row.studentName}</TableCell>
+                    <TableCell className="text-center text-green-700">{row.present}</TableCell>
+                    <TableCell className="text-center text-red-700">{row.absent}</TableCell>
+                    <TableCell className="text-center text-amber-700">{row.late}</TableCell>
+                    <TableCell className="text-center text-gray-700">{row.excused}</TableCell>
+                    <TableCell className="text-center font-medium text-gray-900">
                       {row.total ? ((row.present / row.total) * 100).toFixed(1) : "0"}%
-                    </td>
-                  </tr>
+                    </TableCell>
+                  </TableRow>
                 ))}
-              </tbody>
-            </table>
-            </div>
+              </TableBody>
+            </Table>
           )}
         </div>
       )}

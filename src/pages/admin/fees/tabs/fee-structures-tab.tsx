@@ -5,8 +5,7 @@ import { TrashIcon } from "@heroicons/react/24/outline";
 
 import ErrorState from "@/components/error-state";
 import { ChipsField, DateField, SelectField, TextField } from "@/components/form-fields";
-import Spinner from "@/components/spinner";
-import { Table, TableBody, TableCell, TableEmpty, TableHead, TableHeader, TableRow } from "@/components/table";
+import { Table, TableBody, TableCell, TableEmpty, TableHead, TableHeader, TableRow, TableSkeleton } from "@/components/table";
 import { Button } from "@/components/ui/button";
 import { Card, CardTitle } from "@/components/ui/card";
 import { Form } from "@/components/ui/form";
@@ -213,7 +212,16 @@ const FeeStructuresTab = ({ organizationId }: { organizationId: string }) => {
         {structures.isError ? (
           <ErrorState error={structures.error} onRetry={() => structures.refetch()} />
         ) : structures.isLoading ? (
-          <Spinner />
+          <Table>
+            <TableHeader>
+              <TableHead>Name</TableHead>
+              <TableHead className="text-center">Classes</TableHead>
+              <TableHead className="text-center">Total</TableHead>
+              <TableHead className="text-center">Installments</TableHead>
+              <TableHead className="text-center">Action</TableHead>
+            </TableHeader>
+            <TableSkeleton columns={5} />
+          </Table>
         ) : (
           <Table>
             <TableHeader>

@@ -4,8 +4,7 @@ import toast from "react-hot-toast";
 
 import ErrorState from "@/components/error-state";
 import { CheckboxField, SelectField, TextField } from "@/components/form-fields";
-import Spinner from "@/components/spinner";
-import { Table, TableBody, TableCell, TableEmpty, TableHead, TableHeader, TableRow } from "@/components/table";
+import { Table, TableBody, TableCell, TableEmpty, TableHead, TableHeader, TableRow, TableSkeleton } from "@/components/table";
 import { Button } from "@/components/ui/button";
 import { Card, CardTitle } from "@/components/ui/card";
 import { Form } from "@/components/ui/form";
@@ -61,7 +60,15 @@ const FeeHeadsTab = ({ organizationId }: { organizationId: string }) => {
         {feeHeads.isError ? (
           <ErrorState error={feeHeads.error} onRetry={() => feeHeads.refetch()} />
         ) : feeHeads.isLoading ? (
-          <Spinner />
+          <Table>
+            <TableHeader>
+              <TableHead>Name</TableHead>
+              <TableHead className="text-center">Code</TableHead>
+              <TableHead className="text-center">Category</TableHead>
+              <TableHead className="text-center">Refundable</TableHead>
+            </TableHeader>
+            <TableSkeleton columns={4} />
+          </Table>
         ) : (
           <Table>
             <TableHeader>

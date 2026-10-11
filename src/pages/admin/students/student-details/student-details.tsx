@@ -1,6 +1,8 @@
 import { PencilIcon, TrashIcon } from "@heroicons/react/24/outline";
 
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Table, TableHeader, TableHead, TableBody, TableRow, TableCell, TableSkeleton } from "@/components/table";
 import DeleteConfirmationDialog from "@/components/delete-confirmation-dialog";
 import CreateUpdateStudentModal from "../student-modal/create-update-student-modal";
 import useStudentDetailController from "./student-detail-controller";
@@ -323,89 +325,53 @@ const StudentDetails = () => {
               <div className="mb-6">
                 <h4 className="text-md font-medium text-gray-900 mb-3">Exam Results</h4>
                 {isLoadingExamResults ? (
-                  <p className="text-sm text-gray-500">Loading...</p>
+                  <Table>
+                    <TableHeader>
+                      <TableHead>Exam</TableHead>
+                      <TableHead>Date</TableHead>
+                      <TableHead>Result</TableHead>
+                      <TableHead>Marks</TableHead>
+                      <TableHead>Percentage</TableHead>
+                      <TableHead>Grade</TableHead>
+                    </TableHeader>
+                    <TableSkeleton columns={6} />
+                  </Table>
                 ) : examResults.length === 0 ? (
                   <p className="text-sm text-gray-500">No published exam results yet.</p>
                 ) : (
-                  <div className="overflow-x-auto">
-                    <table className="min-w-full divide-y divide-gray-200">
-                      <thead className="bg-gray-50">
-                        <tr>
-                          <th
-                            scope="col"
-                            className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                          >
-                            Exam
-                          </th>
-                          <th
-                            scope="col"
-                            className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                          >
-                            Date
-                          </th>
-                          <th
-                            scope="col"
-                            className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                          >
-                            Result
-                          </th>
-                          <th
-                            scope="col"
-                            className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                          >
-                            Marks
-                          </th>
-                          <th
-                            scope="col"
-                            className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                          >
-                            Percentage
-                          </th>
-                          <th
-                            scope="col"
-                            className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                          >
-                            Grade
-                          </th>
-                        </tr>
-                      </thead>
-                      <tbody className="bg-white divide-y divide-gray-200">
-                        {examResults.map((result) => {
-                          const exam = typeof result.examId === "object" ? result.examId : null;
-                          return (
-                            <tr key={result.id}>
-                              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{exam?.name || "-"}</td>
-                              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                {exam?.startDate ? new Date(exam.startDate).toLocaleDateString() : "-"}
-                              </td>
-                              <td className="px-6 py-4 whitespace-nowrap text-sm">
-                                <span
-                                  className={`inline-block px-2 py-0.5 rounded-full text-xs font-medium capitalize ${
-                                    result.promotionStatus === "pass"
-                                      ? "bg-green-100 text-green-800"
-                                      : result.promotionStatus === "fail"
-                                        ? "bg-red-100 text-red-800"
-                                        : "bg-gray-100 text-gray-600"
-                                  }`}
-                                >
-                                  {result.promotionStatus}
-                                </span>
-                              </td>
-                              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                {result.totals.obtained} / {result.totals.max}
-                              </td>
-                              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                {result.totals.percentage}%
-                              </td>
-                              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                {result.grade || "-"}
-                              </td>
-                            </tr>
-                          );
-                        })}
-                      </tbody>
-                    </table>
-                  </div>
+                  <Table>
+                    <TableHeader>
+                      <TableHead>Exam</TableHead>
+                      <TableHead>Date</TableHead>
+                      <TableHead>Result</TableHead>
+                      <TableHead>Marks</TableHead>
+                      <TableHead>Percentage</TableHead>
+                      <TableHead>Grade</TableHead>
+                    </TableHeader>
+                    <TableBody>
+                      {examResults.map((result) => {
+                        const exam = typeof result.examId === "object" ? result.examId : null;
+                        return (
+                          <TableRow key={result.id}>
+                            <TableCell className="font-medium text-gray-900">{exam?.name || "-"}</TableCell>
+                            <TableCell className="text-gray-500">
+                              {exam?.startDate ? new Date(exam.startDate).toLocaleDateString() : "-"}
+                            </TableCell>
+                            <TableCell>
+                              <Badge tone={result.promotionStatus === "pass" ? "green" : result.promotionStatus === "fail" ? "red" : "gray"} className="capitalize">
+                                {result.promotionStatus}
+                              </Badge>
+                            </TableCell>
+                            <TableCell className="text-gray-500">
+                              {result.totals.obtained} / {result.totals.max}
+                            </TableCell>
+                            <TableCell className="text-gray-500">{result.totals.percentage}%</TableCell>
+                            <TableCell className="text-gray-500">{result.grade || "-"}</TableCell>
+                          </TableRow>
+                        );
+                      })}
+                    </TableBody>
+                  </Table>
                 )}
               </div>
 
@@ -457,27 +423,25 @@ const StudentDetails = () => {
                 )}
 
                 {attendanceRecords.length > 0 && (
-                  <div className="mt-4 max-h-64 overflow-y-auto border border-gray-100 rounded-md">
-                    <table className="min-w-full divide-y divide-gray-100">
-                      <thead className="bg-gray-50 sticky top-0">
-                        <tr>
-                          <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase">Date</th>
-                          <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
-                          <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase">Reason</th>
-                        </tr>
-                      </thead>
-                      <tbody className="bg-white divide-y divide-gray-100">
+                  <div className="mt-4 max-h-64 overflow-y-auto rounded-md border border-gray-100">
+                    <Table>
+                      <TableHeader>
+                        <TableHead>Date</TableHead>
+                        <TableHead>Status</TableHead>
+                        <TableHead>Reason</TableHead>
+                      </TableHeader>
+                      <TableBody>
                         {attendanceRecords.map((record) => (
-                          <tr key={record.id}>
-                            <td className="px-3 py-2 text-sm text-gray-900">
+                          <TableRow key={record.id}>
+                            <TableCell className="text-gray-900">
                               {record.date ? new Date(record.date).toLocaleDateString() : "-"}
-                            </td>
-                            <td className="px-3 py-2 text-sm capitalize">{record.status}</td>
-                            <td className="px-3 py-2 text-sm text-gray-500">{record.reason || "-"}</td>
-                          </tr>
+                            </TableCell>
+                            <TableCell className="capitalize">{record.status}</TableCell>
+                            <TableCell className="text-gray-500">{record.reason || "-"}</TableCell>
+                          </TableRow>
                         ))}
-                      </tbody>
-                    </table>
+                      </TableBody>
+                    </Table>
                   </div>
                 )}
               </div>

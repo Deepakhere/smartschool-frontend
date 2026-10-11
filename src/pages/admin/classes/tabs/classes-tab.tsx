@@ -6,9 +6,8 @@ import DeleteConfirmationDialog from "@/components/delete-confirmation-dialog";
 import EmptyState from "@/components/empty-state";
 import FormDialog from "@/components/form-dialog";
 import RowMenu, { RowMenuItem } from "@/components/row-menu";
-import Spinner from "@/components/spinner";
 import StatusBadge from "@/components/status-badge";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/table";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow, TableSkeleton } from "@/components/table";
 import { useMutationFeedback } from "@/hooks";
 import { IAcademicYear, IClass } from "@/types";
 import { useCreateClass, useDeactivateClass, useGetClasses, useUpdateClass } from "../service/academics-service";
@@ -88,7 +87,19 @@ const ClassesTab = ({ organizationId, years, yearId, onYearChange, onViewSection
           description="Classes belong to an academic year. Pick one above, or add a year first."
         />
       ) : classes.isLoading ? (
-        <Spinner />
+        <div className="p-4">
+          <Table>
+            <TableHeader>
+              <TableHead>Class</TableHead>
+              <TableHead className="text-center">Level</TableHead>
+              <TableHead className="text-center">Sections</TableHead>
+              <TableHead className="text-center">Students</TableHead>
+              <TableHead>Status</TableHead>
+              <TableHead className="text-right">Actions</TableHead>
+            </TableHeader>
+            <TableSkeleton columns={6} />
+          </Table>
+        </div>
       ) : items.length === 0 ? (
         <EmptyState
           title={showInactive ? "No classes in this year" : "No active classes in this year"}

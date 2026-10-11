@@ -1,9 +1,8 @@
 import { PlusIcon, MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 
-import Spinner from "@/components/spinner";
 import NoRecordFound from "@/components/no-record-found";
 import CustomSelectDropdown from "@/components/custom-select";
-import { Table, TableHeader, TableHead, TableBody, TableRow, TableCell } from "@/components/table";
+import { Table, TableHeader, TableHead, TableBody, TableRow, TableCell, TableSkeleton } from "@/components/table";
 import { CreateUpdateUserModal } from "./user-modal";
 import DeleteConfirmationDialog from "@/components/delete-confirmation-dialog";
 import Pager from "@/components/pager";
@@ -98,29 +97,16 @@ const UserDetails = () => {
       </div>
 
       {/* Table Section */}
-      {isLoadingGetAllUserDetails ? (
-        <div className="bg-white shadow rounded-lg border border-gray-200">
-          <Spinner />
-        </div>
-      ) : (
-        <Table>
-          <TableHeader>
-            <TableHead>{t("labels.username")}</TableHead>
-            <TableHead className="text-center">{t("labels.email")}</TableHead>
-            <TableHead className="text-center">{t("labels.role")}</TableHead>
-            <TableHead className="text-center">{t("labels.actions")}</TableHead>
-          </TableHeader>
-          {isFetchingGetAllUserDetails ? (
-            <TableBody>
-              <tr>
-                <td colSpan={4} className="px-6 py-10 text-center">
-                  <div className="flex justify-center items-center">
-                    <div className="h-8 w-8 border-t-2 border-b-2 border-primary-500 rounded-full animate-spin"></div>
-                  </div>
-                </td>
-              </tr>
-            </TableBody>
-          ) : users && users.length > 0 ? (
+      <Table>
+        <TableHeader>
+          <TableHead>{t("labels.username")}</TableHead>
+          <TableHead className="text-center">{t("labels.email")}</TableHead>
+          <TableHead className="text-center">{t("labels.role")}</TableHead>
+          <TableHead className="text-center">{t("labels.actions")}</TableHead>
+        </TableHeader>
+        {isLoadingGetAllUserDetails || isFetchingGetAllUserDetails ? (
+          <TableSkeleton columns={4} />
+        ) : users && users.length > 0 ? (
             <TableBody>
               {users.map((user) => (
                 <TableRow key={user.id}>
@@ -168,9 +154,8 @@ const UserDetails = () => {
                 </td>
               </tr>
             </TableBody>
-          )}
-        </Table>
-      )}
+        )}
+      </Table>
       <Pager page={page} pageSize={pageSize} total={totalUsers} onPageChange={setPage} />
 
       <CreateUpdateUserModal

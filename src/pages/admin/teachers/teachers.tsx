@@ -5,8 +5,7 @@ import FormDialog from "@/components/form-dialog";
 import { DateField, TextField } from "@/components/form-fields";
 import NoRecordFound from "@/components/no-record-found";
 import SectionHeader from "@/components/section-header";
-import Spinner from "@/components/spinner";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/table";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow, TableSkeleton } from "@/components/table";
 import { Button } from "@/components/ui/button";
 import useTeachersController from "./teachers-controller";
 
@@ -24,7 +23,17 @@ const AdminTeachers = () => {
       ) : (
         <div className="rounded-lg bg-white shadow">
           {c.isLoading ? (
-            <Spinner />
+            <Table>
+              <TableHeader>
+                <TableHead>Name</TableHead>
+                <TableHead>Email</TableHead>
+                <TableHead>Employee Code</TableHead>
+                <TableHead>Designation</TableHead>
+                <TableHead>Department</TableHead>
+                <TableHead className="text-right">Actions</TableHead>
+              </TableHeader>
+              <TableSkeleton columns={6} />
+            </Table>
           ) : c.teachers.length === 0 ? (
             <NoRecordFound t={t} searchTerm="" clearFilters={() => {}} />
           ) : (

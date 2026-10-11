@@ -1,7 +1,7 @@
 import Spinner from "@/components/spinner";
 import NoRecordFound from "@/components/no-record-found";
 import CustomSelectDropdown from "@/components/custom-select";
-import { Table, TableHeader, TableHead, TableBody, TableRow, TableCell } from "@/components/table";
+import { Table, TableHeader, TableHead, TableBody, TableRow, TableCell, TableSkeleton } from "@/components/table";
 import { SelectOption } from "@/types";
 import SectionHeader from "@/components/section-header";
 import DeleteConfirmationDialog from "@/components/delete-confirmation-dialog";
@@ -55,7 +55,15 @@ const ParentPTM = () => {
         {bookingsError ? (
           <ErrorState error={bookingsError} onRetry={retryBookings} />
         ) : isLoadingBookings ? (
-          <Spinner />
+          <Table>
+            <TableHeader>
+              <TableHead>Student</TableHead>
+              <TableHead className="text-center">Time</TableHead>
+              <TableHead className="text-center">Join</TableHead>
+              <TableHead className="text-center">Action</TableHead>
+            </TableHeader>
+            <TableSkeleton columns={4} />
+          </Table>
         ) : bookings.length === 0 ? (
           <p className="text-sm text-gray-500">No bookings yet.</p>
         ) : (

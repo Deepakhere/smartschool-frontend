@@ -6,8 +6,7 @@ import toast from "react-hot-toast";
 
 import ErrorState from "@/components/error-state";
 import NoRecordFound from "@/components/no-record-found";
-import Spinner from "@/components/spinner";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/table";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow, TableSkeleton } from "@/components/table";
 import { Badge, BadgeTone } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardTitle } from "@/components/ui/card";
@@ -211,7 +210,16 @@ const MarksEntryTab = ({ organizationId }: { organizationId: string }) => {
           {marksSheet.isError ? (
             <ErrorState error={marksSheet.error} onRetry={() => marksSheet.refetch()} />
           ) : marksSheet.isLoading ? (
-            <Spinner />
+            <Table>
+              <TableHeader>
+                <TableHead>Student</TableHead>
+                <TableHead className="text-center">Theory</TableHead>
+                <TableHead className="text-center">Practical</TableHead>
+                <TableHead className="text-center">Absent</TableHead>
+                <TableHead className="text-center">Status</TableHead>
+              </TableHeader>
+              <TableSkeleton columns={5} />
+            </Table>
           ) : rows.fields.length === 0 ? (
             <NoRecordFound t={t} searchTerm="" clearFilters={() => {}} />
           ) : (

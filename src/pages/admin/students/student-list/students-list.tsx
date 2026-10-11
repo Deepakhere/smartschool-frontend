@@ -3,10 +3,9 @@ import { useRef } from "react";
 import toast from "react-hot-toast";
 import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 
-import Spinner from "@/components/spinner";
 import NoRecordFound from "@/components/no-record-found";
 import CustomSelectDropdown from "@/components/custom-select";
-import { Table, TableHeader, TableHead, TableBody, TableRow, TableCell } from "@/components/table";
+import { Table, TableHeader, TableHead, TableBody, TableRow, TableCell, TableSkeleton } from "@/components/table";
 import { SelectOption } from "@/types";
 import { usePageHeader } from "@/hooks";
 import SectionHeader from "@/components/section-header";
@@ -165,9 +164,16 @@ const StudentsList = () => {
 
       <div className="py-4">
         {isLoadingGetStudentDetails ? (
-          <div className="bg-white shadow rounded-lg border border-gray-200">
-            <Spinner />
-          </div>
+          <Table>
+            <TableHeader>
+              <TableHead>{t("labels.student_name")}</TableHead>
+              <TableHead className="text-center">{t("labels.roll_number")}</TableHead>
+              <TableHead className="text-center">{t("labels.class_id")}</TableHead>
+              <TableHead className="text-center">{t("labels.date_of_birth")}</TableHead>
+              <TableHead className="text-center">{t("labels.actions")}</TableHead>
+            </TableHeader>
+            <TableSkeleton columns={5} />
+          </Table>
         ) : (
           <>
             {/* Students Table */}

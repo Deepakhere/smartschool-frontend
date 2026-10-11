@@ -5,8 +5,7 @@ import { TrashIcon } from "@heroicons/react/24/outline";
 
 import ErrorState from "@/components/error-state";
 import { TextField } from "@/components/form-fields";
-import Spinner from "@/components/spinner";
-import { Table, TableBody, TableCell, TableEmpty, TableHead, TableHeader, TableRow } from "@/components/table";
+import { Table, TableBody, TableCell, TableEmpty, TableHead, TableHeader, TableRow, TableSkeleton } from "@/components/table";
 import { Button } from "@/components/ui/button";
 import { Card, CardTitle } from "@/components/ui/card";
 import { Form } from "@/components/ui/form";
@@ -101,7 +100,14 @@ const GradingSchemesTab = ({ organizationId }: { organizationId: string }) => {
         {schemes.isError ? (
           <ErrorState error={schemes.error} onRetry={() => schemes.refetch()} />
         ) : schemes.isLoading ? (
-          <Spinner />
+          <Table>
+            <TableHeader>
+              <TableHead>Name</TableHead>
+              <TableHead className="text-center">Pass %</TableHead>
+              <TableHead className="text-center">Bands</TableHead>
+            </TableHeader>
+            <TableSkeleton columns={3} />
+          </Table>
         ) : (
           <Table>
             <TableHeader>
