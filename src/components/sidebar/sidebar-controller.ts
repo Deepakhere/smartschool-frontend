@@ -93,6 +93,7 @@ export const useSidebarController = () => {
       items: [
         { name: "Attendance", href: `/${organizationId}/teacher/attendance`, icon: ClipboardDocumentCheckIcon, current: isActive("/attendance") },
         { name: "Homework", href: `/${organizationId}/teacher/homework`, icon: BookOpenIcon, current: isActive("/homework") },
+        { name: "Marks Entry", href: `/${organizationId}/teacher/marks`, icon: ChartBarIcon, current: isActive("/marks") },
         { name: "PTM", href: `/${organizationId}/teacher/ptm`, icon: UsersIcon, current: isActive("/ptm") },
         { name: "Leave Requests", href: `/${organizationId}/teacher/leave-requests`, icon: CalendarDaysIcon, current: isActive("/leave-requests") },
       ],

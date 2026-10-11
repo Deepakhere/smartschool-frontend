@@ -150,7 +150,7 @@ export const DateField = <T extends FieldValues>({
       <FormItem className={className}>
         <FormLabel>{label}</FormLabel>
         <FormControl>
-          <DatePicker value={field.value ?? ""} onChange={field.onChange} disabled={disabled} min={min} max={max} />
+          <DatePicker name={field.name} value={field.value ?? ""} onChange={field.onChange} disabled={disabled} min={min} max={max} />
         </FormControl>
         {description && <FormDescription>{description}</FormDescription>}
         <FormMessage />

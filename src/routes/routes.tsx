@@ -20,6 +20,7 @@ import AdminPromotion from "../pages/admin/promotion";
 // Teacher Pages
 import TeacherDashboard from "../pages/teacher/dashboard";
 import TeacherPTM from "../pages/teacher/ptm";
+import TeacherMarks from "../pages/teacher/marks";
 
 // Parent Pages
 import ParentDashboard from "../pages/parent/dashboard";
@@ -190,6 +191,10 @@ const router = createBrowserRouter([
       {
         path: "ptm",
         element: <TeacherPTM />,
+      },
+      {
+        path: "marks",
+        element: <TeacherMarks />,
       },
       {
         path: "leave-requests",
