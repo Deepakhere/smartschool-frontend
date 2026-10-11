@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useForm, useWatch } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import toast from "react-hot-toast";
@@ -7,15 +8,13 @@ import { useGetPTMEvents, useGenerateSlots, useGetMyPTMAgenda } from "@/pages/ad
 import { useGetMyTeacherAssignments } from "@/pages/admin/classes/service/academics-service";
 import { useAuth } from "@/context/auth-context";
 import { useError } from "@/hooks";
+import { defaultOpenAvailabilityValues, openAvailabilitySchema, OpenAvailabilityFormValues } from "./ptm.schema";
 
 const useTeacherPTMController = () => {
   const { t } = useTranslation();
   const { organizationId } = useParams();
   const { user } = useAuth();
   const org = organizationId || "";
-
-  const [selectedEventId, setSelectedEventId] = useState("");
-  const [slotForm, setSlotForm] = useState({ sectionId: "", startAt: "", endAt: "" });
 
   const getPTMEvents = useGetPTMEvents(org);
   const getMyAgenda = useGetMyPTMAgenda(org);
@@ -24,9 +23,15 @@ const useTeacherPTMController = () => {
 
   useError({ mutation: generateSlots });
 
+  const form = useForm<OpenAvailabilityFormValues>({
+    resolver: zodResolver(openAvailabilitySchema),
+    defaultValues: defaultOpenAvailabilityValues,
+  });
+  const [eventId, sectionId] = useWatch({ control: form.control, name: ["eventId", "sectionId"] });
+
   const events = getPTMEvents.data?.items || [];
   const agenda = getMyAgenda.data?.items || [];
-  const selectedEvent = events.find((e) => e.id === selectedEventId);
+  const selectedEvent = events.find((e) => e.id === eventId);
   // the sections of this event that the teacher teaches, each listed once and named with its class
   const eventSectionOptions = [
     ...new Map(
@@ -36,37 +41,35 @@ const useTeacherPTMController = () => {
     ).values(),
   ];
 
-  const handleSlotFormChange = (field: string, value: string) => {
-    setSlotForm({ ...slotForm, [field]: value });
-  };
+  // a new event invalidates the section chosen for the previous one
+  const onEventChange = () => form.setValue("sectionId", "");
 
-  const handleGenerateSlots = () => {
-    if (!selectedEventId || !slotForm.sectionId || !slotForm.startAt || !slotForm.endAt || !user?.id) {
-      toast.error("Select an event, section and time window.");
-      return;
-    }
+  const handleGenerateSlots = form.handleSubmit((values) => {
+    if (!user?.id) return;
     generateSlots.mutate(
-      { ptmEventId: selectedEventId, teacherUserId: user.id, ...slotForm },
+      { ptmEventId: values.eventId, teacherUserId: user.id, sectionId: values.sectionId, startAt: values.startAt, endAt: values.endAt },
       {
         onSuccess: () => {
           toast.success("Slots generated.");
-          setSlotForm({ sectionId: "", startAt: "", endAt: "" });
+          form.reset(defaultOpenAvailabilityValues);
         },
       }
     );
-  };
+  });
 
   return {
     t,
+    form,
     events,
     agenda,
+    eventId,
+    sectionId,
     eventSectionOptions,
+    onEventChange,
     isLoadingAgenda: getMyAgenda.isLoading,
+    agendaError: getMyAgenda.isError ? getMyAgenda.error : null,
+    retryAgenda: () => getMyAgenda.refetch(),
     isGeneratingSlots: generateSlots.isPending,
-    selectedEventId,
-    setSelectedEventId,
-    slotForm,
-    handleSlotFormChange,
     handleGenerateSlots,
   };
 };

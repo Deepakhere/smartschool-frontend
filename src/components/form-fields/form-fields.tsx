@@ -6,6 +6,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { cn } from "@/lib/utils";
 import { SelectOption } from "@/types";
 
 interface FieldProps<T extends FieldValues> {
@@ -223,5 +224,64 @@ export const FileField = <T extends FieldValues>({
         <FormMessage />
       </FormItem>
     )}
+  />
+);
+
+// multi-select as toggle chips, for short lists such as classes or sections; value is an array of ids
+export const ChipsField = <T extends FieldValues>({
+  form,
+  name,
+  label,
+  description,
+  disabled,
+  className,
+  options,
+  emptyText,
+  onToggle,
+}: FieldProps<T> & {
+  options: SelectOption[];
+  emptyText?: string;
+  // called with the next list, after the form value has been updated
+  onToggle?: (next: string[]) => void;
+}) => (
+  <FormField
+    control={form.control}
+    name={name}
+    render={({ field }) => {
+      const selected: string[] = field.value ?? [];
+      return (
+        <FormItem className={className}>
+          <FormLabel>{label}</FormLabel>
+          <div className="flex flex-wrap gap-2">
+            {options.length === 0 && emptyText && <p className="text-sm text-gray-500">{emptyText}</p>}
+            {options.map((option) => {
+              const id = String(option.id);
+              const isOn = selected.includes(id);
+              return (
+                <button
+                  key={id}
+                  type="button"
+                  disabled={disabled}
+                  aria-pressed={isOn}
+                  onClick={() => {
+                    const next = isOn ? selected.filter((value) => value !== id) : [...selected, id];
+                    field.onChange(next);
+                    onToggle?.(next);
+                  }}
+                  className={cn(
+                    "rounded-full border px-3 py-1 text-xs focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 disabled:opacity-50",
+                    isOn ? "border-primary-300 bg-primary-100 text-primary-800" : "border-gray-300 bg-white text-gray-600 hover:bg-gray-50"
+                  )}
+                >
+                  {option.name}
+                </button>
+              );
+            })}
+          </div>
+          {description && <FormDescription>{description}</FormDescription>}
+          <FormMessage />
+        </FormItem>
+      );
+    }}
   />
 );

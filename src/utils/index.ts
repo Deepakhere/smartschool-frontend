@@ -1,5 +1,5 @@
 export { formatDate } from "./format-date";
-export { formatMoney } from "./format-currency";
+export { formatMoney, toPaise } from "./format-currency";
 export { validateEmail } from "./validate-email";
 export { validatePassword } from "./validate-password";
 export { validatePhone } from "./validate-phone";
