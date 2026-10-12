@@ -326,6 +326,34 @@ export interface IRoleOptionDropDown {
   icon: React.ReactNode;
 }
 
+export type IBillingStatus = "trialing" | "grace" | "active" | "suspended_unpaid";
+
+export interface IBillingTierRef {
+  id: string;
+  label: string;
+  priceInrPaise: number;
+}
+
+export interface IBillingSummary {
+  organizationId: string;
+  billingStatus: IBillingStatus;
+  trialEndsAt: string | null;
+  graceEndsAt: string | null;
+  paidThrough: string | null;
+  studentLimit: number | null;
+  activeStudentCount: number;
+  tier: IBillingTierRef | null;
+  amountDuePaise: number | null;
+  lastInvoice?: {
+    tierId: string;
+    tierLabel: string;
+    studentCountAtBilling: number;
+    amountPaise: number;
+    markedPaidAt: string;
+    markedPaidBy: string;
+  } | null;
+}
+
 export interface IOrganization {
   id: string;
   name: string;
@@ -343,38 +371,6 @@ export interface IOrganization {
   myRole?: "admin" | "teacher" | "parent" | null;
 }
 
-export interface IAccount {
-  id: string;
-  name: string;
-  ownerUserId: { id: string; name: string; email: string } | string;
-  status: "active" | "trial" | "suspended";
-  createdAt: string;
-  organizations: IOrganization[];
-}
-
-export interface ICreateAccountValue {
-  accountName: string;
-  ownerEmail: string;
-  ownerName: string;
-  schoolName: string;
-  address: string;
-  pincode: string;
-  description?: string;
-}
-
-export interface IAddOrganizationToAccountValue {
-  schoolName: string;
-  address: string;
-  pincode: string;
-  description?: string;
-}
-
-export interface ICreateOrganizationValue {
-  name: string;
-  address: string;
-  pincode: string;
-  description?: string;
-}
 
 export interface IAcademicYear {
   id: string;

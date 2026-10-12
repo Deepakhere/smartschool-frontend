@@ -3,7 +3,7 @@ import { render, screen } from "@testing-library/react";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
 import Cookies from "js-cookie";
 
-import { AuthenticatedRoute, FallbackRoute, PlatformRoute, ProtectedRoute, PublicRoute } from "./route-guards";
+import { AuthenticatedRoute, FallbackRoute, ProtectedRoute, PublicRoute } from "./route-guards";
 
 type MockUser = { role?: "admin" | "teacher" | "parent"; isPlatformAdmin?: boolean } | null;
 
@@ -110,31 +110,6 @@ describe("AuthenticatedRoute", () => {
     );
     renderAt("/page", page);
     expect(screen.getByText("login page")).toBeInTheDocument();
-  });
-});
-
-describe("PlatformRoute", () => {
-  const page = (
-    <PlatformRoute>
-      <p>platform console</p>
-    </PlatformRoute>
-  );
-
-  it("sends a signed-out visitor to login", () => {
-    renderAt("/page", page);
-    expect(screen.getByText("login page")).toBeInTheDocument();
-  });
-
-  it("refuses a signed-in user who is not a platform admin", () => {
-    mockUser = { role: "admin", isPlatformAdmin: false };
-    renderAt("/page", page);
-    expect(screen.getByText("not access page")).toBeInTheDocument();
-  });
-
-  it("lets a platform admin in", () => {
-    mockUser = { role: "admin", isPlatformAdmin: true };
-    renderAt("/page", page);
-    expect(screen.getByText("platform console")).toBeInTheDocument();
   });
 });
 

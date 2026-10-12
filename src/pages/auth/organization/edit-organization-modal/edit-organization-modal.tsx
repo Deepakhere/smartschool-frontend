@@ -3,26 +3,26 @@ import { BuildingOffice2Icon, ArrowUpTrayIcon } from "@heroicons/react/24/outlin
 import FormDialog from "@/components/form-dialog";
 import { TextField, TextareaField } from "@/components/form-fields";
 import ButtonSpinner from "@/icons/button-spinner";
-import useAddOrganizationModalController from "./add-organization-modal-controller";
+import useEditOrganizationModalController from "./edit-organization-modal-controller";
 import { IOrganization } from "@/types";
 
-interface AddOrganizationModalProps {
+interface EditOrganizationModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onCreated: () => void;
-  organization?: IOrganization | null;
+  onSaved: () => void;
+  organization: IOrganization | null;
 }
 
-const AddOrganizationModal = ({ isOpen, onClose, onCreated, organization }: AddOrganizationModalProps) => {
-  const { t, form, isEditMode, logoPreviewUrl, handleLogoFileChange, onSubmit, isLoading, isUploadingLogo } =
-    useAddOrganizationModalController(isOpen, onClose, onCreated, organization);
+const EditOrganizationModal = ({ isOpen, onClose, onSaved, organization }: EditOrganizationModalProps) => {
+  const { t, form, logoPreviewUrl, handleLogoFileChange, onSubmit, isLoading, isUploadingLogo } =
+    useEditOrganizationModalController(isOpen, onClose, onSaved, organization);
 
   return (
     <FormDialog
       form={form}
       open={isOpen}
       onClose={onClose}
-      title={isEditMode ? "Edit Organization" : t("labels.add_organization")}
+      title="Edit Organization"
       submitLabel={t("buttons.save")}
       isSubmitting={isLoading}
       onSubmit={onSubmit}
@@ -66,4 +66,4 @@ const AddOrganizationModal = ({ isOpen, onClose, onCreated, organization }: AddO
   );
 };
 
-export default AddOrganizationModal;
+export default EditOrganizationModal;

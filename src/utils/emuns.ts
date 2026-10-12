@@ -76,7 +76,7 @@ export const API_QUERY_KEY = {
   GET_MY_LEAVE_REQUESTS: "get-my-leave-requests",
   GET_LEAVE_REQUESTS_REVIEW_QUEUE: "get-leave-requests-review-queue",
   GET_PROMOTION_CANDIDATES: "get-promotion-candidates",
-  GET_ALL_ACCOUNTS: "get-all-accounts",
+  GET_MY_BILLING_SUMMARY: "get-my-billing-summary",
 };
 
 export const API_MUTATION_KEY = {
@@ -96,7 +96,6 @@ export const API_MUTATION_KEY = {
   CREATE_HOMEWORK: "create-homework",
   DELETE_HOMEWORK: "delete-homework",
   DELETE_NOTICE: "delete-notice",
-  CREATE_ORGANIZATION: "create-organization",
   UPDATE_ORGANIZATION: "update-organization",
   CREATE_ACADEMIC_YEAR: "create-academic-year",
   UPDATE_ACADEMIC_YEAR: "update-academic-year",
@@ -141,9 +140,6 @@ export const API_MUTATION_KEY = {
   CREATE_LEAVE_REQUEST: "create-leave-request",
   CANCEL_LEAVE_REQUEST: "cancel-leave-request",
   DECIDE_LEAVE_REQUEST: "decide-leave-request",
-  CREATE_ACCOUNT: "create-account",
-  ADD_ORGANIZATION_TO_ACCOUNT: "add-organization-to-account",
-  UPDATE_ACCOUNT_STATUS: "update-account-status",
 };
 
 export const GOOGLE_CAPTCHA_KEY = "6LeCtSorAAAAAN38EwKA3qBHzEWYsx6is3RT8eSa";
