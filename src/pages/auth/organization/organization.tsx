@@ -1,6 +1,5 @@
 import ErrorState from "@/components/error-state";
 import {
-  PlusIcon,
   ArrowRightOnRectangleIcon,
   MagnifyingGlassIcon,
   BuildingOffice2Icon,
@@ -13,7 +12,7 @@ import Avatar from "@/components/avatar";
 import LogoSpinner from "@/components/logo-spinner";
 import { IOrganization } from "@/types";
 import useOrganizationController from "./organization-controller";
-import AddOrganizationModal from "./add-organization-modal";
+import EditOrganizationModal from "./edit-organization-modal";
 
 const statusStyles: Record<string, string> = {
   active: "bg-green-100 text-green-800",
@@ -31,12 +30,10 @@ function Organization() {
     retryLoad,
     navigateHome,
     signOut,
-    isAddModalOpen,
     editingOrganization,
-    openAddModal,
     openEditModal,
-    closeAddModal,
-    onOrganizationCreated,
+    closeEditModal,
+    onOrganizationSaved,
     searchTerm,
     setSearchTerm,
   } = useOrganizationController();
@@ -62,14 +59,6 @@ function Organization() {
                 </p>
               </div>
               <div className="flex gap-3">
-                <button
-                  onClick={openAddModal}
-                  title="Add Organization"
-                  className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
-                >
-                  <PlusIcon className="h-5 w-5 mr-2" />
-                  Add Organization
-                </button>
                 <button
                   onClick={signOut}
                   title="Sign Out"
@@ -103,15 +92,8 @@ function Organization() {
                   No organizations yet
                 </h3>
                 <p className="text-sm text-gray-500 mb-6 text-center max-w-md">
-                  Get started by adding the first school organization to the platform.
+                  Your account isn't linked to any school yet. Contact your platform admin to get set up.
                 </p>
-                <button
-                  onClick={openAddModal}
-                  className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary-600 hover:bg-primary-700"
-                >
-                  <PlusIcon className="h-5 w-5 mr-2" />
-                  Add Organization
-                </button>
               </div>
             ) : organization.length === 0 ? (
               <div className="flex flex-col items-center justify-center py-20 bg-white rounded-xl border border-gray-200">
@@ -211,10 +193,10 @@ function Organization() {
           </div>
         </div>
       )}
-      <AddOrganizationModal
-        isOpen={isAddModalOpen}
-        onClose={closeAddModal}
-        onCreated={onOrganizationCreated}
+      <EditOrganizationModal
+        isOpen={!!editingOrganization}
+        onClose={closeEditModal}
+        onSaved={onOrganizationSaved}
         organization={editingOrganization}
       />
     </>

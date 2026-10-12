@@ -61,13 +61,15 @@ const UserMenuBody = ({
             <BuildingOffice2Icon className="h-4 w-4 text-gray-400" />
             Switch Organization
           </Link>
-          <Link
-            to="/platform"
+          <a
+            href={import.meta.env.VITE_ADMIN_URL}
+            target="_blank"
+            rel="noreferrer"
             className="flex items-center gap-2 rounded-md px-2 py-2 text-sm text-gray-700 hover:bg-gray-50"
           >
             <BuildingOffice2Icon className="h-4 w-4 text-gray-400" />
             Platform Console
-          </Link>
+          </a>
         </>
       )}
 

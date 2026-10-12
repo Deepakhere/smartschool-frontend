@@ -56,15 +56,6 @@ export const ProtectedRoute = ({ children, role }: ProtectedRouteProps) => {
   return <TenantProvider requiredRole={role}>{children}</TenantProvider>;
 };
 
-export const PlatformRoute = ({ children }: RouteGuardProps) => {
-  const { user } = useAuth();
-
-  if (!user) return <Navigate to="/login" replace />;
-  if (!user.isPlatformAdmin) return <Navigate to="/not-access" replace />;
-
-  return <>{children}</>;
-};
-
 // unknown URLs: a signed-out visitor should land on login, not an "access denied" page
 export const FallbackRoute = () => {
   const { user } = useAuth();

@@ -40,9 +40,8 @@ import ForgotPassword from "../pages/auth/forgot-password";
 import SetPassword from "../pages/auth/set-password";
 import ResetPassword from "../pages/auth/reset-password";
 import NotAccess from "../components/not-access";
-import { AuthenticatedRoute, FallbackRoute, PlatformRoute, ProtectedRoute, PublicRoute } from "./route-guards";
+import { AuthenticatedRoute, FallbackRoute, ProtectedRoute, PublicRoute } from "./route-guards";
 import Organization from "../pages/auth/organization";
-import Platform from "../pages/platform";
 
 // built once at module load: re-creating the router on a re-render would reset navigation state
 const router = createBrowserRouter([
@@ -85,14 +84,6 @@ const router = createBrowserRouter([
   {
     path: "/reset-password",
     element: <ResetPassword />,
-  },
-  {
-    path: "/platform",
-    element: (
-      <PlatformRoute>
-        <Platform />
-      </PlatformRoute>
-    ),
   },
   {
     path: "/not-access",

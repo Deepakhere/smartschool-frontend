@@ -13,7 +13,6 @@ const useOrganizationController = () => {
   const getAllOrganization = useGetAllOrganizations();
 
   const [organization, setOrganization] = useState<IOrganization[]>([]);
-  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [editingOrganization, setEditingOrganization] = useState<IOrganization | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
 
@@ -58,15 +57,10 @@ const useOrganizationController = () => {
     retryLoad: () => getAllOrganization.refetch(),
     navigateHome,
     signOut,
-    isAddModalOpen: isAddModalOpen || !!editingOrganization,
     editingOrganization,
-    openAddModal: () => setIsAddModalOpen(true),
     openEditModal: (org: IOrganization) => setEditingOrganization(org),
-    closeAddModal: () => {
-      setIsAddModalOpen(false);
-      setEditingOrganization(null);
-    },
-    onOrganizationCreated: () => getAllOrganization.refetch(),
+    closeEditModal: () => setEditingOrganization(null),
+    onOrganizationSaved: () => getAllOrganization.refetch(),
     searchTerm,
     setSearchTerm,
   };

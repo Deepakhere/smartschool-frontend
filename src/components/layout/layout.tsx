@@ -2,6 +2,7 @@ import { Outlet } from "react-router-dom";
 
 import Header from "../header";
 import Sidebar from "../sidebar";
+import BillingBanner from "../billing-banner";
 import { PageHeaderProvider } from "@/context/page-header-context";
 import { NotificationProvider } from "@/context/notification-context";
 import { useLayoutController } from "./layout-controller";
@@ -14,6 +15,7 @@ const Layout = () => {
       <NotificationProvider>
         <div className="h-screen flex flex-col">
           <Header onToggleSidebar={toggleSidebar} isCollapsed={isCollapsed} onToggleCollapse={toggleCollapse} />
+          <BillingBanner />
           <div className="flex flex-1 overflow-hidden relative">
             {/* mobile-only backdrop - tapping it closes the drawer; irrelevant on
                 lg+ where the sidebar is a normal in-flow column, not an overlay */}
