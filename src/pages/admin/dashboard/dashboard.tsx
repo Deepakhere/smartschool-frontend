@@ -90,26 +90,11 @@ const Dashboard = () => {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* Charts Grid */}
-        <div className="lg:col-span-2 space-y-8">
-          {chartCard(studentPerformanceOptions)}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <div className="bg-white rounded-xl shadow-xl p-6">
-              {isChartsLoading ? (
-                <ChartSkeleton />
-              ) : hasTeacherStudentData ? (
-                <HighchartsReact highcharts={Highcharts} options={teacherStudentRatioOptions} />
-              ) : (
-                <ChartEmptyState title="Teacher-Student Ratio" message="No teachers or students yet." />
-              )}
-            </div>
-            {chartCard(monthlyAttendanceOptions)}
-          </div>
-        </div>
+      {/* Row 1: Monthly Attendance (70%) + Recent Updates (30%) */}
+      <div className="grid grid-cols-1 md:grid-cols-10 gap-8">
+        <div className="md:col-span-7">{chartCard(monthlyAttendanceOptions)}</div>
 
-        {/* Recent Updates */}
-        <div className="bg-white rounded-xl shadow-xl p-6 self-start">
+        <div className="md:col-span-3 bg-white rounded-xl shadow-xl p-6 flex flex-col">
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-xl font-semibold text-gray-900">{t("labels.recent_updates")}</h2>
             {recentUpdates.length > 0 && (
@@ -121,7 +106,7 @@ const Dashboard = () => {
           {isNoticesLoading ? (
             <UpdatesSkeleton />
           ) : recentUpdates.length === 0 ? (
-            <div className="flex flex-col items-center text-center py-8 space-y-3">
+            <div className="flex flex-1 flex-col items-center justify-center text-center space-y-3">
               <div className="p-3 bg-primary-50 rounded-full">
                 <BellIcon className="h-6 w-6 text-primary-600" />
               </div>
@@ -134,7 +119,8 @@ const Dashboard = () => {
               </button>
             </div>
           ) : (
-            <div>
+            // matches the chart's own height; up to 5 notices fit without scrolling, more scroll inside
+            <div className="overflow-y-auto" style={{ maxHeight: 300 }}>
               {recentUpdates.map((update, index) => (
                 <Link
                   key={index}
@@ -151,6 +137,20 @@ const Dashboard = () => {
             </div>
           )}
         </div>
+      </div>
+
+      {/* Row 2: Teacher-Student Ratio (30%) + Exam Performance Trend (70%) */}
+      <div className="grid grid-cols-1 md:grid-cols-10 gap-8">
+        <div className="md:col-span-3 bg-white rounded-xl shadow-xl p-6">
+          {isChartsLoading ? (
+            <ChartSkeleton />
+          ) : hasTeacherStudentData ? (
+            <HighchartsReact highcharts={Highcharts} options={teacherStudentRatioOptions} />
+          ) : (
+            <ChartEmptyState title="Teacher-Student Ratio" message="No teachers or students yet." />
+          )}
+        </div>
+        <div className="md:col-span-7">{chartCard(studentPerformanceOptions)}</div>
       </div>
 
       <NoticeModal
