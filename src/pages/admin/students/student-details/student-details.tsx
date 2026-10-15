@@ -10,6 +10,7 @@ import PageLoader from "@/components/page-loader";
 import Avatar from "@/components/avatar";
 import GuardianModal from "./guardian-modal";
 import { usePageHeader } from "@/hooks";
+import EmptyState from "@/components/empty-state";
 
 const StudentDetails = () => {
   const {
@@ -173,7 +174,7 @@ const StudentDetails = () => {
             </div>
             <div className="border-t border-gray-200 divide-y divide-gray-200">
               {!studentDetails?.guardians?.length ? (
-                <p className="px-4 py-5 text-sm text-gray-500">No guardians linked yet.</p>
+                <EmptyState compact title="No guardians linked yet" />
               ) : (
                 studentDetails.guardians.map((g) => (
                   <div key={g.id} className="px-4 py-4 sm:px-6 flex justify-between items-center">
@@ -259,7 +260,7 @@ const StudentDetails = () => {
               {isLoadingEnrollmentHistory ? (
                 <p className="px-4 py-5 text-sm text-gray-500">Loading history...</p>
               ) : enrollmentHistory.length === 0 ? (
-                <p className="px-4 py-5 text-sm text-gray-500">No enrollment history yet.</p>
+                <EmptyState compact title="No enrollment history yet" />
               ) : (
                 enrollmentHistory.map((entry) => (
                   <div key={entry.id} className="px-4 py-4 sm:px-6 flex justify-between items-center">
@@ -337,7 +338,7 @@ const StudentDetails = () => {
                     <TableSkeleton columns={6} />
                   </Table>
                 ) : examResults.length === 0 ? (
-                  <p className="text-sm text-gray-500">No published exam results yet.</p>
+                  <EmptyState compact title="No published exam results yet" />
                 ) : (
                   <Table>
                     <TableHeader>
@@ -398,7 +399,7 @@ const StudentDetails = () => {
                 {isLoadingAttendance ? (
                   <p className="text-sm text-gray-500">Loading...</p>
                 ) : !attendanceSummary || attendanceSummary.total === 0 ? (
-                  <p className="text-sm text-gray-500">No attendance recorded yet.</p>
+                  <EmptyState compact title="No attendance recorded yet" />
                 ) : (
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                     <div className="bg-gray-50 p-3 rounded">

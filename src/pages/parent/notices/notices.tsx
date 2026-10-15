@@ -2,12 +2,12 @@ import ErrorState from "@/components/error-state";
 import { BellIcon, CalendarDaysIcon } from "@heroicons/react/24/outline";
 
 import Spinner from "@/components/spinner";
-import NoRecordFound from "@/components/no-record-found";
+import EmptyState from "@/components/empty-state";
 import SectionHeader from "@/components/section-header";
 import useNoticesController from "./notices-controller";
 
 const ParentNotices = () => {
-  const { t, notices, isLoading, handleMarkRead, loadError, retryLoad } = useNoticesController();
+  const { notices, isLoading, handleMarkRead, loadError, retryLoad } = useNoticesController();
 
   return (
     <div className="max-w-7xl mx-auto">
@@ -18,7 +18,7 @@ const ParentNotices = () => {
         ) : isLoading ? (
           <Spinner />
         ) : notices.length === 0 ? (
-          <NoRecordFound t={t} searchTerm="" clearFilters={() => {}} />
+          <EmptyState title="No notices yet" description="Notices from the school will show up here." />
         ) : (
           <div className="space-y-4">
             {notices.map((notice) => (

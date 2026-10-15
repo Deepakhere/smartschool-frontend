@@ -1,7 +1,7 @@
 import { useTranslation } from "react-i18next";
 
 import Spinner from "@/components/spinner";
-import NoRecordFound from "@/components/no-record-found";
+import EmptyState from "@/components/empty-state";
 import SectionHeader from "@/components/section-header";
 import CustomSelectDropdown from "@/components/custom-select";
 import { Button } from "@/components/ui/button";
@@ -40,7 +40,7 @@ const LeaveRequests = () => {
         {c.isLoading ? (
           <Spinner />
         ) : c.leaveRequests.length === 0 ? (
-          <NoRecordFound t={t} searchTerm="" clearFilters={() => {}} />
+          <EmptyState title="No leave requests" description="Leave requests from parents will show up here." />
         ) : (
           <div className="divide-y divide-gray-100">
             {c.leaveRequests.map((lr) => (

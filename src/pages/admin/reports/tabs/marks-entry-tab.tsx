@@ -6,6 +6,7 @@ import { SelectOption } from "@/types";
 import { useGetSections } from "../../classes/service/academics-service";
 import MarksSheetCard from "../components/marks-sheet-card";
 import { useGetExams, useGetExamSubjects } from "../service/exams-service";
+import EmptyState from "@/components/empty-state";
 
 const MarksEntryTab = ({ organizationId }: { organizationId: string }) => {
   const [examId, setExamId] = useState("");
@@ -70,6 +71,15 @@ const MarksEntryTab = ({ organizationId }: { organizationId: string }) => {
           />
         </div>
       </Card>
+
+      {!(sectionId && examSubjectId) && (
+        <Card>
+          <EmptyState
+            title={examOptions.length ? "Pick an exam, class, section and subject" : "No exams yet"}
+            description={examOptions.length ? "The marks sheet for that paper opens here." : "Create an exam in the Exams tab, add its subjects, then enter marks here."}
+          />
+        </Card>
+      )}
 
       {sectionId && examSubjectId && (
         <MarksSheetCard

@@ -1,6 +1,6 @@
 import Spinner from "@/components/spinner";
 import DeleteConfirmationDialog from "@/components/delete-confirmation-dialog";
-import NoRecordFound from "@/components/no-record-found";
+import EmptyState from "@/components/empty-state";
 import SectionHeader from "@/components/section-header";
 import CustomSelectDropdown from "@/components/custom-select";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
@@ -173,6 +173,15 @@ const Homework = () => {
         </Form>
       )}
 
+      {!c.sectionId && !c.hasNoClasses && (
+        <div className="bg-white shadow rounded-lg">
+          <EmptyState
+            title={c.classes.length ? "Pick a class and section" : "No classes yet"}
+            description={c.classes.length ? "Choose a class and section above to see and assign its homework." : "Add an academic year, classes and sections on the Classes page first."}
+          />
+        </div>
+      )}
+
       {c.sectionId && (
         <div className="bg-white shadow rounded-lg">
           <div className="px-4 py-4 border-b border-gray-200">
@@ -181,7 +190,7 @@ const Homework = () => {
           {c.isLoadingHomework ? (
             <Spinner />
           ) : c.homeworkList.length === 0 ? (
-            <NoRecordFound t={t} searchTerm="" clearFilters={() => {}} />
+            <EmptyState title="No homework yet" description="Homework set for this section will show up here." />
           ) : (
             <div className="divide-y divide-gray-100">
               {c.homeworkList.map((hw) => (

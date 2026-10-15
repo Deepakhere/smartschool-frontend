@@ -9,6 +9,7 @@ const CustomSelectDropdown = ({
   placeholder = "Select an option",
   className = "",
   disabled = false,
+  emptyText = "Nothing to choose yet.",
 }: SelectDropdownProps) => {
   return (
     <div className={className}>
@@ -28,6 +29,7 @@ const CustomSelectDropdown = ({
           </span>
         </SelectTrigger>
         <SelectContent>
+          {options.length === 0 && <p className="px-3 py-2.5 text-sm text-gray-500">{emptyText}</p>}
           {options.map((option) => (
             <SelectItem key={option.id} value={String(option.id)}>
               <div className="flex items-center">

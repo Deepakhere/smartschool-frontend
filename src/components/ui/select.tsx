@@ -41,7 +41,8 @@ const SelectContent = React.forwardRef<
       position={position}
       className={cn(
         "relative z-50 max-h-60 min-w-[8rem] overflow-hidden rounded-md bg-white text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm",
-        position === "popper" && "w-[var(--radix-select-trigger-width)]",
+        // at least as wide as its box, and never narrower than 14rem, so every open menu reads the same
+        position === "popper" && "w-max min-w-[max(var(--radix-select-trigger-width),14rem)] max-w-[24rem]",
         className
       )}
       {...props}

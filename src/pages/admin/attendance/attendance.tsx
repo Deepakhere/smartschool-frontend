@@ -9,6 +9,7 @@ import useAttendanceController from "./attendance-controller";
 import MonthlyRegister from "./components/monthly-register";
 import { AttendanceStatus, SelectOption } from "@/types";
 import { exportToCsv, formatDate } from "@/utils";
+import EmptyState from "@/components/empty-state";
 
 const STATUS_STYLES: Record<AttendanceStatus, string> = {
   present: "bg-green-100 text-green-800 border-green-300",
@@ -99,8 +100,8 @@ const AdminAttendance = () => {
               <Input type="month" value={c.registerMonth} onChange={(e) => c.setRegisterMonth(e.target.value)} />
             </div>
           ) : (
-            <div className="flex gap-2">
-              <div className="flex-1">
+            <div className="flex min-w-0 gap-2">
+              <div className="min-w-0 flex-1">
                 <Label>From</Label>
                 <Input
                   type="date"
@@ -108,7 +109,7 @@ const AdminAttendance = () => {
                   onChange={(e) => c.setReportFrom(e.target.value)}
                 />
               </div>
-              <div className="flex-1">
+              <div className="min-w-0 flex-1">
                 <Label>To</Label>
                 <Input
                   type="date"
@@ -120,6 +121,15 @@ const AdminAttendance = () => {
           )}
         </div>
       </div>
+
+      {!c.sectionId && !c.hasNoClasses && (
+        <div className="bg-white shadow rounded-lg">
+          <EmptyState
+            title={c.classes.length ? "Pick a class and section" : "No classes yet"}
+            description={c.classes.length ? "Choose a class and section above to mark or review attendance." : "Add an academic year, classes and sections on the Classes page first."}
+          />
+        </div>
+      )}
 
       {c.activeTab === "register" && c.sectionId && (
         <MonthlyRegister
@@ -134,7 +144,7 @@ const AdminAttendance = () => {
         <div className="bg-white shadow rounded-lg">
           <div className="px-4 py-4 border-b border-gray-200 flex justify-between items-center">
             <h2 className="text-lg font-medium text-gray-900">
-              Attendance over {c.reportFrom} – {c.reportTo}
+              Attendance from {formatDate(`${c.reportFrom}T00:00:00`)} to {formatDate(`${c.reportTo}T00:00:00`)}
               <span className="text-sm text-gray-500 font-normal"> - {c.reportTotalSessions} day(s) marked</span>
             </h2>
             {c.reportRows.length > 0 && (
@@ -176,7 +186,7 @@ const AdminAttendance = () => {
               <TableSkeleton columns={7} />
             </Table>
           ) : c.reportRows.length === 0 ? (
-            <p className="px-4 py-5 text-sm text-gray-500">No attendance marked for this section in this range.</p>
+            <EmptyState title="No attendance in this range" description="Nothing was marked for this section between these dates." />
           ) : (
             <Table>
               <TableHeader>

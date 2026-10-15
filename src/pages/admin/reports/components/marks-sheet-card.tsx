@@ -1,11 +1,10 @@
 import { useEffect } from "react";
 import { useFieldArray, useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useTranslation } from "react-i18next";
 import toast from "react-hot-toast";
 
 import ErrorState from "@/components/error-state";
-import NoRecordFound from "@/components/no-record-found";
+import EmptyState from "@/components/empty-state";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow, TableSkeleton } from "@/components/table";
 import { Badge, BadgeTone } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -32,7 +31,6 @@ interface MarksSheetCardProps {
 // the shared marks grid behind both the admin and teacher marks-entry screens: one student per row,
 // theory/practical/absent, saved as a batch. Shown once an exam, class, section and subject are all chosen.
 const MarksSheetCard = ({ organizationId, examSubjectId, sectionId, examPublished, canVerify = false }: MarksSheetCardProps) => {
-  const { t } = useTranslation();
   const marksSheet = useGetMarksSheet(organizationId, examSubjectId, sectionId);
   const saveMarks = useSaveMarks(organizationId);
   const verifyMarks = useVerifyExamSubjectMarks(organizationId);
@@ -170,7 +168,7 @@ const MarksSheetCard = ({ organizationId, examSubjectId, sectionId, examPublishe
           <TableSkeleton columns={5} />
         </Table>
       ) : rows.fields.length === 0 ? (
-        <NoRecordFound t={t} searchTerm="" clearFilters={() => {}} />
+        <EmptyState title="No students in this section" description="Marks can be entered once students are enrolled here." />
       ) : (
         <Table>
           <TableHeader>

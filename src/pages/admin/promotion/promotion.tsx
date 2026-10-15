@@ -1,6 +1,6 @@
 import SectionHeader from "@/components/section-header";
 import Spinner from "@/components/spinner";
-import NoRecordFound from "@/components/no-record-found";
+import EmptyState from "@/components/empty-state";
 import CustomSelectDropdown from "@/components/custom-select";
 import DeleteConfirmationDialog from "@/components/delete-confirmation-dialog";
 import { Button } from "@/components/ui/button";
@@ -8,7 +8,6 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { usePromotionController } from "./promotion-controller";
 import { PromotionAction, SelectOption } from "@/types";
-import { useTranslation } from "react-i18next";
 
 const resultBadgeClass: Record<string, string> = {
   pass: "bg-green-100 text-green-800",
@@ -24,7 +23,6 @@ const ACTION_OPTIONS: SelectOption[] = [
 ];
 
 const Promotion = () => {
-  const { t } = useTranslation();
   const c = usePromotionController();
 
   const asOptions = (items: { id: string; name: string }[]): SelectOption[] =>
@@ -149,6 +147,19 @@ const Promotion = () => {
         </div>
       )}
 
+      {!c.sourceSectionId && (
+        <div className="bg-white shadow rounded-lg">
+          <EmptyState
+            title={c.sourceClasses.length ? "Pick the class and section to promote" : "Nothing to promote yet"}
+            description={
+              c.sourceClasses.length
+                ? "Choose the current year, class and section above; its students are listed here to promote, detain, transfer or withdraw."
+                : "Promotion works on students enrolled in classes. Add classes, sections and students first."
+            }
+          />
+        </div>
+      )}
+
       {c.sourceSectionId && (
         <div className="bg-white shadow rounded-lg">
           <div className="px-4 py-4 border-b border-gray-200 flex justify-between items-center">
@@ -161,7 +172,7 @@ const Promotion = () => {
           {c.isLoadingCandidates ? (
             <Spinner />
           ) : c.candidates.length === 0 ? (
-            <NoRecordFound t={t} searchTerm="" clearFilters={() => {}} />
+            <EmptyState title="No students in this section" description="There are no active students here to promote." />
           ) : (
             <div className="divide-y divide-gray-100">
               {c.candidates.map((candidate) => {

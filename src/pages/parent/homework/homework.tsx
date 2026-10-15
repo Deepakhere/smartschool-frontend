@@ -2,14 +2,14 @@ import ErrorState from "@/components/error-state";
 import { BookOpenIcon } from "@heroicons/react/24/outline";
 
 import Spinner from "@/components/spinner";
-import NoRecordFound from "@/components/no-record-found";
+import EmptyState from "@/components/empty-state";
 import SectionHeader from "@/components/section-header";
 import CustomSelectDropdown from "@/components/custom-select";
 import { useHomeworkController } from "./homework-controller";
 import { SelectOption } from "@/types";
 
 const ParentHomework = () => {
-  const { t, children, studentId, setStudentId, homeworkList, isLoading, loadError, retryLoad } = useHomeworkController();
+  const { children, studentId, setStudentId, homeworkList, isLoading, loadError, retryLoad } = useHomeworkController();
 
   return (
     <div className="max-w-7xl mx-auto space-y-6">
@@ -38,7 +38,7 @@ const ParentHomework = () => {
         ) : isLoading ? (
           <Spinner />
         ) : homeworkList.length === 0 ? (
-          <NoRecordFound t={t} searchTerm="" clearFilters={() => {}} />
+          <EmptyState title="No homework yet" description="Homework set for your children will show up here." />
         ) : (
           <div className="space-y-4">
             {homeworkList.map((hw) => (

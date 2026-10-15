@@ -1,16 +1,14 @@
-import { useTranslation } from "react-i18next";
 
 import ErrorState from "@/components/error-state";
 import FormDialog from "@/components/form-dialog";
 import { DateField, TextField } from "@/components/form-fields";
-import NoRecordFound from "@/components/no-record-found";
+import EmptyState from "@/components/empty-state";
 import SectionHeader from "@/components/section-header";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow, TableSkeleton } from "@/components/table";
 import { Button } from "@/components/ui/button";
 import useTeachersController from "./teachers-controller";
 
 const AdminTeachers = () => {
-  const { t } = useTranslation();
   const c = useTeachersController();
   const isCodeLocked = !!c.editingTeacher?.staffProfile?.employeeCode;
 
@@ -35,7 +33,7 @@ const AdminTeachers = () => {
               <TableSkeleton columns={6} />
             </Table>
           ) : c.teachers.length === 0 ? (
-            <NoRecordFound t={t} searchTerm="" clearFilters={() => {}} />
+            <EmptyState title="No teachers yet" description="Invite teachers from Settings, User Management. They appear here once they join." />
           ) : (
             <Table>
               <TableHeader>

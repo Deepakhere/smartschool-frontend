@@ -1,6 +1,6 @@
 import ErrorState from "@/components/error-state";
 import { SelectField, TextField } from "@/components/form-fields";
-import NoRecordFound from "@/components/no-record-found";
+import EmptyState from "@/components/empty-state";
 import SectionHeader from "@/components/section-header";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -12,7 +12,6 @@ import useTeacherPTMController from "./ptm-controller";
 
 const TeacherPTM = () => {
   const {
-    t,
     form,
     events,
     agenda,
@@ -40,7 +39,14 @@ const TeacherPTM = () => {
 
       <Card className="mb-6">
         <CardTitle className="mb-4 font-medium">Open my availability</CardTitle>
-        <Form {...form}>
+        {eventOptions.length === 0 ? (
+          <EmptyState
+            compact
+            title="No meetings scheduled yet"
+            description="When the school schedules a parent-teacher meeting for your classes, you can open your time here."
+          />
+        ) : (
+          <Form {...form}>
           <form onSubmit={handleGenerateSlots} noValidate>
             <div className="grid grid-cols-1 items-start gap-3 sm:grid-cols-4">
               <SelectField form={form} name="eventId" label="PTM event" options={eventOptions} onValueChange={onEventChange} />
@@ -52,7 +58,8 @@ const TeacherPTM = () => {
               Generate slots
             </Button>
           </form>
-        </Form>
+          </Form>
+        )}
       </Card>
 
       <Card>
@@ -69,7 +76,7 @@ const TeacherPTM = () => {
             <TableSkeleton columns={3} />
           </Table>
         ) : agenda.length === 0 ? (
-          <NoRecordFound t={t} searchTerm="" clearFilters={() => {}} />
+          <EmptyState compact title="No meetings booked yet" description="When parents book your slots, they show up here." />
         ) : (
           <Table>
             <TableHeader>

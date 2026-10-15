@@ -1,3 +1,6 @@
+import { ReactNode } from "react";
+
+import EmptyState from "@/components/empty-state";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
   Table,
@@ -12,18 +15,20 @@ import {
 // row every table in the app uses - callers don't write <tr> themselves
 const TableHeader = UiTableHeader;
 
-const TableEmpty = ({ colSpan, message }: { colSpan: number; message: string }) => (
+// an empty table body, drawn with the app's one empty state
+const TableEmpty = ({ colSpan, title, description, action }: { colSpan: number; title: string; description?: string; action?: ReactNode }) => (
   <TableRow>
-    <TableCell colSpan={colSpan} className="py-10 text-center text-gray-400">
-      {message}
+    <TableCell colSpan={colSpan} className="p-0">
+      <EmptyState title={title} description={description} action={action} />
     </TableCell>
   </TableRow>
 );
 
 // a table-shaped placeholder for while the rows are loading - keeps the header and
 // container in place instead of swapping the whole card for a spinner
-const TableSkeleton = ({ columns, rows = 5 }: { columns: number; rows?: number }) => (
-  <TableBody>
+// the loading rows alone, for a body that is already open
+const TableSkeletonRows = ({ columns, rows = 5 }: { columns: number; rows?: number }) => (
+  <>
     {Array.from({ length: rows }).map((_, rowIndex) => (
       <TableRow key={rowIndex} className="hover:bg-transparent">
         {Array.from({ length: columns }).map((_, colIndex) => (
@@ -33,7 +38,13 @@ const TableSkeleton = ({ columns, rows = 5 }: { columns: number; rows?: number }
         ))}
       </TableRow>
     ))}
+  </>
+);
+
+const TableSkeleton = ({ columns, rows = 5 }: { columns: number; rows?: number }) => (
+  <TableBody>
+    <TableSkeletonRows columns={columns} rows={rows} />
   </TableBody>
 );
 
-export { Table, TableHeader, TableHead, TableBody, TableRow, TableCell, TableEmpty, TableSkeleton };
+export { Table, TableHeader, TableHead, TableBody, TableRow, TableCell, TableEmpty, TableSkeleton, TableSkeletonRows };

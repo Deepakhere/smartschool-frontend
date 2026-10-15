@@ -1,5 +1,5 @@
 import Spinner from "@/components/spinner";
-import NoRecordFound from "@/components/no-record-found";
+import EmptyState from "@/components/empty-state";
 import CustomSelectDropdown from "@/components/custom-select";
 import { Table, TableHeader, TableHead, TableBody, TableRow, TableCell, TableSkeleton } from "@/components/table";
 import { SelectOption } from "@/types";
@@ -13,7 +13,6 @@ import useParentPTMController from "./ptm-controller";
 
 const ParentPTM = () => {
   const {
-    t,
     events,
     slots,
     bookingChildren,
@@ -65,7 +64,7 @@ const ParentPTM = () => {
             <TableSkeleton columns={4} />
           </Table>
         ) : bookings.length === 0 ? (
-          <p className="text-sm text-gray-500">No bookings yet.</p>
+          <EmptyState compact title="No bookings yet" description="Slots you book appear here." />
         ) : (
           <Table>
             <TableHeader>
@@ -114,7 +113,7 @@ const ParentPTM = () => {
         {isLoadingEvents ? (
           <Spinner />
         ) : events.length === 0 ? (
-          <NoRecordFound t={t} searchTerm="" clearFilters={() => {}} />
+          <EmptyState compact title="No meetings open for booking" description="When the school opens parent-teacher meeting slots, you can book one here." />
         ) : (
           <>
             <CustomSelectDropdown
@@ -129,7 +128,7 @@ const ParentPTM = () => {
                 {isLoadingSlots ? (
                   <Spinner />
                 ) : slots.length === 0 ? (
-                  <p className="text-sm text-gray-500 mt-2">No open slots for your child's section yet.</p>
+                  <EmptyState compact title="No open slots yet" description="Teachers haven't opened time for your child's section." />
                 ) : (
                   <div className="flex flex-wrap gap-2">
                     {slots.map((slot) => {

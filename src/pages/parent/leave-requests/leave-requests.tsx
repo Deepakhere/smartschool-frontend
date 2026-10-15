@@ -1,7 +1,7 @@
 import { useTranslation } from "react-i18next";
 
 import Spinner from "@/components/spinner";
-import NoRecordFound from "@/components/no-record-found";
+import EmptyState from "@/components/empty-state";
 import SectionHeader from "@/components/section-header";
 import CustomSelectDropdown from "@/components/custom-select";
 import DeleteConfirmationDialog from "@/components/delete-confirmation-dialog";
@@ -30,7 +30,11 @@ const LeaveRequests = () => {
         title="Leave Requests"
         description="Request leave for your child and track its status"
         actions={
-          <Button onClick={() => c.setShowForm(!c.showForm)}>
+          <Button
+            onClick={() => c.setShowForm(!c.showForm)}
+            disabled={c.children.length === 0}
+            title={c.children.length === 0 ? "Leave can be requested once the school links your child to this account" : undefined}
+          >
             + New Leave Request
           </Button>
         }
@@ -130,7 +134,10 @@ const LeaveRequests = () => {
         {c.isLoading ? (
           <Spinner />
         ) : c.leaveRequests.length === 0 ? (
-          <NoRecordFound t={t} searchTerm="" clearFilters={() => {}} />
+          <EmptyState
+            title="No leave requests yet"
+            description={c.children.length ? "Use New Leave Request to ask for leave for your child." : "Leave can be requested once the school links your child to this account."}
+          />
         ) : (
           <div className="divide-y divide-gray-100">
             {c.leaveRequests.map((lr) => (

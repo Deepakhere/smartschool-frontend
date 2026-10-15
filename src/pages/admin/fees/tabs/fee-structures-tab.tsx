@@ -233,7 +233,7 @@ const FeeStructuresTab = ({ organizationId }: { organizationId: string }) => {
             </TableHeader>
             <TableBody>
               {(structures.data?.items ?? []).length === 0 ? (
-                <TableEmpty colSpan={5} message="No fee structures yet. Create one above." />
+                <TableEmpty colSpan={5} title="No fee structures yet" description="Create one above, then assign it to a class to bill its students." />
               ) : (
                 structures.data?.items.map((structure) => (
                   <TableRow key={structure.id}>

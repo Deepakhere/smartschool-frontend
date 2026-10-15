@@ -12,6 +12,7 @@ import Spinner from "@/components/spinner";
 import useGetParentDashboard from "./service/get-parent-dashboard";
 
 import { formatMoney } from "@/utils";
+import EmptyState from "@/components/empty-state";
 
 const ParentDashboard = () => {
   const { organizationId } = useParams();
@@ -36,6 +37,13 @@ const ParentDashboard = () => {
         <ErrorState error={(isError ? error : null)} onRetry={() => refetch()} />
       ) : isLoading ? (
         <Spinner />
+      ) : data && data.childrenCount === 0 ? (
+        <div className="rounded-xl bg-white shadow">
+          <EmptyState
+            title="No child linked yet"
+            description="Ask the school office to link your child to this account. Homework, attendance, fees and results then appear here."
+          />
+        </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           {cards.map((card, index) => {

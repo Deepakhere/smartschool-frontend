@@ -117,7 +117,7 @@ const GradingSchemesTab = ({ organizationId }: { organizationId: string }) => {
             </TableHeader>
             <TableBody>
               {items.length === 0 ? (
-                <TableEmpty colSpan={3} message="No grading schemes yet. Create one above." />
+                <TableEmpty colSpan={3} title="No grading schemes yet" description="Create one above; every exam needs a grading scheme." />
               ) : (
                 items.map((scheme) => (
                   <TableRow key={scheme.id}>

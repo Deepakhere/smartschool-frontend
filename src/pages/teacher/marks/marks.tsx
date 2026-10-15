@@ -5,6 +5,7 @@ import SectionHeader from "@/components/section-header";
 import MarksSheetCard from "@/pages/admin/reports/components/marks-sheet-card";
 import { Card, CardTitle } from "@/components/ui/card";
 import useTeacherMarksController from "./marks-controller";
+import EmptyState from "@/components/empty-state";
 
 const TeacherMarks = () => {
   const { organizationId = "" } = useParams();
@@ -17,7 +18,7 @@ const TeacherMarks = () => {
       <Card className="mb-6">
         <CardTitle className="mb-4 font-medium">Select exam, class, section &amp; subject</CardTitle>
         {!c.isLoading && c.examOptions.length === 0 ? (
-          <p className="text-sm text-gray-500">No open exam covers a class you're assigned to yet.</p>
+          <EmptyState title="No exams to enter marks for" description="Marks entry opens here once the school schedules an exam for a class you teach." />
         ) : (
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-4">
             <CustomSelectDropdown

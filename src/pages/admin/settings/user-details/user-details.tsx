@@ -1,6 +1,6 @@
 import { PlusIcon, MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 
-import NoRecordFound from "@/components/no-record-found";
+import EmptyState from "@/components/empty-state";
 import CustomSelectDropdown from "@/components/custom-select";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -143,14 +143,25 @@ const UserDetails = () => {
             <TableBody>
               <tr>
                 <td colSpan={4}>
-                  <NoRecordFound
-                    t={t}
-                    searchTerm={searchTerm}
-                    clearFilters={() => {
-                      onSearchInputChange("");
-                      onRoleChange("all");
-                    }}
-                  />
+                  {searchTerm ? (
+                    <EmptyState
+                      title="No matching users"
+                      description={`Nobody matches "${searchTerm}".`}
+                      action={
+                        <Button
+                          variant="secondary"
+                          onClick={() => {
+                            onSearchInputChange("");
+                            onRoleChange("all");
+                          }}
+                        >
+                          Clear search
+                        </Button>
+                      }
+                    />
+                  ) : (
+                    <EmptyState title="No users yet" description="Use Add User to invite the first teacher, accountant or admin." />
+                  )}
                 </td>
               </tr>
             </TableBody>
