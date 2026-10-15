@@ -13,7 +13,7 @@ export const useGetCalendarMonth = (organizationId: string, year: number, month:
       const result = await apiClient.get<null, IAxiosResponse<ICalendarMonth>>(`${base(organizationId)}/month`, { params: { year, month } });
       return result.data.Data;
     },
-    enabled: !!organizationId,
+    enabled: !!organizationId && year > 0 && month > 0,
     placeholderData: (previous) => previous,
   });
 

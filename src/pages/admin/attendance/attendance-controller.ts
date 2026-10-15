@@ -9,6 +9,7 @@ import {
   useMarkAttendance,
   useGetSectionAttendanceReport,
 } from "./service/attendance-service";
+import { useGetCalendarMonth } from "../calendar/service/calendar-service";
 import { AttendanceStatus } from "@/types";
 import { localDateString } from "@/utils";
 
@@ -34,6 +35,9 @@ const useAttendanceController = () => {
   const existing = useGetSectionAttendance(organizationId, sectionId, date);
   const markAttendance = useMarkAttendance(organizationId);
   const report = useGetSectionAttendanceReport(organizationId, sectionId, reportFrom, reportTo);
+  const calendar = useGetCalendarMonth(organizationId, Number(date.slice(0, 4)), Number(date.slice(5, 7)));
+  // marking is still allowed on a holiday (a make-up day, say), but the teacher should know
+  const holiday = calendar.data?.entries.find((entry) => entry.type === "holiday" && entry.date === date);
 
   const [statuses, setStatuses] = useState<Record<string, AttendanceStatus>>({});
   const [reasons, setReasons] = useState<Record<string, string>>({});
@@ -139,6 +143,7 @@ const useAttendanceController = () => {
     submit,
     isSaving: markAttendance.isPending,
     summary: existing.data?.item?.session?.summary || null,
+    holidayTitle: holiday?.title ?? "",
   };
 };
 

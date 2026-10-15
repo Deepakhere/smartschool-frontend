@@ -213,6 +213,12 @@ const AdminAttendance = () => {
         </div>
       )}
 
+      {c.activeTab === "mark" && c.sectionId && c.holidayTitle && (
+        <p className="rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
+          {c.date} is a holiday on the school calendar ({c.holidayTitle}). Only save attendance if the school is open that day.
+        </p>
+      )}
+
       {c.activeTab === "mark" && c.sectionId && (
         <div className="bg-white shadow rounded-lg">
           <div className="px-4 py-4 border-b border-gray-200 flex justify-between items-center">

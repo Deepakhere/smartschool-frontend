@@ -15,6 +15,7 @@ import AdminAttendance from "../pages/admin/attendance";
 import AdminSettings from "../pages/admin/settings";
 import AdminPTM from "../pages/admin/ptm";
 import AdminCalendar from "../pages/admin/calendar";
+import Timetable from "../pages/admin/timetable";
 import AdminLeaveRequests from "../pages/admin/leave-requests";
 import AdminPromotion from "../pages/admin/promotion";
 
@@ -147,6 +148,10 @@ const router = createBrowserRouter([
         element: <AdminCalendar />,
       },
       {
+        path: "timetable",
+        element: <Timetable />,
+      },
+      {
         path: "leave-requests",
         element: <AdminLeaveRequests />,
       },
@@ -193,6 +198,14 @@ const router = createBrowserRouter([
         element: <TeacherMarks />,
       },
       {
+        path: "timetable",
+        element: <Timetable />,
+      },
+      {
+        path: "calendar",
+        element: <AdminCalendar />,
+      },
+      {
         path: "leave-requests",
         element: <AdminLeaveRequests />,
       },
@@ -237,6 +250,10 @@ const router = createBrowserRouter([
       {
         path: "ptm",
         element: <ParentPTM />,
+      },
+      {
+        path: "calendar",
+        element: <AdminCalendar />,
       },
       {
         path: "leave-requests",

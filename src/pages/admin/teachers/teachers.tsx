@@ -86,6 +86,7 @@ const AdminTeachers = () => {
           />
           <DateField form={c.form} name="dateOfJoining" label="Date of Joining" />
         </div>
+        <DateField form={c.form} name="dateOfBirth" label="Date of Birth" description="Shown as a birthday on the school calendar, to staff only." />
         <TextField form={c.form} name="designation" label="Designation" />
         <TextField form={c.form} name="department" label="Department" />
         <TextField form={c.form} name="qualification" label="Qualification" />

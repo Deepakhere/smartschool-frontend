@@ -15,6 +15,7 @@ import {
   CalendarDaysIcon,
   ArrowTrendingUpIcon,
   CalendarIcon,
+  TableCellsIcon,
 } from "@heroicons/react/24/outline";
 import { useCurrentRole } from "@/context/tenant-context";
 
@@ -36,6 +37,7 @@ export const useSidebarController = () => {
       label: "Academics",
       items: [
         { name: "Classes", href: `/${organizationId}/admin/classes`, icon: AcademicCapIcon, current: isActive("/classes") },
+        { name: "Timetable", href: `/${organizationId}/admin/timetable`, icon: TableCellsIcon, current: isActive("/timetable") },
         { name: "Students", href: `/${organizationId}/admin/students`, icon: UserGroupIcon, current: isActive("/students") },
         { name: "Teachers", href: `/${organizationId}/admin/teachers`, icon: UserIcon, current: isActive("/teachers") },
         { name: "Attendance", href: `/${organizationId}/admin/attendance`, icon: ClipboardDocumentCheckIcon, current: isActive("/attendance") },
@@ -73,6 +75,7 @@ export const useSidebarController = () => {
       items: [
         { name: "Notices", href: `/${organizationId}/parent/notices`, icon: ClipboardDocumentListIcon, current: isActive("/notices") },
         { name: "Homework", href: `/${organizationId}/parent/homework`, icon: ClipboardDocumentCheckIcon, current: isActive("/homework") },
+        { name: "Calendar", href: `/${organizationId}/parent/calendar`, icon: CalendarIcon, current: isActive("/calendar") },
         { name: "PTM", href: `/${organizationId}/parent/ptm`, icon: UsersIcon, current: isActive("/ptm") },
         { name: "Leave Requests", href: `/${organizationId}/parent/leave-requests`, icon: CalendarDaysIcon, current: isActive("/leave-requests") },
       ],
@@ -93,6 +96,8 @@ export const useSidebarController = () => {
     {
       label: "Classroom",
       items: [
+        { name: "My Timetable", href: `/${organizationId}/teacher/timetable`, icon: TableCellsIcon, current: isActive("/timetable") },
+        { name: "Calendar", href: `/${organizationId}/teacher/calendar`, icon: CalendarIcon, current: isActive("/calendar") },
         { name: "Attendance", href: `/${organizationId}/teacher/attendance`, icon: ClipboardDocumentCheckIcon, current: isActive("/attendance") },
         { name: "Homework", href: `/${organizationId}/teacher/homework`, icon: BookOpenIcon, current: isActive("/homework") },
         { name: "Marks Entry", href: `/${organizationId}/teacher/marks`, icon: ChartBarIcon, current: isActive("/marks") },

@@ -6,6 +6,7 @@ export const staffProfileSchema = z.object({
   department: z.string().trim().optional(),
   qualification: z.string().trim().optional(),
   dateOfJoining: z.string().trim().optional(),
+  dateOfBirth: z.string().trim().optional(),
 });
 
 export type StaffProfileFormValues = z.infer<typeof staffProfileSchema>;
@@ -16,4 +17,5 @@ export const defaultStaffProfileValues: StaffProfileFormValues = {
   department: "",
   qualification: "",
   dateOfJoining: "",
+  dateOfBirth: "",
 };

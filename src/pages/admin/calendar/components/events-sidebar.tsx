@@ -18,8 +18,8 @@ interface EventsSidebarProps {
   entries: ICalendarEntry[];
   filter: EntryFilter;
   onFilter: (filter: EntryFilter) => void;
-  onEdit: (entry: ICalendarEntry) => void;
-  onDelete: (entry: ICalendarEntry) => void;
+  onEdit?: (entry: ICalendarEntry) => void;
+  onDelete?: (entry: ICalendarEntry) => void;
 }
 
 const matches = (entry: ICalendarEntry, filter: EntryFilter) =>
@@ -51,12 +51,14 @@ const EventsSidebar = ({ entries, filter, onFilter, onEdit, onDelete }: EventsSi
                 {entry.recurring ? `Every ${WEEKDAYS[entry.dayOfWeek ?? 0]}` : formatDay(entry.date)} · {KIND_STYLES[entry.type].label}
               </p>
             </div>
-            <RowMenu
-              items={[
-                { label: "Edit", onSelect: () => onEdit(entry) },
-                { label: "Delete", onSelect: () => onDelete(entry), danger: true },
-              ]}
-            />
+            {onEdit && onDelete && (
+              <RowMenu
+                items={[
+                  { label: "Edit", onSelect: () => onEdit(entry) },
+                  { label: "Delete", onSelect: () => onDelete(entry), danger: true },
+                ]}
+              />
+            )}
           </div>
         ))}
       </div>

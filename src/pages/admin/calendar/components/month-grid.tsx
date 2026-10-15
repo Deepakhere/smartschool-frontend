@@ -10,8 +10,8 @@ interface MonthGridProps {
   month: number;
   today: string;
   itemsByDate: Map<string, GridItem[]>;
-  onPickDay: (date: string) => void;
-  onPickEntry: (entry: ICalendarEntry) => void;
+  onPickDay?: (date: string) => void;
+  onPickEntry?: (entry: ICalendarEntry) => void;
 }
 
 const MonthGrid = ({ year, month, today, itemsByDate, onPickDay, onPickEntry }: MonthGridProps) => (
@@ -32,9 +32,10 @@ const MonthGrid = ({ year, month, today, itemsByDate, onPickDay, onPickEntry }: 
           return (
             <div
               key={date}
-              onClick={() => onPickDay(date)}
+              onClick={() => onPickDay?.(date)}
               className={cn(
-                "min-h-[104px] cursor-pointer border-b border-r border-gray-100 p-1.5 transition-colors hover:bg-gray-50",
+                "min-h-[104px] border-b border-r border-gray-100 p-1.5 transition-colors",
+                onPickDay && "cursor-pointer hover:bg-gray-50",
                 !inMonth && "bg-gray-50/60 text-gray-300",
                 inMonth && isHoliday && "bg-red-50/50"
               )}
@@ -55,10 +56,10 @@ const MonthGrid = ({ year, month, today, itemsByDate, onPickDay, onPickEntry }: 
                     key={item.key}
                     type="button"
                     title={item.title}
-                    disabled={!item.entry}
+                    disabled={!item.entry || !onPickEntry}
                     onClick={(event) => {
                       event.stopPropagation();
-                      if (item.entry) onPickEntry(item.entry);
+                      if (item.entry) onPickEntry?.(item.entry);
                     }}
                     className={cn(
                       "block w-full truncate rounded border px-1.5 py-0.5 text-left text-[11px] font-medium disabled:cursor-default",

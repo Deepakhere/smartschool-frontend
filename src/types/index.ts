@@ -714,6 +714,7 @@ export interface IStaffProfile {
   department?: string;
   qualification?: string;
   dateOfJoining?: string;
+  dateOfBirth?: string;
   address?: string;
   status: string;
 }
@@ -796,6 +797,7 @@ export interface ICalendarEntry {
 export interface ICalendarAutoItem {
   title: string;
   type: "exam" | "birthday";
+  who?: "student" | "staff";
   date: string;
 }
 
@@ -811,4 +813,16 @@ export interface ICalendarRule {
   type: CalendarEntryType;
   date: string;
   recurrence?: { frequency: "weekly"; dayOfWeek: number };
+}
+
+export interface ITimetableSlot {
+  id: string;
+  dayOfWeek: number;
+  startTime: string;
+  endTime: string;
+  room?: string;
+  subjectId: { id: string; name: string; code: string } | null;
+  teacherUserId: { id: string; name: string; email: string } | null;
+  sectionId: { id: string; name: string } | null;
+  classId: { id: string; name: string } | null;
 }

@@ -24,6 +24,7 @@ interface IUpsertStaffProfileValue {
   department?: string;
   qualification?: string;
   dateOfJoining?: string;
+  dateOfBirth?: string;
   address?: string;
 }
 

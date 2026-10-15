@@ -6,6 +6,7 @@ import { ChevronLeftIcon, ChevronRightIcon, PlusIcon } from "@heroicons/react/24
 import DeleteConfirmationDialog from "@/components/delete-confirmation-dialog";
 import ErrorState from "@/components/error-state";
 import { Button } from "@/components/ui/button";
+import { useCurrentRole } from "@/context/tenant-context";
 import { useError, usePageHeader } from "@/hooks";
 import { ICalendarEntry } from "@/types";
 import { localDateString } from "@/utils";
@@ -17,6 +18,8 @@ import { useDeleteCalendarEntry, useGetCalendarMonth } from "./service/calendar-
 
 const AdminCalendar = () => {
   const { organizationId = "" } = useParams();
+  // teachers and parents see the same calendar, without changing it
+  const canEdit = useCurrentRole() === "admin";
   const today = localDateString();
   const [cursor, setCursor] = useState(() => ({ year: Number(today.slice(0, 4)), month: Number(today.slice(5, 7)) }));
   const [filter, setFilter] = useState<EntryFilter>("all");
@@ -28,12 +31,12 @@ const AdminCalendar = () => {
   useError({ mutation: deleteEntry });
 
   usePageHeader({
-    actions: (
+    actions: canEdit ? (
       <Button onClick={() => setDialog({ entry: null, date: today })}>
         <PlusIcon className="mr-1 h-4 w-4" />
         Add Event
       </Button>
-    ),
+    ) : undefined,
   });
 
   const itemsByDate = useMemo(
@@ -75,15 +78,15 @@ const AdminCalendar = () => {
             month={cursor.month}
             today={today}
             itemsByDate={itemsByDate}
-            onPickDay={(date) => setDialog({ entry: null, date })}
-            onPickEntry={(entry) => setDialog({ entry, date: entry.date })}
+            onPickDay={canEdit ? (date) => setDialog({ entry: null, date }) : undefined}
+            onPickEntry={canEdit ? (entry) => setDialog({ entry, date: entry.date }) : undefined}
           />
           <EventsSidebar
             entries={month.data?.entries ?? []}
             filter={filter}
             onFilter={setFilter}
-            onEdit={(entry) => setDialog({ entry, date: entry.date })}
-            onDelete={setToDelete}
+            onEdit={canEdit ? (entry) => setDialog({ entry, date: entry.date }) : undefined}
+            onDelete={canEdit ? setToDelete : undefined}
           />
         </div>
       )}
