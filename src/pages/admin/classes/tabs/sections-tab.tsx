@@ -155,10 +155,10 @@ const SectionsTab = ({ organizationId, yearId, classId, onClassChange }: Section
             <TableHeader>
               <TableHead>Section</TableHead>
               <TableHead className="text-center">Students</TableHead>
-              <TableHead>Room</TableHead>
-              <TableHead>Class teacher</TableHead>
-              <TableHead>Status</TableHead>
-              <TableHead className="text-right">Actions</TableHead>
+              <TableHead className="text-center">Room</TableHead>
+              <TableHead className="text-center">Class teacher</TableHead>
+              <TableHead className="text-center">Status</TableHead>
+              <TableHead className="text-center">Actions</TableHead>
             </TableHeader>
             <TableSkeleton columns={6} />
           </Table>
@@ -175,10 +175,10 @@ const SectionsTab = ({ organizationId, yearId, classId, onClassChange }: Section
             <TableHeader>
               <TableHead>Section</TableHead>
               <TableHead className="text-center">Students</TableHead>
-              <TableHead>Room</TableHead>
-              <TableHead>Class teacher</TableHead>
-              <TableHead>Status</TableHead>
-              <TableHead className="text-right">Actions</TableHead>
+              <TableHead className="text-center">Room</TableHead>
+              <TableHead className="text-center">Class teacher</TableHead>
+              <TableHead className="text-center">Status</TableHead>
+              <TableHead className="text-center">Actions</TableHead>
             </TableHeader>
             <TableBody>
               {items.map((section) => {
@@ -194,12 +194,12 @@ const SectionsTab = ({ organizationId, yearId, classId, onClassChange }: Section
                         <span className="ml-2 rounded-full bg-amber-100 px-2 py-0.5 text-xs text-amber-800">Full</span>
                       )}
                     </TableCell>
-                    <TableCell>{section.roomNumber || "-"}</TableCell>
-                    <TableCell>{section.classTeacherId?.name || "-"}</TableCell>
-                    <TableCell>
+                    <TableCell className="text-center">{section.roomNumber || "-"}</TableCell>
+                    <TableCell className="text-center">{section.classTeacherId?.name || "-"}</TableCell>
+                    <TableCell className="text-center">
                       <StatusBadge status={section.status} />
                     </TableCell>
-                    <TableCell className="text-right">
+                    <TableCell className="text-center">
                       <RowMenu items={menuFor(section)} />
                     </TableCell>
                   </TableRow>

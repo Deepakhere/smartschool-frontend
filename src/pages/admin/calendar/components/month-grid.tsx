@@ -36,15 +36,15 @@ const MonthGrid = ({ year, month, today, itemsByDate, onPickDay, onPickEntry }: 
               className={cn(
                 "min-h-[104px] border-b border-r border-gray-100 p-1.5 transition-colors",
                 onPickDay && "cursor-pointer hover:bg-gray-50",
-                !inMonth && "bg-gray-50/60 text-gray-300",
-                inMonth && isHoliday && "bg-red-50/50"
+                !inMonth && "bg-gray-50/60 text-gray-300 dark:bg-white/[0.02] dark:text-gray-600",
+                inMonth && isHoliday && "bg-red-50/50 dark:bg-red-500/10"
               )}
             >
               <div className="flex justify-end">
                 <span
                   className={cn(
                     "flex h-6 w-6 items-center justify-center rounded-full text-sm",
-                    date === today ? "bg-primary-600 font-semibold text-white" : inMonth ? "text-gray-700" : "text-gray-300"
+                    date === today ? "bg-primary-600 font-semibold text-white" : inMonth ? "text-gray-700" : "text-gray-300 dark:text-gray-600"
                   )}
                 >
                   {Number(date.slice(8))}

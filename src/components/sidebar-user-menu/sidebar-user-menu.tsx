@@ -14,6 +14,7 @@ import { Popover, PopoverTrigger, PopoverContent } from "../ui/popover";
 import { Sheet, SheetTrigger, SheetContent } from "../ui/sheet";
 import { useIsMobile } from "@/hooks";
 import { useSidebarUserMenuController } from "./sidebar-user-menu-controller";
+import { revealMotion } from "@/components/sidebar/sidebar-motion";
 
 interface SidebarUserMenuProps {
   isCollapsed: boolean;
@@ -133,8 +134,8 @@ const SidebarUserMenu = ({ isCollapsed }: SidebarUserMenuProps) => {
       <span className="flex items-center min-w-0 -ml-0.5">
         <Avatar name={user.name} src={user.avatar?.url} size={32} />
         <span
-          className={`min-w-0 overflow-hidden text-left transition-all duration-300 ease-in-out ${
-            isCollapsed ? "max-w-0 opacity-0 ml-0" : "max-w-[9rem] opacity-100 ml-2.5"
+          className={`min-w-0 overflow-hidden text-left ${revealMotion(isCollapsed)} ${
+            isCollapsed ? "max-w-0 ml-0" : "max-w-[9rem] ml-2.5"
           }`}
         >
           <span className="block truncate text-sm font-medium text-gray-900">{user.name}</span>
@@ -142,8 +143,8 @@ const SidebarUserMenu = ({ isCollapsed }: SidebarUserMenuProps) => {
         </span>
       </span>
       <ChevronUpDownIcon
-        className={`text-gray-400 shrink-0 overflow-hidden transition-all duration-300 ease-in-out ${
-          isCollapsed ? "h-4 w-0 opacity-0" : "h-4 w-4 opacity-100"
+        className={`text-gray-400 shrink-0 overflow-hidden ${revealMotion(isCollapsed)} ${
+          isCollapsed ? "h-4 w-0" : "h-4 w-4"
         }`}
         aria-hidden="true"
       />

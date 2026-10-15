@@ -2,6 +2,7 @@ import { NavLink } from "react-router-dom";
 
 import SidebarUserMenu from "../sidebar-user-menu";
 import { useSidebarController } from "./sidebar-controller";
+import { revealMotion } from "./sidebar-motion";
 
 interface SidebarProps {
   isCollapsed: boolean;
@@ -14,9 +15,9 @@ const Sidebar = ({ isCollapsed, isMobileOpen }: SidebarProps) => {
   return (
     <div
       className={`
-        fixed inset-y-0 left-0 z-50 w-64 transform transition-transform duration-300 ease-in-out
+        fixed inset-y-0 left-0 z-50 w-64 transform transition-transform duration-500 ease-glide
         ${isMobileOpen ? "translate-x-0" : "-translate-x-full"}
-        lg:relative lg:z-10 lg:translate-x-0 lg:transition-[width]
+        lg:relative lg:z-10 lg:translate-x-0 lg:transition-[width] lg:duration-500 lg:ease-glide
         ${isCollapsed ? "lg:w-16" : "lg:w-56"}
         app-shell-surface bg-white border-r border-gray-200 shrink-0 flex flex-col h-full
       `}
@@ -26,8 +27,8 @@ const Sidebar = ({ isCollapsed, isMobileOpen }: SidebarProps) => {
           <div key={sectionIndex} className={sectionIndex === 0 ? "pt-3" : "pt-4 mt-4 border-t border-gray-100"}>
             {section.label && (
               <p
-                className={`px-3 overflow-hidden whitespace-nowrap text-xs font-semibold text-gray-400 uppercase tracking-wider transition-all duration-300 ease-in-out ${
-                  isCollapsed ? "max-h-0 opacity-0 pb-0" : "max-h-6 opacity-100 pb-2"
+                className={`px-3 overflow-hidden whitespace-nowrap text-xs font-semibold text-gray-400 uppercase tracking-wider ${revealMotion(isCollapsed)} ${
+                  isCollapsed ? "max-h-0 pb-0" : "max-h-6 pb-2"
                 }`}
               >
                 {section.label}
@@ -42,7 +43,7 @@ const Sidebar = ({ isCollapsed, isMobileOpen }: SidebarProps) => {
                     to={item.href}
                     title={isCollapsed ? item.name : undefined}
                     className={({ isActive }) =>
-                      `group flex items-center px-3 py-2 text-sm font-medium rounded-md ${
+                      `group flex items-center py-2 pr-3 text-sm font-medium rounded-md transition-[padding] duration-500 ease-glide ${isCollapsed ? "pl-[13.5px]" : "pl-3"} ${
                         isActive
                           ? "bg-gray-100 text-primary-600"
                           : "text-gray-600 hover:bg-gray-50 hover:text-primary-600"
@@ -60,8 +61,8 @@ const Sidebar = ({ isCollapsed, isMobileOpen }: SidebarProps) => {
                           aria-hidden="true"
                         />
                         <span
-                          className={`overflow-hidden whitespace-nowrap transition-all duration-300 ease-in-out ${
-                            isCollapsed ? "max-w-0 opacity-0 ml-0" : "max-w-[10rem] opacity-100 ml-3"
+                          className={`overflow-hidden whitespace-nowrap ${revealMotion(isCollapsed)} ${
+                            isCollapsed ? "max-w-0 ml-0" : "max-w-[10rem] ml-3"
                           }`}
                         >
                           {item.name}

@@ -19,15 +19,18 @@
 .dark input:not([type="checkbox"]):not([type="radio"]),
 .dark textarea,
 .dark select {
-  @apply bg-gray-800 text-white border-gray-600;
+  @apply text-white;
+  background-color: #141414;
+  border-color: #2e2e2e;
 }
 .dark input::placeholder,
 .dark textarea::placeholder {
   @apply text-gray-400;
 }
 
+/* matte surfaces: black page, near-black cards, inner tiles a step lighter */
 .dark .bg-white {
-  @apply bg-gray-800;
+  background-color: #0f0f0f;
 }
 
 .dark .text-gray-900 {
@@ -56,34 +59,31 @@
   @apply text-gray-400;
 }
 
-.dark .border-gray-200 {
-  @apply border-gray-700;
-}
-
+.dark .border-gray-200,
 .dark .border-gray-100 {
-  @apply border-gray-700;
+  border-color: #242424;
 }
 
 .dark .border-gray-300 {
-  @apply border-gray-600;
+  border-color: #2e2e2e;
 }
 
 .dark .shadow-md,
 .dark .shadow-xl,
 .dark .shadow {
-  @apply shadow-gray-900;
+  box-shadow: 0 0 0 1px rgb(255 255 255 / 0.06);
 }
 
 .dark .bg-gray-50 {
-  @apply bg-gray-900;
+  background-color: #141414;
 }
 
 .dark .bg-gray-100 {
-  @apply bg-gray-800;
+  background-color: #1a1a1a;
 }
 
 .dark .bg-gray-200 {
-  @apply bg-gray-700;
+  background-color: #242424;
 }
 
 .dark .bg-primary-50 {
@@ -98,25 +98,22 @@
 /* Row/element hover states - left un-remapped these flash bright light-gray
    against the dark page background on hover */
 .dark .hover\:bg-gray-50:hover {
-  @apply bg-gray-700;
+  background-color: #1a1a1a;
 }
 
 .dark .hover\:bg-gray-50\/60:hover {
-  @apply bg-gray-700/60;
+  background-color: rgb(26 26 26 / 0.6);
 }
 
 .dark .hover\:bg-gray-100:hover {
-  @apply bg-gray-700;
+  background-color: #222222;
 }
 
 /* Table row/column dividers - `divide-*` generates a different selector shape
    than `border-*`, so it needs its own override */
-.dark .divide-gray-100 > :not([hidden]) ~ :not([hidden]) {
-  @apply border-gray-700;
-}
-
+.dark .divide-gray-100 > :not([hidden]) ~ :not([hidden]),
 .dark .divide-gray-200 > :not([hidden]) ~ :not([hidden]) {
-  @apply border-gray-700;
+  border-color: #242424;
 }
 
 /* Status/role/type badges and alert banners - every one of these pairs a light-50/100

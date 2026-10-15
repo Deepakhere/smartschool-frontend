@@ -43,7 +43,7 @@ const Dashboard = () => {
   } = useDashboardController();
 
   const chartCard = (options: typeof studentPerformanceOptions | typeof teacherStudentRatioOptions | typeof monthlyAttendanceOptions) => (
-    <div className="bg-white rounded-xl shadow-xl p-6">
+    <div className="flex h-full flex-col justify-center bg-white rounded-xl shadow-xl p-6">
       {isChartsLoading ? <ChartSkeleton /> : <HighchartsReact highcharts={Highcharts} options={options} />}
     </div>
   );
@@ -119,13 +119,13 @@ const Dashboard = () => {
               </button>
             </div>
           ) : (
-            // matches the chart's own height; up to 5 notices fit without scrolling, more scroll inside
-            <div className="overflow-y-auto" style={{ maxHeight: 300 }}>
-              {recentUpdates.map((update, index) => (
+            // four fit beside the chart; View all opens the rest
+            <div className="divide-y divide-gray-100">
+              {recentUpdates.slice(0, 4).map((update, index) => (
                 <Link
                   key={index}
                   to={noticesPath}
-                  className="flex items-center justify-between gap-3 -mx-3 px-3 py-4 rounded-lg border-b border-gray-100 last:border-0 hover:bg-gray-50 transition-colors"
+                  className="flex items-center justify-between gap-3 -mx-3 px-3 py-4 rounded-lg hover:bg-gray-50 transition-colors"
                 >
                   <div className="min-w-0">
                     <p className="text-sm font-semibold text-gray-900 truncate">{update.title}</p>

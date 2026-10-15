@@ -3,6 +3,7 @@ import { Bars3Icon, ArrowLeftIcon } from "@heroicons/react/24/outline";
 
 import PanelLeftIcon from "@/icons/panel-left-icon";
 import BrandLogo from "@/components/brand-logo";
+import { PANEL_MOTION, revealMotion } from "@/components/sidebar/sidebar-motion";
 import NotificationBell from "@/components/notification-bell";
 import { useHeaderController } from "./header-controller";
 
@@ -20,7 +21,7 @@ const Header = ({ onToggleSidebar, isCollapsed, onToggleCollapse }: HeaderProps)
       <div className="flex h-16">
         {/* App brand segment - width matches the sidebar so the divider lines up with it */}
         <div
-          className={`flex items-center ${isCollapsed ? "justify-center" : "justify-between"} shrink-0 px-3 border-r border-gray-200 transition-[width] duration-300 ease-in-out ${
+          className={`flex items-center ${isCollapsed ? "justify-center" : "justify-between"} shrink-0 px-3 border-r border-gray-200 ${PANEL_MOTION} ${
             isCollapsed ? "lg:w-16" : "lg:w-56"
           } w-auto`}
         >
@@ -33,20 +34,33 @@ const Header = ({ onToggleSidebar, isCollapsed, onToggleCollapse }: HeaderProps)
           </button>
           <Link
             to={homePath}
-            className={`hidden lg:flex flex-1 items-center justify-center overflow-hidden transition-all duration-300 ease-in-out ${
-              isCollapsed ? "max-w-0 opacity-0" : "max-w-xs opacity-100"
+            className={`hidden lg:flex flex-1 items-center justify-start overflow-hidden ${revealMotion(isCollapsed)} ${
+              isCollapsed ? "max-w-0 pl-0" : "max-w-xs pl-2"
             }`}
           >
-            <BrandLogo className="h-7 w-auto shrink-0" />
+            <BrandLogo className="h-7 w-auto max-w-none shrink-0" />
           </Link>
-          <button
-            type="button"
-            onClick={onToggleCollapse}
-            className="hidden lg:flex p-1.5 rounded-md text-gray-400 hover:text-primary-600 hover:bg-gray-100"
-            title={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
-          >
-            <PanelLeftIcon className="h-4 w-4" />
-          </button>
+          {isCollapsed ? (
+            // collapsed: the brand badge, which turns into the expand control on hover
+            <button
+              type="button"
+              onClick={onToggleCollapse}
+              className="group hidden lg:flex h-9 w-9 items-center justify-center rounded-lg text-gray-500 hover:bg-gray-100 hover:text-gray-700"
+              title="Expand sidebar"
+            >
+              <img src="/opscul-tile.png" alt="Opscul" className="h-8 w-8 rounded-lg animate-in fade-in zoom-in-90 duration-300 delay-200 fill-mode-both dark:ring-1 dark:ring-white/15 group-hover:hidden group-focus-visible:hidden" />
+              <PanelLeftIcon className="hidden h-4 w-4 group-hover:block group-focus-visible:block" />
+            </button>
+          ) : (
+            <button
+              type="button"
+              onClick={onToggleCollapse}
+              className="hidden lg:flex p-1.5 rounded-md text-gray-400 hover:text-primary-600 hover:bg-gray-100 animate-in fade-in duration-300 delay-150 fill-mode-both"
+              title="Collapse sidebar"
+            >
+              <PanelLeftIcon className="h-4 w-4" />
+            </button>
+          )}
         </div>
 
         {/* Page header segment - each page registers its own title/back/actions via usePageHeader().
