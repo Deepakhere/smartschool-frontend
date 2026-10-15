@@ -3,6 +3,7 @@ import SectionHeader from "@/components/section-header";
 import Spinner from "@/components/spinner";
 import CustomSelectDropdown from "@/components/custom-select";
 import useAttendanceController from "./attendance-controller";
+import MonthlyRegister from "./components/monthly-register";
 import { AttendanceStatus, SelectOption } from "@/types";
 import { exportToCsv } from "@/utils";
 
@@ -20,12 +21,14 @@ const STATUS_STYLES: Record<AttendanceStatus, string> = {
   excused: "bg-gray-100 text-gray-800 border-gray-300",
 };
 
+const TAB_LABELS = { mark: "Mark Attendance", report: "Attendance Report", register: "Monthly Register" } as const;
+
 const AdminAttendance = () => {
   const c = useAttendanceController();
 
   return (
     <div className="max-w-7xl mx-auto space-y-6">
-      <SectionHeader title="Attendance" description="Mark daily attendance, or review it over a date range" />
+      <SectionHeader title="Attendance" description="Mark daily attendance, review it over a date range, or see a month day by day" />
 
       {c.hasNoClasses && (
         <p className="mb-4 rounded-lg bg-white p-4 text-sm text-gray-600 shadow">
@@ -34,7 +37,7 @@ const AdminAttendance = () => {
       )}
 
       <div className="flex gap-6 border-b border-gray-200">
-        {(["mark", "report"] as const).map((tab) => (
+        {(["mark", "report", "register"] as const).map((tab) => (
           <button
             key={tab}
             onClick={() => c.setActiveTab(tab)}
@@ -44,7 +47,7 @@ const AdminAttendance = () => {
                 : "border-transparent text-gray-500 hover:text-gray-700"
             }`}
           >
-            {tab === "mark" ? "Mark Attendance" : "Attendance Report"}
+            {TAB_LABELS[tab]}
           </button>
         ))}
       </div>
@@ -94,6 +97,11 @@ const AdminAttendance = () => {
               <label className="block text-sm font-medium text-gray-700">Date</label>
               <input type="date" className={inputClass} value={c.date} onChange={(e) => c.setDate(e.target.value)} />
             </div>
+          ) : c.activeTab === "register" ? (
+            <div>
+              <label className="block text-sm font-medium text-gray-700">Month</label>
+              <input type="month" className={inputClass} value={c.registerMonth} onChange={(e) => c.setRegisterMonth(e.target.value)} />
+            </div>
           ) : (
             <div className="flex gap-2">
               <div className="flex-1">
@@ -118,6 +126,15 @@ const AdminAttendance = () => {
           )}
         </div>
       </div>
+
+      {c.activeTab === "register" && c.sectionId && (
+        <MonthlyRegister
+          organizationId={c.organizationId}
+          sectionId={c.sectionId}
+          month={c.registerMonth}
+          sectionLabel={`${c.classes.find((k) => k.id === c.classId)?.name ?? ""} ${c.sections.find((s) => s.id === c.sectionId)?.name ?? ""}`.trim()}
+        />
+      )}
 
       {c.activeTab === "report" && c.sectionId && (
         <div className="bg-white shadow rounded-lg">

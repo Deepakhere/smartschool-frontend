@@ -15,7 +15,7 @@ import { localDateString } from "@/utils";
 const today = () => localDateString();
 const firstOfMonth = () => `${today().slice(0, 7)}-01`;
 
-type Tab = "mark" | "report";
+type Tab = "mark" | "report" | "register";
 
 const useAttendanceController = () => {
   const { organizationId = "" } = useParams();
@@ -24,10 +24,11 @@ const useAttendanceController = () => {
   const [date, setDate] = useState(today());
   const [reportFrom, setReportFrom] = useState(firstOfMonth());
   const [reportTo, setReportTo] = useState(today());
+  const [registerMonth, setRegisterMonth] = useState(today().slice(0, 7));
 
-  // admins pick from the whole school, teachers from their own sections; the report covers past records, so it also
-  // lists classes and sections that have since been switched off
-  const picker = useSectionPicker(organizationId, { includeInactive: activeTab === "report" });
+  // admins pick from the whole school, teachers from their own sections; the reports cover past records, so they also
+  // list classes and sections that have since been switched off
+  const picker = useSectionPicker(organizationId, { includeInactive: activeTab !== "mark" });
   const { academicYearId, classId, sectionId, setSectionId } = picker;
   const roster = useGetSectionRoster(organizationId, sectionId);
   const existing = useGetSectionAttendance(organizationId, sectionId, date);
@@ -110,6 +111,9 @@ const useAttendanceController = () => {
     setReportFrom,
     reportTo,
     setReportTo,
+    registerMonth,
+    setRegisterMonth,
+    organizationId,
     reportRows: report.data?.items || [],
     reportTotalSessions: report.data?.totalSessions || 0,
     isLoadingReport: report.isLoading,
