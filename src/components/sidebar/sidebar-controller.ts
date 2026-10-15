@@ -14,6 +14,7 @@ import {
   UsersIcon,
   CalendarDaysIcon,
   ArrowTrendingUpIcon,
+  CalendarIcon,
 } from "@heroicons/react/24/outline";
 import { useCurrentRole } from "@/context/tenant-context";
 
@@ -47,6 +48,7 @@ export const useSidebarController = () => {
       label: "Engagement",
       items: [
         { name: "Notices", href: `/${organizationId}/admin/notices`, icon: ClipboardDocumentListIcon, current: isActive("/notices") },
+        { name: "Calendar", href: `/${organizationId}/admin/calendar`, icon: CalendarIcon, current: isActive("/calendar") },
         { name: "PTM", href: `/${organizationId}/admin/ptm`, icon: UsersIcon, current: isActive("/ptm") },
       ],
     },

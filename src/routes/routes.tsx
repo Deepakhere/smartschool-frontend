@@ -14,6 +14,7 @@ import AdminTeachers from "../pages/admin/teachers";
 import AdminAttendance from "../pages/admin/attendance";
 import AdminSettings from "../pages/admin/settings";
 import AdminPTM from "../pages/admin/ptm";
+import AdminCalendar from "../pages/admin/calendar";
 import AdminLeaveRequests from "../pages/admin/leave-requests";
 import AdminPromotion from "../pages/admin/promotion";
 
@@ -140,6 +141,10 @@ const router = createBrowserRouter([
       {
         path: "ptm",
         element: <AdminPTM />,
+      },
+      {
+        path: "calendar",
+        element: <AdminCalendar />,
       },
       {
         path: "leave-requests",
