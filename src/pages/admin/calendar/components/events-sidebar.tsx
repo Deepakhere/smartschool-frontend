@@ -3,6 +3,7 @@ import RowMenu from "@/components/row-menu";
 import { cn } from "@/lib/utils";
 import { ICalendarEntry } from "@/types";
 import { formatDay, KIND_STYLES, WEEKDAYS } from "../calendar.utils";
+import EmptyState from "@/components/empty-state";
 
 export type EntryFilter = "all" | "holiday" | "event";
 
@@ -42,7 +43,7 @@ const EventsSidebar = ({ entries, filter, onFilter, onEdit, onDelete }: EventsSi
         </Tabs>
       </div>
       <div className="space-y-2 p-3">
-        {rules.length === 0 && <p className="py-6 text-center text-sm text-gray-500">Nothing this month.</p>}
+        {rules.length === 0 && <EmptyState compact title="Nothing this month" />}
         {rules.map((entry) => (
           <div key={entry.id} className={cn("flex items-start justify-between rounded-md border border-gray-200 border-b-2 p-3", BORDERS[entry.type])}>
             <div className="min-w-0">

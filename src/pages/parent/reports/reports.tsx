@@ -5,13 +5,11 @@ import toast from "react-hot-toast";
 
 import SectionHeader from "@/components/section-header";
 import Spinner from "@/components/spinner";
-import NoRecordFound from "@/components/no-record-found";
+import EmptyState from "@/components/empty-state";
 import { Table, TableHeader, TableHead, TableBody, TableRow, TableCell } from "@/components/table";
 import { useGetMyResults, downloadReportCard, useEmailReportCard } from "@/pages/admin/reports/service/exams-service";
-import { useTranslation } from "react-i18next";
 
 const ParentReports = () => {
-  const { t } = useTranslation();
   const { organizationId } = useParams();
   const getMyResults = useGetMyResults(organizationId || "");
   const emailReportCard = useEmailReportCard(organizationId || "");
@@ -46,7 +44,7 @@ const ParentReports = () => {
         <Spinner />
       ) : items.every((i) => i.results.length === 0) ? (
         <div className="bg-white rounded-lg shadow p-6">
-          <NoRecordFound t={t} searchTerm="" clearFilters={() => {}} />
+          <EmptyState title="No results yet" description="Published exam results and report cards will show up here." />
         </div>
       ) : (
         <div className="space-y-6">

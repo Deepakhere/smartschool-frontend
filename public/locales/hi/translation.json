@@ -162,7 +162,7 @@
     "failed_to_add_notice": "सूचना जोड़ने में विफल",
     "error_adding_notice": "सूचना जोड़ने में त्रुटि:",
     "search": "खोजें",
-    "no_record_found": "कोई रिकॉर्ड नहीं मिला। फ़िल्टर बदलें या नया उपयोगकर्ता जोड़ें।",
+    "no_record_found": "अभी यहां कुछ नहीं है।",
     "no_search_term_found": "\"{{entity}}\" से मेल खाता कोई रिकॉर्ड नहीं मिला। कोई भिन्न खोज शब्द आज़माएं या खोज साफ़ करें।",
     "notice_created_successfully": "सूचना सफलतापूर्वक बनाई गई।",
     "organization_created_successfully": "संगठन सफलतापूर्वक बनाया गया।",

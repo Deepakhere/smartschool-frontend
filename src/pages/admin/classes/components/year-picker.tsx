@@ -19,6 +19,7 @@ const YearPicker = ({
       <CustomSelectDropdown
         className="w-44"
         placeholder="Select year"
+        emptyText="No academic years yet. Add one in the Academic years tab."
         options={years.map((year) => ({ id: year.id, name: year.isCurrent ? `${year.name} (current)` : year.name }))}
         value={selected ? { id: selected.id, name: selected.name } : null}
         onChange={(option) => onChange(String(option.id))}

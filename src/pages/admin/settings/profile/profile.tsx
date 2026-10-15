@@ -1,4 +1,7 @@
+import { useLocation } from "react-router-dom";
+
 import { useCurrentRole } from "@/context/tenant-context";
+import SectionHeader from "@/components/section-header";
 import {
   UserIcon,
   PencilIcon,
@@ -47,6 +50,8 @@ const AdminProfile = () => {
     isChangingPassword,
   } = useProfileController();
   const currentRole = useCurrentRole();
+  // inside Settings the page header is already there; teachers and parents open Profile on its own
+  const standalone = !useLocation().pathname.includes("/settings/");
 
   const languageOptions: SelectOption[] = [
     { id: "en", name: t("common.languages.english") },
@@ -63,6 +68,7 @@ const AdminProfile = () => {
         <PageLoader />
       ) : (
         <div className="max-w-7xl mx-auto">
+          {standalone && <SectionHeader title="Profile" description="Your details, password and preferences" />}
           <div className="">
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
               {/* Left column - 2/3 width */}

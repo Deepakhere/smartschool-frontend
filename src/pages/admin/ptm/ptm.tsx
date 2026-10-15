@@ -1,10 +1,9 @@
 import { useState } from "react";
 import { useParams } from "react-router-dom";
-import { useTranslation } from "react-i18next";
 import { ChevronDownIcon } from "@heroicons/react/24/outline";
 
 import ErrorState from "@/components/error-state";
-import NoRecordFound from "@/components/no-record-found";
+import EmptyState from "@/components/empty-state";
 import SectionHeader from "@/components/section-header";
 import Spinner from "@/components/spinner";
 import { Button } from "@/components/ui/button";
@@ -22,7 +21,6 @@ import EventSlotsPanel from "./components/event-slots-panel";
 import { useGetPTMEvents } from "./service/ptm-service";
 
 const AdminPTM = () => {
-  const { t } = useTranslation();
   const { organizationId = "" } = useParams();
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [expandedEventId, setExpandedEventId] = useState("");
@@ -57,7 +55,7 @@ const AdminPTM = () => {
           {events.isLoading ? (
             <Spinner />
           ) : items.length === 0 ? (
-            <NoRecordFound t={t} searchTerm="" clearFilters={() => {}} />
+            <EmptyState title="No PTM events yet" description="Use Schedule PTM to create the first parent-teacher meeting." />
           ) : (
             <div className="divide-y divide-gray-200">
               {items.map((event) => {

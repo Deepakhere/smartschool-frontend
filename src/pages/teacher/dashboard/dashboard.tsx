@@ -2,6 +2,7 @@ import ErrorState from "@/components/error-state";
 import PageLoader from "@/components/page-loader";
 import SectionHeader from "@/components/section-header";
 import useTeacherDashboardController from "./dashboard-controller";
+import EmptyState from "@/components/empty-state";
 
 const TeacherDashboard = () => {
   const c = useTeacherDashboardController();
@@ -31,7 +32,7 @@ const TeacherDashboard = () => {
           )}
           <div className="divide-y divide-gray-100">
             {c.todaySlots.length === 0 ? (
-              <p className="px-4 py-5 text-sm text-gray-500">No classes scheduled for today.</p>
+              <EmptyState compact title="No classes scheduled for today" />
             ) : (
               c.todaySlots.map((slot) => (
                 <div key={slot.id} className="px-4 py-4 flex justify-between items-center">
@@ -57,7 +58,7 @@ const TeacherDashboard = () => {
           </div>
           <div className="divide-y divide-gray-100">
             {c.recentNotices.length === 0 ? (
-              <p className="px-4 py-5 text-sm text-gray-500">No notices yet.</p>
+              <EmptyState compact title="No notices yet" />
             ) : (
               c.recentNotices.map((notice) => (
                 <div key={notice.id} className="px-4 py-4 flex justify-between items-center">

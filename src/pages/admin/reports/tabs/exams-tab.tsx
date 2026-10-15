@@ -1,11 +1,10 @@
 import { useState } from "react";
-import { useTranslation } from "react-i18next";
 import { ChevronDownIcon } from "@heroicons/react/24/outline";
 import toast from "react-hot-toast";
 
 import DeleteConfirmationDialog from "@/components/delete-confirmation-dialog";
 import ErrorState from "@/components/error-state";
-import NoRecordFound from "@/components/no-record-found";
+import EmptyState from "@/components/empty-state";
 import Spinner from "@/components/spinner";
 import { Badge, BadgeTone } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -32,7 +31,6 @@ interface ExamsTabProps {
 }
 
 const ExamsTab = ({ organizationId, academicYearId, classOptions, subjectOptions }: ExamsTabProps) => {
-  const { t } = useTranslation();
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [expandedExamId, setExpandedExamId] = useState("");
   const [examToPublish, setExamToPublish] = useState("");
@@ -67,7 +65,7 @@ const ExamsTab = ({ organizationId, academicYearId, classOptions, subjectOptions
       ) : exams.isLoading ? (
         <Spinner />
       ) : items.length === 0 ? (
-        <NoRecordFound t={t} searchTerm="" clearFilters={() => {}} />
+        <EmptyState title="No exams yet" description="Use Create Exam to schedule the first one." />
       ) : (
         <div className="divide-y divide-gray-100">
           {items.map((exam) => {

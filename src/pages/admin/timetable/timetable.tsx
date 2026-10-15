@@ -17,6 +17,7 @@ import PeriodDialog from "./components/period-dialog";
 import WeekGrid from "./components/week-grid";
 import { useDeleteTimetableSlot, useGetTimetable } from "./service/timetable-service";
 import { DAY_NAMES, formatTime } from "./timetable.utils";
+import EmptyState from "@/components/empty-state";
 
 const Picker = ({ label, options, value, disabled, onChange }: { label: string; options: SelectOption[]; value: string; disabled?: boolean; onChange: (id: string) => void }) => (
   <div>
@@ -88,15 +89,24 @@ const Timetable = () => {
       )}
 
       {!ready ? (
-        <p className="rounded-lg bg-white p-6 text-sm text-gray-500 shadow">Choose a class and section to see its week.</p>
+        <div className="rounded-lg bg-white shadow">
+          <EmptyState
+            title={picker.classes.length ? "Pick a class and section" : "No classes yet"}
+            description={picker.classes.length ? "Choose a class and section above to see and build its week." : "Add an academic year, classes and sections on the Classes page first."}
+          />
+        </div>
       ) : timetable.isError ? (
         <ErrorState error={timetable.error} onRetry={() => timetable.refetch()} />
       ) : timetable.isLoading ? (
         <Spinner />
       ) : slots.length === 0 ? (
-        <p className="rounded-lg bg-white p-6 text-sm text-gray-500 shadow">
-          {isTeacher ? "No periods have been set up for you yet. Your school admin adds them on the Timetable page." : "No periods yet. Use Add period to build this section's week."}
-        </p>
+        <div className="rounded-lg bg-white shadow">
+          {isTeacher ? (
+            <EmptyState title="No periods yet" description="Your school admin sets up your week on the Timetable page." />
+          ) : (
+            <EmptyState title="No periods yet" description="Use Add period to build this section's week." />
+          )}
+        </div>
       ) : (
         <WeekGrid slots={slots} showSection={isTeacher} onDelete={isTeacher ? undefined : setToRemove} />
       )}

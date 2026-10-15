@@ -770,6 +770,8 @@ export interface SelectDropdownProps {
   placeholder?: string;
   className?: string;
   disabled?: boolean;
+  // shown in the open menu when there is nothing to pick yet
+  emptyText?: string;
 }
 
 export interface IEmailLog {

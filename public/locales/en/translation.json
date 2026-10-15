@@ -162,7 +162,7 @@
     "failed_to_add_notice": "Failed to add notice",
     "error_adding_notice": "Error adding notice:",
     "search": "Search",
-    "no_record_found": "No record found. Try changing the filter or add a new user.",
+    "no_record_found": "Nothing here yet.",
     "no_search_term_found": "No record found matching {{entity}}. Try a different search term or clear the search.",
     "notice_created_successfully": "Notice created successfully.",
     "organization_created_successfully": "Organization created successfully.",

@@ -4,7 +4,7 @@ import { useParams } from "react-router-dom";
 import toast from "react-hot-toast";
 
 import PageLoader from "@/components/page-loader";
-import NoRecordFound from "@/components/no-record-found";
+import EmptyState from "@/components/empty-state";
 import { Table, TableHeader, TableHead, TableBody, TableRow, TableCell } from "@/components/table";
 import SectionHeader from "@/components/section-header";
 import { downloadFeeReceipt, useEmailFeeReceipt } from "@/pages/admin/fees/service/fees-service";
@@ -13,7 +13,7 @@ import useParentFeesController from "./fees-controller";
 import { formatMoney } from "@/utils";
 
 const ParentFees = () => {
-  const { t, fees, isLoading, loadError, retryLoad } = useParentFeesController();
+  const { fees, isLoading, loadError, retryLoad } = useParentFeesController();
   const { organizationId } = useParams();
   const emailFeeReceipt = useEmailFeeReceipt(organizationId || "");
 
@@ -42,7 +42,7 @@ const ParentFees = () => {
         <PageLoader />
       ) : fees.length === 0 ? (
         <div className="bg-white rounded-lg shadow p-6">
-          <NoRecordFound t={t} searchTerm="" clearFilters={() => {}} />
+          <EmptyState title="No fees yet" description="Fees the school assigns to your children will show up here." />
         </div>
       ) : (
         <div className="space-y-6">

@@ -79,7 +79,7 @@ const FeeHeadsTab = ({ organizationId }: { organizationId: string }) => {
             </TableHeader>
             <TableBody>
               {items.length === 0 ? (
-                <TableEmpty colSpan={4} message="No fee heads yet. Add one above." />
+                <TableEmpty colSpan={4} title="No fee heads yet" description="Add one above, such as Tuition or Transport, to build fee structures from." />
               ) : (
                 items.map((head) => (
                   <TableRow key={head.id}>

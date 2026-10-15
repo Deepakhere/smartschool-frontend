@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react";
 import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 
+import EmptyState from "@/components/empty-state";
 import ErrorState from "@/components/error-state";
 import Spinner from "@/components/spinner";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -89,7 +90,10 @@ const MonthlyRegister = ({ organizationId, sectionId, month, sectionLabel }: Mon
       {register.isLoading ? (
         <Spinner />
       ) : rows.length === 0 ? (
-        <p className="px-4 py-5 text-sm text-gray-500">{search ? "No students match your search." : "No students in this section."}</p>
+        <EmptyState
+          title={search ? "No matching students" : "No students in this section"}
+          description={search ? `No student matches "${search}".` : "Students enrolled in this section appear here with their month."}
+        />
       ) : (
         <div className="overflow-x-auto">
           <table className="min-w-full border-separate border-spacing-0 text-sm">

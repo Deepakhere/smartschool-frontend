@@ -147,7 +147,7 @@ const SectionsTab = ({ organizationId, yearId, classId, onClassChange }: Section
       {!classId ? (
         <EmptyState
           title="Choose a class"
-          description="Sections are the divisions of a class, such as A and B. Pick a class above to see or add them."
+          description="Sections are the divisions of a class, such as A and B. Pick a class above to see or add them; no classes yet? Add them in the Classes tab."
         />
       ) : sections.isLoading ? (
         <div className="p-4">

@@ -4,7 +4,7 @@ import { DocumentArrowDownIcon, EyeIcon, EllipsisHorizontalIcon, TrashIcon } fro
 import NoticeModal from "@/components/notice-modal";
 import NoticePreviewModal from "@/components/notice-preview-modal/notice-preview-modal";
 import DeleteConfirmationDialog from "@/components/delete-confirmation-dialog";
-import NoRecordFound from "@/components/no-record-found";
+import EmptyState from "@/components/empty-state";
 import useNoticeController from "./notice-controller";
 import AttachmentPreviewModal from "./preview-modal";
 import { Table, TableHeader, TableHead, TableBody, TableRow, TableCell, TableSkeleton } from "@/components/table";
@@ -74,7 +74,7 @@ const AdminNotices = () => {
                 <TableSkeleton columns={6} />
               </Table>
             ) : notices.length === 0 ? (
-              <NoRecordFound t={t} searchTerm="" clearFilters={() => {}} />
+              <EmptyState title="No notices yet" description="Use Create Notice to publish the first one." />
             ) : (
               <Table>
                 <TableHeader>

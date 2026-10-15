@@ -237,7 +237,8 @@ export const useGetTeacherAssignments = (organizationId: string, academicYearId?
   useQuery<{ items: ITeacherAssignment[] }, IAPIError>({
     queryKey: [API_QUERY_KEY.GET_TEACHER_ASSIGNMENTS, organizationId, academicYearId],
     queryFn: () => getItems<ITeacherAssignment>(`${base(organizationId)}/teacher-assignment`, { academicYearId }),
-    enabled: !!organizationId && enabled,
+    // "" = the school has no year to pick yet, so there is nothing to ask for
+    enabled: !!organizationId && enabled && academicYearId !== "",
   });
 
 // the signed-in teacher's own classes, sections and subjects (any role may ask for its own)

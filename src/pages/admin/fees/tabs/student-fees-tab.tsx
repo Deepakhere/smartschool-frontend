@@ -11,6 +11,7 @@ import { cn } from "@/lib/utils";
 import useGetStudentDetails from "../../students/service/get-student-details/get-student-details";
 import StudentFeeCard from "../components/student-fee-card";
 import { useGetStudentFeeSummary, useReversePayment } from "../service/fees-service";
+import EmptyState from "@/components/empty-state";
 
 const StudentFeesTab = ({ organizationId }: { organizationId: string }) => {
   const [search, setSearch] = useState("");
@@ -66,14 +67,27 @@ const StudentFeesTab = ({ organizationId }: { organizationId: string }) => {
         </div>
       </Card>
 
+      {!studentId && !students.isLoading && (
+        <Card>
+          {(students.data?.items ?? []).length || debouncedSearch ? (
+            <EmptyState
+              title={(students.data?.items ?? []).length ? "Pick a student" : "No matching students"}
+              description={(students.data?.items ?? []).length ? "Search above and choose a student to see their fees and record payments." : `No student matches "${debouncedSearch}".`}
+            />
+          ) : (
+            <EmptyState title="No students yet" description="Add students first; their fees and payments are managed here." />
+          )}
+        </Card>
+      )}
+
       {studentId &&
         (feeSummary.isError ? (
           <ErrorState error={feeSummary.error} title="This student's fees could not be loaded." onRetry={() => feeSummary.refetch()} />
         ) : feeSummary.isLoading ? (
           <Spinner />
         ) : summaries.length === 0 ? (
-          <Card className="text-sm text-gray-600">
-            No fees are assigned to this student yet. Assign a fee structure to their class from the Fee Structures tab.
+          <Card>
+            <EmptyState title="No fees assigned yet" description="Assign a fee structure to this student's class from the Fee Structures tab." />
           </Card>
         ) : (
           summaries.map((summary) => (

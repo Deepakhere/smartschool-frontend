@@ -1,5 +1,5 @@
 import PageLoader from "@/components/page-loader";
-import NoRecordFound from "@/components/no-record-found";
+import EmptyState from "@/components/empty-state";
 import { Table, TableHeader, TableHead, TableBody, TableRow, TableCell } from "@/components/table";
 import { Switch } from "@/components/ui/switch";
 import useNotificationsController from "./notifications-controller";
@@ -37,7 +37,7 @@ const Notifications = () => {
         {isLoading ? (
           <PageLoader />
         ) : emailLog.length === 0 ? (
-          <NoRecordFound t={t} searchTerm="" clearFilters={() => {}} />
+          <EmptyState title="No emails sent yet" description="Every email the school sends will be listed here." />
         ) : (
           <Table>
             <TableHeader>

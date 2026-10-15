@@ -3,7 +3,7 @@ import { useRef } from "react";
 import toast from "react-hot-toast";
 import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 
-import NoRecordFound from "@/components/no-record-found";
+import EmptyState from "@/components/empty-state";
 import CustomSelectDropdown from "@/components/custom-select";
 import { Table, TableHeader, TableHead, TableBody, TableRow, TableCell, TableSkeleton } from "@/components/table";
 import { SelectOption } from "@/types";
@@ -231,11 +231,22 @@ const StudentsList = () => {
                 <TableBody>
                   <tr>
                     <td colSpan={5}>
-                      <NoRecordFound
-                        t={t}
-                        searchTerm={searchTerm}
-                        clearFilters={clearFilters}
-                      />
+                      {searchTerm ? (
+                        <EmptyState
+                          title="No matching students"
+                          description={`No student matches "${searchTerm}".`}
+                          action={
+                            <Button variant="secondary" onClick={clearFilters}>
+                              Clear search
+                            </Button>
+                          }
+                        />
+                      ) : (
+                        <EmptyState
+                          title="No students yet"
+                          description="Add your first student with Add New Student, or bring a whole class in with Bulk Upload (CSV)."
+                        />
+                      )}
                     </td>
                   </tr>
                 </TableBody>

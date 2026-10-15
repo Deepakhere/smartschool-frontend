@@ -3,7 +3,7 @@ import toast from "react-hot-toast";
 
 import ErrorState from "@/components/error-state";
 import Pager from "@/components/pager";
-import { Table, TableBody, TableCell, TableEmpty, TableHead, TableHeader, TableRow } from "@/components/table";
+import { Table, TableBody, TableCell, TableEmpty, TableSkeletonRows, TableHead, TableHeader, TableRow } from "@/components/table";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardTitle } from "@/components/ui/card";
@@ -63,9 +63,9 @@ const LedgerTab = ({ organizationId }: { organizationId: string }) => {
             </TableHeader>
             <TableBody>
               {ledger.isLoading ? (
-                <TableEmpty colSpan={6} message="Loading payments..." />
+                <TableSkeletonRows columns={6} />
               ) : payments.length === 0 ? (
-                <TableEmpty colSpan={6} message="No payments recorded yet." />
+                <TableEmpty colSpan={6} title="No payments recorded yet" description="Payments you record on Student Fees & Payments show up here, newest first." />
               ) : (
                 payments.map((payment) => (
                   <TableRow key={payment.id}>
