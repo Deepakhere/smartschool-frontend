@@ -8,7 +8,7 @@ import { Label } from "@/components/ui/label";
 import useAttendanceController from "./attendance-controller";
 import MonthlyRegister from "./components/monthly-register";
 import { AttendanceStatus, SelectOption } from "@/types";
-import { exportToCsv } from "@/utils";
+import { exportToCsv, formatDate } from "@/utils";
 
 const STATUS_STYLES: Record<AttendanceStatus, string> = {
   present: "bg-green-100 text-green-800 border-green-300",
@@ -210,7 +210,7 @@ const AdminAttendance = () => {
 
       {c.activeTab === "mark" && c.sectionId && c.holidayTitle && (
         <p className="rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
-          {c.date} is a holiday on the school calendar ({c.holidayTitle}). Only save attendance if the school is open that day.
+          {formatDate(`${c.date}T00:00:00`)} is a holiday on the school calendar ({c.holidayTitle}). Only save attendance if the school is open that day.
         </p>
       )}
 

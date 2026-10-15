@@ -9,7 +9,7 @@ import { Table, TableHeader, TableHead, TableBody, TableRow, TableCell, TableSke
 import { SelectOption } from "@/types";
 import { usePageHeader } from "@/hooks";
 import SectionHeader from "@/components/section-header";
-import { exportToCsv } from "@/utils";
+import { exportToCsv, formatDate } from "@/utils";
 
 import useStudentsListController from "./students-list-controller";
 import DeleteConfirmationDialog from "@/components/delete-confirmation-dialog";
@@ -211,7 +211,7 @@ const StudentsList = () => {
                           : ""}
                       </TableCell>
                       <TableCell className="text-center">
-                        {new Date(student.dateOfBirth).toLocaleDateString()}
+                        {formatDate(student.dateOfBirth)}
                       </TableCell>
                       <TableCell className="text-center">
                         <RowMenu

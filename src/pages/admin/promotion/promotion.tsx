@@ -171,10 +171,10 @@ const Promotion = () => {
                   <div key={candidate.student.id} className="px-4 py-3 flex items-center justify-between gap-4">
                     <div className="min-w-0 flex-1">
                       <p className="text-sm font-medium text-gray-900">
-                        {candidate.student.name}{" "}
-                        <span className="text-xs font-normal text-gray-500">
-                          ({candidate.student.admissionNumber})
-                        </span>
+                        {candidate.student.name}
+                        {candidate.student.admissionNumber && (
+                          <span className="ml-1 text-xs font-normal text-gray-500">({candidate.student.admissionNumber})</span>
+                        )}
                       </p>
                       <p className="text-xs text-gray-500 mt-0.5">
                         Current roll no. {candidate.rollNumber}
@@ -211,7 +211,7 @@ const Promotion = () => {
                       />
                       {(row?.action === "promote" || row?.action === "detain") && (
                         <Input
-                          className="w-24 px-2 py-1.5"
+                          className="mt-1 w-24"
                           placeholder="Roll No."
                           value={row?.rollNumber || ""}
                           onChange={(e) => c.setRowRollNumber(candidate.student.id, e.target.value)}

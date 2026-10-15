@@ -24,6 +24,11 @@ const TeacherDashboard = () => {
           <div className="px-4 py-4 border-b border-gray-200">
             <h2 className="text-lg font-medium text-gray-900">Today's Timetable ({c.todayName})</h2>
           </div>
+          {c.holidayTitle && (
+            <p className="border-b border-amber-100 bg-amber-50 px-4 py-3 text-sm text-amber-800">
+              Today is a holiday on the school calendar ({c.holidayTitle}). These are your usual periods for a {c.todayName}.
+            </p>
+          )}
           <div className="divide-y divide-gray-100">
             {c.todaySlots.length === 0 ? (
               <p className="px-4 py-5 text-sm text-gray-500">No classes scheduled for today.</p>

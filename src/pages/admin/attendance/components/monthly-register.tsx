@@ -95,22 +95,22 @@ const MonthlyRegister = ({ organizationId, sectionId, month, sectionLabel }: Mon
           <table className="min-w-full border-separate border-spacing-0 text-sm">
             <thead>
               <tr className="bg-gray-50 text-xs text-gray-500">
-                <th className="sticky left-0 z-10 min-w-[180px] border-b border-r border-gray-200 bg-gray-50 px-3 py-2 text-left font-semibold">Student</th>
+                <th className="sticky left-0 z-10 min-w-[160px] border-b border-r border-gray-200 bg-gray-50 px-3 py-2 text-left font-semibold">Student</th>
                 {days.map((day) => (
                   <th
                     key={day.date}
-                    className={cn("min-w-[34px] border-b border-gray-200 px-1 py-1.5 text-center font-semibold", day.isHoliday && "bg-red-50 text-red-500")}
+                    className={cn("min-w-[30px] border-b border-gray-200 px-1 py-1.5 text-center font-semibold", day.isHoliday && "bg-red-50 text-red-500")}
                   >
                     <div className="text-gray-700">{Number(day.date.slice(8))}</div>
                     <div className="text-[10px] font-normal">{WEEKDAYS[day.weekday]}</div>
                   </th>
                 ))}
                 {SUMMARY_COLUMNS.map((column, index) => (
-                  <th key={column.key} className={cn("border-b border-gray-200 px-3 py-2 text-center font-semibold", index === 0 && "border-l")}>
+                  <th key={column.key} className={cn("border-b border-gray-200 px-2 py-2 text-center font-semibold", index === 0 && "border-l")}>
                     {column.label}
                   </th>
                 ))}
-                <th className="border-b border-gray-200 px-3 py-2 text-center font-semibold">Att %</th>
+                <th className="sticky right-0 z-10 border-b border-l border-gray-200 bg-gray-50 px-3 py-2 text-center font-semibold">Att %</th>
               </tr>
             </thead>
             <tbody>
@@ -136,11 +136,11 @@ const MonthlyRegister = ({ organizationId, sectionId, month, sectionLabel }: Mon
                     );
                   })}
                   {SUMMARY_COLUMNS.map((column, index) => (
-                    <td key={column.key} className={cn("border-b border-gray-100 px-3 text-center font-medium text-gray-800", index === 0 && "border-l")}>
+                    <td key={column.key} className={cn("border-b border-gray-100 px-2 text-center font-medium text-gray-800", index === 0 && "border-l")}>
                       {row.summary[column.key]}
                     </td>
                   ))}
-                  <td className={cn("border-b border-gray-100 px-3 text-center font-semibold", row.summary.percent < 75 ? "text-red-600" : "text-gray-900")}>
+                  <td className={cn("sticky right-0 z-10 border-b border-l border-gray-100 bg-white px-3 text-center font-semibold", row.summary.percent < 75 ? "text-red-600" : "text-gray-900")}>
                     {row.summary.percent}%
                   </td>
                 </tr>

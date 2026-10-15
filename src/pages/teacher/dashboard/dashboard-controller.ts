@@ -2,6 +2,8 @@ import { useParams } from "react-router-dom";
 
 import useGetMyTeachingLoad from "./service/get-my-teaching-load";
 import { useAuth } from "@/context/auth-context";
+import { useGetCalendarMonth } from "@/pages/admin/calendar/service/calendar-service";
+import { localDateString } from "@/utils";
 
 const DAY_NAMES = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
@@ -10,6 +12,9 @@ const useTeacherDashboardController = () => {
   const { user } = useAuth();
 
   const teachingLoad = useGetMyTeachingLoad(organizationId);
+  const today = localDateString();
+  const calendar = useGetCalendarMonth(organizationId, Number(today.slice(0, 4)), Number(today.slice(5, 7)));
+  const holiday = calendar.data?.entries.find((entry) => entry.type === "holiday" && entry.date === today);
 
   return {
     name: user?.name || "",
@@ -21,6 +26,7 @@ const useTeacherDashboardController = () => {
     todaySlots: teachingLoad.data?.todaySlots || [],
     recentNotices: teachingLoad.data?.recentNotices || [],
     todayName: DAY_NAMES[new Date().getDay()],
+    holidayTitle: holiday?.title ?? "",
   };
 };
 
