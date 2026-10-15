@@ -233,11 +233,11 @@ export const useDeactivateSubject = (organizationId: string) =>
 
 // ── teacher assignments ──
 
-export const useGetTeacherAssignments = (organizationId: string, academicYearId?: string) =>
+export const useGetTeacherAssignments = (organizationId: string, academicYearId?: string, enabled = true) =>
   useQuery<{ items: ITeacherAssignment[] }, IAPIError>({
     queryKey: [API_QUERY_KEY.GET_TEACHER_ASSIGNMENTS, organizationId, academicYearId],
     queryFn: () => getItems<ITeacherAssignment>(`${base(organizationId)}/teacher-assignment`, { academicYearId }),
-    enabled: !!organizationId,
+    enabled: !!organizationId && enabled,
   });
 
 // the signed-in teacher's own classes, sections and subjects (any role may ask for its own)

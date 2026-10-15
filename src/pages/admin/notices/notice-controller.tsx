@@ -135,7 +135,6 @@ const useNoticeController = () => {
     if (deleteNotice.isSuccess) {
       toast.success("Notice deleted successfully");
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [deleteNotice.isSuccess]);
 
   return {

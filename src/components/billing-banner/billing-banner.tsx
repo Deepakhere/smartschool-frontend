@@ -9,14 +9,13 @@ const daysLeft = (dateString: string | null) => {
   return Math.ceil((new Date(dateString).getTime() - Date.now()) / (24 * 60 * 60 * 1000));
 };
 
-// Reads the signed-in person's own school's billing status once per session and shows a banner
-// when the school is close to losing access - a platform admin isn't the affected party here, so
-// this only renders for an actual school user, and a school already locked out by tenant.js never
-// reaches this far to see it.
+// Shows the school's admin when the school is close to losing access. Parents and teachers can't act on
+// payment, so they never see it; a platform admin isn't the affected party; and a school already locked
+// out by tenant.js never reaches this far.
 const BillingBanner = () => {
-  const { organizationId } = useTenant();
+  const { organizationId, role } = useTenant();
   const { user } = useAuth();
-  const summary = useGetMyBillingSummary(user?.isPlatformAdmin ? "" : organizationId);
+  const summary = useGetMyBillingSummary(user?.isPlatformAdmin || role !== "admin" ? "" : organizationId);
 
   if (!summary.data) return null;
   const { billingStatus, trialEndsAt, graceEndsAt, studentLimit, activeStudentCount } = summary.data;

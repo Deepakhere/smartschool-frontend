@@ -317,7 +317,6 @@ const useUserDetailsController = () => {
       setIsModalOpen(false);
       setIsEditUser(false);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [updateUserDetails.isSuccess]);
 
   useEffect(() => {
@@ -325,7 +324,6 @@ const useUserDetailsController = () => {
       toast.success("Invitation sent.");
       setIsModalOpen(false);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [addUserDetail.isSuccess]);
 
   // what the signed-in admin may do; nobody removes or re-roles themselves here

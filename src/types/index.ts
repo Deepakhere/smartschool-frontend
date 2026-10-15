@@ -714,6 +714,7 @@ export interface IStaffProfile {
   department?: string;
   qualification?: string;
   dateOfJoining?: string;
+  dateOfBirth?: string;
   address?: string;
   status: string;
 }
@@ -779,4 +780,49 @@ export interface IEmailLog {
   status: "queued" | "sent" | "failed" | "skipped";
   reason?: string;
   createdAt: string;
+}
+
+export type CalendarEntryType = "holiday" | "half_day" | "event";
+
+export interface ICalendarEntry {
+  id: string;
+  title: string;
+  type: CalendarEntryType;
+  date: string;
+  recurring: boolean;
+  startDate: string;
+  dayOfWeek?: number;
+}
+
+export interface ICalendarAutoItem {
+  title: string;
+  type: "exam" | "birthday";
+  who?: "student" | "staff";
+  date: string;
+}
+
+export interface ICalendarMonth {
+  entries: ICalendarEntry[];
+  examDays: ICalendarAutoItem[];
+  birthdays: ICalendarAutoItem[];
+}
+
+export interface ICalendarRule {
+  id: string;
+  title: string;
+  type: CalendarEntryType;
+  date: string;
+  recurrence?: { frequency: "weekly"; dayOfWeek: number };
+}
+
+export interface ITimetableSlot {
+  id: string;
+  dayOfWeek: number;
+  startTime: string;
+  endTime: string;
+  room?: string;
+  subjectId: { id: string; name: string; code: string } | null;
+  teacherUserId: { id: string; name: string; email: string } | null;
+  sectionId: { id: string; name: string } | null;
+  classId: { id: string; name: string } | null;
 }

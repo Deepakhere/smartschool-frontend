@@ -26,6 +26,7 @@ const useTeachersController = () => {
       department: teacher.staffProfile?.department || "",
       qualification: teacher.staffProfile?.qualification || "",
       dateOfJoining: teacher.staffProfile?.dateOfJoining ? teacher.staffProfile.dateOfJoining.slice(0, 10) : "",
+      dateOfBirth: teacher.staffProfile?.dateOfBirth ?? "",
     });
   };
 

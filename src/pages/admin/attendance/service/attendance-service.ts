@@ -64,6 +64,34 @@ export const useGetSectionAttendanceReport = (organizationId: string, sectionId:
     enabled: !!organizationId && !!sectionId && !!from && !!to,
   });
 
+export interface IMonthRegisterRow {
+  studentId: string;
+  studentName: string;
+  rollNumber: string;
+  cells: Record<string, AttendanceStatus>;
+  summary: { present: number; late: number; absent: number; excused: number; holiday: number; missing: number; percent: number };
+}
+
+export interface IMonthRegister {
+  days: { date: string; weekday: number; isHoliday: boolean }[];
+  schoolDays: number;
+  items: IMonthRegisterRow[];
+}
+
+// a "YYYY-MM" month as a student-by-day grid, with holidays from the school calendar
+export const useGetMonthRegister = (organizationId: string, sectionId: string, month: string) =>
+  useQuery<IMonthRegister, IAPIError>({
+    queryKey: [API_QUERY_KEY.GET_SECTION_ATTENDANCE_REPORT, organizationId, sectionId, "month", month],
+    queryFn: async () => {
+      const result = await apiClient.get<null, IAxiosResponse<IMonthRegister>>(`${base(organizationId)}/section-month`, {
+        params: { sectionId, year: Number(month.slice(0, 4)), month: Number(month.slice(5, 7)) },
+      });
+      return result.data.Data;
+    },
+    enabled: !!organizationId && !!sectionId && /^\d{4}-\d{2}$/.test(month),
+    placeholderData: (previous) => previous,
+  });
+
 interface IMarkAttendanceValue {
   sectionId: string;
   date: string;

@@ -3,14 +3,12 @@ import Spinner from "@/components/spinner";
 import NoRecordFound from "@/components/no-record-found";
 import CustomSelectDropdown from "@/components/custom-select";
 import DeleteConfirmationDialog from "@/components/delete-confirmation-dialog";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { usePromotionController } from "./promotion-controller";
 import { PromotionAction, SelectOption } from "@/types";
 import { useTranslation } from "react-i18next";
-
-const btnPrimary =
-  "inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 disabled:opacity-50";
-const inputClass =
-  "block w-24 rounded-md border border-gray-300 bg-white px-2 py-1.5 text-gray-900 shadow-sm focus:border-primary-500 focus:outline-none focus:ring-primary-500 sm:text-sm";
 
 const resultBadgeClass: Record<string, string> = {
   pass: "bg-green-100 text-green-800",
@@ -18,11 +16,11 @@ const resultBadgeClass: Record<string, string> = {
   pending: "bg-gray-100 text-gray-600",
 };
 
-const ACTION_OPTIONS: { value: PromotionAction; label: string }[] = [
-  { value: "promote", label: "Promote" },
-  { value: "detain", label: "Detain" },
-  { value: "transfer", label: "Transfer" },
-  { value: "withdraw", label: "Withdraw" },
+const ACTION_OPTIONS: SelectOption[] = [
+  { id: "promote", name: "Promote" },
+  { id: "detain", name: "Detain" },
+  { id: "transfer", name: "Transfer" },
+  { id: "withdraw", name: "Withdraw" },
 ];
 
 const Promotion = () => {
@@ -48,7 +46,7 @@ const Promotion = () => {
         <h3 className="text-sm font-semibold text-gray-900">Source (current enrollment)</h3>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Academic Year</label>
+            <Label>Academic Year</Label>
             <CustomSelectDropdown
               placeholder="Select"
               options={asOptions(c.academicYears)}
@@ -57,7 +55,7 @@ const Promotion = () => {
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Class</label>
+            <Label>Class</Label>
             <CustomSelectDropdown
               placeholder="Select"
               disabled={!c.sourceAcademicYearId}
@@ -67,7 +65,7 @@ const Promotion = () => {
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Section</label>
+            <Label>Section</Label>
             <CustomSelectDropdown
               placeholder="Select"
               disabled={!c.sourceClassId}
@@ -83,7 +81,7 @@ const Promotion = () => {
         </h3>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Academic Year</label>
+            <Label>Academic Year</Label>
             <CustomSelectDropdown
               placeholder="Select"
               options={asOptions(c.academicYears)}
@@ -92,7 +90,7 @@ const Promotion = () => {
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Class (for promoted students)</label>
+            <Label>Class (for promoted students)</Label>
             <CustomSelectDropdown
               placeholder="Select"
               disabled={!c.targetAcademicYearId}
@@ -102,7 +100,7 @@ const Promotion = () => {
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Section (for promoted students)</label>
+            <Label>Section (for promoted students)</Label>
             <CustomSelectDropdown
               placeholder="Select"
               disabled={!c.targetClassId}
@@ -113,7 +111,7 @@ const Promotion = () => {
           </div>
           <div className="hidden sm:block" />
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Class (for detained students)</label>
+            <Label>Class (for detained students)</Label>
             <CustomSelectDropdown
               placeholder="Select"
               disabled={!c.targetAcademicYearId}
@@ -123,7 +121,7 @@ const Promotion = () => {
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Section (for detained students)</label>
+            <Label>Section (for detained students)</Label>
             <CustomSelectDropdown
               placeholder="Select"
               disabled={!c.detainClassId}
@@ -155,9 +153,9 @@ const Promotion = () => {
         <div className="bg-white shadow rounded-lg">
           <div className="px-4 py-4 border-b border-gray-200 flex justify-between items-center">
             <h2 className="text-lg font-medium text-gray-900">Students</h2>
-            <button className={btnPrimary} disabled={c.isProcessing} onClick={c.handleProcess}>
+            <Button disabled={c.isProcessing} onClick={c.handleProcess}>
               {c.isProcessing ? "Processing..." : "Process Promotions"}
-            </button>
+            </Button>
           </div>
 
           {c.isLoadingCandidates ? (
@@ -173,10 +171,10 @@ const Promotion = () => {
                   <div key={candidate.student.id} className="px-4 py-3 flex items-center justify-between gap-4">
                     <div className="min-w-0 flex-1">
                       <p className="text-sm font-medium text-gray-900">
-                        {candidate.student.name}{" "}
-                        <span className="text-xs font-normal text-gray-500">
-                          ({candidate.student.admissionNumber})
-                        </span>
+                        {candidate.student.name}
+                        {candidate.student.admissionNumber && (
+                          <span className="ml-1 text-xs font-normal text-gray-500">({candidate.student.admissionNumber})</span>
+                        )}
                       </p>
                       <p className="text-xs text-gray-500 mt-0.5">
                         Current roll no. {candidate.rollNumber}
@@ -205,21 +203,15 @@ const Promotion = () => {
                     </div>
 
                     <div className="flex items-center gap-2 shrink-0">
-                      <select
-                        className={inputClass}
-                        style={{ width: "8rem" }}
-                        value={row?.action || "promote"}
-                        onChange={(e) => c.setRowAction(candidate.student.id, e.target.value as PromotionAction)}
-                      >
-                        {ACTION_OPTIONS.map((opt) => (
-                          <option key={opt.value} value={opt.value}>
-                            {opt.label}
-                          </option>
-                        ))}
-                      </select>
+                      <CustomSelectDropdown
+                        className="w-32"
+                        options={ACTION_OPTIONS}
+                        value={ACTION_OPTIONS.find((o) => o.id === (row?.action || "promote")) || null}
+                        onChange={(o) => c.setRowAction(candidate.student.id, o.id as PromotionAction)}
+                      />
                       {(row?.action === "promote" || row?.action === "detain") && (
-                        <input
-                          className={inputClass}
+                        <Input
+                          className="mt-1 w-24"
                           placeholder="Roll No."
                           value={row?.rollNumber || ""}
                           onChange={(e) => c.setRowRollNumber(candidate.student.id, e.target.value)}

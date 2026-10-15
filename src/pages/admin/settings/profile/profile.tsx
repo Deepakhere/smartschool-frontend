@@ -17,7 +17,9 @@ import PageLoader from "@/components/page-loader";
 import CustomSelectDropdown from "@/components/custom-select";
 import { Switch } from "@/components/ui/switch";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { SelectOption } from "@/types";
 
 const AdminProfile = () => {
@@ -69,23 +71,25 @@ const AdminProfile = () => {
                 <div className="bg-white shadow rounded-lg overflow-hidden">
                   <div className="px-4 py-5 sm:px-6 flex justify-between items-center">
                     <h3 className="text-lg font-medium text-gray-900">{t("labels.profile_information")}</h3>
-                    <button
-                      className="inline-flex items-center px-3 py-1.5 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50"
+                    <Button
+                      variant="secondary"
+                      size="sm"
+                      className="text-sm"
                       disabled={isSavingProfile}
                       onClick={() => (editMode ? onSubmitProfile() : setEditMode(true))}
                     >
                       {editMode ? (
                         <>
-                          {isSavingProfile ? <ButtonSpinner /> : <CheckIcon className="h-4 w-4 mr-2" />}
+                          {isSavingProfile ? <ButtonSpinner /> : <CheckIcon className="h-4 w-4" />}
                           {t("labels.save")}
                         </>
                       ) : (
                         <>
-                          <PencilIcon className="h-4 w-4 mr-2" />
+                          <PencilIcon className="h-4 w-4" />
                           {t("buttons.edit")}
                         </>
                       )}
-                    </button>
+                    </Button>
                   </div>
                   <div className="border-t border-gray-200 px-4 py-5 sm:p-6">
                     {editMode ? (
@@ -105,15 +109,13 @@ const AdminProfile = () => {
                             )}
                           />
                           <div>
-                            <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-                              {t("labels.email_address")}
-                            </label>
+                            <Label htmlFor="email">{t("labels.email_address")}</Label>
                             <Input
                               type="email"
                               id="email"
                               value={user.email}
                               disabled
-                              className="mt-1 bg-gray-50 text-gray-500"
+                              className="bg-gray-50 text-gray-500"
                             />
                           </div>
                           <FormField
@@ -130,15 +132,13 @@ const AdminProfile = () => {
                             )}
                           />
                           <div>
-                            <label htmlFor="role" className="block text-sm font-medium text-gray-700">
-                              {t("labels.role")}
-                            </label>
+                            <Label htmlFor="role">{t("labels.role")}</Label>
                             <Input
                               type="text"
                               id="role"
                               value={`${currentRole?.charAt(0).toUpperCase()}${currentRole?.slice(1)}`}
                               disabled
-                              className="mt-1 bg-gray-50 text-gray-500"
+                              className="bg-gray-50 text-gray-500"
                             />
                           </div>
                         </form>
@@ -224,14 +224,9 @@ const AdminProfile = () => {
                             </FormItem>
                           )}
                         />
-                        <button
-                          type="submit"
-                          disabled={isChangingPassword}
-                          className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 disabled:opacity-50"
-                        >
-                          {isChangingPassword && <ButtonSpinner />}
+                        <Button type="submit" loading={isChangingPassword}>
                           {t("labels.update_password")}
-                        </button>
+                        </Button>
                       </form>
                     </Form>
                   </div>
@@ -287,10 +282,10 @@ const AdminProfile = () => {
                   <div className="border-t border-gray-200 px-4 py-5 sm:p-6">
                     <form className="space-y-4">
                       <div>
-                        <label className="flex items-center text-sm font-medium text-gray-700 mb-1">
+                        <Label className="flex items-center">
                           <GlobeAltIcon className="h-5 w-5 mr-2 text-gray-500" />
                           {t("labels.language")}
-                        </label>
+                        </Label>
                         <CustomSelectDropdown
                           options={languageOptions}
                           value={languageOptions.find((o) => o.id === currentLanguage) || languageOptions[0]}
@@ -298,10 +293,10 @@ const AdminProfile = () => {
                         />
                       </div>
                       <div>
-                        <label className="flex items-center text-sm font-medium text-gray-700 mb-1">
+                        <Label className="flex items-center">
                           <MoonIcon className="h-5 w-5 mr-2 text-gray-500" />
                           {t("labels.theme")}
-                        </label>
+                        </Label>
                         <CustomSelectDropdown
                           options={themeOptions}
                           value={themeOptions.find((o) => o.id === theme) || themeOptions[0]}
@@ -309,13 +304,10 @@ const AdminProfile = () => {
                         />
                       </div>
                       <div className="flex items-center justify-between">
-                        <label
-                          htmlFor="emailNotifications"
-                          className="text-sm font-medium text-gray-700 flex items-center"
-                        >
+                        <Label htmlFor="emailNotifications" className="mb-0 flex items-center">
                           <EnvelopeIcon className="h-5 w-5 mr-2 text-gray-500" />
                           {t("labels.email_notifications")}
-                        </label>
+                        </Label>
                         <Switch
                           id="emailNotifications"
                           checked={emailNotifications}
@@ -323,13 +315,10 @@ const AdminProfile = () => {
                         />
                       </div>
                       <div className="flex items-center justify-between">
-                        <label
-                          htmlFor="smsNotifications"
-                          className="text-sm font-medium text-gray-700 flex items-center"
-                        >
+                        <Label htmlFor="smsNotifications" className="mb-0 flex items-center">
                           <BellIcon className="h-5 w-5 mr-2 text-gray-500" />
                           {t("labels.sms_notifications")}
-                        </label>
+                        </Label>
                         <Switch
                           id="smsNotifications"
                           checked={smsNotifications}

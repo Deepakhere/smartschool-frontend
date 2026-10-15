@@ -19,9 +19,10 @@ export default tseslint.config(
     },
     rules: {
       ...reactHooks.configs.recommended.rules,
+      // a context's hook is exported next to its provider on purpose
       'react-refresh/only-export-components': [
         'warn',
-        { allowConstantExport: true },
+        { allowConstantExport: true, allowExportNames: ['useFormField', 'useAuth', 'useNotifications', 'usePageHeaderContext', 'useTenant', 'useCurrentRole', 'useTheme'] },
       ],
     },
   },

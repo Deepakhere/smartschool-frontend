@@ -2,6 +2,7 @@ import { useState } from "react";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
 import Spinner from "@/components/spinner";
 
 interface AttachmentPreviewModalProps {
@@ -62,26 +63,22 @@ const AttachmentPreviewModal = ({
               <div className="absolute inset-0 flex items-center justify-center bg-white bg-opacity-90">
                 <div className="text-center p-6">
                   <p className="text-gray-700 mb-4">Unable to preview this PDF document.</p>
-                  <a
-                    href={attachmentURL}
-                    download
-                    className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-primary-600 hover:bg-primary-700"
-                  >
-                    Download Instead
-                  </a>
+                  <Button asChild>
+                    <a href={attachmentURL} download>
+                      Download Instead
+                    </a>
+                  </Button>
                 </div>
               </div>
             )}
           </div>
 
           <div className="mt-4 flex justify-end">
-            <a
-              href={attachmentURL}
-              download
-              className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-primary-600 hover:bg-primary-700"
-            >
-              Download
-            </a>
+            <Button asChild>
+              <a href={attachmentURL} download>
+                Download
+              </a>
+            </Button>
           </div>
         </div>
       </DialogContent>

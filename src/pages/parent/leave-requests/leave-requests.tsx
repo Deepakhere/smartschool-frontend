@@ -6,15 +6,12 @@ import SectionHeader from "@/components/section-header";
 import CustomSelectDropdown from "@/components/custom-select";
 import DeleteConfirmationDialog from "@/components/delete-confirmation-dialog";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useLeaveRequestsController } from "./leave-requests-controller";
 import { SelectOption } from "@/types";
-
-const btnPrimary =
-  "inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 disabled:opacity-50";
-const btnSecondary =
-  "inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50";
 
 const statusBadgeClass: Record<string, string> = {
   pending: "bg-yellow-100 text-yellow-800",
@@ -33,9 +30,9 @@ const LeaveRequests = () => {
         title="Leave Requests"
         description="Request leave for your child and track its status"
         actions={
-          <button className={btnPrimary} onClick={() => c.setShowForm(!c.showForm)}>
+          <Button onClick={() => c.setShowForm(!c.showForm)}>
             + New Leave Request
-          </button>
+          </Button>
         }
       />
 
@@ -110,17 +107,17 @@ const LeaveRequests = () => {
             />
 
             <div>
-              <label className="block text-sm font-medium text-gray-700">{t("labels.attachment")}</label>
+              <Label>{t("labels.attachment")}</Label>
               <Input type="file" accept=".pdf,.png,.jpg,.jpeg" onChange={c.handleFileChange} />
             </div>
 
             <div className="flex justify-end gap-3">
-              <button type="button" className={btnSecondary} onClick={() => c.setShowForm(false)}>
+              <Button variant="secondary" onClick={() => c.setShowForm(false)}>
                 {t("buttons.cancel")}
-              </button>
-              <button type="submit" disabled={c.isCreating} className={btnPrimary}>
+              </Button>
+              <Button type="submit" disabled={c.isCreating}>
                 {t("buttons.save")}
-              </button>
+              </Button>
             </div>
           </form>
         </Form>
@@ -164,12 +161,13 @@ const LeaveRequests = () => {
                   )}
                 </div>
                 {lr.status === "pending" && (
-                  <button
+                  <Button
+                    variant="link"
                     onClick={() => c.handleCancel(lr.id)}
-                    className="text-sm text-red-600 hover:text-red-800 shrink-0"
+                    className="text-red-600 hover:text-red-800 shrink-0"
                   >
                     {t("buttons.cancel")}
-                  </button>
+                  </Button>
                 )}
               </div>
             ))}
