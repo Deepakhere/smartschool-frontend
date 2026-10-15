@@ -2,6 +2,8 @@ import { PlusIcon, MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 
 import NoRecordFound from "@/components/no-record-found";
 import CustomSelectDropdown from "@/components/custom-select";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { Table, TableHeader, TableHead, TableBody, TableRow, TableCell, TableSkeleton } from "@/components/table";
 import { CreateUpdateUserModal } from "./user-modal";
 import DeleteConfirmationDialog from "@/components/delete-confirmation-dialog";
@@ -56,12 +58,12 @@ const UserDetails = () => {
           <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
             <MagnifyingGlassIcon className="h-5 w-5 text-gray-400" />
           </div>
-          <input
+          <Input
             type="text"
             placeholder="Search users..."
             value={searchInput}
             onChange={(e) => onSearchInputChange(e.target.value)}
-            className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
+            className="pl-10 leading-5"
           />
         </div>
 
@@ -86,13 +88,10 @@ const UserDetails = () => {
           </div>
 
           {/* Add user  */}
-          <button
-            onClick={openAddUser}
-            className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition-colors duration-200"
-          >
-            <PlusIcon className="h-5 w-5 mr-2" />
+          <Button onClick={openAddUser}>
+            <PlusIcon className="h-5 w-5" />
             {t("labels.add_user")}
-          </button>
+          </Button>
         </div>
       </div>
 
@@ -122,18 +121,19 @@ const UserDetails = () => {
                     </span>
                   </TableCell>
                   <TableCell className="text-center">
-                    <button
-                      className="text-primary-600 mr-4 disabled:cursor-not-allowed disabled:opacity-50"
+                    <Button
+                      variant="link"
+                      className="mr-4"
                       disabled={!canEdit}
                       title={canEdit ? undefined : t("messages.you_dont_have_permission_to_edit_user")}
                       onClick={() => handleEditUserDetails(user.id, true)}
                     >
                       {t("labels.edit")}
-                    </button>
+                    </Button>
                     {canDelete(user.id) && (
-                      <button className="text-red-600" onClick={() => onClickDeleteUser(user.id)}>
+                      <Button variant="link" className="text-red-600 hover:text-red-800" onClick={() => onClickDeleteUser(user.id)}>
                         Remove
-                      </button>
+                      </Button>
                     )}
                   </TableCell>
                 </TableRow>

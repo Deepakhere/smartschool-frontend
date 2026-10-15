@@ -58,7 +58,6 @@ export const usePromotionController = () => {
       }
       return next;
     });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [candidates.data]);
 
   // outcomes belong to one section's run, so they are cleared only when the section changes

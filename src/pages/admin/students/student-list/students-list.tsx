@@ -15,6 +15,8 @@ import useStudentsListController from "./students-list-controller";
 import DeleteConfirmationDialog from "@/components/delete-confirmation-dialog";
 import CreateUpdateStudentModal from "../student-modal/create-update-student-modal";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import BulkUploadModal from "../student-modal/bulk-upload-modal";
 import RowMenu from "@/components/row-menu";
 import { studentToCsvRow } from "../student-csv";
@@ -89,24 +91,13 @@ const StudentsList = () => {
   usePageHeader({
     actions: (
       <>
-        <button
-          onClick={handleExportCsv}
-          className="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
-        >
+        <Button variant="secondary" onClick={handleExportCsv}>
           Export CSV
-        </button>
-        <button
-          onClick={onClickBulkUpload}
-          className="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
-        >
+        </Button>
+        <Button variant="secondary" onClick={onClickBulkUpload}>
           Bulk Upload (CSV)
-        </button>
-        <button
-          onClick={onClickAddStudent}
-          className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
-        >
-          {t("labels.add_new_student")}
-        </button>
+        </Button>
+        <Button onClick={onClickAddStudent}>{t("labels.add_new_student")}</Button>
       </>
     ),
   });
@@ -123,12 +114,12 @@ const StudentsList = () => {
             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
               <MagnifyingGlassIcon className="h-5 w-5 text-gray-400" />
             </div>
-            <input
+            <Input
               type="text"
               placeholder={t("messages.search")}
               value={searchInput}
               onChange={(e) => handleSearchChange(e.target.value)}
-              className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
+              className="pl-10 leading-5"
             />
           </div>
           {studentTotalCount !== undefined && studentTotalCount > 0 && (
@@ -140,9 +131,9 @@ const StudentsList = () => {
 
         {/* Class filter */}
         <div className="flex items-center gap-3">
-          <label htmlFor="class-filter" className="block text-sm font-medium text-gray-700 whitespace-nowrap">
+          <Label htmlFor="class-filter" className="mb-0 whitespace-nowrap">
             {t("labels.filter_by_class")}
-          </label>
+          </Label>
           <div className="w-full sm:w-48">
             <CustomSelectDropdown
               options={[

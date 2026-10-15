@@ -2,17 +2,13 @@ import { Table, TableHeader, TableHead, TableBody, TableRow, TableCell, TableSke
 import SectionHeader from "@/components/section-header";
 import Spinner from "@/components/spinner";
 import CustomSelectDropdown from "@/components/custom-select";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import useAttendanceController from "./attendance-controller";
 import MonthlyRegister from "./components/monthly-register";
 import { AttendanceStatus, SelectOption } from "@/types";
 import { exportToCsv } from "@/utils";
-
-const inputClass =
-  "mt-1 block w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-gray-900 shadow-sm focus:border-primary-500 focus:outline-none focus:ring-primary-500 sm:text-sm";
-const btnPrimary =
-  "inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 disabled:opacity-50";
-const btnSecondary =
-  "inline-flex items-center px-3 py-1.5 border border-gray-300 rounded-md text-xs font-medium text-gray-700 bg-white hover:bg-gray-50";
 
 const STATUS_STYLES: Record<AttendanceStatus, string> = {
   present: "bg-green-100 text-green-800 border-green-300",
@@ -55,7 +51,7 @@ const AdminAttendance = () => {
       <div className="bg-white shadow rounded-lg p-4">
         <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Academic Year</label>
+            <Label>Academic Year</Label>
             <CustomSelectDropdown
               placeholder="Select"
               options={c.academicYears.map((y): SelectOption => ({ id: y.id, name: y.name }))}
@@ -67,7 +63,7 @@ const AdminAttendance = () => {
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Class</label>
+            <Label>Class</Label>
             <CustomSelectDropdown
               placeholder="Select"
               disabled={!c.academicYearId}
@@ -80,7 +76,7 @@ const AdminAttendance = () => {
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Section</label>
+            <Label>Section</Label>
             <CustomSelectDropdown
               placeholder="Select"
               disabled={!c.classId}
@@ -94,30 +90,28 @@ const AdminAttendance = () => {
           </div>
           {c.activeTab === "mark" ? (
             <div>
-              <label className="block text-sm font-medium text-gray-700">Date</label>
-              <input type="date" className={inputClass} value={c.date} onChange={(e) => c.setDate(e.target.value)} />
+              <Label>Date</Label>
+              <Input type="date" value={c.date} onChange={(e) => c.setDate(e.target.value)} />
             </div>
           ) : c.activeTab === "register" ? (
             <div>
-              <label className="block text-sm font-medium text-gray-700">Month</label>
-              <input type="month" className={inputClass} value={c.registerMonth} onChange={(e) => c.setRegisterMonth(e.target.value)} />
+              <Label>Month</Label>
+              <Input type="month" value={c.registerMonth} onChange={(e) => c.setRegisterMonth(e.target.value)} />
             </div>
           ) : (
             <div className="flex gap-2">
               <div className="flex-1">
-                <label className="block text-sm font-medium text-gray-700">From</label>
-                <input
+                <Label>From</Label>
+                <Input
                   type="date"
-                  className={inputClass}
                   value={c.reportFrom}
                   onChange={(e) => c.setReportFrom(e.target.value)}
                 />
               </div>
               <div className="flex-1">
-                <label className="block text-sm font-medium text-gray-700">To</label>
-                <input
+                <Label>To</Label>
+                <Input
                   type="date"
-                  className={inputClass}
                   value={c.reportTo}
                   onChange={(e) => c.setReportTo(e.target.value)}
                 />
@@ -144,8 +138,9 @@ const AdminAttendance = () => {
               <span className="text-sm text-gray-500 font-normal"> - {c.reportTotalSessions} day(s) marked</span>
             </h2>
             {c.reportRows.length > 0 && (
-              <button
-                className={btnSecondary}
+              <Button
+                variant="secondary"
+                size="sm"
                 onClick={() =>
                   exportToCsv(
                     `attendance-report-${c.reportFrom}-to-${c.reportTo}`,
@@ -163,7 +158,7 @@ const AdminAttendance = () => {
                 }
               >
                 Export CSV
-              </button>
+              </Button>
             )}
           </div>
 
@@ -231,8 +226,9 @@ const AdminAttendance = () => {
               )}
             </h2>
             <div className="flex gap-2">
-              <button
-                className={btnSecondary}
+              <Button
+                variant="secondary"
+                size="sm"
                 onClick={() =>
                   exportToCsv(
                     `attendance-${c.date}`,
@@ -247,13 +243,13 @@ const AdminAttendance = () => {
                 }
               >
                 Export CSV
-              </button>
-              <button className={btnSecondary} onClick={() => c.markAll("present")}>
+              </Button>
+              <Button variant="secondary" size="sm" onClick={() => c.markAll("present")}>
                 Mark all present
-              </button>
-              <button className={btnSecondary} onClick={() => c.markAll("absent")}>
+              </Button>
+              <Button variant="secondary" size="sm" onClick={() => c.markAll("absent")}>
                 Mark all absent
-              </button>
+              </Button>
             </div>
           </div>
 
@@ -287,10 +283,10 @@ const AdminAttendance = () => {
                   {(c.statuses[student.id] === "absent" ||
                     c.statuses[student.id] === "late" ||
                     c.statuses[student.id] === "excused") && (
-                    <input
+                    <Input
                       type="text"
                       placeholder="Reason (optional)"
-                      className="w-40 rounded-md border border-gray-300 px-2 py-1 text-xs"
+                      className="w-40 px-2 py-1 text-xs sm:text-xs"
                       value={c.reasons[student.id] || ""}
                       onChange={(e) => c.setReason(student.id, e.target.value)}
                     />
@@ -301,9 +297,9 @@ const AdminAttendance = () => {
           )}
 
           <div className="px-4 py-4 border-t border-gray-200 flex justify-end">
-            <button onClick={c.submit} disabled={c.isSaving} className={btnPrimary}>
+            <Button onClick={c.submit} disabled={c.isSaving}>
               Save Attendance
-            </button>
+            </Button>
           </div>
         </div>
       )}

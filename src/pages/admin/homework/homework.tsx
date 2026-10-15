@@ -4,16 +4,13 @@ import NoRecordFound from "@/components/no-record-found";
 import SectionHeader from "@/components/section-header";
 import CustomSelectDropdown from "@/components/custom-select";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useTranslation } from "react-i18next";
 import { useHomeworkController } from "./homework-controller";
 import { SelectOption } from "@/types";
-
-const btnPrimary =
-  "inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 disabled:opacity-50";
-const btnSecondary =
-  "inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50";
 
 const Homework = () => {
   const { t } = useTranslation();
@@ -32,7 +29,7 @@ const Homework = () => {
       <div className="bg-white shadow rounded-lg p-4">
         <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Academic Year</label>
+            <Label>Academic Year</Label>
             <CustomSelectDropdown
               placeholder="Select"
               options={c.academicYears.map((y): SelectOption => ({ id: y.id, name: y.name }))}
@@ -44,7 +41,7 @@ const Homework = () => {
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Class</label>
+            <Label>Class</Label>
             <CustomSelectDropdown
               placeholder="Select"
               disabled={!c.academicYearId}
@@ -57,7 +54,7 @@ const Homework = () => {
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Section</label>
+            <Label>Section</Label>
             <CustomSelectDropdown
               placeholder="Select"
               disabled={!c.classId}
@@ -70,9 +67,9 @@ const Homework = () => {
             />
           </div>
           <div className="flex items-end">
-            <button className={btnPrimary} onClick={() => c.setShowForm(!c.showForm)} disabled={!c.sectionId}>
+            <Button onClick={() => c.setShowForm(!c.showForm)} disabled={!c.sectionId}>
               + Assign Homework
-            </button>
+            </Button>
           </div>
         </div>
       </div>
@@ -159,18 +156,18 @@ const Homework = () => {
                 )}
               />
               <div>
-                <label className="block text-sm font-medium text-gray-700">{t("labels.attachment")}</label>
+                <Label>{t("labels.attachment")}</Label>
                 <Input type="file" accept=".pdf" onChange={c.handleFileChange} />
               </div>
             </div>
 
             <div className="flex justify-end gap-3">
-              <button type="button" className={btnSecondary} onClick={() => c.setShowForm(false)}>
+              <Button variant="secondary" onClick={() => c.setShowForm(false)}>
                 {t("buttons.cancel")}
-              </button>
-              <button type="submit" disabled={c.isCreating} className={btnPrimary}>
+              </Button>
+              <Button type="submit" disabled={c.isCreating}>
                 {t("buttons.save")}
-              </button>
+              </Button>
             </div>
           </form>
         </Form>
@@ -214,9 +211,9 @@ const Homework = () => {
                       )}
                     </p>
                   </div>
-                  <button onClick={() => c.handleDelete(hw.id)} className="text-sm text-red-600 hover:text-red-800">
+                  <Button variant="link" className="text-red-600 hover:text-red-800" onClick={() => c.handleDelete(hw.id)}>
                     {t("buttons.delete")}
-                  </button>
+                  </Button>
                 </div>
               ))}
             </div>
