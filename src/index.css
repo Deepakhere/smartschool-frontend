@@ -339,3 +339,21 @@
     animation: none;
   }
 }
+
+/* Sidebar labels: on the way out the text fades first, then its space closes, so it never runs into the icon */
+.sidebar-reveal-in {
+  transition-property: max-width, max-height, opacity, transform, margin, padding, width;
+  transition-duration: 320ms;
+  transition-timing-function: cubic-bezier(0.32, 0.72, 0, 1);
+  transition-delay: 60ms;
+}
+.sidebar-reveal-out {
+  transition:
+    opacity 100ms ease-out,
+    transform 0s linear 100ms,
+    max-width 250ms cubic-bezier(0.65, 0, 0.35, 1) 80ms,
+    max-height 250ms cubic-bezier(0.65, 0, 0.35, 1) 80ms,
+    margin 250ms cubic-bezier(0.65, 0, 0.35, 1) 80ms,
+    padding 250ms cubic-bezier(0.65, 0, 0.35, 1) 80ms,
+    width 250ms cubic-bezier(0.65, 0, 0.35, 1) 80ms;
+}

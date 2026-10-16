@@ -3,7 +3,7 @@ import { Bars3Icon, ArrowLeftIcon } from "@heroicons/react/24/outline";
 
 import PanelLeftIcon from "@/icons/panel-left-icon";
 import BrandLogo from "@/components/brand-logo";
-import { PANEL_MOTION, revealMotion } from "@/components/sidebar/sidebar-motion";
+import { PANEL_MOTION, panelMotion, revealMotion } from "@/components/sidebar/sidebar-motion";
 import NotificationBell from "@/components/notification-bell";
 import { useHeaderController } from "./header-controller";
 
@@ -21,7 +21,7 @@ const Header = ({ onToggleSidebar, isCollapsed, onToggleCollapse }: HeaderProps)
       <div className="flex h-16">
         {/* App brand segment - width matches the sidebar so the divider lines up with it */}
         <div
-          className={`flex items-center ${isCollapsed ? "justify-center" : "justify-between"} shrink-0 px-3 border-r border-gray-200 ${PANEL_MOTION} ${
+          className={`flex items-center ${isCollapsed ? "justify-center" : "justify-between"} shrink-0 px-3 border-r border-gray-200 ${PANEL_MOTION} ${panelMotion(isCollapsed)} ${
             isCollapsed ? "lg:w-16" : "lg:w-56"
           } w-auto`}
         >
