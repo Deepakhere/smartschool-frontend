@@ -30,19 +30,19 @@ const EventsSidebar = ({ entries, filter, onFilter, onEdit, onDelete }: EventsSi
   const rules = [...new Map(entries.map((entry) => [entry.id, entry])).values()].filter((entry) => matches(entry, filter));
 
   return (
-    <aside className="rounded-lg border border-gray-200 bg-white">
+    <aside className="flex flex-col rounded-lg border border-gray-200 bg-white">
       <div className="flex justify-center border-b border-gray-100 p-3">
         <Tabs value={filter} onValueChange={(value) => onFilter(value as EntryFilter)}>
           <TabsList className="space-x-1 rounded-md bg-gray-100 p-0.5">
             {FILTERS.map((item) => (
-              <TabsTrigger key={item.id} value={item.id} className="rounded border-b-0 px-3 py-1 data-[state=active]:bg-white data-[state=active]:shadow-sm">
+              <TabsTrigger key={item.id} value={item.id} className="rounded border-b-0 px-3 py-1 data-[state=active]:bg-white data-[state=active]:shadow-sm dark:data-[state=active]:bg-gray-700">
                 {item.label}
               </TabsTrigger>
             ))}
           </TabsList>
         </Tabs>
       </div>
-      <div className="space-y-2 p-3">
+      <div className={cn("flex-1 space-y-2 p-3", rules.length === 0 && "flex items-center justify-center")}>
         {rules.length === 0 && <EmptyState compact title="Nothing this month" />}
         {rules.map((entry) => (
           <div key={entry.id} className={cn("flex items-start justify-between rounded-md border border-gray-200 border-b-2 p-3", BORDERS[entry.type])}>

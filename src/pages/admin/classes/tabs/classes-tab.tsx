@@ -94,8 +94,8 @@ const ClassesTab = ({ organizationId, years, yearId, onYearChange, onViewSection
               <TableHead className="text-center">Level</TableHead>
               <TableHead className="text-center">Sections</TableHead>
               <TableHead className="text-center">Students</TableHead>
-              <TableHead>Status</TableHead>
-              <TableHead className="text-right">Actions</TableHead>
+              <TableHead className="text-center">Status</TableHead>
+              <TableHead className="text-center">Actions</TableHead>
             </TableHeader>
             <TableSkeleton columns={6} />
           </Table>
@@ -114,8 +114,8 @@ const ClassesTab = ({ organizationId, years, yearId, onYearChange, onViewSection
               <TableHead className="text-center">Level</TableHead>
               <TableHead className="text-center">Sections</TableHead>
               <TableHead className="text-center">Students</TableHead>
-              <TableHead>Status</TableHead>
-              <TableHead className="text-right">Actions</TableHead>
+              <TableHead className="text-center">Status</TableHead>
+              <TableHead className="text-center">Actions</TableHead>
             </TableHeader>
             <TableBody>
               {items.map((klass) => (
@@ -124,10 +124,10 @@ const ClassesTab = ({ organizationId, years, yearId, onYearChange, onViewSection
                   <TableCell className="text-center">{klass.numericLevel ?? "-"}</TableCell>
                   <TableCell className="text-center">{klass.sectionCount ?? 0}</TableCell>
                   <TableCell className="text-center">{klass.studentCount ?? 0}</TableCell>
-                  <TableCell>
+                  <TableCell className="text-center">
                     <StatusBadge status={klass.status} />
                   </TableCell>
-                  <TableCell className="text-right">
+                  <TableCell className="text-center">
                     <RowMenu items={menuFor(klass)} />
                   </TableCell>
                 </TableRow>

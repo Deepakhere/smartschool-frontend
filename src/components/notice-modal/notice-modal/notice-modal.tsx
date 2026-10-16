@@ -334,8 +334,6 @@ const NoticeModal = ({
         onClose={onCloseAIPreviewModal}
         notice={formData}
         onDownload={() => {}}
-        organizationName="School Organization"
-        organizationLogo="/logo.png"
       />
     </>
   );

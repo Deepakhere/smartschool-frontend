@@ -135,10 +135,10 @@ const YearsTab = ({ organizationId }: { organizationId: string }) => {
           <Table>
             <TableHeader>
               <TableHead>Year</TableHead>
-              <TableHead>Starts</TableHead>
-              <TableHead>Ends</TableHead>
-              <TableHead>Status</TableHead>
-              <TableHead className="text-right">Actions</TableHead>
+              <TableHead className="text-center">Starts</TableHead>
+              <TableHead className="text-center">Ends</TableHead>
+              <TableHead className="text-center">Status</TableHead>
+              <TableHead className="text-center">Actions</TableHead>
             </TableHeader>
             <TableSkeleton columns={5} />
           </Table>
@@ -154,21 +154,21 @@ const YearsTab = ({ organizationId }: { organizationId: string }) => {
           <Table>
             <TableHeader>
               <TableHead>Year</TableHead>
-              <TableHead>Starts</TableHead>
-              <TableHead>Ends</TableHead>
-              <TableHead>Status</TableHead>
-              <TableHead className="text-right">Actions</TableHead>
+              <TableHead className="text-center">Starts</TableHead>
+              <TableHead className="text-center">Ends</TableHead>
+              <TableHead className="text-center">Status</TableHead>
+              <TableHead className="text-center">Actions</TableHead>
             </TableHeader>
             <TableBody>
               {items.map((year) => (
                 <TableRow key={year.id}>
                   <TableCell className="font-medium text-gray-900">{year.name}</TableCell>
-                  <TableCell>{formatDate(year.startDate)}</TableCell>
-                  <TableCell>{formatDate(year.endDate)}</TableCell>
-                  <TableCell>
+                  <TableCell className="text-center">{formatDate(year.startDate)}</TableCell>
+                  <TableCell className="text-center">{formatDate(year.endDate)}</TableCell>
+                  <TableCell className="text-center">
                     <StatusBadge status={year.isCurrent ? "current" : year.status} />
                   </TableCell>
-                  <TableCell className="text-right">
+                  <TableCell className="text-center">
                     <RowMenu items={menuFor(year)} />
                   </TableCell>
                 </TableRow>

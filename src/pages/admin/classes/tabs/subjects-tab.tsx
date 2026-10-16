@@ -92,10 +92,10 @@ const SubjectsTab = ({ organizationId, years, yearId, onYearChange }: SubjectsTa
           <Table>
             <TableHeader>
               <TableHead>Subject</TableHead>
-              <TableHead>Code</TableHead>
-              <TableHead>Type</TableHead>
-              <TableHead>Status</TableHead>
-              <TableHead className="text-right">Actions</TableHead>
+              <TableHead className="text-center">Code</TableHead>
+              <TableHead className="text-center">Type</TableHead>
+              <TableHead className="text-center">Status</TableHead>
+              <TableHead className="text-center">Actions</TableHead>
             </TableHeader>
             <TableSkeleton columns={5} />
           </Table>
@@ -111,21 +111,21 @@ const SubjectsTab = ({ organizationId, years, yearId, onYearChange }: SubjectsTa
           <Table>
             <TableHeader>
               <TableHead>Subject</TableHead>
-              <TableHead>Code</TableHead>
-              <TableHead>Type</TableHead>
-              <TableHead>Status</TableHead>
-              <TableHead className="text-right">Actions</TableHead>
+              <TableHead className="text-center">Code</TableHead>
+              <TableHead className="text-center">Type</TableHead>
+              <TableHead className="text-center">Status</TableHead>
+              <TableHead className="text-center">Actions</TableHead>
             </TableHeader>
             <TableBody>
               {items.map((subject) => (
                 <TableRow key={subject.id}>
                   <TableCell className="font-medium text-gray-900">{subject.name}</TableCell>
-                  <TableCell>{subject.code}</TableCell>
-                  <TableCell>{TYPE_LABELS[subject.type] ?? subject.type}</TableCell>
-                  <TableCell>
+                  <TableCell className="text-center">{subject.code}</TableCell>
+                  <TableCell className="text-center">{TYPE_LABELS[subject.type] ?? subject.type}</TableCell>
+                  <TableCell className="text-center">
                     <StatusBadge status={subject.status} />
                   </TableCell>
-                  <TableCell className="text-right">
+                  <TableCell className="text-center">
                     <RowMenu items={menuFor(subject)} />
                   </TableCell>
                 </TableRow>

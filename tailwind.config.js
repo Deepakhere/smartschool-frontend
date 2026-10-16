@@ -4,6 +4,10 @@ export default {
   darkMode: "class",
   theme: {
     extend: {
+      // the sidebar's glide: quick start, long soft landing
+      // opening glides out fast and lands softly; closing eases in and out more gently
+      transitionTimingFunction: { glide: "cubic-bezier(0.32, 0.72, 0, 1)", settle: "cubic-bezier(0.65, 0, 0.35, 1)" },
+      transitionDuration: { 350: "350ms", 400: "400ms" },
       colors: {
         // brand accent, now a neutral black/white/gray scale to match the logo.
         // 600 is the solid button/CTA color (near-black); 700 is its hover (a touch lighter).

@@ -2,29 +2,27 @@ import { PrinterIcon, XMarkIcon } from "@heroicons/react/24/outline";
 
 import { Dialog, DialogContent, DialogHeader, DialogBody, DialogTitle } from "../ui/dialog";
 import { ICreateNoticeRequest } from "@/types";
-
-// platform-default letterhead logo for the print view - a school's own uploaded
-// logo (organizationLogo prop) is a separate, unrelated default further below
-const organisationLogo = "/opscul.png";
+import { useTenant } from "@/context/tenant-context";
 
 interface NoticePreviewModalProps {
   isOpen: boolean;
   onClose: () => void;
   notice: ICreateNoticeRequest;
   onDownload?: (url: string, fileName: string) => void;
-  organizationName?: string;
-  organizationLogo?: string;
 }
 
 const NoticePreviewModal = ({
   isOpen,
   onClose,
   notice,
-  // onDownload,
-  organizationName = "School Organization",
-  organizationLogo = "/logo.png",
 }: NoticePreviewModalProps) => {
+  const { organization } = useTenant();
   if (!notice) return null;
+
+  // the school's own letterhead: its uploaded logo, or its initials when it has none
+  const organizationName = organization?.name ?? "";
+  const organizationLogo = organization?.logo?.url;
+  const initials = organizationName.split(/\s+/).filter(Boolean).slice(0, 2).map((word) => word[0].toUpperCase()).join("");
 
   const handlePrint = () => {
     const printContent = document.getElementById("notice-print-content");
@@ -39,6 +37,7 @@ const NoticePreviewModal = ({
                 body { font-family: Arial, sans-serif; padding: 40px; }
                 .header { display: flex; align-items: center; margin-bottom: 30px; }
                 .logo { width: 80px; height: auto; margin-right: 20px; }
+                .initials { width: 56px; height: 56px; margin-right: 20px; border-radius: 8px; background: #171717; color: #fff; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 20px; }
                 .org-name { font-size: 24px; font-weight: bold; }
                 .notice-title { font-size: 20px; font-weight: bold; margin-bottom: 10px; }
                 .notice-meta { color: #666; margin-bottom: 20px; }
@@ -48,7 +47,7 @@ const NoticePreviewModal = ({
             </head>
             <body>
               <div class="header">
-                <img src="${organisationLogo}" class="logo" />
+                ${organizationLogo ? `<img src="${organizationLogo}" class="logo" />` : `<div class="initials">${initials}</div>`}
                 <div class="org-name">${organizationName}</div>
               </div>
               <div class="notice-title">${notice.title}</div>
@@ -78,7 +77,7 @@ const NoticePreviewModal = ({
           <div className="flex items-center gap-1">
             <button
               type="button"
-              className="rounded-md p-1.5 text-gray-400 hover:bg-gray-100 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
+              className="rounded-md p-1.5 text-gray-400 hover:bg-gray-100 hover:text-gray-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500"
               onClick={handlePrint}
             >
               <span className="sr-only">Print</span>
@@ -86,7 +85,7 @@ const NoticePreviewModal = ({
             </button>
             <button
               type="button"
-              className="rounded-md p-1.5 text-gray-400 hover:bg-gray-100 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
+              className="rounded-md p-1.5 text-gray-400 hover:bg-gray-100 hover:text-gray-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500"
               onClick={onClose}
             >
               <span className="sr-only">Close</span>
@@ -99,7 +98,13 @@ const NoticePreviewModal = ({
           <div id="notice-print-content" className="p-4 sm:p-6">
             {/* Organization Logo and Name */}
             <div className="mb-8 flex items-center border-b border-gray-200 pb-4">
-              <img src={organizationLogo} alt="Organization Logo" className="mr-4 h-12 w-auto" />
+              {organizationLogo ? (
+                <img src={organizationLogo} alt={organizationName} className="mr-4 h-12 w-auto max-w-[8rem] object-contain" />
+              ) : (
+                <div className="mr-4 flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-primary-600 text-base font-semibold text-white">
+                  {initials}
+                </div>
+              )}
               <h2 className="text-xl font-bold text-gray-800">{organizationName}</h2>
             </div>
 

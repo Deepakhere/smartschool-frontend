@@ -87,11 +87,11 @@ const AssignmentsTab = ({ organizationId, yearId }: { organizationId: string; ye
           <Table>
             <TableHeader>
               <TableHead>Teacher</TableHead>
-              <TableHead>Class</TableHead>
-              <TableHead>Section</TableHead>
-              <TableHead>Subject</TableHead>
-              <TableHead>Role</TableHead>
-              <TableHead className="text-right">Actions</TableHead>
+              <TableHead className="text-center">Class</TableHead>
+              <TableHead className="text-center">Section</TableHead>
+              <TableHead className="text-center">Subject</TableHead>
+              <TableHead className="text-center">Role</TableHead>
+              <TableHead className="text-center">Actions</TableHead>
             </TableHeader>
             <TableSkeleton columns={6} />
           </Table>
@@ -107,21 +107,21 @@ const AssignmentsTab = ({ organizationId, yearId }: { organizationId: string; ye
           <Table>
             <TableHeader>
               <TableHead>Teacher</TableHead>
-              <TableHead>Class</TableHead>
-              <TableHead>Section</TableHead>
-              <TableHead>Subject</TableHead>
-              <TableHead>Role</TableHead>
-              <TableHead className="text-right">Actions</TableHead>
+              <TableHead className="text-center">Class</TableHead>
+              <TableHead className="text-center">Section</TableHead>
+              <TableHead className="text-center">Subject</TableHead>
+              <TableHead className="text-center">Role</TableHead>
+              <TableHead className="text-center">Actions</TableHead>
             </TableHeader>
             <TableBody>
               {items.map((item) => (
                 <TableRow key={item.id}>
                   <TableCell className="font-medium text-gray-900">{item.teacherUserId?.name}</TableCell>
-                  <TableCell>{item.classId?.name}</TableCell>
-                  <TableCell>{item.sectionId?.name}</TableCell>
-                  <TableCell>{item.subjectId?.name || "-"}</TableCell>
-                  <TableCell>{ROLE_LABELS[item.assignmentRole] ?? item.assignmentRole}</TableCell>
-                  <TableCell className="text-right">
+                  <TableCell className="text-center">{item.classId?.name}</TableCell>
+                  <TableCell className="text-center">{item.sectionId?.name}</TableCell>
+                  <TableCell className="text-center">{item.subjectId?.name || "-"}</TableCell>
+                  <TableCell className="text-center">{ROLE_LABELS[item.assignmentRole] ?? item.assignmentRole}</TableCell>
+                  <TableCell className="text-center">
                     <RowMenu
                       items={[{ label: "Remove assignment", onSelect: () => setToRemove(item), danger: true }]}
                     />
