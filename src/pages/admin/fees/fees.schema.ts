@@ -36,7 +36,19 @@ export const feeStructureSchema = z
     if (itemsTotal !== installmentsTotal) {
       ctx.addIssue({ code: "custom", path: ["installments", "root"], message: "Installments must add up to the items total." });
     }
+    // payments are recorded against an instalment's label, so two can't share one
+    const labels = value.installments.map((row) => row.label.trim().toLowerCase());
+    if (new Set(labels).size !== labels.length) {
+      ctx.addIssue({ code: "custom", path: ["installments", "root"], message: "Each installment needs its own label." });
+    }
   });
+
+export const feeHeadEditSchema = z.object({
+  name: z.string().trim().min(1, "Enter a name."),
+  category: z.string().min(1),
+  isRefundable: z.boolean(),
+});
+export type FeeHeadEditValues = z.infer<typeof feeHeadEditSchema>;
 export type FeeStructureFormValues = z.infer<typeof feeStructureSchema>;
 export const defaultFeeStructureValues = (): FeeStructureFormValues => ({
   name: "",

@@ -1,3 +1,4 @@
+import type { AccountRole } from "@/types";
 import { createContext, useContext, useState, ReactNode, useEffect } from "react";
 import Cookies from "js-cookie";
 import { useGetUserDetails } from "./service";
@@ -12,7 +13,7 @@ type User = {
   name?: string;
   id?: string;
   email?: string;
-  role?: "admin" | "parent" | "teacher";
+  role?: AccountRole;
   phoneNumber?: string;
   isPlatformAdmin?: boolean;
   permissions?: {

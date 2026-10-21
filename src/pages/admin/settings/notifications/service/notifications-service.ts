@@ -6,10 +6,15 @@ import { APIS_ROUTES, API_QUERY_KEY, API_MUTATION_KEY } from "@/utils";
 
 const base = (organizationId: string) => `${APIS_ROUTES.ORGANIZATION_SERVICE}/${organizationId}`;
 
+export interface NotificationSettings {
+  emailNotificationsEnabled: boolean;
+  feeRemindersEnabled: boolean;
+}
+
 interface IEmailNotificationLogResponse {
   items: IEmailLog[];
   total_count: number;
-  settings: { emailNotificationsEnabled: boolean };
+  settings: NotificationSettings;
 }
 
 export const useGetEmailNotificationLog = (organizationId: string) =>
@@ -26,10 +31,10 @@ export const useGetEmailNotificationLog = (organizationId: string) =>
 
 export const useUpdateEmailNotificationSettings = (organizationId: string) => {
   const queryClient = useQueryClient();
-  return useMutation<void, IAPIError, boolean>({
+  return useMutation<void, IAPIError, Partial<NotificationSettings>>({
     mutationKey: [API_MUTATION_KEY.UPDATE_EMAIL_NOTIFICATION_SETTINGS],
-    mutationFn: async (emailNotificationsEnabled) => {
-      await apiClient.patch(`${base(organizationId)}/email-notifications/settings`, { emailNotificationsEnabled });
+    mutationFn: async (changes) => {
+      await apiClient.patch(`${base(organizationId)}/email-notifications/settings`, changes);
     },
     onSuccess: () =>
       queryClient.invalidateQueries({ queryKey: [API_QUERY_KEY.GET_EMAIL_NOTIFICATION_LOG, organizationId] }),

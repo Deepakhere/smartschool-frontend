@@ -215,6 +215,29 @@ const router = createBrowserRouter([
       },
     ],
   },
+  // the fee desk: fees and their own profile, nothing else
+  {
+    path: "/:organizationId/accountant",
+    element: (
+      <ProtectedRoute role="accountant">
+        <Layout />
+      </ProtectedRoute>
+    ),
+    children: [
+      {
+        index: true,
+        element: <Navigate to="fees" replace />,
+      },
+      {
+        path: "fees",
+        element: <AdminFees />,
+      },
+      {
+        path: "profile",
+        element: <Profile />,
+      },
+    ],
+  },
   {
     path: "/:organizationId/parent",
     element: (

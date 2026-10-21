@@ -18,6 +18,20 @@ import {
   TableCellsIcon,
 } from "@heroicons/react/24/outline";
 import { useCurrentRole } from "@/context/tenant-context";
+import type { ComponentType, SVGProps } from "react";
+
+export interface SidebarItem {
+  name: string;
+  hint: string;
+  href: string;
+  icon: ComponentType<SVGProps<SVGSVGElement>>;
+  current: boolean;
+}
+
+export interface SidebarSection {
+  label?: string;
+  items: SidebarItem[];
+}
 
 export const useSidebarController = () => {
   const { organizationId } = useParams();
@@ -29,7 +43,7 @@ export const useSidebarController = () => {
     return location.pathname.includes(path);
   };
 
-  const adminSections = [
+  const adminSections: SidebarSection[] = [
     {
       items: [{ name: "Dashboard", hint: "Your school at a glance", href: `/${organizationId}/admin/dashboard`, icon: HomeIcon, current: isActive("/dashboard") }],
     },
@@ -66,7 +80,7 @@ export const useSidebarController = () => {
     },
   ];
 
-  const parentSections = [
+  const parentSections: SidebarSection[] = [
     {
       items: [{ name: "Dashboard", hint: "Your child's day at a glance", href: `/${organizationId}/parent/dashboard`, icon: HomeIcon, current: isActive("/dashboard") }],
     },
@@ -89,7 +103,7 @@ export const useSidebarController = () => {
     },
   ];
 
-  const teacherSections = [
+  const teacherSections: SidebarSection[] = [
     {
       items: [{ name: "Dashboard", hint: "Your classes at a glance", href: `/${organizationId}/teacher/dashboard`, icon: HomeIcon, current: isActive("/dashboard") }],
     },
@@ -107,8 +121,14 @@ export const useSidebarController = () => {
     },
   ];
 
-  const sections =
-    role === "teacher" ? teacherSections : role === "parent" ? parentSections : adminSections;
+  const accountantSections: SidebarSection[] = [
+    {
+      items: [{ name: "Fees", hint: "Collect fees, receipts and reports", href: `/${organizationId}/accountant/fees`, icon: CurrencyDollarIcon, current: isActive("/fees") }],
+    },
+  ];
+
+  const sectionsByRole = { teacher: teacherSections, parent: parentSections, accountant: accountantSections, admin: adminSections };
+  const sections = sectionsByRole[role ?? "admin"];
 
   return {
     sections,

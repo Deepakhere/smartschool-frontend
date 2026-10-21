@@ -1,5 +1,7 @@
-export type UserRole = "admin" | "teacher" | "parent";
+import type { AccountRole } from "@/types";
 
-// the one place that knows where each role lands after sign-in
+export type UserRole = AccountRole;
+
+// the one place that knows where each role lands after sign-in; the fee desk opens on fees, not a dashboard
 export const homePathFor = (organizationId: string | undefined, role: UserRole) =>
-  organizationId ? `/${organizationId}/${role}/dashboard` : "/organization";
+  organizationId ? `/${organizationId}/${role}/${role === "accountant" ? "fees" : "dashboard"}` : "/organization";

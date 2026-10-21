@@ -53,7 +53,6 @@ const useForgotPasswordController = () => {
       return;
     }
     setIsCaptchaLoaded(true);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const onCaptchaLoaded = (value: string | null) => {

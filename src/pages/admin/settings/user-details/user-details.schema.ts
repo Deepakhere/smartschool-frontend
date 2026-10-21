@@ -3,7 +3,7 @@ import { z } from "zod";
 export const userFormSchema = z.object({
   fullname: z.string().trim().min(1, "Full name is required."),
   email: z.string().trim().min(1, "Email is required.").email("Enter a valid email address."),
-  role: z.enum(["admin", "parent", "teacher"]),
+  role: z.enum(["admin", "parent", "teacher", "accountant"]),
   permissions: z.object({
     canRead: z.boolean(),
     canCreate: z.boolean(),

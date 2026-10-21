@@ -1,7 +1,7 @@
 import { keepPreviousData, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import apiClient from "@/config";
-import { IAPIError, IAxiosResponse, IFeeHead, IFeeStructure, IStudentFeeSummary, IPayment } from "@/types";
+import { IAPIError, IAxiosResponse, IFeeHead, IFeeStructure, IStudentFeeSummary, IPayment, IFeeDefaultersResult, IFeeCollectionSummary } from "@/types";
 import { APIS_ROUTES, API_QUERY_KEY, API_MUTATION_KEY } from "@/utils";
 import { useIdempotencyKey } from "@/hooks";
 
@@ -72,8 +72,62 @@ export const useAssignFeeStructure = (organizationId: string) => {
       );
       return result.data.Data;
     },
-    onSuccess: () =>
-      queryClient.invalidateQueries({ queryKey: [API_QUERY_KEY.GET_STUDENT_FEE_SUMMARY, organizationId] }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [API_QUERY_KEY.GET_STUDENT_FEE_SUMMARY, organizationId] });
+      queryClient.invalidateQueries({ queryKey: [API_QUERY_KEY.GET_FEE_STRUCTURES, organizationId] });
+      queryClient.invalidateQueries({ queryKey: [API_QUERY_KEY.GET_FEE_DEFAULTERS, organizationId] });
+    },
+  });
+};
+
+export interface FeeStructureUpdateResult {
+  newVersion: boolean;
+  moved_count: number;
+  kept_count: number;
+}
+
+export const useUpdateFeeStructure = (organizationId: string) => {
+  const queryClient = useQueryClient();
+  return useMutation<
+    FeeStructureUpdateResult,
+    IAPIError,
+    { feeStructureId: string; value: Omit<ICreateFeeStructurePayload, "academicYearId"> & { applyToUnpaid: boolean } }
+  >({
+    mutationKey: [API_MUTATION_KEY.UPDATE_FEE_STRUCTURE],
+    mutationFn: async ({ feeStructureId, value }) => {
+      const result = await apiClient.put<null, IAxiosResponse<FeeStructureUpdateResult>>(
+        `${base(organizationId)}/fee-structure/${feeStructureId}`,
+        value
+      );
+      return result.data.Data;
+    },
+    onSuccess: () => {
+      for (const key of [API_QUERY_KEY.GET_FEE_STRUCTURES, API_QUERY_KEY.GET_STUDENT_FEE_SUMMARY, API_QUERY_KEY.GET_FEE_DEFAULTERS]) {
+        queryClient.invalidateQueries({ queryKey: [key, organizationId] });
+      }
+    },
+  });
+};
+
+export const useUpdateFeeHead = (organizationId: string) => {
+  const queryClient = useQueryClient();
+  return useMutation<void, IAPIError, { feeHeadId: string; value: { name: string; category: string; isRefundable: boolean } }>({
+    mutationKey: [API_MUTATION_KEY.UPDATE_FEE_HEAD],
+    mutationFn: async ({ feeHeadId, value }) => {
+      await apiClient.patch(`${base(organizationId)}/fee-head/${feeHeadId}`, value);
+    },
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: [API_QUERY_KEY.GET_FEE_HEADS, organizationId] }),
+  });
+};
+
+export const useDeactivateFeeHead = (organizationId: string) => {
+  const queryClient = useQueryClient();
+  return useMutation<void, IAPIError, string>({
+    mutationKey: [API_MUTATION_KEY.DEACTIVATE_FEE_HEAD],
+    mutationFn: async (feeHeadId) => {
+      await apiClient.delete(`${base(organizationId)}/fee-head/${feeHeadId}`);
+    },
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: [API_QUERY_KEY.GET_FEE_HEADS, organizationId] }),
   });
 };
 
@@ -124,6 +178,8 @@ export const useRecordPayment = (organizationId: string) => {
       idempotency.reset();
       queryClient.invalidateQueries({ queryKey: [API_QUERY_KEY.GET_STUDENT_FEE_SUMMARY, organizationId] });
       queryClient.invalidateQueries({ queryKey: [API_QUERY_KEY.GET_PAYMENT_LEDGER, organizationId] });
+      queryClient.invalidateQueries({ queryKey: [API_QUERY_KEY.GET_FEE_DEFAULTERS, organizationId] });
+      queryClient.invalidateQueries({ queryKey: [API_QUERY_KEY.GET_FEE_COLLECTIONS, organizationId] });
     },
   });
 };
@@ -144,6 +200,8 @@ export const useReversePayment = (organizationId: string) => {
       idempotency.reset();
       queryClient.invalidateQueries({ queryKey: [API_QUERY_KEY.GET_STUDENT_FEE_SUMMARY, organizationId] });
       queryClient.invalidateQueries({ queryKey: [API_QUERY_KEY.GET_PAYMENT_LEDGER, organizationId] });
+      queryClient.invalidateQueries({ queryKey: [API_QUERY_KEY.GET_FEE_DEFAULTERS, organizationId] });
+      queryClient.invalidateQueries({ queryKey: [API_QUERY_KEY.GET_FEE_COLLECTIONS, organizationId] });
     },
   });
 };
@@ -221,3 +279,50 @@ export const useGrantConcession = (organizationId: string) => {
     },
   });
 };
+
+export const DEFAULTERS_PAGE_SIZE = 50;
+
+export interface DefaulterFilters {
+  academicYearId?: string;
+  classId?: string;
+  sectionId?: string;
+  asOf?: string;
+}
+
+const fetchDefaultersPage = async (organizationId: string, filters: DefaulterFilters, page: number, limit: number) => {
+  const result = await apiClient.get<null, IAxiosResponse<IFeeDefaultersResult>>(`${base(organizationId)}/report/defaulters`, {
+    params: { ...filters, page, limit },
+  });
+  return result.data.Data;
+};
+
+export const useGetFeeDefaulters = (organizationId: string, filters: DefaulterFilters, page: number) =>
+  useQuery<IFeeDefaultersResult, IAPIError>({
+    queryKey: [API_QUERY_KEY.GET_FEE_DEFAULTERS, organizationId, filters, page],
+    queryFn: () => fetchDefaultersPage(organizationId, filters, page, DEFAULTERS_PAGE_SIZE),
+    enabled: !!organizationId && !!filters.academicYearId,
+    placeholderData: keepPreviousData,
+  });
+
+// every defaulter for the current filters, page by page, for the export
+export const fetchAllDefaulters = async (organizationId: string, filters: DefaulterFilters) => {
+  const all: IFeeDefaultersResult["items"] = [];
+  for (let page = 1; ; page++) {
+    const { items, total_count } = await fetchDefaultersPage(organizationId, filters, page, 100);
+    all.push(...items);
+    if (!items.length || all.length >= total_count) return all;
+  }
+};
+
+export const useGetFeeCollections = (organizationId: string, from: string, to: string) =>
+  useQuery<IFeeCollectionSummary, IAPIError>({
+    queryKey: [API_QUERY_KEY.GET_FEE_COLLECTIONS, organizationId, from, to],
+    queryFn: async () => {
+      const result = await apiClient.get<null, IAxiosResponse<{ item: IFeeCollectionSummary }>>(`${base(organizationId)}/report/collections`, {
+        params: { from, to },
+      });
+      return result.data.Data.item;
+    },
+    enabled: !!organizationId && !!from && !!to && from <= to,
+    placeholderData: keepPreviousData,
+  });

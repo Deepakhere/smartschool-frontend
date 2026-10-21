@@ -1,3 +1,6 @@
+// every role a person can hold in a school, as the web app names them
+export type AccountRole = "admin" | "parent" | "teacher" | "accountant";
+
 import { ReactNode } from "react";
 import { UseFormReturn } from "react-hook-form";
 
@@ -173,7 +176,7 @@ export interface ILoginResponse {
   token: string;
   refreshToken?: string;
   name: string;
-  role: "admin" | "parent" | "teacher";
+  role: AccountRole;
   isPlatformAdmin?: boolean;
   permissions: {
     canRead: boolean;
@@ -194,7 +197,7 @@ export interface IAddUser {
   id: number;
   username: string;
   email: string;
-  role: "admin" | "parent" | "teacher";
+  role: AccountRole;
 }
 
 export interface IAddUserValue {
@@ -226,7 +229,7 @@ export interface IAllUserDetails {
 export interface FormData {
   fullname: string;
   email: string;
-  role: "admin" | "parent" | "teacher";
+  role: AccountRole;
   permissions: {
     canRead: boolean;
     canCreate: boolean;
@@ -236,7 +239,7 @@ export interface FormData {
 }
 
 export interface RoleOption {
-  value: "admin" | "parent" | "teacher";
+  value: AccountRole;
   label: string;
   description: string;
   icon: ReactNode;
@@ -281,7 +284,7 @@ export interface IUpdateUserValue {
   id: string;
   name: string;
   email: string;
-  role: "admin" | "parent" | "teacher";
+  role: AccountRole;
   permissions: {
     canRead: boolean;
     canCreate: boolean;
@@ -306,7 +309,7 @@ export interface IUserDetailResponse {
   id: string;
   email: string;
   token: string;
-  role: "admin" | "parent" | "teacher";
+  role: AccountRole;
   isPlatformAdmin?: boolean;
   permissions: {
     canRead: boolean;
@@ -320,7 +323,7 @@ export interface IUserDetailResponse {
 }
 
 export interface IRoleOptionDropDown {
-  value: "all" | "admin" | "parent" | "teacher";
+  value: "all" | AccountRole;
   label: string;
   description: string;
   icon: React.ReactNode;
@@ -565,6 +568,8 @@ export interface IFeeStructure {
   installments: { label: string; dueDate: string; amount: number }[];
   version: number;
   status: string;
+  // active students in its classes who have no fees for its year yet
+  unassignedCount: number;
 }
 
 export interface IFeeInstallmentBalance {
@@ -827,4 +832,39 @@ export interface ITimetableSlot {
   teacherUserId: { id: string; name: string; email: string } | null;
   sectionId: { id: string; name: string } | null;
   classId: { id: string; name: string } | null;
+}
+
+// fee desk reports (amounts in paise)
+export interface IFeeDefaulter {
+  studentId: string;
+  studentFeeId: string;
+  overdueAmount: number;
+  outstandingAmount: number;
+  overdueInstallments: { label: string; dueDate: string; balance: number }[];
+  oldestDueDate: string;
+  daysOverdue: number;
+  student: {
+    id: string;
+    name: string;
+    admissionNumber: string;
+    className: string;
+    sectionName: string;
+    guardian: { name: string; phoneNumber: string; email: string } | null;
+  } | null;
+}
+
+export interface IFeeDefaultersResult {
+  asOf: string;
+  summary: { students: number; overdueAmount: number; outstandingAmount: number };
+  items: IFeeDefaulter[];
+  total_count: number;
+}
+
+export interface IFeeCollectionSummary {
+  from: string;
+  to: string;
+  totals: { received: number; reversed: number; net: number; payments: number; reversals: number };
+  byDay: { date: string; amount: number; count: number }[];
+  byMethod: { method: string; amount: number; count: number }[];
+  byClass: { classId: string | null; className: string; amount: number; students: number }[];
 }

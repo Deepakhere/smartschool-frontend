@@ -13,7 +13,7 @@ const statusColors: Record<string, string> = {
 };
 
 const Notifications = () => {
-  const { t, emailNotificationsEnabled, emailLog, isLoading, isUpdating, toggleEmailNotifications } =
+  const { t, emailNotificationsEnabled, feeRemindersEnabled, emailLog, isLoading, isUpdating, toggleEmailNotifications, toggleFeeReminders } =
     useNotificationsController();
 
   return (
@@ -29,6 +29,16 @@ const Notifications = () => {
             </p>
           </div>
           <Switch checked={emailNotificationsEnabled} disabled={isUpdating} onCheckedChange={toggleEmailNotifications} />
+        </div>
+        <div className="mt-6 flex items-center justify-between border-t border-gray-100 pt-6">
+          <div>
+            <p className="text-sm font-medium text-gray-900">Fee due reminders</p>
+            <p className="text-sm text-gray-500 mt-1">
+              Remind parents in the app three days before an instalment is due, then once a week while it stays unpaid.
+              Reminders are emailed too while email notifications are on.
+            </p>
+          </div>
+          <Switch checked={feeRemindersEnabled} disabled={isUpdating} onCheckedChange={toggleFeeReminders} />
         </div>
       </div>
 

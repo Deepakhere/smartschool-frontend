@@ -10,7 +10,8 @@ export const exportToCsv = (filename: string, rows: Record<string, string | numb
   };
 
   const lines = [headers.join(","), ...rows.map((row) => headers.map((h) => escapeCell(row[h])).join(","))];
-  const blob = new Blob([lines.join("\n")], { type: "text/csv;charset=utf-8;" });
+  // the byte-order mark makes Excel read the file as UTF-8, so the rupee sign and Indian names show correctly
+  const blob = new Blob(["\uFEFF" + lines.join("\n")], { type: "text/csv;charset=utf-8;" });
   const url = window.URL.createObjectURL(blob);
   const link = document.createElement("a");
   link.href = url;
