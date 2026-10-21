@@ -7,6 +7,7 @@ import ReCAPTCHA from "react-google-recaptcha";
 import { useForgotPassword } from "../service";
 import useError from "@/hooks/error/error";
 import { forgotPasswordSchema, ForgotPasswordFormValues } from "./forgot-password.schema";
+import { GOOGLE_CAPTCHA_KEY } from "@/utils";
 
 const useForgotPasswordController = () => {
   const { t } = useTranslation();
@@ -46,12 +47,31 @@ const useForgotPasswordController = () => {
   });
 
   useEffect(() => {
+    // without a site key the widget can't render, so say so instead of leaving the button dimmed
+    if (!GOOGLE_CAPTCHA_KEY) {
+      onCaptchaErrored();
+      return;
+    }
     setIsCaptchaLoaded(true);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const onCaptchaLoaded = (value: string | null) => {
     setCaptchaToken(value);
     setError(null);
+  };
+
+  // Google refused or couldn't load the check (wrong domain for the key, blocked script, offline)
+  const onCaptchaErrored = () => {
+    setCaptchaToken("");
+    setDisplayError(true);
+    setError("The security check couldn't load. Refresh the page, or try again in a few minutes.");
+  };
+
+  const onCaptchaExpired = () => {
+    setCaptchaToken("");
+    setDisplayError(true);
+    setError("The security check expired. Tick it again to continue.");
   };
 
   useEffect(() => {
@@ -88,6 +108,8 @@ const useForgotPasswordController = () => {
     isLoading: forgotPassword.isPending,
     isRequestCompleted: forgotPassword.isSuccess,
     onCaptchaLoaded,
+    onCaptchaErrored,
+    onCaptchaExpired,
     onSubmit,
   };
 };

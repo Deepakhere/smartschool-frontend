@@ -149,7 +149,8 @@ export const API_MUTATION_KEY = {
   DECIDE_LEAVE_REQUEST: "decide-leave-request",
 };
 
-export const GOOGLE_CAPTCHA_KEY = "6LeCtSorAAAAAN38EwKA3qBHzEWYsx6is3RT8eSa";
+// reCAPTCHA site key from VITE_RECAPTCHA_SITE_KEY; its Google settings must list every domain the app runs on
+export const GOOGLE_CAPTCHA_KEY = import.meta.env.VITE_RECAPTCHA_SITE_KEY ?? "";
 
 export const EMAIL_REGEX_PATTERN = new RegExp(/^[a-zA-Z0-9._+-]+@([a-zA-Z0-9.-]+\.[a-zA-Z]{2,10})$/i);
 

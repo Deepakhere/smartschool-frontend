@@ -25,6 +25,8 @@ const ForgotPassword: React.FC = () => {
     captchaToken,
     onSubmit,
     onCaptchaLoaded,
+    onCaptchaErrored,
+    onCaptchaExpired,
   } = useForgotPasswordController();
 
   if (isRequestCompleted) {
@@ -65,7 +67,13 @@ const ForgotPassword: React.FC = () => {
 
           {isCaptchaLoaded && (
             <div className="flex justify-start">
-              <ReCAPTCHA ref={recaptchaRef} sitekey={GOOGLE_CAPTCHA_KEY} onChange={onCaptchaLoaded} />
+              <ReCAPTCHA
+                ref={recaptchaRef}
+                sitekey={GOOGLE_CAPTCHA_KEY}
+                onChange={onCaptchaLoaded}
+                onErrored={onCaptchaErrored}
+                onExpired={onCaptchaExpired}
+              />
             </div>
           )}
 
