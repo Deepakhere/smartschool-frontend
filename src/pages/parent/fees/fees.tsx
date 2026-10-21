@@ -10,10 +10,13 @@ import SectionHeader from "@/components/section-header";
 import { downloadFeeReceipt, useEmailFeeReceipt } from "@/pages/admin/fees/service/fees-service";
 import useParentFeesController from "./fees-controller";
 
-import { formatMoney } from "@/utils";
+import { formatMoney, paymentMethodLabel } from "@/utils";
+import { Button } from "@/components/ui/button";
 
 const ParentFees = () => {
-  const { fees, isLoading, loadError, retryLoad } = useParentFeesController();
+  const { fees, isLoading, loadError, retryLoad, canPayOnline, payOnline, paying } = useParentFeesController();
+  const isPaying = (studentFeeId: string, label?: string) =>
+    paying?.studentFeeId === studentFeeId && (label ? paying.installmentLabels?.[0] === label : !paying.installmentLabels);
   const { organizationId } = useParams();
   const emailFeeReceipt = useEmailFeeReceipt(organizationId || "");
 
@@ -50,13 +53,20 @@ const ParentFees = () => {
             <div key={fee.studentFeeId} className="bg-white rounded-lg shadow p-6">
               <div className="flex justify-between items-center mb-4">
                 <h2 className="text-lg font-semibold text-gray-900">{fee.studentName}</h2>
-                <span
-                  className={`px-3 py-1 rounded-full text-xs font-medium ${
-                    fee.totalBalance > 0 ? "bg-yellow-100 text-yellow-800" : "bg-green-100 text-green-800"
-                  }`}
-                >
-                  {fee.totalBalance > 0 ? `Due: ${formatMoney(fee.totalBalance)}` : "Fully paid"}
-                </span>
+                <div className="flex items-center gap-3">
+                  <span
+                    className={`px-3 py-1 rounded-full text-xs font-medium ${
+                      fee.totalBalance > 0 ? "bg-yellow-100 text-yellow-800" : "bg-green-100 text-green-800"
+                    }`}
+                  >
+                    {fee.totalBalance > 0 ? `Due: ${formatMoney(fee.totalBalance)}` : "Fully paid"}
+                  </span>
+                  {canPayOnline && fee.totalBalance > 0 && (
+                    <Button size="sm" loading={isPaying(fee.studentFeeId)} disabled={!!paying} onClick={() => payOnline(fee.studentFeeId)}>
+                      Pay {formatMoney(fee.totalBalance)} now
+                    </Button>
+                  )}
+                </div>
               </div>
 
               <div className="mb-4">
@@ -77,6 +87,18 @@ const ParentFees = () => {
                         <TableCell className="text-center">{formatMoney(i.paidAmount)}</TableCell>
                         <TableCell className={`text-center ${i.balance > 0 ? "text-red-600" : "text-green-600"}`}>
                           {formatMoney(i.balance)}
+                          {canPayOnline && i.balance > 0 && (
+                            <Button
+                              variant="link"
+                              size="sm"
+                              className="ml-2"
+                              loading={isPaying(fee.studentFeeId, i.label)}
+                              disabled={!!paying}
+                              onClick={() => payOnline(fee.studentFeeId, [i.label])}
+                            >
+                              Pay
+                            </Button>
+                          )}
                         </TableCell>
                       </TableRow>
                     ))}
@@ -102,7 +124,7 @@ const ParentFees = () => {
                           <TableRow key={p.id}>
                             <TableCell className="font-medium text-gray-900">{p.receiptNumber}</TableCell>
                             <TableCell className="text-center">{formatMoney(p.amount)}</TableCell>
-                            <TableCell className="text-center capitalize">{p.method.replace("_", " ")}</TableCell>
+                            <TableCell className="text-center">{paymentMethodLabel(p.method)}</TableCell>
                             <TableCell className="text-center">{new Date(p.paidAt).toLocaleDateString()}</TableCell>
                             <TableCell className="text-center">
                               <div className="flex gap-3 justify-center">

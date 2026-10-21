@@ -4,6 +4,7 @@ import UserManagement from "./user-management";
 import AdminProfile from "./profile";
 import UserDetails from "./user-details";
 import Notifications from "./notifications";
+import OnlinePayments from "./online-payments";
 
 const Settings = () => {
   return (
@@ -13,6 +14,7 @@ const Settings = () => {
         <Route path="profile" element={<AdminProfile />} />
         <Route path="add-user" element={<UserDetails />} />
         <Route path="notifications" element={<Notifications />} />
+        <Route path="online-payments" element={<OnlinePayments />} />
       </Route>
     </Routes>
   );

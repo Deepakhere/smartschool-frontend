@@ -6,18 +6,10 @@ import Spinner from "@/components/spinner";
 import { Table, TableBody, TableCell, TableEmpty, TableHead, TableHeader, TableRow } from "@/components/table";
 import { Button } from "@/components/ui/button";
 import { Card, CardTitle } from "@/components/ui/card";
-import { exportToCsv, formatMoney } from "@/utils";
+import { exportToCsv, formatMoney, paymentMethodLabel } from "@/utils";
 import { useGetFeeCollections } from "../service/fees-service";
 
 const todayInIndia = () => new Date(Date.now() + 5.5 * 3600_000).toISOString().slice(0, 10);
-const METHOD_LABELS: Record<string, string> = {
-  cash: "Cash",
-  cheque: "Cheque",
-  bank_transfer: "Bank transfer",
-  upi: "UPI",
-  card: "Card",
-  other: "Other",
-};
 const formatDay = (iso: string) =>
   new Intl.DateTimeFormat("en-IN", { weekday: "short", day: "numeric", month: "short" }).format(new Date(`${iso}T00:00:00`));
 
@@ -65,7 +57,7 @@ const CollectionsTab = ({ organizationId }: { organizationId: string }) => {
     if (!data) return;
     exportToCsv(`fee-collections-${from}-to-${to}`, [
       ...data.byDay.map((d) => ({ breakdown: "Day", item: d.date, amount_rupees: d.amount / 100, entries: d.count })),
-      ...data.byMethod.map((m) => ({ breakdown: "Method", item: METHOD_LABELS[m.method] ?? m.method, amount_rupees: m.amount / 100, entries: m.count })),
+      ...data.byMethod.map((m) => ({ breakdown: "Method", item: paymentMethodLabel(m.method), amount_rupees: m.amount / 100, entries: m.count })),
       ...data.byClass.map((c) => ({ breakdown: "Class", item: c.className, amount_rupees: c.amount / 100, entries: c.students })),
     ]);
   };
@@ -102,7 +94,7 @@ const CollectionsTab = ({ organizationId }: { organizationId: string }) => {
             <Breakdown
               title="By payment method"
               columns={["Method", "Amount", "Entries"]}
-              rows={data.byMethod.map((m) => [METHOD_LABELS[m.method] ?? m.method, formatMoney(m.amount), String(m.count)])}
+              rows={data.byMethod.map((m) => [paymentMethodLabel(m.method), formatMoney(m.amount), String(m.count)])}
             />
             <Breakdown
               title="By class"

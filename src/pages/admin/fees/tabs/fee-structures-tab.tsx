@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useFieldArray, useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import toast from "react-hot-toast";
@@ -10,8 +11,10 @@ import { Button } from "@/components/ui/button";
 import { Card, CardTitle } from "@/components/ui/card";
 import { Form } from "@/components/ui/form";
 import { Label } from "@/components/ui/label";
+import { Checkbox } from "@/components/ui/checkbox";
+import RowMenu from "@/components/row-menu";
 import { useError } from "@/hooks";
-import { SelectOption } from "@/types";
+import { IFeeStructure, SelectOption } from "@/types";
 import { formatMoney, toPaise } from "@/utils";
 import { useGetAcademicYears, useGetClasses, useGetYearSections } from "../../classes/service/academics-service";
 import { defaultFeeStructureValues, feeStructureSchema, FeeStructureFormValues } from "../fees.schema";
@@ -20,6 +23,7 @@ import {
   useCreateFeeStructure,
   useGetFeeHeads,
   useGetFeeStructures,
+  useUpdateFeeStructure,
 } from "../service/fees-service";
 
 const sumPaise = (rows: { amount: string }[] = []) => rows.reduce((sum, row) => sum + (toPaise(row.amount || 0) || 0), 0);
@@ -33,8 +37,13 @@ const FeeStructuresTab = ({ organizationId }: { organizationId: string }) => {
   const structures = useGetFeeStructures(organizationId);
   const createStructure = useCreateFeeStructure(organizationId);
   const assignStructure = useAssignFeeStructure(organizationId);
+  const updateStructure = useUpdateFeeStructure(organizationId);
   useError({ mutation: createStructure });
   useError({ mutation: assignStructure });
+  useError({ mutation: updateStructure });
+  // the structure being edited in the form above, if any
+  const [editing, setEditing] = useState<IFeeStructure | null>(null);
+  const [applyToUnpaid, setApplyToUnpaid] = useState(false);
 
   const form = useForm<FeeStructureFormValues>({
     resolver: zodResolver(feeStructureSchema),
@@ -72,20 +81,59 @@ const FeeStructuresTab = ({ organizationId }: { organizationId: string }) => {
   const installmentsTotal = sumPaise(installmentRows);
   const installmentsError = form.formState.errors.installments?.root?.message;
 
+  const startEdit = (structure: IFeeStructure) => {
+    form.reset({
+      name: structure.name,
+      classIds: structure.classIds.map((klass) => klass.id),
+      sectionIds: structure.sectionIds.map((section) => section.id),
+      items: structure.items.map((item) => ({ feeHeadId: item.feeHeadId?.id ?? "", amount: String(item.amount / 100) })),
+      installments: structure.installments.map((row) => ({ label: row.label, dueDate: row.dueDate.slice(0, 10), amount: String(row.amount / 100) })),
+      lateFeeAmount: structure.lateFee?.amount ? String(structure.lateFee.amount / 100) : "",
+      lateFeeGraceDays: String(structure.lateFee?.graceDays ?? 7),
+    });
+    setApplyToUnpaid(false);
+    setEditing(structure);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  const stopEdit = () => {
+    setEditing(null);
+    form.reset(defaultFeeStructureValues());
+  };
+
   const onSubmit = form.handleSubmit((values) => {
     if (!currentYearId) {
       toast.error("Set a current academic year first (Academics page).");
       return;
     }
+    const body = {
+      name: values.name,
+      classIds: values.classIds,
+      sectionIds: values.sectionIds,
+      items: values.items.map((item) => ({ feeHeadId: item.feeHeadId, amount: toPaise(item.amount) })),
+      installments: values.installments.map((row) => ({ label: row.label, dueDate: row.dueDate, amount: toPaise(row.amount) })),
+      lateFee: { amount: values.lateFeeAmount ? toPaise(values.lateFeeAmount) : 0, graceDays: Number(values.lateFeeGraceDays || 0) },
+    };
+    if (editing) {
+      updateStructure.mutate(
+        { feeStructureId: editing.id, value: { ...body, applyToUnpaid } },
+        {
+          onSuccess: (result) => {
+            toast.success(
+              !result.newVersion
+                ? "Fee structure updated."
+                : result.moved_count
+                  ? `Saved as a new version. ${result.moved_count} student(s) moved to the new amounts; ${result.kept_count} keep what they were billed.`
+                  : `Saved as a new version. ${result.kept_count} student(s) already billed keep their amounts.`
+            );
+            stopEdit();
+          },
+        }
+      );
+      return;
+    }
     createStructure.mutate(
-      {
-        academicYearId: currentYearId,
-        name: values.name,
-        classIds: values.classIds,
-        sectionIds: values.sectionIds,
-        items: values.items.map((item) => ({ feeHeadId: item.feeHeadId, amount: toPaise(item.amount) })),
-        installments: values.installments.map((row) => ({ label: row.label, dueDate: row.dueDate, amount: toPaise(row.amount) })),
-      },
+      { academicYearId: currentYearId, ...body },
       {
         onSuccess: () => {
           toast.success("Fee structure created.");
@@ -104,7 +152,12 @@ const FeeStructuresTab = ({ organizationId }: { organizationId: string }) => {
   return (
     <div className="space-y-6">
       <Card>
-        <CardTitle className="mb-4 font-medium">Create Fee Structure</CardTitle>
+        <CardTitle className="mb-4 font-medium">{editing ? `Edit ${editing.name}` : "Create Fee Structure"}</CardTitle>
+        {editing && (
+          <p className="mb-4 text-sm text-gray-500">
+            Students already billed keep their amounts unless you move the ones who haven&apos;t paid yet. Past payments never change.
+          </p>
+        )}
         <Form {...form}>
           <form onSubmit={onSubmit} noValidate className="space-y-5">
             <TextField form={form} name="name" label="Structure name" placeholder="Class 9 Annual Fee" />
@@ -200,9 +253,33 @@ const FeeStructuresTab = ({ organizationId }: { organizationId: string }) => {
               {installmentsError && <p className="mt-1 text-sm text-red-600">{installmentsError}</p>}
             </div>
 
-            <Button type="submit" loading={createStructure.isPending}>
-              Create structure
-            </Button>
+            <div>
+              <Label>Late fee (optional)</Label>
+              <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+                <TextField form={form} name="lateFeeAmount" label="Fine per installment (₹)" type="number" min={0} step="0.01" placeholder="None" />
+                <TextField form={form} name="lateFeeGraceDays" label="Days after the due date" type="number" min={0} step="1" />
+              </div>
+              <p className="mt-1 text-xs text-gray-500">
+                Added once to an installment still unpaid this many days after its due date. Waive it with a concession.
+              </p>
+            </div>
+
+            {editing && (
+              <label className="flex items-start gap-2 text-sm text-gray-700">
+                <Checkbox checked={applyToUnpaid} onChange={(event) => setApplyToUnpaid(event.target.checked)} className="mt-0.5" />
+                <span>Also move students who haven&apos;t paid anything yet to these new amounts</span>
+              </label>
+            )}
+            <div className="flex gap-2">
+              <Button type="submit" loading={createStructure.isPending || updateStructure.isPending}>
+                {editing ? "Save changes" : "Create structure"}
+              </Button>
+              {editing && (
+                <Button variant="secondary" onClick={stopEdit}>
+                  Cancel
+                </Button>
+              )}
+            </div>
           </form>
         </Form>
       </Card>
@@ -218,9 +295,10 @@ const FeeStructuresTab = ({ organizationId }: { organizationId: string }) => {
               <TableHead className="text-center">Classes</TableHead>
               <TableHead className="text-center">Total</TableHead>
               <TableHead className="text-center">Installments</TableHead>
+              <TableHead className="text-center">Not yet billed</TableHead>
               <TableHead className="text-center">Action</TableHead>
             </TableHeader>
-            <TableSkeleton columns={5} />
+            <TableSkeleton columns={6} />
           </Table>
         ) : (
           <Table>
@@ -229,11 +307,12 @@ const FeeStructuresTab = ({ organizationId }: { organizationId: string }) => {
               <TableHead className="text-center">Classes</TableHead>
               <TableHead className="text-center">Total</TableHead>
               <TableHead className="text-center">Installments</TableHead>
+              <TableHead className="text-center">Not yet billed</TableHead>
               <TableHead className="text-center">Action</TableHead>
             </TableHeader>
             <TableBody>
               {(structures.data?.items ?? []).length === 0 ? (
-                <TableEmpty colSpan={5} title="No fee structures yet" description="Create one above, then assign it to a class to bill its students." />
+                <TableEmpty colSpan={6} title="No fee structures yet" description="Create one above, then assign it to a class to bill its students." />
               ) : (
                 structures.data?.items.map((structure) => (
                   <TableRow key={structure.id}>
@@ -244,14 +323,21 @@ const FeeStructuresTab = ({ organizationId }: { organizationId: string }) => {
                     </TableCell>
                     <TableCell className="text-center">{structure.installments.length}</TableCell>
                     <TableCell className="text-center">
-                      <Button
-                        variant="link"
-                        loading={assignStructure.isPending && assignStructure.variables === structure.id}
-                        disabled={assignStructure.isPending}
-                        onClick={() => onAssign(structure.id)}
-                      >
-                        Assign to students
-                      </Button>
+                      {structure.unassignedCount ? (
+                        <Button
+                          variant="link"
+                          loading={assignStructure.isPending && assignStructure.variables === structure.id}
+                          disabled={assignStructure.isPending}
+                          onClick={() => onAssign(structure.id)}
+                        >
+                          Assign to {structure.unassignedCount} student(s)
+                        </Button>
+                      ) : (
+                        <span className="text-sm text-gray-500">Everyone billed</span>
+                      )}
+                    </TableCell>
+                    <TableCell className="text-center">
+                      <RowMenu items={[{ label: "Edit", onSelect: () => startEdit(structure) }]} />
                     </TableCell>
                   </TableRow>
                 ))

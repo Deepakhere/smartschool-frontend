@@ -49,6 +49,7 @@ interface ICreateFeeStructurePayload {
   sectionIds: string[];
   items: { feeHeadId: string; amount: number }[];
   installments: { label: string; dueDate: string; amount: number }[];
+  lateFee: { amount: number; graceDays: number };
 }
 
 export const useCreateFeeStructure = (organizationId: string) => {
@@ -144,10 +145,10 @@ export const useGetStudentFeeSummary = (organizationId: string, studentId?: stri
   });
 
 export const useGetMyFees = (organizationId: string) =>
-  useQuery<{ items: IStudentFeeSummary[] }, IAPIError>({
+  useQuery<{ items: IStudentFeeSummary[]; onlinePaymentsEnabled?: boolean }, IAPIError>({
     queryKey: [API_QUERY_KEY.GET_MY_FEES, organizationId],
     queryFn: async () => {
-      const result = await apiClient.get<null, IAxiosResponse<{ items: IStudentFeeSummary[] }>>(
+      const result = await apiClient.get<null, IAxiosResponse<{ items: IStudentFeeSummary[]; onlinePaymentsEnabled?: boolean }>>(
         `${base(organizationId)}/my-fees`
       );
       return result.data.Data;
@@ -325,4 +326,24 @@ export const useGetFeeCollections = (organizationId: string, from: string, to: s
     },
     enabled: !!organizationId && !!from && !!to && from <= to,
     placeholderData: keepPreviousData,
+  });
+
+export interface IOnlinePaymentForReview {
+  _id: string;
+  amount: number;
+  gatewayPaymentId?: string;
+  reviewReason?: string;
+  createdAt: string;
+  studentId: { name: string; admissionNumber?: string } | null;
+}
+
+// online payments that arrived but couldn't be applied (the balance changed in between)
+export const useGetOnlinePaymentsForReview = (organizationId: string) =>
+  useQuery<IOnlinePaymentForReview[], IAPIError>({
+    queryKey: ["get-online-payments-review", organizationId],
+    queryFn: async () => {
+      const result = await apiClient.get<null, IAxiosResponse<{ items: IOnlinePaymentForReview[] }>>(`${base(organizationId)}/online-payment/review`);
+      return result.data.Data.items;
+    },
+    enabled: !!organizationId,
   });

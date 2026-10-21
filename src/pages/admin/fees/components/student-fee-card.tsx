@@ -10,7 +10,7 @@ import { Card } from "@/components/ui/card";
 import { Form } from "@/components/ui/form";
 import { useError } from "@/hooks";
 import { IStudentFeeSummary, SelectOption } from "@/types";
-import { formatMoney, toPaise } from "@/utils";
+import { formatMoney, toPaise, paymentMethodLabel } from "@/utils";
 import {
   concessionSchema,
   ConcessionFormValues,
@@ -114,7 +114,10 @@ const StudentFeeCard = ({ organizationId, summary, onReverse }: StudentFeeCardPr
             <TableRow key={row.label}>
               <TableCell className="font-medium text-gray-900">{row.label}</TableCell>
               <TableCell className="text-center">{new Date(row.dueDate).toLocaleDateString()}</TableCell>
-              <TableCell className="text-center">{formatMoney(row.netAmount)}</TableCell>
+              <TableCell className="text-center">
+                {formatMoney(row.netAmount)}
+                {!!row.lateFeeAmount && <p className="text-xs text-red-600">incl. late fee {formatMoney(row.lateFeeAmount)}</p>}
+              </TableCell>
               <TableCell className="text-center">{formatMoney(row.paidAmount)}</TableCell>
               <TableCell className={`text-center ${row.balance > 0 ? "text-red-600" : "text-green-600"}`}>
                 {formatMoney(row.balance)}
@@ -195,7 +198,7 @@ const StudentFeeCard = ({ organizationId, summary, onReverse }: StudentFeeCardPr
                     </Badge>
                   </TableCell>
                   <TableCell className="text-center">{formatMoney(payment.amount)}</TableCell>
-                  <TableCell className="text-center capitalize">{payment.method.replace("_", " ")}</TableCell>
+                  <TableCell className="text-center">{paymentMethodLabel(payment.method)}</TableCell>
                   <TableCell className="text-center">
                     {payment.entryType === "payment" && !reversedIds.has(payment.id) && (
                       <Button variant="link" className="text-red-600 hover:text-red-800" onClick={() => onReverse(payment.id)}>

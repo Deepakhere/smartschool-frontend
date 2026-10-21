@@ -566,6 +566,7 @@ export interface IFeeStructure {
   sectionIds: { id: string; name: string }[];
   items: { feeHeadId: { id: string; name: string; code: string }; amount: number }[];
   installments: { label: string; dueDate: string; amount: number }[];
+  lateFee?: { amount: number; graceDays: number };
   version: number;
   status: string;
   // active students in its classes who have no fees for its year yet
@@ -576,6 +577,8 @@ export interface IFeeInstallmentBalance {
   label: string;
   dueDate: string;
   netAmount: number;
+  // a late fee already added into netAmount
+  lateFeeAmount?: number;
   paidAmount: number;
   balance: number;
 }
