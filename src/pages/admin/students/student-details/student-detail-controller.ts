@@ -12,6 +12,7 @@ import { useGetResultsForStudent } from "@/pages/admin/reports/service/exams-ser
 import { IStudentFormData } from "@/types";
 import { useError } from "@/hooks";
 import { editStudentSchema } from "../student-modal/create-update-student-modal/student-form.schema";
+import { useAreaBase, useCan } from "@/context/tenant-context";
 
 const useStudentDetailController = () => {
   const { t } = useTranslation();
@@ -19,6 +20,8 @@ const useStudentDetailController = () => {
   const location = useLocation();
 
   const { studentId, organizationId } = useParams();
+
+  const areaBase = useAreaBase();
 
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
@@ -42,7 +45,7 @@ const useStudentDetailController = () => {
 
   const [isTransferModalOpen, setIsTransferModalOpen] = useState(false);
   const [isWithdrawModalOpen, setIsWithdrawModalOpen] = useState(false);
-  const enrollmentHistory = useGetEnrollmentHistory(organizationId || "", studentId || "");
+  const enrollmentHistory = useGetEnrollmentHistory(organizationId || "", useCan()("students.manage") ? studentId || "" : "");
   const transferStudent = useTransferStudent(organizationId || "", studentId || "");
   const withdrawStudent = useWithdrawStudent(organizationId || "", studentId || "");
   const [attendanceFrom, setAttendanceFrom] = useState("");
@@ -105,7 +108,7 @@ const useStudentDetailController = () => {
   };
 
   const onBackClick = () => {
-    navigate(`/${organizationId}/admin/students`);
+    navigate(`${areaBase}/students`);
   };
 
   useEffect(() => {
@@ -120,7 +123,7 @@ const useStudentDetailController = () => {
   useEffect(() => {
     if (deleteStudent.isSuccess) {
       setIsDeleteModalOpen(false);
-      navigate(`/${organizationId}/admin/students`);
+      navigate(`${areaBase}/students`);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [deleteStudent.isSuccess]);

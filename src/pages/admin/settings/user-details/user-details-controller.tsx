@@ -3,69 +3,54 @@ import toast from "react-hot-toast";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import debounce from "lodash.debounce";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import { useTranslation } from "react-i18next";
+import { UsersIcon } from "@heroicons/react/20/solid";
 
-import {
-  AccountRole,
-  IAddUserValue,
-  IAllUserDetails,
-  IRoleOptionDropDown,
-  IUpdateUserValue,
-  PermissionOption,
-  RoleOption,
-} from "@/types";
+import { IAllUserDetails, IRoleOptionDropDown } from "@/types";
+import { ROLE_OPTIONS } from "../access";
 import { useAddUserDetail, useDeleteUser, useGetAllUserDetails, useUpdateUserDetail } from "./service";
 import { USERS_PAGE_SIZE } from "./service/get-all-user-details/get-all-user-details";
 import { useError } from "@/hooks";
-import { useTranslation } from "react-i18next";
 import { useAuth } from "@/context/auth-context";
+import { useAreaBase } from "@/context/tenant-context";
 import { userFormSchema, defaultUserFormValues, UserFormValues } from "./user-details.schema";
 
+const FILTER_OPTIONS: IRoleOptionDropDown[] = [
+  { value: "all", label: "All Users", description: "Everyone in the school", icon: <UsersIcon className="h-5 w-5 text-gray-400" /> },
+  ...ROLE_OPTIONS.map((option) => ({ value: option.value, label: `${option.label}s`, description: `${option.label}s only`, icon: option.icon })),
+];
+
 const useUserDetailsController = () => {
-  const { organizationId } = useParams<{ organizationId: string }>();
+  const { organizationId = "" } = useParams<{ organizationId: string }>();
   const { t } = useTranslation();
+  const navigate = useNavigate();
+  const areaBase = useAreaBase();
   const { user: currentUser } = useAuth();
 
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [editingUserId, setEditingUserId] = useState<string>("");
-  const [sortBy, setSortBy] = useState<"all" | "admin" | "parent">("all");
-  const form = useForm<UserFormValues>({
-    resolver: zodResolver(userFormSchema),
-    defaultValues: defaultUserFormValues,
-  });
-
-  const [searchInput, setSearchInput] = useState<string>("");
-  const [searchTerm, setSearchTerm] = useState<string>("");
+  const [editingUserId, setEditingUserId] = useState("");
+  const [sortBy, setSortBy] = useState("all");
+  const [searchInput, setSearchInput] = useState("");
+  const [searchTerm, setSearchTerm] = useState("");
   const [page, setPage] = useState(1);
-  const [filterRole, setFilterRole] = useState<string>("");
-  const [isEditUser, setIsEditUser] = useState<boolean>(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  const [deleteUserId, setDeleteUserId] = useState<string>("");
+  const [deleteUserId, setDeleteUserId] = useState("");
+  const form = useForm<UserFormValues>({ resolver: zodResolver(userFormSchema), defaultValues: defaultUserFormValues });
 
-  const addUserDetail = useAddUserDetail(organizationId || "");
-  const getAllUserDetails = useGetAllUserDetails(organizationId || "", searchTerm, filterRole, page);
+  const addUserDetail = useAddUserDetail(organizationId);
+  const getAllUserDetails = useGetAllUserDetails(organizationId, searchTerm, sortBy === "all" ? "" : sortBy, page);
   const users: IAllUserDetails[] = getAllUserDetails.data?.items ?? [];
-  const deleteUser = useDeleteUser(organizationId || "");
-  const updateUserDetails = useUpdateUserDetail(organizationId || "");
+  const deleteUser = useDeleteUser(organizationId);
+  const updateUserDetails = useUpdateUserDetail(organizationId);
 
-  useError({
-    mutation: addUserDetail,
-  });
-
-  useError({
-    mutation: updateUserDetails,
-  });
-
+  useError({ mutation: addUserDetail });
+  useError({ mutation: updateUserDetails });
   // a refused removal (yourself, a parent still linked to students) closes the confirmation and says why
-  useError({
-    mutation: deleteUser,
-    cb: () => setIsDeleteModalOpen(false),
-  });
+  useError({ mutation: deleteUser, cb: () => setIsDeleteModalOpen(false) });
 
   const onRoleChange = (role: string) => {
-    setSortBy(role as "all" | "admin" | "parent");
-    const roleVal = role === "all" ? "" : role;
-    setFilterRole(roleVal);
+    setSortBy(role);
     setPage(1);
   };
 
@@ -84,238 +69,56 @@ const useUserDetailsController = () => {
     runSearch(value);
   };
 
-  const roleOptionsDropDown: IRoleOptionDropDown[] = [
-    {
-      value: "all",
-      label: "All Users",
-      description: "View all user types",
-      icon: (
-        <svg className="h-5 w-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor">
-          <path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z" />
-        </svg>
-      ),
-    },
-    {
-      value: "admin",
-      label: "Administrators",
-      description: "View admin users only",
-      icon: (
-        <svg className="h-5 w-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor">
-          <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd" />
-        </svg>
-      ),
-    },
-    {
-      value: "parent",
-      label: "Parents",
-      description: "View parent users only",
-      icon: (
-        <svg className="h-5 w-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor">
-          <path d="M10 12a2 2 0 100-4 2 2 0 000 4z" />
-          <path
-            fillRule="evenodd"
-            d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z"
-            clipRule="evenodd"
-          />
-        </svg>
-      ),
-    },
-    {
-      value: "teacher",
-      label: "Teachers",
-      description: "View teacher users only",
-      icon: (
-        <svg className="h-5 w-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor">
-          <path d="M10.394 2.08a1 1 0 00-.788 0l-7 3a1 1 0 000 1.84L5.25 8.051a.999.999 0 01.356-.257l4-1.714a1 1 0 11.788 1.838L7.667 9.088l1.94.831a1 1 0 00.787 0l7-3a1 1 0 000-1.838l-7-3zM3.31 9.397L5 10.12v4.102a8.969 8.969 0 00-1.05-.174 1 1 0 01-.89-.89 11.115 11.115 0 01.25-3.762zM9.3 16.573A9.026 9.026 0 007 14.935v-3.957l1.818.78a3 3 0 002.364 0l5.508-2.361a11.026 11.026 0 01.25 3.762 1 1 0 01-.89.89 8.968 8.968 0 00-5.35 2.524 1 1 0 01-1.4 0zM6 18a1 1 0 001-1v-2.065a8.935 8.935 0 00-2-.712V17a1 1 0 001 1z" />
-        </svg>
-      ),
-    },
-    {
-      value: "accountant",
-      label: "Accountants",
-      description: "View accountant users only",
-      icon: (
-        <svg className="h-5 w-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor"><path d="M4 4a2 2 0 00-2 2v1h16V6a2 2 0 00-2-2H4z" /><path fillRule="evenodd" d="M18 9H2v5a2 2 0 002 2h12a2 2 0 002-2V9zM4 13a1 1 0 011-1h1a1 1 0 110 2H5a1 1 0 01-1-1zm5-1a1 1 0 100 2h1a1 1 0 100-2H9z" clipRule="evenodd" /></svg>
-      ),
-    },
-  ];
-
-  const roleOptions: RoleOption[] = [
-    {
-      value: "admin",
-      label: "Administrator",
-      description: "Full access to manage users and content",
-      icon: (
-        <svg className="h-5 w-5 text-primary-500" viewBox="0 0 20 20" fill="currentColor">
-          <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd" />
-        </svg>
-      ),
-    },
-    {
-      value: "parent",
-      label: "Parent",
-      description: "View-only access to student information",
-      icon: (
-        <svg className="h-5 w-5 text-primary-500" viewBox="0 0 20 20" fill="currentColor">
-          <path d="M10 12a2 2 0 100-4 2 2 0 000 4z" />
-          <path
-            fillRule="evenodd"
-            d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z"
-            clipRule="evenodd"
-          />
-        </svg>
-      ),
-    },
-    {
-      value: "teacher",
-      label: "Teacher",
-      description: "Access to their assigned classes, timetable and notices",
-      icon: (
-        <svg className="h-5 w-5 text-primary-500" viewBox="0 0 20 20" fill="currentColor">
-          <path d="M10.394 2.08a1 1 0 00-.788 0l-7 3a1 1 0 000 1.84L5.25 8.051a.999.999 0 01.356-.257l4-1.714a1 1 0 11.788 1.838L7.667 9.088l1.94.831a1 1 0 00.787 0l7-3a1 1 0 000-1.838l-7-3zM3.31 9.397L5 10.12v4.102a8.969 8.969 0 00-1.05-.174 1 1 0 01-.89-.89 11.115 11.115 0 01.25-3.762zM9.3 16.573A9.026 9.026 0 007 14.935v-3.957l1.818.78a3 3 0 002.364 0l5.508-2.361a11.026 11.026 0 01.25 3.762 1 1 0 01-.89.89 8.968 8.968 0 00-5.35 2.524 1 1 0 01-1.4 0zM6 18a1 1 0 001-1v-2.065a8.935 8.935 0 00-2-.712V17a1 1 0 001 1z" />
-        </svg>
-      ),
-    },
-    {
-      value: "accountant",
-      label: "Accountant",
-      description: "Fee desk only: collect payments, issue receipts and see fee reports",
-      icon: (
-        <svg className="h-5 w-5 text-primary-500" viewBox="0 0 20 20" fill="currentColor"><path d="M4 4a2 2 0 00-2 2v1h16V6a2 2 0 00-2-2H4z" /><path fillRule="evenodd" d="M18 9H2v5a2 2 0 002 2h12a2 2 0 002-2V9zM4 13a1 1 0 011-1h1a1 1 0 110 2H5a1 1 0 01-1-1zm5-1a1 1 0 100 2h1a1 1 0 100-2H9z" clipRule="evenodd" /></svg>
-      ),
-    },
-  ];
-
-  const permissionOptions: PermissionOption[] = [
-    {
-      id: "canRead",
-      label: "Read",
-      description: "View content and data",
-      icon: (
-        <svg className="h-5 w-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor">
-          <path d="M10 12a2 2 0 100-4 2 2 0 000 4z" />
-          <path
-            fillRule="evenodd"
-            d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z"
-            clipRule="evenodd"
-          />
-        </svg>
-      ),
-    },
-    {
-      id: "canCreate",
-      label: "Create",
-      description: "Add new content",
-      icon: (
-        <svg className="h-5 w-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor">
-          <path
-            fillRule="evenodd"
-            d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z"
-            clipRule="evenodd"
-          />
-        </svg>
-      ),
-    },
-    {
-      id: "canUpdate",
-      label: "Update",
-      description: "Modify existing content",
-      icon: (
-        <svg className="h-5 w-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor">
-          <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
-        </svg>
-      ),
-    },
-    {
-      id: "canDelete",
-      label: "Delete",
-      description: "Remove content",
-      icon: (
-        <svg className="h-5 w-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor">
-          <path
-            fillRule="evenodd"
-            d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z"
-            clipRule="evenodd"
-          />
-        </svg>
-      ),
-    },
-  ];
-
-  const handlePermissionChange = (permission: keyof UserFormValues["permissions"]) => {
-    form.setValue(`permissions.${permission}`, !form.getValues(`permissions.${permission}`));
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setEditingUserId("");
+    form.reset(defaultUserFormValues);
   };
 
   const handleSubmituserDetails = form.handleSubmit((values) => {
-    if (isEditUser) {
-      const userDetails: IUpdateUserValue = {
-        id: editingUserId,
-        name: values.fullname,
-        email: values.email,
-        role: values.role,
-        permissions: values.permissions,
-      };
-
-      updateUserDetails.mutate({ ...userDetails });
-    } else {
-      const userDetails: IAddUserValue = {
-        name: values.fullname,
-        email: values.email,
-        role: values.role,
-        permissions: values.permissions,
-      };
-
-      addUserDetail.mutate({ ...userDetails });
+    if (editingUserId) {
+      updateUserDetails.mutate(
+        { id: editingUserId, name: values.fullname, email: values.email },
+        {
+          onSuccess: () => {
+            toast.success("User updated.");
+            closeModal();
+          },
+        }
+      );
+      return;
     }
+    addUserDetail.mutate(
+      { name: values.fullname, email: values.email, role: values.role },
+      {
+        onSuccess: () => {
+          toast.success("Invitation sent.");
+          closeModal();
+        },
+      }
+    );
   });
 
-  const handleEditUserDetails = async (userId: string, isEdit: boolean) => {
-    if (!isEdit) return;
-
-    const user = users.find((user) => user.id === userId);
+  const handleEditUserDetails = (userId: string) => {
+    const user = users.find((u) => u.id === userId);
     if (!user) return;
-
-    form.reset({
-      fullname: user.name,
-      email: user.email,
-      role: user.role as AccountRole,
-      permissions: {
-        canRead: user.permissions?.canRead ?? false,
-        canCreate: user.permissions?.canCreate ?? false,
-        canUpdate: user.permissions?.canUpdate ?? false,
-        canDelete: user.permissions?.canDelete ?? false,
-      },
-    });
-
+    form.reset({ fullname: user.name, email: user.email, role: user.role === "student" ? "parent" : user.role });
     setEditingUserId(userId);
     setIsModalOpen(true);
-    setIsEditUser(true);
-  };
-
-  const isEditingSelf = !!currentUser?.id && editingUserId === currentUser.id;
-
-  const onCancel = () => {
-    setIsModalOpen(false);
-    setIsEditUser(false);
-    setEditingUserId("");
-    form.reset(defaultUserFormValues);
   };
 
   // "Add user" always opens an empty form, never the last person edited
   const openAddUser = () => {
     form.reset(defaultUserFormValues);
     setEditingUserId("");
-    setIsEditUser(false);
     setIsModalOpen(true);
   };
+
+  const manageAccess = (userId: string) => navigate(`${areaBase}/settings/add-user/${userId}`);
 
   const onClickDeleteUser = (userId: string) => {
     setDeleteUserId(userId);
     setIsDeleteModalOpen(true);
-  };
-
-  const onCancelDeleteModal = () => {
-    setIsDeleteModalOpen(false);
   };
 
   const handleDeleteUser = () => {
@@ -328,35 +131,14 @@ const useUserDetailsController = () => {
     });
   };
 
-  useEffect(() => {
-    if (updateUserDetails.isSuccess) {
-      toast.success("User updated.");
-      setIsModalOpen(false);
-      setIsEditUser(false);
-    }
-  }, [updateUserDetails.isSuccess]);
-
-  useEffect(() => {
-    if (addUserDetail.isSuccess) {
-      toast.success("Invitation sent.");
-      setIsModalOpen(false);
-    }
-  }, [addUserDetail.isSuccess]);
-
-  // reaching this page already needs "manage people"; nobody removes themselves
-  const canEdit = true;
-  const canDelete = (userId: string) => userId !== currentUser?.id;
-
   return {
     t,
     sortBy,
     form,
     isModalOpen,
-    isEditingSelf,
     users,
-    roleOptions,
-    permissionOptions,
-    roleOptionsDropDown,
+    roleOptions: ROLE_OPTIONS,
+    roleOptionsDropDown: FILTER_OPTIONS,
     searchTerm,
     searchInput,
     onSearchInputChange,
@@ -365,9 +147,8 @@ const useUserDetailsController = () => {
     pageSize: USERS_PAGE_SIZE,
     totalUsers: getAllUserDetails.data?.total_count ?? 0,
     openAddUser,
-    canEdit,
-    canDelete,
-    isEditUser,
+    isSelf: (userId: string) => userId === currentUser?.id,
+    isEditUser: !!editingUserId,
     isDeleteModalOpen,
     deleteUserId,
     isLoadingAddUserDetail: addUserDetail.isPending,
@@ -375,17 +156,14 @@ const useUserDetailsController = () => {
     isFetchingGetAllUserDetails: getAllUserDetails.isFetching,
     isLoadingUpdateUserDetail: updateUserDetails.isPending,
     isLoadingDeleteUser: deleteUser.isPending,
-    onCancel,
+    onCancel: closeModal,
     onRoleChange,
-    setSearchTerm,
-    setSortBy,
-    setIsModalOpen,
     handleSubmituserDetails,
-    handlePermissionChange,
     handleEditUserDetails,
+    manageAccess,
     handleDeleteUser,
     onClickDeleteUser,
-    onCancelDeleteModal,
+    onCancelDeleteModal: () => setIsDeleteModalOpen(false),
   };
 };
 

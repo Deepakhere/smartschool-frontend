@@ -22,7 +22,7 @@ export default tseslint.config(
       // a context's hook is exported next to its provider on purpose
       'react-refresh/only-export-components': [
         'warn',
-        { allowConstantExport: true, allowExportNames: ['useFormField', 'useAuth', 'useNotifications', 'usePageHeaderContext', 'useTenant', 'useCurrentRole', 'useTheme'] },
+        { allowConstantExport: true, allowExportNames: ['useFormField', 'useAuth', 'useNotifications', 'usePageHeaderContext', 'useTenant', 'useCurrentRole', 'useAreaBase', 'useCan', 'useTheme'] },
       ],
     },
   },

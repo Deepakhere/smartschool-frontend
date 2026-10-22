@@ -19,12 +19,14 @@ import useGetParentByEmail from "../service/get-parent-by-email";
 import { useError } from "@/hooks";
 import { useGetAcademicYears, useGetClasses } from "@/pages/admin/classes/service/academics-service";
 import { createStudentSchema } from "../student-modal/create-update-student-modal/student-form.schema";
+import { useAreaBase } from "@/context/tenant-context";
 
 const emptyFormData = {} as IStudentFormData;
 
 const useStudentsListController = () => {
   const { t } = useTranslation();
   const { organizationId } = useParams();
+  const areaBase = useAreaBase();
   const navigate = useNavigate();
 
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
@@ -44,13 +46,13 @@ const useStudentsListController = () => {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
   const navigateToStudentDetails = (studentId: string) => {
-    navigate(`/${organizationId}/admin/students/detail/${studentId}`);
+    navigate(`${areaBase}/students/detail/${studentId}`);
   };
 
   // the detail page owns the full edit flow (fetches complete student data, prefills the form);
   // jump straight there with a flag so it opens the edit modal instead of just viewing
   const onClickEditStudent = (studentId: string) => {
-    navigate(`/${organizationId}/admin/students/detail/${studentId}`, {
+    navigate(`${areaBase}/students/detail/${studentId}`, {
       state: { openEdit: true },
     });
   };

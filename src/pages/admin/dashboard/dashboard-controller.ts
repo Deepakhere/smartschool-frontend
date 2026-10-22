@@ -23,6 +23,7 @@ import { useTheme } from "@/context/theme-context";
 import { useAuth } from "@/context/auth-context";
 import useGetDashboardStats from "./service/get-dashboard-stats";
 import useGetDashboardCharts from "./service/get-dashboard-charts";
+import { useAreaBase } from "@/context/tenant-context";
 
 export const useDashboardController = () => {
   const navigate = useNavigate();
@@ -45,6 +46,8 @@ export const useDashboardController = () => {
   const studentSliceColor = isDark ? "#FBBF24" : "#F59E0B";
 
   const { organizationId } = useParams();
+
+  const areaBase = useAreaBase();
   const [isNoticeModalOpen, setIsNoticeModalOpen] = useState(false);
   const [isUserTypeModalOpen, setIsUserTypeModalOpen] = useState(false);
 
@@ -210,16 +213,16 @@ export const useDashboardController = () => {
 
   const handleSelectStudent = () => {
     closeUserTypeModal();
-    navigate(`/${organizationId}/admin/students`);
+    navigate(`${areaBase}/students`);
   };
 
   const handleSelectTeacher = () => {
     closeUserTypeModal();
-    navigate(`/${organizationId}/admin/teachers`);
+    navigate(`${areaBase}/teachers`);
   };
 
   const handleUploadHomework = () => {
-    navigate(`/${organizationId}/admin/homework`);
+    navigate(`${areaBase}/homework`);
   };
 
   const base = `/${organizationId}/admin`;

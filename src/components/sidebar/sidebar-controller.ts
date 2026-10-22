@@ -17,7 +17,8 @@ import {
   CalendarIcon,
   TableCellsIcon,
 } from "@heroicons/react/24/outline";
-import { useCurrentRole } from "@/context/tenant-context";
+import { useCan, useCurrentRole } from "@/context/tenant-context";
+import { SHARED_PAGES } from "@/routes/shared-pages";
 import type { ComponentType, SVGProps } from "react";
 
 export interface SidebarItem {
@@ -36,8 +37,9 @@ export interface SidebarSection {
 export const useSidebarController = () => {
   const { organizationId } = useParams();
   const location = useLocation();
-  // the role in the current school decides the menus and links
+  // the role decides the menu; permissions add granted pages
   const role = useCurrentRole();
+  const can = useCan();
 
   const isActive = (path: string) => {
     return location.pathname.includes(path);
@@ -121,13 +123,27 @@ export const useSidebarController = () => {
     },
   ];
 
-  const accountantSections: SidebarSection[] = [
+  const deskSections = (area: "accountant" | "staff"): SidebarSection[] => [
     {
-      items: [{ name: "Fees", hint: "Collect fees, receipts and reports", href: `/${organizationId}/accountant/fees`, icon: CurrencyDollarIcon, current: isActive("/fees") }],
+      items: [{ name: "Calendar", hint: "Holidays, events and exams", href: `/${organizationId}/${area}/calendar`, icon: CalendarIcon, current: isActive("/calendar") }],
     },
   ];
 
-  const sectionsByRole = { teacher: teacherSections, parent: parentSections, accountant: accountantSections, admin: adminSections };
+  const grantedSection = (area: string): SidebarSection[] => {
+    const items = SHARED_PAGES.filter((page) => can(...page.anyOf)).map((page) => {
+      const path = page.path.replace("/*", "");
+      return { ...page.nav, href: `/${organizationId}/${area}/${path}`, current: isActive(`/${area}/${path}`) };
+    });
+    return items.length ? [{ label: "School", items }] : [];
+  };
+
+  const sectionsByRole = {
+    admin: adminSections,
+    parent: parentSections,
+    teacher: [...teacherSections, ...grantedSection("teacher")],
+    accountant: [...grantedSection("accountant"), ...deskSections("accountant")],
+    staff: [...grantedSection("staff"), ...deskSections("staff")],
+  };
   const sections = sectionsByRole[role ?? "admin"];
 
   return {

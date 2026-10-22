@@ -1,5 +1,27 @@
 // every role a person can hold in a school, as the web app names them
-export type AccountRole = "admin" | "parent" | "teacher" | "accountant";
+export type AccountRole = "admin" | "parent" | "teacher" | "accountant" | "staff";
+
+// mirrors smartschool-backend/core/access/permissions.js
+export type PermissionKey =
+  | "school.settings"
+  | "people.manage"
+  | "dashboard.view"
+  | "academics.manage"
+  | "students.view"
+  | "students.manage"
+  | "attendance.mark"
+  | "homework.manage"
+  | "leave.review"
+  | "exams.manage"
+  | "exams.marks"
+  | "notices.manage"
+  | "calendar.manage"
+  | "ptm.manage"
+  | "fees.collect"
+  | "fees.reports"
+  | "fees.reverse"
+  | "fees.concession"
+  | "fees.setup";
 
 import { ReactNode } from "react";
 import { UseFormReturn } from "react-hook-form";
@@ -176,15 +198,7 @@ export interface ILoginResponse {
   token: string;
   refreshToken?: string;
   name: string;
-  role: AccountRole;
   isPlatformAdmin?: boolean;
-  permissions: {
-    canRead: boolean;
-    canCreate: boolean;
-    canUpdate: boolean;
-    canDelete: boolean;
-    isGlobalAdmin: boolean;
-  };
   preferences?: IUserPreferences;
   avatar?: IUserAvatar;
 }
@@ -203,39 +217,22 @@ export interface IAddUser {
 export interface IAddUserValue {
   name: string;
   email: string;
-  role: string;
-  permissions: {
-    canRead: boolean;
-    canCreate: boolean;
-    canUpdate: boolean;
-    canDelete: boolean;
-  };
+  role: AccountRole;
 }
 
 export interface IAllUserDetails {
   id: string;
   name: string;
   email: string;
-  role: string;
-  status: string;
-  permissions: {
-    canRead: boolean;
-    canCreate: boolean;
-    canUpdate: boolean;
-    canDelete: boolean;
-  };
+  role: AccountRole | "student";
+  // "suspended" is this school's; pending and active are the account's
+  status: "pending" | "active" | "suspended" | "inactive";
 }
 
 export interface FormData {
   fullname: string;
   email: string;
   role: AccountRole;
-  permissions: {
-    canRead: boolean;
-    canCreate: boolean;
-    canUpdate: boolean;
-    canDelete: boolean;
-  };
 }
 
 export interface RoleOption {
@@ -245,52 +242,24 @@ export interface RoleOption {
   icon: ReactNode;
 }
 
-export interface PermissionOption {
-  id: keyof FormData["permissions"];
-  label: string;
-  description: string;
-  icon: ReactNode;
-}
 
 export interface ICreateUpdateUserModalProps {
   t: (key: string) => string;
   isOpen: boolean;
   form: UseFormReturn<FormData>;
   roleOptions: RoleOption[];
-  permissionOptions: PermissionOption[];
   isEditUser: boolean;
-  isEditingSelf?: boolean;
   isLoadingAddUserDetail: boolean;
   isLoadingUpdateUserDetail?: boolean;
   onClose: () => void;
   onSubmit: (e: React.FormEvent) => void;
-  handlePermissionChange: (permission: keyof FormData["permissions"]) => void;
 }
 
-export interface EditUserModalProps {
-  t: (t: string) => string;
-  isOpen: boolean;
-  formData: FormData;
-  isLoadingUpdateUserDetail: boolean;
-  roleOptions: RoleOption[];
-  permissionOptions: PermissionOption[];
-  onClose: () => void;
-  setFormData: React.Dispatch<React.SetStateAction<FormData>>;
-  handleSubmit: (e: React.FormEvent) => void;
-  handlePermissionChange: (permission: keyof FormData["permissions"]) => void;
-}
 
 export interface IUpdateUserValue {
   id: string;
   name: string;
   email: string;
-  role: AccountRole;
-  permissions: {
-    canRead: boolean;
-    canCreate: boolean;
-    canUpdate: boolean;
-    canDelete: boolean;
-  };
 }
 
 export interface IUserPreferences {
@@ -309,15 +278,7 @@ export interface IUserDetailResponse {
   id: string;
   email: string;
   token: string;
-  role: AccountRole;
   isPlatformAdmin?: boolean;
-  permissions: {
-    canRead: boolean;
-    canCreate: boolean;
-    canUpdate: boolean;
-    canDelete: boolean;
-    isGlobalAdmin: boolean;
-  };
   preferences?: IUserPreferences;
   avatar?: IUserAvatar;
 }
@@ -370,8 +331,9 @@ export interface IOrganization {
     publicId: string;
     url: string;
   };
-  // the signed-in person's role in this school; it can differ from school to school
-  myRole?: "admin" | "teacher" | "parent" | null;
+  // differs per school
+  myRole?: AccountRole | "student" | null;
+  myPermissions?: PermissionKey[];
 }
 
 

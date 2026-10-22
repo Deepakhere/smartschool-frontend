@@ -8,7 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Form } from "@/components/ui/form";
-import { useCurrentRole } from "@/context/tenant-context";
+import { useCan } from "@/context/tenant-context";
 import { useError } from "@/hooks";
 import { IStudentFeeSummary, SelectOption } from "@/types";
 import { formatMoney, toPaise, paymentMethodLabel } from "@/utils";
@@ -43,8 +43,7 @@ interface StudentFeeCardProps {
 const StudentFeeCard = ({ organizationId, summary, onReverse }: StudentFeeCardProps) => {
   const recordPayment = useRecordPayment(organizationId);
   const grantConcession = useGrantConcession(organizationId);
-  // concessions are the school admin's call; the fee desk only collects
-  const isFeeDesk = useCurrentRole() === "accountant";
+  const can = useCan();
   useError({ mutation: recordPayment });
   useError({ mutation: grantConcession });
 
@@ -130,21 +129,23 @@ const StudentFeeCard = ({ organizationId, summary, onReverse }: StudentFeeCardPr
         </TableBody>
       </Table>
 
-      <div className="mt-4 rounded-md bg-gray-50 p-4">
-        <p className="mb-2 text-sm font-medium text-gray-700">Record a payment</p>
-        <Form {...paymentForm}>
-          <form onSubmit={onRecordPayment} noValidate className="grid grid-cols-1 items-start gap-3 sm:grid-cols-4">
-            <TextField form={paymentForm} name="amount" label="Amount (₹)" type="number" min={0} step="0.01" />
-            <SelectField form={paymentForm} name="method" label="Method" options={methodOptions} />
-            <TextField form={paymentForm} name="instrumentRef" label="Reference" placeholder="Cheque no. / UTR" />
-            <Button type="submit" className="sm:mt-6" loading={recordPayment.isPending}>
-              Record
-            </Button>
-          </form>
-        </Form>
-      </div>
+      {can("fees.collect") && (
+        <div className="mt-4 rounded-md bg-gray-50 p-4">
+          <p className="mb-2 text-sm font-medium text-gray-700">Record a payment</p>
+          <Form {...paymentForm}>
+            <form onSubmit={onRecordPayment} noValidate className="grid grid-cols-1 items-start gap-3 sm:grid-cols-4">
+              <TextField form={paymentForm} name="amount" label="Amount (₹)" type="number" min={0} step="0.01" />
+              <SelectField form={paymentForm} name="method" label="Method" options={methodOptions} />
+              <TextField form={paymentForm} name="instrumentRef" label="Reference" placeholder="Cheque no. / UTR" />
+              <Button type="submit" className="sm:mt-6" loading={recordPayment.isPending}>
+                Record
+              </Button>
+            </form>
+          </Form>
+        </div>
+      )}
 
-      {!isFeeDesk && (
+      {can("fees.concession") && (
         <div className="mt-4 rounded-md bg-gray-50 p-4">
           <p className="mb-2 text-sm font-medium text-gray-700">Grant a concession</p>
           <Form {...concessionForm}>
@@ -205,7 +206,7 @@ const StudentFeeCard = ({ organizationId, summary, onReverse }: StudentFeeCardPr
                   <TableCell className="text-center">{formatMoney(payment.amount)}</TableCell>
                   <TableCell className="text-center">{paymentMethodLabel(payment.method)}</TableCell>
                   <TableCell className="text-center">
-                    {payment.entryType === "payment" && !reversedIds.has(payment.id) && (
+                    {can("fees.reverse") && payment.entryType === "payment" && !reversedIds.has(payment.id) && (
                       <Button variant="link" className="text-red-600 hover:text-red-800" onClick={() => onReverse(payment.id)}>
                         Reverse
                       </Button>

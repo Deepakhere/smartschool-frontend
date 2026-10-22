@@ -11,6 +11,7 @@ import Avatar from "@/components/avatar";
 import GuardianModal from "./guardian-modal";
 import { usePageHeader } from "@/hooks";
 import EmptyState from "@/components/empty-state";
+import { useCan } from "@/context/tenant-context";
 
 const StudentDetails = () => {
   const {
@@ -62,6 +63,7 @@ const StudentDetails = () => {
     examResults,
     isLoadingExamResults,
   } = useStudentDetailController();
+  const canManage = useCan()("students.manage");
 
   const enrollmentStatusBadgeClass: Record<string, string> = {
     ACTIVE: "bg-green-100 text-green-800",
@@ -99,7 +101,7 @@ const StudentDetails = () => {
                   <p className="mt-1 max-w-2xl text-sm text-gray-500">Personal details and information.</p>
                 </div>
               </div>
-              <div className="flex space-x-3">
+              {canManage && <div className="flex space-x-3">
                 <button
                   onClick={() => setIsEditModalOpen(true)}
                   className="inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
@@ -114,7 +116,7 @@ const StudentDetails = () => {
                   <TrashIcon className="h-4 w-4 mr-1" />
                   Delete
                 </button>
-              </div>
+              </div>}
             </div>
 
             {/* Student information */}
@@ -168,9 +170,11 @@ const StudentDetails = () => {
                 <h3 className="text-lg leading-6 font-medium text-gray-900">Guardians</h3>
                 <p className="mt-1 max-w-2xl text-sm text-gray-500">Parents and guardians linked to this student.</p>
               </div>
-              <Button variant="secondary" size="sm" onClick={() => setIsGuardianModalOpen(true)}>
-                + Add Guardian
-              </Button>
+              {canManage && (
+                <Button variant="secondary" size="sm" onClick={() => setIsGuardianModalOpen(true)}>
+                  + Add Guardian
+                </Button>
+              )}
             </div>
             <div className="border-t border-gray-200 divide-y divide-gray-200">
               {!studentDetails?.guardians?.length ? (
@@ -206,7 +210,7 @@ const StudentDetails = () => {
                         )}
                       </div>
                     </div>
-                    <div className="flex gap-3">
+                    {canManage && <div className="flex gap-3">
                       {!g.isPrimaryGuardian && (
                         <button
                           onClick={() => handleSetPrimaryGuardian(g.id)}
@@ -223,7 +227,7 @@ const StudentDetails = () => {
                           Remove
                         </button>
                       )}
-                    </div>
+                    </div>}
                   </div>
                 ))
               )}
@@ -231,7 +235,7 @@ const StudentDetails = () => {
           </div>
 
           {/* Enrollment Lifecycle */}
-          <div className="bg-white shadow overflow-hidden sm:rounded-lg mb-6">
+          {canManage && <div className="bg-white shadow overflow-hidden sm:rounded-lg mb-6">
             <div className="px-4 py-5 sm:px-6 flex justify-between items-center">
               <div>
                 <h3 className="text-lg leading-6 font-medium text-gray-900">Enrollment Lifecycle</h3>
@@ -283,7 +287,7 @@ const StudentDetails = () => {
                 ))
               )}
             </div>
-          </div>
+          </div>}
 
           {/* Academic Records section */}
           <div className="bg-white shadow overflow-hidden sm:rounded-lg">

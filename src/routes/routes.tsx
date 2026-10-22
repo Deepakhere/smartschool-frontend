@@ -43,6 +43,8 @@ import SetPassword from "../pages/auth/set-password";
 import ResetPassword from "../pages/auth/reset-password";
 import NotAccess from "../components/not-access";
 import { AuthenticatedRoute, FallbackRoute, ProtectedRoute, PublicRoute } from "./route-guards";
+import { sharedRoutes } from "./shared-pages";
+import { FirstPermittedPage } from "./permission-gate";
 import Organization from "../pages/auth/organization";
 
 // built once at module load: re-creating the router on a re-render would reset navigation state
@@ -213,31 +215,23 @@ const router = createBrowserRouter([
         path: "profile",
         element: <Profile />,
       },
+      ...sharedRoutes(),
     ],
   },
-  // the fee desk: fees and their own profile, nothing else
-  {
-    path: "/:organizationId/accountant",
+  ...(["accountant", "staff"] as const).map((role) => ({
+    path: `/:organizationId/${role}`,
     element: (
-      <ProtectedRoute role="accountant">
+      <ProtectedRoute role={role}>
         <Layout />
       </ProtectedRoute>
     ),
     children: [
-      {
-        index: true,
-        element: <Navigate to="fees" replace />,
-      },
-      {
-        path: "fees",
-        element: <AdminFees />,
-      },
-      {
-        path: "profile",
-        element: <Profile />,
-      },
+      { index: true, element: <FirstPermittedPage /> },
+      { path: "calendar", element: <AdminCalendar /> },
+      { path: "profile", element: <Profile /> },
+      ...sharedRoutes(),
     ],
-  },
+  })),
   {
     path: "/:organizationId/parent",
     element: (

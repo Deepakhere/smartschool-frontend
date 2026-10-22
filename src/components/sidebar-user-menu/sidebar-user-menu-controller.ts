@@ -11,11 +11,8 @@ export const useSidebarUserMenuController = () => {
   const role = useCurrentRole();
   const { theme, setTheme } = useTheme();
 
-  // admin's own profile lives inside the tabbed Settings area; teacher/parent get a direct page
-  const profilePath =
-    role === "admin"
-      ? `/${organizationId}/admin/settings`
-      : `/${organizationId}/${role}/profile`;
+  // an admin's profile lives in Settings
+  const profilePath = role === "admin" ? `/${organizationId}/admin/settings` : `/${organizationId}/${role}/profile`;
 
   const handleLogout = () => {
     try {

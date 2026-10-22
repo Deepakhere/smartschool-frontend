@@ -8,13 +8,14 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardTitle } from "@/components/ui/card";
 import { exportToCsv, formatMoney, paymentMethodLabel } from "@/utils";
+import { useCan } from "@/context/tenant-context";
 import { fetchWholeLedger, LEDGER_PAGE_SIZE, useGetOnlinePaymentsForReview, useGetPaymentLedger } from "../service/fees-service";
 
 const LedgerTab = ({ organizationId }: { organizationId: string }) => {
   const [page, setPage] = useState(1);
   const [isExporting, setIsExporting] = useState(false);
   const ledger = useGetPaymentLedger(organizationId, page);
-  const toReview = useGetOnlinePaymentsForReview(organizationId).data ?? [];
+  const toReview = useGetOnlinePaymentsForReview(useCan()("fees.collect") ? organizationId : "").data ?? [];
   const payments = ledger.data?.items ?? [];
   const total = ledger.data?.total_count ?? 0;
 

@@ -1,4 +1,5 @@
 import Pager from "@/components/pager";
+import { useCan } from "@/context/tenant-context";
 import { useRef } from "react";
 import toast from "react-hot-toast";
 import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
@@ -88,16 +89,21 @@ const StudentsList = () => {
     exportToCsv("students", rows);
   };
 
+  const canManage = useCan()("students.manage");
   usePageHeader({
     actions: (
       <>
         <Button variant="secondary" onClick={handleExportCsv}>
           Export CSV
         </Button>
-        <Button variant="secondary" onClick={onClickBulkUpload}>
-          Bulk Upload (CSV)
-        </Button>
-        <Button onClick={onClickAddStudent}>{t("labels.add_new_student")}</Button>
+        {canManage && (
+          <>
+            <Button variant="secondary" onClick={onClickBulkUpload}>
+              Bulk Upload (CSV)
+            </Button>
+            <Button onClick={onClickAddStudent}>{t("labels.add_new_student")}</Button>
+          </>
+        )}
       </>
     ),
   });

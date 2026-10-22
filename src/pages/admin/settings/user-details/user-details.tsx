@@ -2,6 +2,7 @@ import { PlusIcon, MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 
 import EmptyState from "@/components/empty-state";
 import CustomSelectDropdown from "@/components/custom-select";
+import { Badge, BadgeTone } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Table, TableHeader, TableHead, TableBody, TableRow, TableCell, TableSkeleton } from "@/components/table";
@@ -10,17 +11,17 @@ import DeleteConfirmationDialog from "@/components/delete-confirmation-dialog";
 import Pager from "@/components/pager";
 import useUserDetailsController from "./user-details-controller";
 
+const STATUS_TONE: Record<string, BadgeTone> = { active: "green", pending: "yellow", suspended: "red" };
+
 const UserDetails = () => {
   const {
     t,
     sortBy,
     form,
     isModalOpen,
-    isEditingSelf,
     users,
     isEditUser,
     roleOptions,
-    permissionOptions,
     roleOptionsDropDown,
     searchTerm,
     searchInput,
@@ -31,8 +32,7 @@ const UserDetails = () => {
     pageSize,
     totalUsers,
     openAddUser,
-    canEdit,
-    canDelete,
+    isSelf,
     deleteUserId,
     isFetchingGetAllUserDetails,
     isLoadingUpdateUserDetail,
@@ -43,9 +43,9 @@ const UserDetails = () => {
     onRoleChange,
 
     handleSubmituserDetails,
-    handlePermissionChange,
     handleDeleteUser,
     handleEditUserDetails,
+    manageAccess,
     onClickDeleteUser,
     onCancelDeleteModal,
   } = useUserDetailsController();
@@ -101,10 +101,11 @@ const UserDetails = () => {
           <TableHead>{t("labels.username")}</TableHead>
           <TableHead className="text-center">{t("labels.email")}</TableHead>
           <TableHead className="text-center">{t("labels.role")}</TableHead>
+          <TableHead className="text-center">Status</TableHead>
           <TableHead className="text-center">{t("labels.actions")}</TableHead>
         </TableHeader>
         {isLoadingGetAllUserDetails || isFetchingGetAllUserDetails ? (
-          <TableSkeleton columns={4} />
+          <TableSkeleton columns={5} />
         ) : users && users.length > 0 ? (
             <TableBody>
               {users.map((user) => (
@@ -112,25 +113,25 @@ const UserDetails = () => {
                   <TableCell className="text-gray-900">{user.name}</TableCell>
                   <TableCell className="text-center">{user.email}</TableCell>
                   <TableCell className="text-center">
-                    <span
-                      className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                        user.role === "admin" ? "bg-green-100 text-green-800" : "bg-gray-100 text-gray-800"
-                      }`}
-                    >
+                    <Badge tone={user.role === "admin" ? "green" : "gray"} className="capitalize">
                       {user.role}
-                    </span>
+                    </Badge>
                   </TableCell>
                   <TableCell className="text-center">
-                    <Button
-                      variant="link"
-                      className="mr-4"
-                      disabled={!canEdit}
-                      title={canEdit ? undefined : t("messages.you_dont_have_permission_to_edit_user")}
-                      onClick={() => handleEditUserDetails(user.id, true)}
-                    >
+                    <Badge tone={STATUS_TONE[user.status] ?? "gray"} className="capitalize">
+                      {user.status}
+                    </Badge>
+                  </TableCell>
+                  <TableCell className="text-center">
+                    {user.role !== "parent" && (
+                      <Button variant="link" className="mr-4" onClick={() => manageAccess(user.id)}>
+                        Manage access
+                      </Button>
+                    )}
+                    <Button variant="link" className="mr-4" onClick={() => handleEditUserDetails(user.id)}>
                       {t("labels.edit")}
                     </Button>
-                    {canDelete(user.id) && (
+                    {!isSelf(user.id) && (
                       <Button variant="link" className="text-red-600 hover:text-red-800" onClick={() => onClickDeleteUser(user.id)}>
                         Remove
                       </Button>
@@ -142,7 +143,7 @@ const UserDetails = () => {
           ) : (
             <TableBody>
               <tr>
-                <td colSpan={4}>
+                <td colSpan={5}>
                   {searchTerm ? (
                     <EmptyState
                       title="No matching users"
@@ -174,14 +175,11 @@ const UserDetails = () => {
         isOpen={isModalOpen}
         form={form}
         roleOptions={roleOptions}
-        permissionOptions={permissionOptions}
         isEditUser={isEditUser}
-        isEditingSelf={isEditingSelf}
         isLoadingAddUserDetail={isLoadingAddUserDetail}
         isLoadingUpdateUserDetail={isLoadingUpdateUserDetail}
         onClose={onCancel}
         onSubmit={handleSubmituserDetails}
-        handlePermissionChange={handlePermissionChange}
       />
 
       <DeleteConfirmationDialog

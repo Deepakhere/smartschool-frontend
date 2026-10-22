@@ -4,15 +4,15 @@ import { useParams, Navigate } from "react-router-dom";
 import { useAuth } from "./auth-context";
 import useGetAllOrganizations from "../pages/auth/service/get-all-organization/get-all-organization";
 import LogoSpinner from "../components/logo-spinner";
-import { IOrganization } from "../types";
+import { IOrganization, PermissionKey } from "../types";
 import { homePathFor, UserRole } from "../routes/access";
 
 interface ITenantContext {
   organizationId: string;
   organization: IOrganization | undefined;
   organizations: IOrganization[];
-  // the signed-in person's role in this school
   role: UserRole | undefined;
+  permissions: ReadonlySet<PermissionKey>;
 }
 
 const TenantContext = createContext<ITenantContext | undefined>(undefined);
@@ -44,8 +44,9 @@ export const TenantProvider = ({ children, requiredRole }: { children: ReactNode
     return <Navigate to={role ? homePathFor(organizationId, role) : "/not-access"} replace />;
   }
 
+  const permissions = new Set(organization?.myPermissions ?? []);
   return (
-    <TenantContext.Provider value={{ organizationId, organization, organizations, role }}>{children}</TenantContext.Provider>
+    <TenantContext.Provider value={{ organizationId, organization, organizations, role, permissions }}>{children}</TenantContext.Provider>
   );
 };
 
@@ -59,3 +60,14 @@ export const useTenant = () => {
 
 // the signed-in person's role in the current school
 export const useCurrentRole = (): UserRole | undefined => useContext(TenantContext)?.role;
+
+// e.g. /org/teacher, so shared pages link within the person's area
+export const useAreaBase = () => {
+  const tenant = useContext(TenantContext);
+  return `/${tenant?.organizationId}/${tenant?.role ?? "admin"}`;
+};
+
+export const useCan = () => {
+  const permissions = useContext(TenantContext)?.permissions;
+  return (...keys: PermissionKey[]) => keys.some((key) => permissions?.has(key));
+};
