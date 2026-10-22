@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useParams } from "react-router-dom";
 
 import { useCurrentRole } from "@/context/tenant-context";
@@ -12,8 +13,15 @@ export const useHeaderController = () => {
 
   const homePath = role ? homePathFor(organizationId, role) : "/organization";
 
+  // staff only; parents ask their school
+  const canAskSupport = !!role && role !== "parent";
+  const [isAskingSupport, setIsAskingSupport] = useState(false);
+
   return {
     homePath,
     pageHeaderConfig,
+    canAskSupport,
+    isAskingSupport,
+    setIsAskingSupport,
   };
 };

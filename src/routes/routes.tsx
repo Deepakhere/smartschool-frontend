@@ -45,6 +45,8 @@ import NotAccess from "../components/not-access";
 import { AuthenticatedRoute, FallbackRoute, ProtectedRoute, PublicRoute } from "./route-guards";
 import { sharedRoutes } from "./shared-pages";
 import { FirstPermittedPage } from "./permission-gate";
+import SupportList from "../pages/support/support-list";
+import SupportThread from "../pages/support/support-thread";
 import Organization from "../pages/auth/organization";
 
 // built once at module load: re-creating the router on a re-render would reset navigation state
@@ -165,6 +167,8 @@ const router = createBrowserRouter([
         path: "settings/*",
         element: <AdminSettings />,
       },
+      { path: "support", element: <SupportList /> },
+      { path: "support/:requestId", element: <SupportThread /> },
     ],
   },
   {
@@ -215,6 +219,8 @@ const router = createBrowserRouter([
         path: "profile",
         element: <Profile />,
       },
+      { path: "support", element: <SupportList /> },
+      { path: "support/:requestId", element: <SupportThread /> },
       ...sharedRoutes(),
     ],
   },
@@ -229,6 +235,8 @@ const router = createBrowserRouter([
       { index: true, element: <FirstPermittedPage /> },
       { path: "calendar", element: <AdminCalendar /> },
       { path: "profile", element: <Profile /> },
+      { path: "support", element: <SupportList /> },
+      { path: "support/:requestId", element: <SupportThread /> },
       ...sharedRoutes(),
     ],
   })),

@@ -13,6 +13,7 @@ export const useSidebarUserMenuController = () => {
 
   // an admin's profile lives in Settings
   const profilePath = role === "admin" ? `/${organizationId}/admin/settings` : `/${organizationId}/${role}/profile`;
+  const supportPath = role && role !== "parent" ? `/${organizationId}/${role}/support` : "";
 
   const handleLogout = () => {
     try {
@@ -28,6 +29,7 @@ export const useSidebarUserMenuController = () => {
     theme,
     setTheme,
     profilePath,
+    supportPath,
     isPlatformAdmin: !!user?.isPlatformAdmin,
     handleLogout,
   };

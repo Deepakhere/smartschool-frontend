@@ -1,10 +1,11 @@
 import { Link } from "react-router-dom";
-import { Bars3Icon, ArrowLeftIcon } from "@heroicons/react/24/outline";
+import { Bars3Icon, ArrowLeftIcon, QuestionMarkCircleIcon } from "@heroicons/react/24/outline";
 
 import PanelLeftIcon from "@/icons/panel-left-icon";
 import BrandLogo from "@/components/brand-logo";
 import { PANEL_MOTION, panelMotion, revealMotion } from "@/components/sidebar/sidebar-motion";
 import NotificationBell from "@/components/notification-bell";
+import SupportDialog from "@/components/support-dialog";
 import { useHeaderController } from "./header-controller";
 
 interface HeaderProps {
@@ -14,7 +15,7 @@ interface HeaderProps {
 }
 
 const Header = ({ onToggleSidebar, isCollapsed, onToggleCollapse }: HeaderProps) => {
-  const { homePath, pageHeaderConfig } = useHeaderController();
+  const { homePath, pageHeaderConfig, canAskSupport, isAskingSupport, setIsAskingSupport } = useHeaderController();
 
   return (
     <header className="app-shell-surface bg-white z-40">
@@ -85,10 +86,21 @@ const Header = ({ onToggleSidebar, isCollapsed, onToggleCollapse }: HeaderProps)
 
           <div className="flex items-center gap-3 shrink-0">
             {pageHeaderConfig?.actions}
+            {canAskSupport && (
+              <button
+                type="button"
+                onClick={() => setIsAskingSupport(true)}
+                className="rounded-md p-1.5 text-gray-500 hover:bg-gray-100 hover:text-gray-700"
+                title="Contact Opscul support"
+              >
+                <QuestionMarkCircleIcon className="h-6 w-6" aria-hidden="true" />
+              </button>
+            )}
             <NotificationBell variant="header" />
           </div>
         </div>
       </div>
+      {canAskSupport && <SupportDialog open={isAskingSupport} onClose={() => setIsAskingSupport(false)} />}
     </header>
   );
 };

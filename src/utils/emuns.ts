@@ -30,6 +30,7 @@ export const APIS_ROUTES = {
   EXAM_SERVICE: "/exam-service/v1",
   LEAVE_SERVICE: "/leave-service/v1",
   ACCESS_SERVICE: "/access-service/v1",
+  SUPPORT_SERVICE: "/support-service/v1",
 };
 
 export const API_QUERY_KEY = {
