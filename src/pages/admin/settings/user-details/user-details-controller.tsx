@@ -280,10 +280,10 @@ const useUserDetailsController = () => {
       email: user.email,
       role: user.role as AccountRole,
       permissions: {
-        canRead: user.permissions.canRead,
-        canCreate: user.permissions.canCreate,
-        canUpdate: user.permissions.canUpdate,
-        canDelete: user.permissions.canDelete,
+        canRead: user.permissions?.canRead ?? false,
+        canCreate: user.permissions?.canCreate ?? false,
+        canUpdate: user.permissions?.canUpdate ?? false,
+        canDelete: user.permissions?.canDelete ?? false,
       },
     });
 
@@ -343,9 +343,9 @@ const useUserDetailsController = () => {
     }
   }, [addUserDetail.isSuccess]);
 
-  // what the signed-in admin may do; nobody removes or re-roles themselves here
-  const canEdit = currentUser?.permissions?.canUpdate !== false;
-  const canDelete = (userId: string) => currentUser?.permissions?.canDelete !== false && userId !== currentUser?.id;
+  // reaching this page already needs "manage people"; nobody removes themselves
+  const canEdit = true;
+  const canDelete = (userId: string) => userId !== currentUser?.id;
 
   return {
     t,

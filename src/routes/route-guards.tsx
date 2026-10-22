@@ -1,13 +1,11 @@
 import { ReactNode } from "react";
-import Cookies from "js-cookie";
 import { Navigate } from "react-router-dom";
 
-import { USER_ACCESS_KEY } from "../utils";
 import { useAuth } from "../context/auth-context";
 import { TenantProvider } from "../context/tenant-context";
 import useIsMobile from "../hooks/is-mobile/is-mobile";
 import MobileNotice from "../components/mobile-notice";
-import { homePathFor, UserRole } from "./access";
+import { UserRole } from "./access";
 
 interface RouteGuardProps {
   children: ReactNode;
@@ -23,12 +21,12 @@ interface ProtectedRouteProps extends RouteGuardProps {
 //   signed in, right role     -> page (the backend still enforces every request)
 // The user comes from AuthProvider, which has already verified the session with the server.
 
-// signed-in visitors skip public pages (login and the like) and land on their dashboard
+// signed-in visitors skip public pages (login and the like); the school picker opens their school in their role there
 export const PublicRoute = ({ children }: RouteGuardProps) => {
   const { user } = useAuth();
 
-  if (user?.role) {
-    return <Navigate to={homePathFor(Cookies.get(USER_ACCESS_KEY.ORGANIZATION_ID), user.role)} replace />;
+  if (user) {
+    return <Navigate to="/organization" replace />;
   }
 
   return <>{children}</>;

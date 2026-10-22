@@ -139,7 +139,7 @@ const SidebarUserMenu = ({ isCollapsed }: SidebarUserMenuProps) => {
           }`}
         >
           <span className="block truncate text-sm font-medium text-gray-900">{user.name}</span>
-          <span className="block truncate text-xs text-gray-500 capitalize">{role ?? user.role}</span>
+          <span className="block truncate text-xs text-gray-500 capitalize">{role}</span>
         </span>
       </span>
       <ChevronUpDownIcon

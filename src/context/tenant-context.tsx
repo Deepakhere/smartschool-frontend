@@ -39,7 +39,7 @@ export const TenantProvider = ({ children, requiredRole }: { children: ReactNode
     return <Navigate to="/not-access" replace />;
   }
 
-  const role = (organization?.myRole ?? user?.role) as UserRole | undefined;
+  const role = organization?.myRole as UserRole | undefined;
   if (requiredRole && role !== requiredRole) {
     return <Navigate to={role ? homePathFor(organizationId, role) : "/not-access"} replace />;
   }
@@ -57,9 +57,5 @@ export const useTenant = () => {
   return context;
 };
 
-// the signed-in person's role where they are now: their role in the current school, or their account role outside one
-export const useCurrentRole = (): UserRole | undefined => {
-  const tenant = useContext(TenantContext);
-  const { user } = useAuth();
-  return tenant?.role ?? (user?.role as UserRole | undefined);
-};
+// the signed-in person's role in the current school
+export const useCurrentRole = (): UserRole | undefined => useContext(TenantContext)?.role;
