@@ -69,8 +69,7 @@ const OnlinePayments = () => {
   if (settings.isLoading) return <PageLoader />;
   if (settings.isError) return <ErrorState error={settings.error} onRetry={() => settings.refetch()} />;
   const data = settings.data!;
-  // the webhook credits parents who close the app mid-payment, so it is part of being connected
-  const connected = Boolean(data.keyId && data.hasKeySecret && data.hasWebhookSecret);
+  const connected = Boolean(data.keyId && data.hasKeySecret);
 
   return (
     <div className="space-y-6">
@@ -89,7 +88,7 @@ const OnlinePayments = () => {
           </div>
           <Switch checked={data.enabled} disabled={!connected || save.isPending} onCheckedChange={toggle} />
         </div>
-        {!connected && <p className="mt-3 text-sm text-amber-700">Save your Razorpay keys and webhook secret below to turn this on.</p>}
+        {!connected && <p className="mt-3 text-sm text-amber-700">Connect your Razorpay account below to turn this on.</p>}
       </div>
 
       <div className="rounded-lg bg-white p-6 shadow">
