@@ -50,7 +50,13 @@ const Breakdown = ({ title, columns, rows }: { title: string; columns: [string, 
 const CollectionsTab = ({ organizationId }: { organizationId: string }) => {
   const [from, setFrom] = useState(() => `${todayInIndia().slice(0, 7)}-01`);
   const [to, setTo] = useState(todayInIndia());
-  const report = useGetFeeCollections(organizationId, from, to);
+  const rangeIssue =
+    !from || !to
+      ? "Pick both dates to see collections."
+      : (Date.parse(to) - Date.parse(from)) / 86400000 > 366
+        ? "Choose a range of one year or less."
+        : null;
+  const report = useGetFeeCollections(organizationId, rangeIssue ? "" : from, rangeIssue ? "" : to);
   const data = report.data;
 
   const onExport = () => {
@@ -76,7 +82,9 @@ const CollectionsTab = ({ organizationId }: { organizationId: string }) => {
         <DatePicker label="To" value={to} min={from} max={todayInIndia()} onChange={setTo} />
       </div>
 
-      {report.isError ? (
+      {rangeIssue ? (
+        <p className="py-12 text-center text-sm text-gray-500">{rangeIssue}</p>
+      ) : report.isError ? (
         <ErrorState error={report.error} onRetry={() => report.refetch()} />
       ) : !data ? (
         <div className="flex justify-center py-12">

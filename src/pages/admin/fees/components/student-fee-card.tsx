@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Form } from "@/components/ui/form";
+import { useCurrentRole } from "@/context/tenant-context";
 import { useError } from "@/hooks";
 import { IStudentFeeSummary, SelectOption } from "@/types";
 import { formatMoney, toPaise, paymentMethodLabel } from "@/utils";
@@ -42,6 +43,8 @@ interface StudentFeeCardProps {
 const StudentFeeCard = ({ organizationId, summary, onReverse }: StudentFeeCardProps) => {
   const recordPayment = useRecordPayment(organizationId);
   const grantConcession = useGrantConcession(organizationId);
+  // concessions are the school admin's call; the fee desk only collects
+  const isFeeDesk = useCurrentRole() === "accountant";
   useError({ mutation: recordPayment });
   useError({ mutation: grantConcession });
 
@@ -141,19 +144,21 @@ const StudentFeeCard = ({ organizationId, summary, onReverse }: StudentFeeCardPr
         </Form>
       </div>
 
-      <div className="mt-4 rounded-md bg-gray-50 p-4">
-        <p className="mb-2 text-sm font-medium text-gray-700">Grant a concession</p>
-        <Form {...concessionForm}>
-          <form onSubmit={onGrantConcession} noValidate className="grid grid-cols-1 items-start gap-3 sm:grid-cols-4">
-            <TextField form={concessionForm} name="amount" label="Amount (₹)" type="number" min={0} step="0.01" />
-            <TextField form={concessionForm} name="reason" label="Reason" />
-            <SelectField form={concessionForm} name="installmentLabel" label="Apply to" options={installmentOptions} />
-            <Button type="submit" className="sm:mt-6" loading={grantConcession.isPending}>
-              Grant
-            </Button>
-          </form>
-        </Form>
-      </div>
+      {!isFeeDesk && (
+        <div className="mt-4 rounded-md bg-gray-50 p-4">
+          <p className="mb-2 text-sm font-medium text-gray-700">Grant a concession</p>
+          <Form {...concessionForm}>
+            <form onSubmit={onGrantConcession} noValidate className="grid grid-cols-1 items-start gap-3 sm:grid-cols-4">
+              <TextField form={concessionForm} name="amount" label="Amount (₹)" type="number" min={0} step="0.01" />
+              <TextField form={concessionForm} name="reason" label="Reason" />
+              <SelectField form={concessionForm} name="installmentLabel" label="Apply to" options={installmentOptions} />
+              <Button type="submit" className="sm:mt-6" loading={grantConcession.isPending}>
+                Grant
+              </Button>
+            </form>
+          </Form>
+        </div>
+      )}
 
       {!!summary.concessions?.length && (
         <div className="mt-4">

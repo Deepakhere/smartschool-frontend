@@ -21,6 +21,7 @@ const useParentFeesController = () => {
         onSuccess: (outcome) => {
           if (outcome === "paid") toast.success("Payment received. Your receipt is ready below.");
           else if (outcome === "needs_review") toast("Payment received. The school will apply it shortly.");
+          else if (outcome === "pending") toast("Payment received. We're confirming it, and your receipt will appear here shortly.");
         },
         onError: (error) =>
           toast.error((error as IAPIError)?.response?.Error?.message || (error as Error)?.message || "The payment didn't go through."),

@@ -34,7 +34,7 @@ const DefaultersTab = ({ organizationId }: { organizationId: string }) => {
       academicYearId: scope.academicYearId || undefined,
       classId: scope.classId || undefined,
       sectionId: scope.sectionId || undefined,
-      asOf,
+      asOf: asOf || undefined,
     }),
     [scope, asOf]
   );

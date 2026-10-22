@@ -33,9 +33,12 @@ const OnlinePayments = () => {
   useError({ mutation: save });
 
   const form = useForm<Values>({ resolver: zodResolver(schema), defaultValues: { keyId: "", keySecret: "", webhookSecret: "" } });
+  // filled on load and after new keys are saved; turning the switch leaves typed values alone
+  const savedKeyId = settings.data?.keyId;
+  const connectedAt = settings.data?.connectedAt;
   useEffect(() => {
-    if (settings.data) form.reset({ keyId: settings.data.keyId, keySecret: "", webhookSecret: "" });
-  }, [settings.data, form]);
+    if (savedKeyId !== undefined) form.reset({ keyId: savedKeyId, keySecret: "", webhookSecret: "" });
+  }, [savedKeyId, connectedAt, form]);
 
   const webhookUrl = `${import.meta.env.VITE_API_URL}/payment-webhook/v1/razorpay/${organizationId}`;
 
@@ -55,14 +58,19 @@ const OnlinePayments = () => {
     save.mutate({ enabled }, { onSuccess: () => toast.success(enabled ? "Parents can now pay fees online." : "Online fee payments turned off.") });
 
   const copyWebhook = async () => {
-    await navigator.clipboard.writeText(webhookUrl).catch(() => null);
-    toast.success("Webhook address copied.");
+    try {
+      await navigator.clipboard.writeText(webhookUrl);
+      toast.success("Webhook address copied.");
+    } catch {
+      toast.error("Couldn't copy. Select the address and copy it instead.");
+    }
   };
 
   if (settings.isLoading) return <PageLoader />;
   if (settings.isError) return <ErrorState error={settings.error} onRetry={() => settings.refetch()} />;
   const data = settings.data!;
-  const connected = Boolean(data.keyId && data.hasKeySecret);
+  // the webhook credits parents who close the app mid-payment, so it is part of being connected
+  const connected = Boolean(data.keyId && data.hasKeySecret && data.hasWebhookSecret);
 
   return (
     <div className="space-y-6">
@@ -81,7 +89,7 @@ const OnlinePayments = () => {
           </div>
           <Switch checked={data.enabled} disabled={!connected || save.isPending} onCheckedChange={toggle} />
         </div>
-        {!connected && <p className="mt-3 text-sm text-amber-700">Connect your Razorpay account below to turn this on.</p>}
+        {!connected && <p className="mt-3 text-sm text-amber-700">Save your Razorpay keys and webhook secret below to turn this on.</p>}
       </div>
 
       <div className="rounded-lg bg-white p-6 shadow">

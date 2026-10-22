@@ -49,12 +49,20 @@ const loadScript = () => {
   return loading;
 };
 
-// opens the checkout; resolves with Razorpay's signed result, or null if the parent closed it
+// opens the checkout; resolves with Razorpay's signed result, or null if the parent closed it. A failed attempt
+// doesn't settle it, since the parent can retry in the same window; closing after a failure rejects with that failure
 export const openRazorpayCheckout = async (options: Omit<RazorpayCheckoutOptions, "handler" | "modal">) => {
   await loadScript();
   return new Promise<RazorpaySuccess | null>((resolve, reject) => {
-    const checkout = new window.Razorpay!({ ...options, handler: resolve, modal: { ondismiss: () => resolve(null) } });
-    checkout.on("payment.failed", (response) => reject(new Error(response.error?.description || "The payment didn't go through.")));
+    let lastError: Error | null = null;
+    const checkout = new window.Razorpay!({
+      ...options,
+      handler: resolve,
+      modal: { ondismiss: () => (lastError ? reject(lastError) : resolve(null)) },
+    });
+    checkout.on("payment.failed", (response) => {
+      lastError = new Error(response.error?.description || "The payment didn't go through.");
+    });
     checkout.open();
   });
 };

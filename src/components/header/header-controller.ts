@@ -2,6 +2,7 @@ import { useParams } from "react-router-dom";
 
 import { useCurrentRole } from "@/context/tenant-context";
 import { usePageHeaderContext } from "@/context/page-header-context";
+import { homePathFor } from "@/routes/access";
 
 export const useHeaderController = () => {
   const { organizationId } = useParams();
@@ -9,7 +10,7 @@ export const useHeaderController = () => {
   const role = useCurrentRole();
   const { config: pageHeaderConfig } = usePageHeaderContext();
 
-  const homePath = `/${organizationId}/${role}/dashboard`;
+  const homePath = role ? homePathFor(organizationId, role) : "/organization";
 
   return {
     homePath,

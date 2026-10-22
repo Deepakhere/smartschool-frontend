@@ -168,6 +168,7 @@
 .dark .bg-amber-100 {
   @apply bg-amber-900 bg-opacity-40;
 }
+.dark .text-amber-700,
 .dark .text-amber-800 {
   @apply text-amber-300;
 }

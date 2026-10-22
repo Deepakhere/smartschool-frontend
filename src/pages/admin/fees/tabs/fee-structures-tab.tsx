@@ -56,15 +56,29 @@ const FeeStructuresTab = ({ organizationId }: { organizationId: string }) => {
     name: ["classIds", "items", "installments"],
   });
 
-  const classOptions: SelectOption[] = (classes.data?.items ?? []).map((klass) => ({ id: klass.id, name: klass.name }));
+  // a structure being edited may use a removed head or another year's classes; keep those in the lists so they still show
+  const withEditing = (options: SelectOption[], extra: SelectOption[] = []) => [
+    ...options,
+    ...extra.filter((option) => !options.some((known) => known.id === option.id)),
+  ];
+  const classOptions = withEditing(
+    (classes.data?.items ?? []).map((klass) => ({ id: klass.id, name: klass.name })),
+    editing?.classIds
+  );
   // only sections of the ticked classes, named with their class since several classes have an "A"
-  const sectionOptions: SelectOption[] = (sections.data?.items ?? [])
-    .filter((section) => classIds.includes(section.classId))
-    .map((section) => ({
-      id: section.id,
-      name: `${classOptions.find((klass) => klass.id === section.classId)?.name ?? ""} - ${section.name}`,
-    }));
-  const feeHeadOptions: SelectOption[] = (feeHeads.data?.items ?? []).map((head) => ({ id: head.id, name: head.name }));
+  const sectionOptions = withEditing(
+    (sections.data?.items ?? [])
+      .filter((section) => classIds.includes(section.classId))
+      .map((section) => ({
+        id: section.id,
+        name: `${classOptions.find((klass) => klass.id === section.classId)?.name ?? ""} - ${section.name}`,
+      })),
+    editing?.sectionIds
+  );
+  const feeHeadOptions = withEditing(
+    (feeHeads.data?.items ?? []).map((head) => ({ id: head.id, name: head.name })),
+    editing?.items.flatMap((item) => (item.feeHeadId ? [{ id: item.feeHeadId.id, name: item.feeHeadId.name }] : []))
+  );
 
   // unticking a class also drops any of its sections that were picked
   const onClassesChange = (nextClassIds: string[]) => {
@@ -102,10 +116,6 @@ const FeeStructuresTab = ({ organizationId }: { organizationId: string }) => {
   };
 
   const onSubmit = form.handleSubmit((values) => {
-    if (!currentYearId) {
-      toast.error("Set a current academic year first (Academics page).");
-      return;
-    }
     const body = {
       name: values.name,
       classIds: values.classIds,
@@ -130,6 +140,11 @@ const FeeStructuresTab = ({ organizationId }: { organizationId: string }) => {
           },
         }
       );
+      return;
+    }
+    // a new structure belongs to the current year; edits keep their own
+    if (!currentYearId) {
+      toast.error("Set a current academic year first (Academics page).");
       return;
     }
     createStructure.mutate(

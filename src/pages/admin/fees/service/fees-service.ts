@@ -117,7 +117,11 @@ export const useUpdateFeeHead = (organizationId: string) => {
     mutationFn: async ({ feeHeadId, value }) => {
       await apiClient.patch(`${base(organizationId)}/fee-head/${feeHeadId}`, value);
     },
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: [API_QUERY_KEY.GET_FEE_HEADS, organizationId] }),
+    // structures show each head's name, so they refresh too
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [API_QUERY_KEY.GET_FEE_HEADS, organizationId] });
+      queryClient.invalidateQueries({ queryKey: [API_QUERY_KEY.GET_FEE_STRUCTURES, organizationId] });
+    },
   });
 };
 
