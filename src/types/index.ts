@@ -818,11 +818,24 @@ export interface IFeeDefaulter {
   } | null;
 }
 
-export interface IFeeDefaultersResult {
+// every paged list endpoint answers in this shape (smartschool-backend/core/http/pagination.js)
+export interface Pagination {
+  currentPage: number;
+  totalItems: number;
+  itemsPerPage: number;
+  totalPages: number;
+  hasNextPage: boolean;
+  hasPreviousPage: boolean;
+}
+
+export interface Paged<T> {
+  rows: T[];
+  pagination: Pagination;
+}
+
+export interface IFeeDefaultersResult extends Paged<IFeeDefaulter> {
   asOf: string;
   summary: { students: number; overdueAmount: number; outstandingAmount: number };
-  items: IFeeDefaulter[];
-  total_count: number;
 }
 
 export interface IFeeCollectionSummary {

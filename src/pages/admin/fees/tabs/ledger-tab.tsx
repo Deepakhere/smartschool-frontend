@@ -16,8 +16,8 @@ const LedgerTab = ({ organizationId }: { organizationId: string }) => {
   const [isExporting, setIsExporting] = useState(false);
   const ledger = useGetPaymentLedger(organizationId, page);
   const toReview = useGetOnlinePaymentsForReview(useCan()("fees.collect") ? organizationId : "").data ?? [];
-  const payments = ledger.data?.items ?? [];
-  const total = ledger.data?.total_count ?? 0;
+  const payments = ledger.data?.rows ?? [];
+  const total = ledger.data?.pagination.totalItems ?? 0;
 
   // the export holds every payment, not just the page on screen
   const onExport = async () => {

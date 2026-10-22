@@ -58,7 +58,7 @@ export const useDashboardController = () => {
 
   useError({ mutation: createNotice });
 
-  const recentUpdates = (recentNotices.data?.items || []).map((notice) => ({
+  const recentUpdates = (recentNotices.data?.rows || []).map((notice) => ({
     type: notice.type,
     title: notice.title,
     date: new Date(notice.createdAt).toLocaleDateString(),

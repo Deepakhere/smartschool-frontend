@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 
-import { IAPIError, IAxiosResponse, IStudentEnrollment } from "@/types";
+import { IAPIError, IAxiosResponse, IStudentEnrollment, Paged } from "@/types";
 import { APIS_ROUTES, API_QUERY_KEY } from "@/utils";
 import apiClient from "@/config";
 
@@ -22,8 +22,8 @@ const getStudentDetails = async (
   searchTerm: string,
   limit: number,
   page: number
-): Promise<{ items: IStudentResponse[]; total_count: number }> => {
-  const result = await apiClient.get<null, IAxiosResponse<{ items: IStudentResponse[]; total_count: number }>>(
+): Promise<Paged<IStudentResponse>> => {
+  const result = await apiClient.get<null, IAxiosResponse<Paged<IStudentResponse>>>(
     `${APIS_ROUTES.STUDENT_PROFILE}/${organizationId}/get-student-profile`,
     {
       params: {
@@ -45,7 +45,7 @@ const useGetStudentDetails = (
   limit: number,
   page: number
 ) =>
-  useQuery<{ items: IStudentResponse[]; total_count: number }, IAPIError>({
+  useQuery<Paged<IStudentResponse>, IAPIError>({
     queryKey: [API_QUERY_KEY.GET_STUDENT_PROFILE, organizationId, classId, searchTerm, limit, page],
     queryFn: () => getStudentDetails(organizationId, classId, searchTerm, limit, page),
     enabled: !!organizationId,

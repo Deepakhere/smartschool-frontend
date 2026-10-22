@@ -78,7 +78,7 @@ export const useHomeworkController = () => {
     sections: picker.sections,
     hasNoClasses: picker.hasNoClasses,
     subjects: subjects.data?.items || [],
-    homeworkList: homeworkList.data?.items || [],
+    homeworkList: homeworkList.data?.rows || [],
     isLoadingHomework: homeworkList.isLoading,
     academicYearId,
     setAcademicYearId: picker.setAcademicYearId,

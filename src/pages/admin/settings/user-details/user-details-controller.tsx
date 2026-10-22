@@ -40,7 +40,7 @@ const useUserDetailsController = () => {
 
   const addUserDetail = useAddUserDetail(organizationId);
   const getAllUserDetails = useGetAllUserDetails(organizationId, searchTerm, sortBy === "all" ? "" : sortBy, page);
-  const users: IAllUserDetails[] = getAllUserDetails.data?.items ?? [];
+  const users: IAllUserDetails[] = getAllUserDetails.data?.rows ?? [];
   const deleteUser = useDeleteUser(organizationId);
   const updateUserDetails = useUpdateUserDetail(organizationId);
 
@@ -145,7 +145,7 @@ const useUserDetailsController = () => {
     page,
     setPage,
     pageSize: USERS_PAGE_SIZE,
-    totalUsers: getAllUserDetails.data?.total_count ?? 0,
+    totalUsers: getAllUserDetails.data?.pagination.totalItems ?? 0,
     openAddUser,
     isSelf: (userId: string) => userId === currentUser?.id,
     isEditUser: !!editingUserId,

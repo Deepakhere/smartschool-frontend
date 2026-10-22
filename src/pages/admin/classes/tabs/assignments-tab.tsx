@@ -148,7 +148,7 @@ const AssignmentsTab = ({ organizationId, yearId }: { organizationId: string; ye
           name="teacherId"
           label="Teacher"
           placeholder="Select teacher"
-          options={(teachers.data?.items ?? []).map((teacher) => ({
+          options={(teachers.data?.rows ?? []).map((teacher) => ({
             id: teacher.id,
             name: `${teacher.name} (${teacher.email})`,
           }))}

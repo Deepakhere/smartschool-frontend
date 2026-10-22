@@ -39,8 +39,8 @@ const DefaultersTab = ({ organizationId }: { organizationId: string }) => {
     [scope, asOf]
   );
   const report = useGetFeeDefaulters(organizationId, filters, page);
-  const rows = report.data?.items ?? [];
-  const total = report.data?.total_count ?? 0;
+  const rows = report.data?.rows ?? [];
+  const total = report.data?.pagination.totalItems ?? 0;
   const summary = report.data?.summary;
 
   const onScopeChange = useCallback((next: AcademicFilterValue) => {

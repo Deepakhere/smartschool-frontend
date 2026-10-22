@@ -1,7 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import apiClient from "@/config";
-import { IAPIError, IAxiosResponse, IEmailLog } from "@/types";
+import { IAPIError, IAxiosResponse, IEmailLog, Paged } from "@/types";
 import { APIS_ROUTES, API_QUERY_KEY, API_MUTATION_KEY } from "@/utils";
 
 const base = (organizationId: string) => `${APIS_ROUTES.ORGANIZATION_SERVICE}/${organizationId}`;
@@ -11,9 +11,7 @@ export interface NotificationSettings {
   feeRemindersEnabled: boolean;
 }
 
-interface IEmailNotificationLogResponse {
-  items: IEmailLog[];
-  total_count: number;
+interface IEmailNotificationLogResponse extends Paged<IEmailLog> {
   settings: NotificationSettings;
 }
 

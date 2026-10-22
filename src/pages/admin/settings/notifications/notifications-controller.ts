@@ -13,7 +13,7 @@ const useNotificationsController = () => {
 
   const emailNotificationsEnabled = getEmailNotificationLog.data?.settings.emailNotificationsEnabled ?? true;
   const feeRemindersEnabled = getEmailNotificationLog.data?.settings.feeRemindersEnabled ?? true;
-  const emailLog = getEmailNotificationLog.data?.items || [];
+  const emailLog = getEmailNotificationLog.data?.rows || [];
 
   const toggleEmailNotifications = (checked: boolean) => {
     updateSettings.mutate(

@@ -61,7 +61,7 @@ const SectionsTab = ({ organizationId, yearId, classId, onClassChange }: Section
   const teacherOptions = useMemo(
     () => [
       { id: NO_TEACHER, name: "No class teacher" },
-      ...(teachers.data?.items ?? []).map((teacher) => ({
+      ...(teachers.data?.rows ?? []).map((teacher) => ({
         id: teacher.id,
         name: `${teacher.name} (${teacher.email})`,
       })),

@@ -48,7 +48,7 @@ const StudentFeesTab = ({ organizationId }: { organizationId: string }) => {
           onChange={(e) => setSearch(e.target.value)}
         />
         <div className="mt-3 flex flex-wrap gap-2">
-          {(students.data?.items ?? []).map((student) => (
+          {(students.data?.rows ?? []).map((student) => (
             <button
               key={student.id}
               type="button"
@@ -69,10 +69,10 @@ const StudentFeesTab = ({ organizationId }: { organizationId: string }) => {
 
       {!studentId && !students.isLoading && (
         <Card>
-          {(students.data?.items ?? []).length || debouncedSearch ? (
+          {(students.data?.rows ?? []).length || debouncedSearch ? (
             <EmptyState
-              title={(students.data?.items ?? []).length ? "Pick a student" : "No matching students"}
-              description={(students.data?.items ?? []).length ? "Search above and choose a student to see their fees and record payments." : `No student matches "${debouncedSearch}".`}
+              title={(students.data?.rows ?? []).length ? "Pick a student" : "No matching students"}
+              description={(students.data?.rows ?? []).length ? "Search above and choose a student to see their fees and record payments." : `No student matches "${debouncedSearch}".`}
             />
           ) : (
             <EmptyState title="No students yet" description="Add students first; their fees and payments are managed here." />

@@ -23,7 +23,7 @@ const useNoticeController = () => {
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   const getNoticeList = useGetNoticeList(organizationId, "", "", NOTICES_PAGE_SIZE, page);
-  const notices: INotice[] = getNoticeList.data?.items ?? [];
+  const notices: INotice[] = getNoticeList.data?.rows ?? [];
   const createNotice = useCreateNotice(organizationId || "");
   const deleteNotice = useDeleteNotice(organizationId || "");
 
@@ -143,7 +143,7 @@ const useNoticeController = () => {
     page,
     setPage,
     pageSize: NOTICES_PAGE_SIZE,
-    totalNotices: getNoticeList.data?.total_count ?? 0,
+    totalNotices: getNoticeList.data?.pagination.totalItems ?? 0,
     isNoticeModalOpen,
     isLoadingNoticeList: getNoticeList.isLoading,
     isFetchingNoticeList: getNoticeList.isFetching,

@@ -1,7 +1,7 @@
 import { keepPreviousData, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import apiClient from "@/config";
-import { IAPIError, IAxiosResponse, IFeeHead, IFeeStructure, IStudentFeeSummary, IPayment, IFeeDefaultersResult, IFeeCollectionSummary } from "@/types";
+import { IAPIError, IAxiosResponse, IFeeHead, IFeeStructure, IStudentFeeSummary, IPayment, IFeeDefaultersResult, IFeeCollectionSummary, Paged } from "@/types";
 import { APIS_ROUTES, API_QUERY_KEY, API_MUTATION_KEY } from "@/utils";
 import { useIdempotencyKey } from "@/hooks";
 
@@ -214,14 +214,14 @@ export const useReversePayment = (organizationId: string) => {
 export const LEDGER_PAGE_SIZE = 50;
 
 const fetchLedgerPage = async (organizationId: string, page: number, limit: number) => {
-  const result = await apiClient.get<null, IAxiosResponse<{ items: IPayment[]; total_count: number }>>(`${base(organizationId)}/payment`, {
+  const result = await apiClient.get<null, IAxiosResponse<Paged<IPayment>>>(`${base(organizationId)}/payment`, {
     params: { page, limit },
   });
   return result.data.Data;
 };
 
 export const useGetPaymentLedger = (organizationId: string, page: number) =>
-  useQuery<{ items: IPayment[]; total_count: number }, IAPIError>({
+  useQuery<Paged<IPayment>, IAPIError>({
     queryKey: [API_QUERY_KEY.GET_PAYMENT_LEDGER, organizationId, page],
     queryFn: () => fetchLedgerPage(organizationId, page, LEDGER_PAGE_SIZE),
     enabled: !!organizationId,
@@ -233,9 +233,9 @@ export const useGetPaymentLedger = (organizationId: string, page: number) =>
 export const fetchWholeLedger = async (organizationId: string) => {
   const all: IPayment[] = [];
   for (let page = 1; ; page++) {
-    const { items, total_count } = await fetchLedgerPage(organizationId, page, 100);
-    all.push(...items);
-    if (!items.length || all.length >= total_count) return all;
+    const { rows, pagination } = await fetchLedgerPage(organizationId, page, 100);
+    all.push(...rows);
+    if (!pagination.hasNextPage) return all;
   }
 };
 
@@ -311,11 +311,11 @@ export const useGetFeeDefaulters = (organizationId: string, filters: DefaulterFi
 
 // every defaulter for the current filters, page by page, for the export
 export const fetchAllDefaulters = async (organizationId: string, filters: DefaulterFilters) => {
-  const all: IFeeDefaultersResult["items"] = [];
+  const all: IFeeDefaultersResult["rows"] = [];
   for (let page = 1; ; page++) {
-    const { items, total_count } = await fetchDefaultersPage(organizationId, filters, page, 100);
-    all.push(...items);
-    if (!items.length || all.length >= total_count) return all;
+    const { rows, pagination } = await fetchDefaultersPage(organizationId, filters, page, 100);
+    all.push(...rows);
+    if (!pagination.hasNextPage) return all;
   }
 };
 
