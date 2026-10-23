@@ -12,7 +12,9 @@ export const useGetLeaveRequestsReviewQueue = (organizationId: string, status: s
     queryFn: async () => {
       const result = await apiClient.get<null, IAxiosResponse<{ items: ILeaveRequest[] }>>(
         `${base(organizationId)}/review-queue`,
-        { params: status ? { status } : {} }
+        {
+          params: status ? { status } : {},
+        }
       );
       return result.data.Data;
     },
@@ -33,12 +35,19 @@ export const useDecideLeaveRequest = (organizationId: string, status: string) =>
       const result = await apiClient.post<
         { status: string; decisionNote?: string },
         IAxiosResponse<{ item: ILeaveRequest }>
-      >(`${base(organizationId)}/${leaveRequestId}/decide`, { status: decision, decisionNote });
+      >(`${base(organizationId)}/${leaveRequestId}/decide`, {
+        status: decision,
+        decisionNote,
+      });
       return result.data.Data.item;
     },
-    onSuccess: () =>
+    onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: [API_QUERY_KEY.GET_LEAVE_REQUESTS_REVIEW_QUEUE, organizationId, status],
-      }),
+      });
+      queryClient.invalidateQueries({
+        queryKey: [API_QUERY_KEY.GET_ATTENTION, organizationId],
+      });
+    },
   });
 };

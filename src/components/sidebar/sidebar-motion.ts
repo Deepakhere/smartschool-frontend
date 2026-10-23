@@ -1,5 +1,6 @@
 // opening glides out quickly and lands softly; closing takes a little longer with an even ease-in-out
-export const panelMotion = (isCollapsed: boolean) => (isCollapsed ? "duration-400 ease-settle" : "duration-350 ease-glide");
+export const panelMotion = (isCollapsed: boolean) =>
+  isCollapsed ? "duration-400 ease-settle" : "duration-350 ease-glide";
 
 export const PANEL_MOTION = "transition-[width]";
 

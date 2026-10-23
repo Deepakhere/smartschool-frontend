@@ -1,15 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import apiClient from "@/config";
-import {
-  IAPIError,
-  IAxiosResponse,
-  IGradingScheme,
-  IExam,
-  IExamSubject,
-  IMarksSheetItem,
-  IResult,
-} from "@/types";
+import { IAPIError, IAxiosResponse, IGradingScheme, IExam, IExamSubject, IMarksSheetItem, IResult } from "@/types";
 import { APIS_ROUTES, API_QUERY_KEY, API_MUTATION_KEY, saveFile } from "@/utils";
 
 const base = (organizationId: string) => `${APIS_ROUTES.EXAM_SERVICE}/${organizationId}`;
@@ -29,7 +21,12 @@ export const useGetGradingSchemes = (organizationId: string) =>
 interface ICreateGradingSchemePayload {
   name: string;
   passPercent: number;
-  bands: { grade: string; minPercent: number; maxPercent: number; gradePoint: number }[];
+  bands: {
+    grade: string;
+    minPercent: number;
+    maxPercent: number;
+    gradePoint: number;
+  }[];
 }
 
 export const useCreateGradingScheme = (organizationId: string) => {
@@ -39,7 +36,10 @@ export const useCreateGradingScheme = (organizationId: string) => {
     mutationFn: async (value) => {
       await apiClient.post(`${base(organizationId)}/grading-scheme`, value);
     },
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: [API_QUERY_KEY.GET_GRADING_SCHEMES, organizationId] }),
+    onSuccess: () =>
+      queryClient.invalidateQueries({
+        queryKey: [API_QUERY_KEY.GET_GRADING_SCHEMES, organizationId],
+      }),
   });
 };
 
@@ -71,7 +71,10 @@ export const useCreateExam = (organizationId: string) => {
     mutationFn: async (value) => {
       await apiClient.post(`${base(organizationId)}/exam`, value);
     },
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: [API_QUERY_KEY.GET_EXAMS, organizationId] }),
+    onSuccess: () =>
+      queryClient.invalidateQueries({
+        queryKey: [API_QUERY_KEY.GET_EXAMS, organizationId],
+      }),
   });
 };
 
@@ -95,7 +98,9 @@ export const useAddExamSubjects = (organizationId: string) => {
       await apiClient.post(`${base(organizationId)}/exam/${value.examId}/subject`, value);
     },
     onSuccess: (_data, variables) =>
-      queryClient.invalidateQueries({ queryKey: [API_QUERY_KEY.GET_EXAM_SUBJECTS, organizationId, variables.examId] }),
+      queryClient.invalidateQueries({
+        queryKey: [API_QUERY_KEY.GET_EXAM_SUBJECTS, organizationId, variables.examId],
+      }),
   });
 };
 
@@ -105,7 +110,9 @@ export const useGetExamSubjects = (organizationId: string, examId?: string, clas
     queryFn: async () => {
       const result = await apiClient.get<null, IAxiosResponse<{ items: IExamSubject[] }>>(
         `${base(organizationId)}/exam/${examId}/subject`,
-        { params: classId ? { classId } : undefined }
+        {
+          params: classId ? { classId } : undefined,
+        }
       );
       return result.data.Data;
     },
@@ -118,7 +125,9 @@ export const useGetMarksSheet = (organizationId: string, examSubjectId?: string,
     queryFn: async () => {
       const result = await apiClient.get<null, IAxiosResponse<{ items: IMarksSheetItem[]; examSubject: IExamSubject }>>(
         `${base(organizationId)}/exam-subject/${examSubjectId}/marks-sheet`,
-        { params: { sectionId } }
+        {
+          params: { sectionId },
+        }
       );
       return result.data.Data;
     },
@@ -129,7 +138,12 @@ interface ISaveMarksPayload {
   examSubjectId: string;
   sectionId: string;
   // an absent student is sent without marks
-  entries: { studentId: string; theoryMarks?: number; practicalMarks?: number; isAbsent?: boolean }[];
+  entries: {
+    studentId: string;
+    theoryMarks?: number;
+    practicalMarks?: number;
+    isAbsent?: boolean;
+  }[];
 }
 
 export const useSaveMarks = (organizationId: string) => {
@@ -153,7 +167,10 @@ export const useVerifyExamSubjectMarks = (organizationId: string) => {
     mutationFn: async (examSubjectId) => {
       await apiClient.post(`${base(organizationId)}/exam-subject/${examSubjectId}/verify`);
     },
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: [API_QUERY_KEY.GET_MARKS_SHEET, organizationId] }),
+    onSuccess: () =>
+      queryClient.invalidateQueries({
+        queryKey: [API_QUERY_KEY.GET_MARKS_SHEET, organizationId],
+      }),
   });
 };
 
@@ -164,7 +181,14 @@ export const usePublishExam = (organizationId: string) => {
     mutationFn: async (examId) => {
       await apiClient.post(`${base(organizationId)}/exam/${examId}/publish`);
     },
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: [API_QUERY_KEY.GET_EXAMS, organizationId] }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: [API_QUERY_KEY.GET_EXAMS, organizationId],
+      });
+      queryClient.invalidateQueries({
+        queryKey: [API_QUERY_KEY.GET_ATTENTION, organizationId],
+      });
+    },
   });
 };
 
@@ -186,7 +210,13 @@ export const useGetMyResults = (organizationId: string) =>
     queryFn: async () => {
       const result = await apiClient.get<
         null,
-        IAxiosResponse<{ items: { studentId: string; studentName: string; results: IResult[] }[] }>
+        IAxiosResponse<{
+          items: {
+            studentId: string;
+            studentName: string;
+            results: IResult[];
+          }[];
+        }>
       >(`${base(organizationId)}/my-results`);
       return result.data.Data;
     },
