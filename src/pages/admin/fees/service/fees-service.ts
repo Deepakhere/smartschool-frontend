@@ -2,7 +2,7 @@ import { keepPreviousData, useMutation, useQuery, useQueryClient } from "@tansta
 
 import apiClient from "@/config";
 import { IAPIError, IAxiosResponse, IFeeHead, IFeeStructure, IStudentFeeSummary, IPayment, IFeeDefaultersResult, IFeeCollectionSummary, Paged } from "@/types";
-import { APIS_ROUTES, API_QUERY_KEY, API_MUTATION_KEY } from "@/utils";
+import { APIS_ROUTES, API_QUERY_KEY, API_MUTATION_KEY, saveFile } from "@/utils";
 import { useIdempotencyKey } from "@/hooks";
 
 const base = (organizationId: string) => `${APIS_ROUTES.FEE_SERVICE}/${organizationId}`;
@@ -211,7 +211,7 @@ export const useReversePayment = (organizationId: string) => {
   });
 };
 
-export const fetchLedgerPage = async (organizationId: string, page: number, limit: number) => {
+const fetchLedgerPage = async (organizationId: string, page: number, limit: number) => {
   const result = await apiClient.get<null, IAxiosResponse<Paged<IPayment>>>(`${base(organizationId)}/payment`, {
     params: { page, limit },
   });
@@ -227,16 +227,15 @@ export const useGetPaymentLedger = (organizationId: string, page: number, pageSi
     placeholderData: keepPreviousData,
   });
 
+// the ledger as a CSV built and capped by the server, newest first
+export const downloadLedgerCsv = async (organizationId: string, limit: number) => {
+  const result = await apiClient.get(`${base(organizationId)}/payment/export`, { params: { limit }, responseType: "blob" });
+  saveFile(result.data, "payment-ledger.csv");
+};
+
 export const downloadFeeReceipt = async (organizationId: string, paymentId: string) => {
   const result = await apiClient.get(`${base(organizationId)}/payment/${paymentId}/receipt`, { responseType: "blob" });
-  const url = window.URL.createObjectURL(new Blob([result.data], { type: "application/pdf" }));
-  const link = document.createElement("a");
-  link.href = url;
-  link.download = `receipt-${paymentId}.pdf`;
-  document.body.appendChild(link);
-  link.click();
-  link.remove();
-  window.URL.revokeObjectURL(url);
+  saveFile(result.data, `receipt-${paymentId}.pdf`, "application/pdf");
 };
 
 // emails the same PDF to the caller's own registered address - no arbitrary recipient
@@ -280,7 +279,7 @@ export interface DefaulterFilters {
   asOf?: string;
 }
 
-export const fetchDefaultersPage = async (organizationId: string, filters: DefaulterFilters, page: number, limit: number) => {
+const fetchDefaultersPage = async (organizationId: string, filters: DefaulterFilters, page: number, limit: number) => {
   const result = await apiClient.get<null, IAxiosResponse<IFeeDefaultersResult>>(`${base(organizationId)}/report/defaulters`, {
     params: { ...filters, page, limit },
   });
@@ -296,6 +295,14 @@ export const useGetFeeDefaulters = (organizationId: string, filters: DefaulterFi
   });
 
 // every defaulter for the current filters, page by page, for the export
+export const downloadDefaultersCsv = async (organizationId: string, filters: DefaulterFilters, limit: number) => {
+  const result = await apiClient.get(`${base(organizationId)}/report/defaulters/export`, {
+    params: { ...filters, limit },
+    responseType: "blob",
+  });
+  saveFile(result.data, `fee-defaulters-${filters.asOf ?? "today"}.csv`);
+};
+
 export const useGetFeeCollections = (organizationId: string, from: string, to: string) =>
   useQuery<IFeeCollectionSummary, IAPIError>({
     queryKey: [API_QUERY_KEY.GET_FEE_COLLECTIONS, organizationId, from, to],

@@ -1,5 +1,6 @@
-// exports an array of flat objects as a downloaded CSV file - no backend round trip,
-// since every screen that needs this already has the data loaded for its table
+import { saveFile } from "./save-file";
+
+// a CSV of rows the screen already holds in full; paged lists export through the backend instead
 export const exportToCsv = (filename: string, rows: Record<string, string | number | null | undefined>[]) => {
   if (!rows.length) return;
 
@@ -11,13 +12,5 @@ export const exportToCsv = (filename: string, rows: Record<string, string | numb
 
   const lines = [headers.join(","), ...rows.map((row) => headers.map((h) => escapeCell(row[h])).join(","))];
   // the byte-order mark makes Excel read the file as UTF-8, so the rupee sign and Indian names show correctly
-  const blob = new Blob(["\uFEFF" + lines.join("\n")], { type: "text/csv;charset=utf-8;" });
-  const url = window.URL.createObjectURL(blob);
-  const link = document.createElement("a");
-  link.href = url;
-  link.download = filename.endsWith(".csv") ? filename : `${filename}.csv`;
-  document.body.appendChild(link);
-  link.click();
-  link.remove();
-  window.URL.revokeObjectURL(url);
+  saveFile("\uFEFF" + lines.join("\n"), filename.endsWith(".csv") ? filename : `${filename}.csv`, "text/csv;charset=utf-8;");
 };

@@ -16,7 +16,7 @@ interface IStudentResponse {
   pincode?: string;
 }
 
-export const fetchStudentsPage = async (
+const getStudentDetails = async (
   organizationId: string,
   classId: string,
   searchTerm: string,
@@ -47,7 +47,7 @@ const useGetStudentDetails = (
 ) =>
   useQuery<Paged<IStudentResponse>, IAPIError>({
     queryKey: [API_QUERY_KEY.GET_STUDENT_PROFILE, organizationId, classId, searchTerm, limit, page],
-    queryFn: () => fetchStudentsPage(organizationId, classId, searchTerm, limit, page),
+    queryFn: () => getStudentDetails(organizationId, classId, searchTerm, limit, page),
     enabled: !!organizationId,
   });
 

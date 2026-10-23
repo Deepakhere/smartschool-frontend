@@ -10,7 +10,7 @@ import {
   IMarksSheetItem,
   IResult,
 } from "@/types";
-import { APIS_ROUTES, API_QUERY_KEY, API_MUTATION_KEY } from "@/utils";
+import { APIS_ROUTES, API_QUERY_KEY, API_MUTATION_KEY, saveFile } from "@/utils";
 
 const base = (organizationId: string) => `${APIS_ROUTES.EXAM_SERVICE}/${organizationId}`;
 
@@ -198,14 +198,7 @@ export const downloadReportCard = async (organizationId: string, examId: string,
   const result = await apiClient.get(`${base(organizationId)}/exam/${examId}/student/${studentId}/report-card`, {
     responseType: "blob",
   });
-  const url = window.URL.createObjectURL(new Blob([result.data], { type: "application/pdf" }));
-  const link = document.createElement("a");
-  link.href = url;
-  link.download = `report-card-${studentId}.pdf`;
-  document.body.appendChild(link);
-  link.click();
-  link.remove();
-  window.URL.revokeObjectURL(url);
+  saveFile(result.data, `report-card-${studentId}.pdf`, "application/pdf");
 };
 
 // emails the same PDF to the caller's own registered address - no arbitrary recipient

@@ -16,12 +16,11 @@ import { IStudentFormData } from "@/types";
 import { EMAIL_REGEX_PATTERN, TOTAL_STEPS } from "@/utils";
 import { useNavigate, useParams } from "react-router-dom";
 import useGetParentByEmail from "../service/get-parent-by-email";
-import { fetchStudentsPage } from "../service/get-student-details";
+import downloadStudentsCsv from "../service/export-students";
 import { useError, useExportRows, usePaging } from "@/hooks";
 import { useGetAcademicYears, useGetClasses } from "@/pages/admin/classes/service/academics-service";
 import { createStudentSchema } from "../student-modal/create-update-student-modal/student-form.schema";
 import { useAreaBase, useCan } from "@/context/tenant-context";
-import { studentToCsvRow } from "../student-csv";
 
 const emptyFormData = {} as IStudentFormData;
 
@@ -117,11 +116,9 @@ const useStudentsListController = () => {
   );
 
   const { openExport, exportDialog } = useExportRows({
-    fileName: "students",
     total: getStudentDetails.data?.pagination.totalItems ?? 0,
     itemLabel: { one: "student", other: "students" },
-    fetchPage: (exportPage, limit) => fetchStudentsPage(organizationId || "", classFilter, searchTerm, limit, exportPage),
-    toCsvRow: studentToCsvRow,
+    download: (limit) => downloadStudentsCsv(organizationId || "", classFilter, searchTerm, limit),
   });
 
   const canManage = useCan()("students.manage");

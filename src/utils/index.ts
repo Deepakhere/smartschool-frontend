@@ -14,4 +14,4 @@ export { authCookieOptions } from "./cookie-options";
 export * from "./emuns";
 export { localDateString, todayInIndia } from "./local-date";
 export { paymentMethodLabel } from "./payment-method";
-export { fetchRows } from "./fetch-rows";
+export { saveFile } from "./save-file";
