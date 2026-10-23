@@ -38,7 +38,7 @@ export interface DataTableProps<T> {
   onRowClick?: (row: T) => void;
   // client: rows are paged in the browser; server: the API pages them
   pagination?: { pageSize: number } | ServerPagination;
-  // the caller sends `value` to the API
+  // controlled by the caller, who filters with `value` (through the API, or over rows it already holds)
   search?: { placeholder?: string; value: string; onChange: (value: string) => void };
   // filters shown beside the search
   toolbar?: ReactNode;

@@ -47,7 +47,7 @@ const CollectionsTab = ({ organizationId }: { organizationId: string }) => {
       <Card>
         <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
           <CardTitle className="font-medium">Fee Collections</CardTitle>
-          <ActionButtons actions={[{ label: "Export to Excel", onClick: c.onExport, disabled: !data || data.totals.payments === 0 }]} />
+          <ActionButtons actions={[{ label: "Export CSV", onClick: c.onExport, disabled: !data || data.totals.payments === 0 }]} />
         </div>
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-4">
           <DatePicker label="From" value={c.from} max={c.to} onChange={c.setFrom} />

@@ -14,10 +14,11 @@ export interface RowMenuItem {
 interface RowMenuProps {
   items: RowMenuItem[];
   label?: string;
+  className?: string;
 }
 
 // the "..." actions menu at the end of a table row; it opens in a portal, so a short table can never clip it
-const RowMenu = ({ items, label = "Actions" }: RowMenuProps) => {
+const RowMenu = ({ items, label = "Actions", className }: RowMenuProps) => {
   const [open, setOpen] = useState(false);
 
   if (!items.length) return null;
@@ -25,7 +26,14 @@ const RowMenu = ({ items, label = "Actions" }: RowMenuProps) => {
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
-        <button type="button" aria-label={label} className="inline-flex h-8 w-8 items-center justify-center rounded-md border border-gray-200 bg-white text-gray-600 shadow-sm hover:bg-gray-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500">
+        <button
+          type="button"
+          aria-label={label}
+          className={cn(
+            "inline-flex h-8 w-8 items-center justify-center rounded-md border border-gray-200 bg-white text-gray-600 shadow-sm hover:bg-gray-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500",
+            className
+          )}
+        >
           <EllipsisVerticalIcon className="h-4 w-4" />
         </button>
       </PopoverTrigger>

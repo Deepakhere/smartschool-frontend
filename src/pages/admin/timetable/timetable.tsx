@@ -7,7 +7,6 @@ import CustomSelectDropdown from "@/components/custom-select";
 import DeleteConfirmationDialog from "@/components/delete-confirmation-dialog";
 import ErrorState from "@/components/error-state";
 import SectionHeader from "@/components/section-header";
-import Spinner from "@/components/spinner";
 import { useError } from "@/hooks";
 import { ITimetableSlot, SelectOption } from "@/types";
 import { useGetSubjects, useGetTeacherAssignments } from "../classes/service/academics-service";
@@ -93,18 +92,14 @@ const Timetable = () => {
         </div>
       ) : timetable.isError ? (
         <ErrorState error={timetable.error} onRetry={() => timetable.refetch()} />
-      ) : timetable.isLoading ? (
-        <Spinner />
-      ) : slots.length === 0 ? (
-        <div className="rounded-lg bg-white shadow">
-          {isTeacher ? (
-            <EmptyState title="No periods yet" description="Your school admin sets up your week on the Timetable page." />
-          ) : (
-            <EmptyState title="No periods yet" description="Use Add period to build this section's week." />
-          )}
-        </div>
       ) : (
-        <WeekGrid slots={slots} showSection={isTeacher} onDelete={isTeacher ? undefined : setToRemove} />
+        <WeekGrid
+          slots={slots}
+          isLoading={timetable.isLoading}
+          emptyDescription={isTeacher ? "Your school admin sets up your week on the Timetable page." : "Use Add period to build this section's week."}
+          showSection={isTeacher}
+          onDelete={isTeacher ? undefined : setToRemove}
+        />
       )}
 
       {!isTeacher && sectionId && (

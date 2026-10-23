@@ -1,42 +1,18 @@
 import { CheckCircleIcon, DocumentChartBarIcon, TableCellsIcon } from "@heroicons/react/24/outline";
 
-import ActionButtons from "@/components/action-buttons";
 import CustomSelectDropdown from "@/components/custom-select";
-import DataTable, { DataTableColumn } from "@/components/data-table";
+import DataTable from "@/components/data-table";
 import EmptyState from "@/components/empty-state";
 import SectionHeader from "@/components/section-header";
-import Spinner from "@/components/spinner";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { AttendanceStatus, SelectOption } from "@/types";
+import { SelectOption } from "@/types";
 import { formatDate } from "@/utils";
-import useAttendanceController, { percent } from "./attendance-controller";
+import { reportColumns, rosterColumns } from "./attendance-columns";
+import RegisterStatus from "./components/register-status";
+import useAttendanceController from "./attendance-controller";
 import MonthlyRegister from "./components/monthly-register";
-import { ISectionAttendanceReportRow } from "./service/attendance-service";
-
-const STATUS_STYLES: Record<AttendanceStatus, string> = {
-  present: "bg-green-100 text-green-800 border-green-300",
-  absent: "bg-red-100 text-red-800 border-red-300",
-  late: "bg-amber-100 text-amber-800 border-amber-300",
-  excused: "bg-gray-100 text-gray-800 border-gray-300",
-};
-
-const reportColumns: DataTableColumn<ISectionAttendanceReportRow>[] = [
-  { id: "rollNumber", header: "Roll No.", meta: { className: "text-gray-500" }, cell: ({ row }) => row.original.rollNumber },
-  { id: "student", header: "Student", cell: ({ row }) => <span className="font-medium text-gray-900">{row.original.studentName}</span> },
-  { id: "present", header: "Present", meta: { align: "center" }, cell: ({ row }) => <span className="text-green-700">{row.original.present}</span> },
-  { id: "absent", header: "Absent", meta: { align: "center" }, cell: ({ row }) => <span className="text-red-700">{row.original.absent}</span> },
-  { id: "late", header: "Late", meta: { align: "center" }, cell: ({ row }) => <span className="text-amber-700">{row.original.late}</span> },
-  { id: "excused", header: "Excused", meta: { align: "center" }, cell: ({ row }) => <span className="text-gray-700">{row.original.excused}</span> },
-  {
-    id: "percent",
-    header: "%",
-    meta: { align: "center" },
-    cell: ({ row }) => <span className="font-medium text-gray-900">{percent(row.original)}%</span>,
-  },
-];
 
 const TABS = [
   { key: "mark", label: "Mark Attendance", icon: CheckCircleIcon },
@@ -185,76 +161,25 @@ const AdminAttendance = () => {
       )}
 
       {c.activeTab === "mark" && c.sectionId && (
-        <div className="bg-white shadow rounded-lg">
-          <div className="px-4 py-4 border-b border-gray-200 flex justify-between items-center">
-            <h2 className="text-lg font-medium text-gray-900">
-              Students{" "}
-              {c.summary && (
-                <span className="text-sm text-gray-500 font-normal">
-                  - {c.summary.present} present / {c.summary.total} total
-                </span>
-              )}
-            </h2>
-            <div className="flex gap-2">
-              <ActionButtons
-                actions={[
-                  { label: "Export CSV", onClick: c.exportRoster },
-                  { label: "Mark all present", onClick: () => c.markAll("present") },
-                  { label: "Mark all absent", onClick: () => c.markAll("absent") },
-                ]}
-              />
-            </div>
-          </div>
-
-          {c.isLoadingRoster ? (
-            <Spinner />
-          ) : c.students.length === 0 ? (
-            <p className="px-4 py-5 text-sm text-gray-500">No students in this section.</p>
-          ) : (
-            <div className="divide-y divide-gray-100">
-              {c.students.map((student) => (
-                <div key={student.id} className="px-4 py-4 flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-6">
-                  <div className="flex-1">
-                    <p className="text-sm font-medium text-gray-900">{student.name}</p>
-                    <p className="text-xs text-gray-500">Roll No. {student.currentEnrollment?.rollNumber}</p>
-                  </div>
-                  <div className="flex gap-2">
-                    {(["present", "absent", "late", "excused"] as AttendanceStatus[]).map((status) => (
-                      <button
-                        key={status}
-                        onClick={() => c.setStatus(student.id, status)}
-                        className={`px-3 py-1 rounded-full text-xs font-medium border capitalize ${
-                          (c.statuses[student.id] || "present") === status
-                            ? STATUS_STYLES[status]
-                            : "bg-white text-gray-500 border-gray-300"
-                        }`}
-                      >
-                        {status}
-                      </button>
-                    ))}
-                  </div>
-                  {(c.statuses[student.id] === "absent" ||
-                    c.statuses[student.id] === "late" ||
-                    c.statuses[student.id] === "excused") && (
-                    <Input
-                      type="text"
-                      placeholder="Reason (optional)"
-                      className="w-40 px-2 py-1 text-xs sm:text-xs"
-                      value={c.reasons[student.id] || ""}
-                      onChange={(e) => c.setReason(student.id, e.target.value)}
-                    />
-                  )}
-                </div>
-              ))}
-            </div>
-          )}
-
-          <div className="px-4 py-4 border-t border-gray-200 flex justify-end">
-            <Button onClick={c.submit} disabled={c.isSaving}>
-              Save Attendance
-            </Button>
-          </div>
-        </div>
+        <DataTable
+          columns={rosterColumns(c)}
+          data={c.visibleStudents}
+          getRowId={(student) => student.id}
+          isLoading={c.isLoadingRoster}
+          search={{ placeholder: "Search students", value: c.rosterSearch, onChange: c.setRosterSearch }}
+          toolbar={c.students.length > 0 && <RegisterStatus counts={c.counts} isDirty={c.isDirty} isMarked={c.isMarked} />}
+          actions={[
+            { label: "Mark all present", onClick: () => c.markAll("present"), menu: true },
+            { label: "Mark all absent", onClick: () => c.markAll("absent"), menu: true },
+            { label: "Export CSV", onClick: c.exportRoster, menu: true },
+            { label: "Save attendance", onClick: c.submit, loading: c.isSaving, variant: "primary" as const },
+          ].map((action) => ({ ...action, hidden: c.students.length === 0 }))}
+          empty={
+            c.rosterSearch
+              ? { title: "No matching students", description: `No student matches "${c.rosterSearch}".` }
+              : { title: "No students in this section", description: "Students enrolled in this section appear here to be marked." }
+          }
+        />
       )}
     </div>
   );
