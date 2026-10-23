@@ -1,5 +1,6 @@
 import DataTable, { DataTableColumn } from "@/components/data-table";
 import ErrorState from "@/components/error-state";
+import ExportDialog from "@/components/export-dialog";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardTitle } from "@/components/ui/card";
 import { IPayment } from "@/types";
@@ -66,12 +67,14 @@ const LedgerTab = ({ organizationId }: { organizationId: string }) => {
             getRowId={(payment) => payment.id}
             isLoading={c.isLoading}
             pagination={c.pagination}
-            itemLabel="payments"
-            actions={[{ label: "Export CSV", onClick: c.onExport, loading: c.isExporting, disabled: c.pagination.total === 0 }]}
+            itemLabel={{ one: "payment", other: "payments" }}
+            actions={[{ label: "Export CSV", onClick: c.openExport, disabled: c.pagination.total === 0 }]}
             empty={{ title: "No payments recorded yet", description: "Payments you record on Student Fees & Payments show up here, newest first." }}
           />
         )}
       </div>
+
+      <ExportDialog {...c.exportDialog} />
     </div>
   );
 };

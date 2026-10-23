@@ -130,7 +130,8 @@
     "rowsPerPage": "{{count}} rows/page",
     "rowsPerPageLabel": "Rows per page",
     "firstPage": "First page",
-    "lastPage": "Last page"
+    "lastPage": "Last page",
+    "result": "result"
   },
   "messages": {
     "enter_email_associate_with_account": "Don't worry! It happens. Please enter your email address associated with your account.",

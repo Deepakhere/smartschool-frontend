@@ -34,7 +34,7 @@ const SubjectsTab = ({ organizationId, years, yearId, onYearChange }: SubjectsTa
         data={c.items}
         getRowId={(subject) => subject.id}
         isLoading={c.isLoading}
-        itemLabel="subjects"
+        itemLabel={{ one: "subject", other: "subjects" }}
         pagination={{ pageSize: 20 }}
         toolbar={
           <>

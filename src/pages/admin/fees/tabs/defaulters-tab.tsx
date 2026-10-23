@@ -2,6 +2,7 @@ import AcademicFilter from "@/components/academic-filter";
 import DataTable, { DataTableColumn } from "@/components/data-table";
 import DatePicker from "@/components/date-picker";
 import ErrorState from "@/components/error-state";
+import ExportDialog from "@/components/export-dialog";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardTitle } from "@/components/ui/card";
 import { IFeeDefaulter } from "@/types";
@@ -109,11 +110,13 @@ const DefaultersTab = ({ organizationId }: { organizationId: string }) => {
           getRowId={(row) => row.studentFeeId}
           isLoading={c.isLoading}
           pagination={c.pagination}
-          itemLabel="defaulters"
-          actions={[{ label: "Export to Excel", onClick: c.onExport, loading: c.isExporting, disabled: c.pagination.total === 0 }]}
+          itemLabel={{ one: "defaulter", other: "defaulters" }}
+          actions={[{ label: "Export CSV", onClick: c.openExport, disabled: c.pagination.total === 0 }]}
           empty={{ title: "No overdue fees", description: "Every instalment due by this date has been paid." }}
         />
       )}
+
+      <ExportDialog {...c.exportDialog} />
     </div>
   );
 };

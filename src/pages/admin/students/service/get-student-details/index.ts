@@ -1,1 +1,1 @@
-export { default } from "./get-student-details";
+export { default, fetchStudentsPage } from "./get-student-details";

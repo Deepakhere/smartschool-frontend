@@ -130,7 +130,8 @@
     "rowsPerPage": "{{count}} पंक्तियाँ/पृष्ठ",
     "rowsPerPageLabel": "प्रति पृष्ठ पंक्तियाँ",
     "firstPage": "पहला पृष्ठ",
-    "lastPage": "अंतिम पृष्ठ"
+    "lastPage": "अंतिम पृष्ठ",
+    "result": "परिणाम"
   },
   "messages": {
     "enter_email_associate_with_account": "चिंता न करें! ऐसा होता है। कृपया अपने खाते से जुड़ा ईमेल पता दर्ज करें।",

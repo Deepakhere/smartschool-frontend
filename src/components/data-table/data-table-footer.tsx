@@ -4,12 +4,12 @@ import { ChevronDoubleLeftIcon, ChevronDoubleRightIcon, ChevronLeftIcon, Chevron
 
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { ServerPagination } from "./data-table.types";
+import { ItemLabel, ServerPagination } from "./data-table.types";
 
 const PAGE_SIZES = [10, 20, 50, 100];
 
 interface DataTableFooterProps extends ServerPagination {
-  itemLabel?: string;
+  itemLabel?: ItemLabel;
 }
 
 const PageButton = ({ label, disabled, onClick, children }: { label: string; disabled: boolean; onClick: () => void; children: ReactNode }) => (
@@ -37,7 +37,7 @@ const DataTableFooter = ({ page, pageSize, total, onPageChange, onPageSizeChange
   return (
     <div className="flex flex-wrap items-center justify-between gap-3 border-t border-gray-200 px-4 py-3 text-sm text-gray-600">
       <p>
-        <span className="font-medium text-gray-900">{total}</span> {itemLabel ?? t("labels.results")} {t("labels.found")}
+        <span className="font-medium text-gray-900">{total.toLocaleString("en-IN")}</span> {itemLabel ? (total === 1 ? itemLabel.one : itemLabel.other) : t(total === 1 ? "labels.result" : "labels.results")} {t("labels.found")}
       </p>
       <div className="flex flex-wrap items-center gap-3">
         {onPageSizeChange && (

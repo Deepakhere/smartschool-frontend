@@ -49,7 +49,7 @@ const SupportList = () => {
           getRowId={(request) => request._id}
           isLoading={c.isLoading}
           onRowClick={(request) => c.open(request._id)}
-          itemLabel="requests"
+          itemLabel={{ one: "request", other: "requests" }}
           pagination={{ pageSize: 20 }}
           empty={{ title: "No requests yet", description: "If something isn't working or you have a question, contact support." }}
         />

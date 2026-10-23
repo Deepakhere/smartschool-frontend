@@ -3,6 +3,7 @@ import { PlusIcon } from "@heroicons/react/20/solid";
 import CustomSelectDropdown from "@/components/custom-select";
 import DataTable from "@/components/data-table";
 import DeleteConfirmationDialog from "@/components/delete-confirmation-dialog";
+import ExportDialog from "@/components/export-dialog";
 import SectionHeader from "@/components/section-header";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -56,7 +57,8 @@ const StudentsList = () => {
     onCancelDeleteModal,
     navigateToStudentDetails,
     onClickEditStudent,
-    handleExportCsv,
+    openExport,
+    exportDialog,
     canManage,
   } = useStudentsListController();
 
@@ -84,7 +86,7 @@ const StudentsList = () => {
           isLoading={isLoadingGetStudentDetails || isFetchingStudentList}
           search={{ placeholder: t("messages.search"), value: searchInput, onChange: handleSearchChange }}
           pagination={{ page, pageSize, total: studentTotalCount ?? 0, onPageChange: setPage, onPageSizeChange: setPageSize }}
-          itemLabel="students"
+          itemLabel={{ one: "student", other: "students" }}
           toolbar={
             <>
               <Label htmlFor="class-filter" className="mb-0 whitespace-nowrap">
@@ -109,7 +111,7 @@ const StudentsList = () => {
             </>
           }
           actions={[
-            { label: "Export CSV", onClick: handleExportCsv },
+            { label: "Export CSV", onClick: openExport, disabled: !studentTotalCount },
             { label: "Bulk Upload (CSV)", onClick: onClickBulkUpload, hidden: !canManage },
           ]}
           empty={
@@ -172,6 +174,8 @@ const StudentsList = () => {
         onClose={onCancelDeleteModal}
         onConfirm={handleDeleteStudent}
       />
+
+      <ExportDialog {...exportDialog} />
     </div>
   );
 };

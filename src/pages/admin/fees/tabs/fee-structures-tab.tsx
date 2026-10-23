@@ -162,7 +162,7 @@ const FeeStructuresTab = ({ organizationId }: { organizationId: string }) => {
             data={c.structures}
             getRowId={(structure) => structure.id}
             isLoading={c.isLoadingStructures}
-            itemLabel="structures"
+            itemLabel={{ one: "structure", other: "structures" }}
             pagination={{ pageSize: 20 }}
             empty={{ title: "No fee structures yet", description: "Create one above, then assign it to a class to bill its students." }}
           />

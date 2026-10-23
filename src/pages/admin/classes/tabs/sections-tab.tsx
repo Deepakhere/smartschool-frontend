@@ -30,7 +30,7 @@ const SectionsTab = ({ organizationId, yearId, classId, onClassChange }: Section
         data={c.items}
         getRowId={(section) => section.id}
         isLoading={c.isLoading}
-        itemLabel="sections"
+        itemLabel={{ one: "section", other: "sections" }}
         pagination={{ pageSize: 20 }}
         toolbar={
           <>

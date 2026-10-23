@@ -78,7 +78,7 @@ const Notifications = () => {
           data={emailLog}
           getRowId={(log) => log.id}
           isLoading={isLoading}
-          itemLabel="emails"
+          itemLabel={{ one: "email", other: "emails" }}
           pagination={{ pageSize: 20 }}
           empty={{ title: "No emails sent yet", description: "Every email the school sends will be listed here." }}
         />

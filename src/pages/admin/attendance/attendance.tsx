@@ -170,7 +170,7 @@ const AdminAttendance = () => {
             data={c.reportRows}
             getRowId={(row) => row.studentId}
             isLoading={c.isLoadingReport}
-            itemLabel="students"
+            itemLabel={{ one: "student", other: "students" }}
             pagination={{ pageSize: 20 }}
             actions={[{ label: "Export CSV", onClick: c.exportReport, hidden: c.reportRows.length === 0 }]}
             empty={{ title: "No attendance in this range", description: "Nothing was marked for this section between these dates." }}

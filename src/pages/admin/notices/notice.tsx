@@ -64,7 +64,7 @@ const AdminNotices = () => {
           getRowId={(notice) => notice.id}
           isLoading={isLoadingNoticeList || isFetchingNoticeList}
           pagination={{ page, pageSize, total: totalNotices, onPageChange: setPage, onPageSizeChange: setPageSize }}
-          itemLabel="notices"
+          itemLabel={{ one: "notice", other: "notices" }}
           empty={{ title: "No notices yet", description: "Use Create Notice to publish the first one." }}
         />
       </div>

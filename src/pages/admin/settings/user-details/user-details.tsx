@@ -59,7 +59,7 @@ const UserDetails = () => {
         isLoading={isLoadingGetAllUserDetails || isFetchingGetAllUserDetails}
         search={{ placeholder: "Search users...", value: searchInput, onChange: onSearchInputChange }}
         pagination={{ page, pageSize, total: totalUsers, onPageChange: setPage, onPageSizeChange: setPageSize }}
-        itemLabel="users"
+        itemLabel={{ one: "user", other: "users" }}
         toolbar={
           <div className="w-56">
             <CustomSelectDropdown

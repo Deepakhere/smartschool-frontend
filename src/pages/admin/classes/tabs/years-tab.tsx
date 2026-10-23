@@ -45,7 +45,7 @@ const YearsTab = ({ organizationId }: { organizationId: string }) => {
         data={c.items}
         getRowId={(year) => year.id}
         isLoading={c.isLoading}
-        itemLabel="academic years"
+        itemLabel={{ one: "academic year", other: "academic years" }}
         pagination={{ pageSize: 20 }}
         empty={{
           title: "No academic years yet",

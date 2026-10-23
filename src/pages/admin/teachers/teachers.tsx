@@ -23,7 +23,7 @@ const AdminTeachers = () => {
           data={c.teachers}
           getRowId={(teacher) => teacher.userId}
           isLoading={c.isLoading}
-          itemLabel="teachers"
+          itemLabel={{ one: "teacher", other: "teachers" }}
           pagination={{ pageSize: 20 }}
           empty={{ title: "No teachers yet", description: "Invite teachers from Settings, User Management. They appear here once they join." }}
         />

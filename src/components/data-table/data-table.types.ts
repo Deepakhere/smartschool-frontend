@@ -1,6 +1,6 @@
 import { ReactNode } from "react";
 import type { Action } from "@/components/action-buttons";
-import { ColumnDef, RowData } from "@tanstack/react-table";
+import { ColumnDef, RowData, SortingState } from "@tanstack/react-table";
 
 declare module "@tanstack/react-table" {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -12,6 +12,13 @@ declare module "@tanstack/react-table" {
 }
 
 export type DataTableColumn<T> = ColumnDef<T, unknown>;
+
+export interface ItemLabel {
+  one: string;
+  other: string;
+}
+
+export const countLabel = (count: number, label: ItemLabel) => `${count.toLocaleString("en-IN")} ${count === 1 ? label.one : label.other}`;
 
 // the server already paged the rows: show its page and total, ask it for another page
 export interface ServerPagination {
@@ -37,7 +44,9 @@ export interface DataTableProps<T> {
   toolbar?: ReactNode;
   // list buttons (export, bulk upload), drawn after the toolbar
   actions?: Action[];
-  // plural noun for the footer count, e.g. "students"
-  itemLabel?: string;
+  // the noun for the footer count, e.g. { one: "student", other: "students" }
+  itemLabel?: ItemLabel;
+  // server-paged lists: the controller keeps the sort and sends it to the API; client lists sort on their own
+  sorting?: { state: SortingState; onChange: (state: SortingState) => void };
   className?: string;
 }

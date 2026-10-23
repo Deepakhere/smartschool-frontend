@@ -211,7 +211,7 @@ export const useReversePayment = (organizationId: string) => {
   });
 };
 
-const fetchLedgerPage = async (organizationId: string, page: number, limit: number) => {
+export const fetchLedgerPage = async (organizationId: string, page: number, limit: number) => {
   const result = await apiClient.get<null, IAxiosResponse<Paged<IPayment>>>(`${base(organizationId)}/payment`, {
     params: { page, limit },
   });
@@ -226,16 +226,6 @@ export const useGetPaymentLedger = (organizationId: string, page: number, pageSi
     // the current page stays on screen while the next one loads
     placeholderData: keepPreviousData,
   });
-
-// every payment of the school, page by page, for the export
-export const fetchWholeLedger = async (organizationId: string) => {
-  const all: IPayment[] = [];
-  for (let page = 1; ; page++) {
-    const { rows, pagination } = await fetchLedgerPage(organizationId, page, 100);
-    all.push(...rows);
-    if (!pagination.hasNextPage) return all;
-  }
-};
 
 export const downloadFeeReceipt = async (organizationId: string, paymentId: string) => {
   const result = await apiClient.get(`${base(organizationId)}/payment/${paymentId}/receipt`, { responseType: "blob" });
@@ -290,7 +280,7 @@ export interface DefaulterFilters {
   asOf?: string;
 }
 
-const fetchDefaultersPage = async (organizationId: string, filters: DefaulterFilters, page: number, limit: number) => {
+export const fetchDefaultersPage = async (organizationId: string, filters: DefaulterFilters, page: number, limit: number) => {
   const result = await apiClient.get<null, IAxiosResponse<IFeeDefaultersResult>>(`${base(organizationId)}/report/defaulters`, {
     params: { ...filters, page, limit },
   });
@@ -306,15 +296,6 @@ export const useGetFeeDefaulters = (organizationId: string, filters: DefaulterFi
   });
 
 // every defaulter for the current filters, page by page, for the export
-export const fetchAllDefaulters = async (organizationId: string, filters: DefaulterFilters) => {
-  const all: IFeeDefaultersResult["rows"] = [];
-  for (let page = 1; ; page++) {
-    const { rows, pagination } = await fetchDefaultersPage(organizationId, filters, page, 100);
-    all.push(...rows);
-    if (!pagination.hasNextPage) return all;
-  }
-};
-
 export const useGetFeeCollections = (organizationId: string, from: string, to: string) =>
   useQuery<IFeeCollectionSummary, IAPIError>({
     queryKey: [API_QUERY_KEY.GET_FEE_COLLECTIONS, organizationId, from, to],

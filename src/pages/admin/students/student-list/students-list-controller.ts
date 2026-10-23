@@ -13,10 +13,11 @@ import {
   useUpdateStudentDetail,
 } from "../service";
 import { IStudentFormData } from "@/types";
-import { EMAIL_REGEX_PATTERN, exportToCsv, TOTAL_STEPS } from "@/utils";
+import { EMAIL_REGEX_PATTERN, TOTAL_STEPS } from "@/utils";
 import { useNavigate, useParams } from "react-router-dom";
 import useGetParentByEmail from "../service/get-parent-by-email";
-import { useError, usePaging } from "@/hooks";
+import { fetchStudentsPage } from "../service/get-student-details";
+import { useError, useExportRows, usePaging } from "@/hooks";
 import { useGetAcademicYears, useGetClasses } from "@/pages/admin/classes/service/academics-service";
 import { createStudentSchema } from "../student-modal/create-update-student-modal/student-form.schema";
 import { useAreaBase, useCan } from "@/context/tenant-context";
@@ -115,14 +116,13 @@ const useStudentsListController = () => {
     page
   );
 
-  const handleExportCsv = () => {
-    const rows = (getStudentDetails.data?.rows || []).map(studentToCsvRow);
-    if (!rows.length) {
-      toast.error("There are no students to export.");
-      return;
-    }
-    exportToCsv("students", rows);
-  };
+  const { openExport, exportDialog } = useExportRows({
+    fileName: "students",
+    total: getStudentDetails.data?.pagination.totalItems ?? 0,
+    itemLabel: { one: "student", other: "students" },
+    fetchPage: (exportPage, limit) => fetchStudentsPage(organizationId || "", classFilter, searchTerm, limit, exportPage),
+    toCsvRow: studentToCsvRow,
+  });
 
   const canManage = useCan()("students.manage");
 
@@ -276,7 +276,8 @@ const useStudentsListController = () => {
     setClassFilter,
     navigateToStudentDetails,
     onClickEditStudent,
-    handleExportCsv,
+    openExport,
+    exportDialog,
     canManage,
   };
 };

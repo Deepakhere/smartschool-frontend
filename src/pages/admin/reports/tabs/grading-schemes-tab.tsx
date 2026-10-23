@@ -82,7 +82,7 @@ const GradingSchemesTab = ({ organizationId }: { organizationId: string }) => {
             data={c.schemes}
             getRowId={(scheme) => scheme.id}
             isLoading={c.isLoading}
-            itemLabel="schemes"
+            itemLabel={{ one: "scheme", other: "schemes" }}
             pagination={{ pageSize: 20 }}
             empty={{ title: "No grading schemes yet", description: "Create one above; every exam needs a grading scheme." }}
           />

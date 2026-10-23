@@ -21,7 +21,7 @@ const AssignmentsTab = ({ organizationId, yearId }: { organizationId: string; ye
         data={c.items}
         getRowId={(item) => item.id}
         isLoading={c.isLoading}
-        itemLabel="assignments"
+        itemLabel={{ one: "assignment", other: "assignments" }}
         pagination={{ pageSize: 20 }}
         empty={{
           title: "No teachers assigned yet",
