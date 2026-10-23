@@ -1,3 +1,5 @@
+import { PlusIcon } from "@heroicons/react/20/solid";
+
 import Spinner from "@/components/spinner";
 import DeleteConfirmationDialog from "@/components/delete-confirmation-dialog";
 import EmptyState from "@/components/empty-state";
@@ -18,7 +20,11 @@ const Homework = () => {
 
   return (
     <div className="max-w-7xl mx-auto space-y-6">
-      <SectionHeader title="Homework" description="Assign and manage homework for a class section" />
+      <SectionHeader
+        title="Homework"
+        description="Assign and manage homework for a class section"
+        action={{ label: "Assign Homework", icon: PlusIcon, onClick: c.toggleForm, disabled: !c.sectionId, title: !c.sectionId ? "Pick a class and section first" : undefined }}
+      />
 
       {c.hasNoClasses && (
         <p className="rounded-lg bg-white p-4 text-sm text-gray-600 shadow">
@@ -27,7 +33,7 @@ const Homework = () => {
       )}
 
       <div className="bg-white shadow rounded-lg p-4">
-        <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <div>
             <Label>Academic Year</Label>
             <CustomSelectDropdown
@@ -65,11 +71,6 @@ const Homework = () => {
               })()}
               onChange={(o) => c.setSectionId(String(o.id))}
             />
-          </div>
-          <div className="flex items-end">
-            <Button onClick={() => c.setShowForm(!c.showForm)} disabled={!c.sectionId}>
-              + Assign Homework
-            </Button>
           </div>
         </div>
       </div>

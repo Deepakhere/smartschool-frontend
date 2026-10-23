@@ -8,6 +8,7 @@ import { useGetPTMEvents, useGenerateSlots, useGetMyPTMAgenda } from "@/pages/ad
 import { useGetMyTeacherAssignments } from "@/pages/admin/classes/service/academics-service";
 import { useAuth } from "@/context/auth-context";
 import { useError } from "@/hooks";
+import { SelectOption } from "@/types";
 import { defaultOpenAvailabilityValues, openAvailabilitySchema, OpenAvailabilityFormValues } from "./ptm.schema";
 
 const useTeacherPTMController = () => {
@@ -41,6 +42,12 @@ const useTeacherPTMController = () => {
     ).values(),
   ];
 
+  const eventOptions: SelectOption[] = events.map((event) => ({
+    id: event.id,
+    name: `${event.title} (${new Date(event.date).toLocaleDateString()})`,
+  }));
+  const sectionOptions: SelectOption[] = eventSectionOptions.map((s) => ({ id: s.id, name: s.name }));
+
   // a new event invalidates the section chosen for the previous one
   const onEventChange = () => form.setValue("sectionId", "");
 
@@ -64,7 +71,8 @@ const useTeacherPTMController = () => {
     agenda,
     eventId,
     sectionId,
-    eventSectionOptions,
+    eventOptions,
+    sectionOptions,
     onEventChange,
     isLoadingAgenda: getMyAgenda.isLoading,
     agendaError: getMyAgenda.isError ? getMyAgenda.error : null,

@@ -3,7 +3,6 @@ import { createContext, useContext, useState, ReactNode } from "react";
 export interface PageHeaderConfig {
   title?: string;
   onBack?: () => void;
-  actions?: ReactNode;
 }
 
 interface PageHeaderContextValue {

@@ -15,6 +15,7 @@ import {
 } from "@/pages/admin/ptm/service/ptm-service";
 import { useGetMyChildren } from "./service/my-children-service";
 import { useError } from "@/hooks";
+import { SelectOption } from "@/types";
 
 const bookingSchema = z.object({ studentId: z.string().min(1, "Select a child to book for.") });
 
@@ -54,6 +55,12 @@ const useParentPTMController = () => {
   const bookingChildren = bookingSlotId ? childrenForSlot(bookingSlotId) : [];
   const bookingSlot = slots.find((s) => s.id === bookingSlotId) ?? null;
 
+  const eventOptions: SelectOption[] = events.map((event) => ({
+    id: event.id,
+    name: `${event.title} (${new Date(event.date).toLocaleDateString()})`,
+  }));
+  const childOptions: SelectOption[] = bookingChildren.map((c) => ({ id: c.studentId.id, name: c.studentId.name }));
+
   const openBookingFor = (slotId: string) => {
     setBookingSlotId(slotId);
     bookingForm.reset({ studentId: childrenForSlot(slotId)[0]?.studentId.id || "" });
@@ -87,7 +94,8 @@ const useParentPTMController = () => {
     t,
     events,
     slots,
-    bookingChildren,
+    eventOptions,
+    childOptions,
     bookings,
     isLoadingBookings: getMyBookings.isLoading,
     bookingsError: getMyBookings.isError ? getMyBookings.error : null,

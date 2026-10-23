@@ -1,21 +1,21 @@
-import Spinner from "@/components/spinner";
-import EmptyState from "@/components/empty-state";
 import CustomSelectDropdown from "@/components/custom-select";
-import { Table, TableHeader, TableHead, TableBody, TableRow, TableCell, TableSkeleton } from "@/components/table";
-import { SelectOption } from "@/types";
-import SectionHeader from "@/components/section-header";
+import DataTable from "@/components/data-table";
 import DeleteConfirmationDialog from "@/components/delete-confirmation-dialog";
+import EmptyState from "@/components/empty-state";
 import ErrorState from "@/components/error-state";
 import FormDialog from "@/components/form-dialog";
 import { SelectField } from "@/components/form-fields";
-import { Button } from "@/components/ui/button";
+import SectionHeader from "@/components/section-header";
+import Spinner from "@/components/spinner";
+import { bookingColumns } from "./ptm-columns";
 import useParentPTMController from "./ptm-controller";
 
 const ParentPTM = () => {
   const {
     events,
     slots,
-    bookingChildren,
+    eventOptions,
+    childOptions,
     bookings,
     isLoadingBookings,
     bookingsError,
@@ -37,11 +37,7 @@ const ParentPTM = () => {
     isCancelling,
   } = useParentPTMController();
 
-  const eventOptions: SelectOption[] = events.map((event) => ({
-    id: event.id,
-    name: `${event.title} (${new Date(event.date).toLocaleDateString()})`,
-  }));
-  const childOptions: SelectOption[] = bookingChildren.map((c) => ({ id: c.studentId.id, name: c.studentId.name }));
+  const columns = bookingColumns(setBookingToCancel);
 
   return (
     <div className="max-w-7xl mx-auto">
@@ -49,62 +45,18 @@ const ParentPTM = () => {
         title="Parent-Teacher Meetings"
         description="Book a slot with your child's teacher and track your bookings"
       />
-      <div className="bg-white rounded-lg shadow p-6 mb-6">
-        <h2 className="text-lg font-medium text-gray-900 mb-4">My bookings</h2>
+      <div className="mb-6">
+        <h2 className="text-lg font-medium text-gray-900 mb-3">My bookings</h2>
         {bookingsError ? (
           <ErrorState error={bookingsError} onRetry={retryBookings} />
-        ) : isLoadingBookings ? (
-          <Table>
-            <TableHeader>
-              <TableHead>Student</TableHead>
-              <TableHead className="text-center">Time</TableHead>
-              <TableHead className="text-center">Join</TableHead>
-              <TableHead className="text-center">Action</TableHead>
-            </TableHeader>
-            <TableSkeleton columns={4} />
-          </Table>
-        ) : bookings.length === 0 ? (
-          <EmptyState compact title="No bookings yet" description="Slots you book appear here." />
         ) : (
-          <Table>
-            <TableHeader>
-              <TableHead>Student</TableHead>
-              <TableHead className="text-center">Time</TableHead>
-              <TableHead className="text-center">Join</TableHead>
-              <TableHead className="text-center">Action</TableHead>
-            </TableHeader>
-            <TableBody>
-              {bookings.map((b) => {
-                const slot = typeof b.slotId === "object" ? b.slotId : null;
-                return (
-                  <TableRow key={b.id}>
-                    <TableCell className="font-medium text-gray-900">
-                      {typeof b.studentId === "object" ? b.studentId.name : ""}
-                    </TableCell>
-                    <TableCell className="text-center">{slot ? new Date(slot.startAt).toLocaleString() : ""}</TableCell>
-                    <TableCell className="text-center">
-                      {slot?.meetingLink ? (
-                        <a href={slot.meetingLink} target="_blank" rel="noreferrer" className="text-primary-600 hover:underline">
-                          Join link
-                        </a>
-                      ) : (
-                        "-"
-                      )}
-                    </TableCell>
-                    <TableCell className="text-center">
-                      {slot && new Date(slot.startAt) > new Date() ? (
-                        <Button variant="link" onClick={() => setBookingToCancel(b.id)} className="text-red-600 hover:text-red-800">
-                          Cancel
-                        </Button>
-                      ) : (
-                        <span className="text-sm text-gray-400">Past</span>
-                      )}
-                    </TableCell>
-                  </TableRow>
-                );
-              })}
-            </TableBody>
-          </Table>
+          <DataTable
+            columns={columns}
+            data={bookings}
+            getRowId={(booking) => booking.id}
+            isLoading={isLoadingBookings}
+            empty={{ title: "No bookings yet", description: "Slots you book appear here." }}
+          />
         )}
       </div>
 

@@ -1,15 +1,20 @@
-import { Table, TableHeader, TableHead, TableBody, TableRow, TableCell, TableSkeleton } from "@/components/table";
+import { CheckCircleIcon, DocumentChartBarIcon, TableCellsIcon } from "@heroicons/react/24/outline";
+
+import ActionButtons from "@/components/action-buttons";
+import CustomSelectDropdown from "@/components/custom-select";
+import DataTable, { DataTableColumn } from "@/components/data-table";
+import EmptyState from "@/components/empty-state";
 import SectionHeader from "@/components/section-header";
 import Spinner from "@/components/spinner";
-import CustomSelectDropdown from "@/components/custom-select";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import useAttendanceController from "./attendance-controller";
-import MonthlyRegister from "./components/monthly-register";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { AttendanceStatus, SelectOption } from "@/types";
-import { exportToCsv, formatDate } from "@/utils";
-import EmptyState from "@/components/empty-state";
+import { formatDate } from "@/utils";
+import useAttendanceController, { percent } from "./attendance-controller";
+import MonthlyRegister from "./components/monthly-register";
+import { ISectionAttendanceReportRow } from "./service/attendance-service";
 
 const STATUS_STYLES: Record<AttendanceStatus, string> = {
   present: "bg-green-100 text-green-800 border-green-300",
@@ -18,7 +23,26 @@ const STATUS_STYLES: Record<AttendanceStatus, string> = {
   excused: "bg-gray-100 text-gray-800 border-gray-300",
 };
 
-const TAB_LABELS = { mark: "Mark Attendance", report: "Attendance Report", register: "Monthly Register" } as const;
+const reportColumns: DataTableColumn<ISectionAttendanceReportRow>[] = [
+  { id: "rollNumber", header: "Roll No.", meta: { className: "text-gray-500" }, cell: ({ row }) => row.original.rollNumber },
+  { id: "student", header: "Student", cell: ({ row }) => <span className="font-medium text-gray-900">{row.original.studentName}</span> },
+  { id: "present", header: "Present", meta: { align: "center" }, cell: ({ row }) => <span className="text-green-700">{row.original.present}</span> },
+  { id: "absent", header: "Absent", meta: { align: "center" }, cell: ({ row }) => <span className="text-red-700">{row.original.absent}</span> },
+  { id: "late", header: "Late", meta: { align: "center" }, cell: ({ row }) => <span className="text-amber-700">{row.original.late}</span> },
+  { id: "excused", header: "Excused", meta: { align: "center" }, cell: ({ row }) => <span className="text-gray-700">{row.original.excused}</span> },
+  {
+    id: "percent",
+    header: "%",
+    meta: { align: "center" },
+    cell: ({ row }) => <span className="font-medium text-gray-900">{percent(row.original)}%</span>,
+  },
+];
+
+const TABS = [
+  { key: "mark", label: "Mark Attendance", icon: CheckCircleIcon },
+  { key: "report", label: "Attendance Report", icon: DocumentChartBarIcon },
+  { key: "register", label: "Monthly Register", icon: TableCellsIcon },
+] as const;
 
 const AdminAttendance = () => {
   const c = useAttendanceController();
@@ -33,21 +57,16 @@ const AdminAttendance = () => {
         </p>
       )}
 
-      <div className="flex gap-6 border-b border-gray-200">
-        {(["mark", "report", "register"] as const).map((tab) => (
-          <button
-            key={tab}
-            onClick={() => c.setActiveTab(tab)}
-            className={`whitespace-nowrap border-b-2 py-3 px-1 text-sm font-medium ${
-              c.activeTab === tab
-                ? "border-primary-500 text-primary-600"
-                : "border-transparent text-gray-500 hover:text-gray-700"
-            }`}
-          >
-            {TAB_LABELS[tab]}
-          </button>
-        ))}
-      </div>
+      <Tabs value={c.activeTab} onValueChange={(value) => c.setActiveTab(value as typeof c.activeTab)}>
+        <TabsList>
+          {TABS.map(({ key, label, icon: Icon }) => (
+            <TabsTrigger key={key} value={key}>
+              <Icon />
+              {label}
+            </TabsTrigger>
+          ))}
+        </TabsList>
+      </Tabs>
 
       <div className="bg-white shadow rounded-lg p-4">
         <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
@@ -141,80 +160,21 @@ const AdminAttendance = () => {
       )}
 
       {c.activeTab === "report" && c.sectionId && (
-        <div className="bg-white shadow rounded-lg">
-          <div className="px-4 py-4 border-b border-gray-200 flex justify-between items-center">
-            <h2 className="text-lg font-medium text-gray-900">
-              Attendance from {formatDate(`${c.reportFrom}T00:00:00`)} to {formatDate(`${c.reportTo}T00:00:00`)}
-              <span className="text-sm text-gray-500 font-normal"> - {c.reportTotalSessions} day(s) marked</span>
-            </h2>
-            {c.reportRows.length > 0 && (
-              <Button
-                variant="secondary"
-                size="sm"
-                onClick={() =>
-                  exportToCsv(
-                    `attendance-report-${c.reportFrom}-to-${c.reportTo}`,
-                    c.reportRows.map((row) => ({
-                      roll_number: row.rollNumber,
-                      student: row.studentName,
-                      present: row.present,
-                      absent: row.absent,
-                      late: row.late,
-                      excused: row.excused,
-                      total_days: row.total,
-                      attendance_percent: row.total ? ((row.present / row.total) * 100).toFixed(1) : "0",
-                    }))
-                  )
-                }
-              >
-                Export CSV
-              </Button>
-            )}
-          </div>
-
-          {c.isLoadingReport ? (
-            <Table>
-              <TableHeader>
-                <TableHead>Roll No.</TableHead>
-                <TableHead>Student</TableHead>
-                <TableHead className="text-center">Present</TableHead>
-                <TableHead className="text-center">Absent</TableHead>
-                <TableHead className="text-center">Late</TableHead>
-                <TableHead className="text-center">Excused</TableHead>
-                <TableHead className="text-center">%</TableHead>
-              </TableHeader>
-              <TableSkeleton columns={7} />
-            </Table>
-          ) : c.reportRows.length === 0 ? (
-            <EmptyState title="No attendance in this range" description="Nothing was marked for this section between these dates." />
-          ) : (
-            <Table>
-              <TableHeader>
-                <TableHead>Roll No.</TableHead>
-                <TableHead>Student</TableHead>
-                <TableHead className="text-center">Present</TableHead>
-                <TableHead className="text-center">Absent</TableHead>
-                <TableHead className="text-center">Late</TableHead>
-                <TableHead className="text-center">Excused</TableHead>
-                <TableHead className="text-center">%</TableHead>
-              </TableHeader>
-              <TableBody>
-                {c.reportRows.map((row) => (
-                  <TableRow key={row.studentId}>
-                    <TableCell className="text-gray-500">{row.rollNumber}</TableCell>
-                    <TableCell className="font-medium text-gray-900">{row.studentName}</TableCell>
-                    <TableCell className="text-center text-green-700">{row.present}</TableCell>
-                    <TableCell className="text-center text-red-700">{row.absent}</TableCell>
-                    <TableCell className="text-center text-amber-700">{row.late}</TableCell>
-                    <TableCell className="text-center text-gray-700">{row.excused}</TableCell>
-                    <TableCell className="text-center font-medium text-gray-900">
-                      {row.total ? ((row.present / row.total) * 100).toFixed(1) : "0"}%
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          )}
+        <div className="space-y-3">
+          <h2 className="text-lg font-medium text-gray-900">
+            Attendance from {formatDate(`${c.reportFrom}T00:00:00`)} to {formatDate(`${c.reportTo}T00:00:00`)}
+            <span className="text-sm text-gray-500 font-normal"> - {c.reportTotalSessions} day(s) marked</span>
+          </h2>
+          <DataTable
+            columns={reportColumns}
+            data={c.reportRows}
+            getRowId={(row) => row.studentId}
+            isLoading={c.isLoadingReport}
+            itemLabel="students"
+            pagination={{ pageSize: 20 }}
+            actions={[{ label: "Export CSV", onClick: c.exportReport, hidden: c.reportRows.length === 0 }]}
+            empty={{ title: "No attendance in this range", description: "Nothing was marked for this section between these dates." }}
+          />
         </div>
       )}
 
@@ -236,30 +196,13 @@ const AdminAttendance = () => {
               )}
             </h2>
             <div className="flex gap-2">
-              <Button
-                variant="secondary"
-                size="sm"
-                onClick={() =>
-                  exportToCsv(
-                    `attendance-${c.date}`,
-                    c.students.map((student) => ({
-                      student: student.name,
-                      roll_number: student.currentEnrollment?.rollNumber ?? "",
-                      status: c.statuses[student.id] || "present",
-                      reason: c.reasons[student.id] || "",
-                      date: c.date,
-                    }))
-                  )
-                }
-              >
-                Export CSV
-              </Button>
-              <Button variant="secondary" size="sm" onClick={() => c.markAll("present")}>
-                Mark all present
-              </Button>
-              <Button variant="secondary" size="sm" onClick={() => c.markAll("absent")}>
-                Mark all absent
-              </Button>
+              <ActionButtons
+                actions={[
+                  { label: "Export CSV", onClick: c.exportRoster },
+                  { label: "Mark all present", onClick: () => c.markAll("present") },
+                  { label: "Mark all absent", onClick: () => c.markAll("absent") },
+                ]}
+              />
             </div>
           </div>
 

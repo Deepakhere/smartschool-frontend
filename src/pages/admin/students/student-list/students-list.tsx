@@ -1,34 +1,16 @@
-import Pager from "@/components/pager";
-import { useCan } from "@/context/tenant-context";
-import { useRef } from "react";
-import toast from "react-hot-toast";
-import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
+import { PlusIcon } from "@heroicons/react/20/solid";
 
-import EmptyState from "@/components/empty-state";
 import CustomSelectDropdown from "@/components/custom-select";
-import { Table, TableHeader, TableHead, TableBody, TableRow, TableCell, TableSkeleton } from "@/components/table";
-import { SelectOption } from "@/types";
-import { usePageHeader } from "@/hooks";
-import SectionHeader from "@/components/section-header";
-import { exportToCsv, formatDate } from "@/utils";
-
-import useStudentsListController from "./students-list-controller";
+import DataTable from "@/components/data-table";
 import DeleteConfirmationDialog from "@/components/delete-confirmation-dialog";
-import CreateUpdateStudentModal from "../student-modal/create-update-student-modal";
+import SectionHeader from "@/components/section-header";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { SelectOption } from "@/types";
 import BulkUploadModal from "../student-modal/bulk-upload-modal";
-import RowMenu from "@/components/row-menu";
-import { studentToCsvRow } from "../student-csv";
-
-// the parent of this student, when they were invited but have not set a password yet
-const pendingParent = (student: { parentId?: unknown }) => {
-  const parent = student.parentId;
-  return parent && typeof parent === "object" && (parent as { status?: string }).status === "pending"
-    ? (parent as { id: string })
-    : null;
-};
+import CreateUpdateStudentModal from "../student-modal/create-update-student-modal";
+import { studentColumns } from "./students-list-columns";
+import useStudentsListController from "./students-list-controller";
 
 const StudentsList = () => {
   const {
@@ -48,8 +30,10 @@ const StudentsList = () => {
     searchInput,
     clearFilters,
     CLASS_OPTIONS,
-    currentPage,
-    itemsPerPage,
+    page,
+    pageSize,
+    setPage,
+    setPageSize,
     searchTerm,
     classFilter,
     isDeleteModalOpen,
@@ -65,7 +49,6 @@ const StudentsList = () => {
     prevStep,
     setCurrentStep,
     onClickAddStudent,
-    paginate,
     handleClassFilterChange,
     handleDeleteAction,
     handleDeleteStudent,
@@ -73,195 +56,79 @@ const StudentsList = () => {
     onCancelDeleteModal,
     navigateToStudentDetails,
     onClickEditStudent,
+    handleExportCsv,
+    canManage,
   } = useStudentsListController();
 
-  // the header keeps the buttons it was given on first render, so the export reads the list through a ref to
-  // always get the students currently shown rather than the empty list from before they loaded
-  const shownStudents = useRef(studentDetail);
-  shownStudents.current = studentDetail;
-
-  const handleExportCsv = () => {
-    const rows = (shownStudents.current || []).map(studentToCsvRow);
-    if (!rows.length) {
-      toast.error("There are no students to export.");
-      return;
-    }
-    exportToCsv("students", rows);
-  };
-
-  const canManage = useCan()("students.manage");
-  usePageHeader({
-    actions: (
-      <>
-        <Button variant="secondary" onClick={handleExportCsv}>
-          Export CSV
-        </Button>
-        {canManage && (
-          <>
-            <Button variant="secondary" onClick={onClickBulkUpload}>
-              Bulk Upload (CSV)
-            </Button>
-            <Button onClick={onClickAddStudent}>{t("labels.add_new_student")}</Button>
-          </>
-        )}
-      </>
-    ),
+  const columns = studentColumns({
+    t,
+    open: navigateToStudentDetails,
+    edit: onClickEditStudent,
+    resendInvite: handleResendInvite,
+    remove: handleDeleteAction,
   });
 
   return (
     <div className="max-w-7xl mx-auto">
-      <SectionHeader title="Students" description="View, search and manage every enrolled student" />
-
-      {/* Search and Filter Controls */}
-      <div className="flex flex-row flex-wrap justify-between items-center mb-6 gap-4">
-        {/* Search field + result count */}
-        <div className="flex items-center gap-3">
-          <div className="relative w-full sm:w-64">
-            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-              <MagnifyingGlassIcon className="h-5 w-5 text-gray-400" />
-            </div>
-            <Input
-              type="text"
-              placeholder={t("messages.search")}
-              value={searchInput}
-              onChange={(e) => handleSearchChange(e.target.value)}
-              className="pl-10 leading-5"
-            />
-          </div>
-          {studentTotalCount !== undefined && studentTotalCount > 0 && (
-            <span className="text-sm text-gray-500 whitespace-nowrap">
-              {studentTotalCount} {t("labels.records")}
-            </span>
-          )}
-        </div>
-
-        {/* Class filter */}
-        <div className="flex items-center gap-3">
-          <Label htmlFor="class-filter" className="mb-0 whitespace-nowrap">
-            {t("labels.filter_by_class")}
-          </Label>
-          <div className="w-full sm:w-48">
-            <CustomSelectDropdown
-              options={[
-                { id: "all", name: t("labels.all_classes") } as SelectOption,
-                ...CLASS_OPTIONS.map((klass) => ({ id: klass.id, name: klass.name })),
-              ]}
-              value={
-                classFilter === "all"
-                  ? { id: "all", name: t("labels.all_classes") }
-                  : CLASS_OPTIONS.find((k) => k.id === classFilter)
-                    ? { id: classFilter, name: CLASS_OPTIONS.find((k) => k.id === classFilter)!.name }
-                    : { id: "all", name: t("labels.all_classes") }
-              }
-              onChange={(o) => handleClassFilterChange(String(o.id))}
-            />
-          </div>
-        </div>
-      </div>
+      <SectionHeader
+        title="Students"
+        description="View, search and manage every enrolled student"
+        action={{ label: t("labels.add_new_student"), icon: PlusIcon, onClick: onClickAddStudent, hidden: !canManage }}
+      />
 
       <div className="py-4">
-        {isLoadingGetStudentDetails ? (
-          <Table>
-            <TableHeader>
-              <TableHead>{t("labels.student_name")}</TableHead>
-              <TableHead className="text-center">{t("labels.roll_number")}</TableHead>
-              <TableHead className="text-center">{t("labels.class_id")}</TableHead>
-              <TableHead className="text-center">{t("labels.date_of_birth")}</TableHead>
-              <TableHead className="text-center">{t("labels.actions")}</TableHead>
-            </TableHeader>
-            <TableSkeleton columns={5} />
-          </Table>
-        ) : (
-          <>
-            {/* Students Table */}
-            <Table>
-              <TableHeader>
-                <TableHead>{t("labels.student_name")}</TableHead>
-                <TableHead className="text-center">{t("labels.roll_number")}</TableHead>
-                <TableHead className="text-center">{t("labels.class_id")}</TableHead>
-                <TableHead className="text-center">{t("labels.date_of_birth")}</TableHead>
-                <TableHead className="text-center">{t("labels.actions")}</TableHead>
-              </TableHeader>
-              {isFetchingStudentList ? (
-                <TableSkeleton columns={5} />
-              ) : studentDetail && studentDetail.length > 0 ? (
-                <TableBody>
-                  {studentDetail.map((student) => (
-                    <TableRow key={student.id}>
-                      <TableCell>
-                        <div className="flex items-center">
-                          <div className="flex-shrink-0 h-10 w-10 rounded-full bg-primary-100 flex items-center justify-center">
-                            <span className="text-primary-600 font-medium">{student.name.charAt(0)}</span>
-                          </div>
-                          <div className="ml-4">
-                            <Button
-                              variant="link"
-                              className="font-medium text-gray-900 hover:text-primary-600"
-                              onClick={() => navigateToStudentDetails(student.id)}
-                            >
-                              {student.name}
-                            </Button>
-                            {pendingParent(student) && (
-                              <span className="mt-0.5 inline-block rounded-full bg-gray-100 px-2 py-0.5 text-xs text-gray-600">
-                                {t("labels.invite_pending")}
-                              </span>
-                            )}
-                          </div>
-                        </div>
-                      </TableCell>
-                      <TableCell className="text-center">{student.currentEnrollment?.rollNumber}</TableCell>
-                      <TableCell className="text-center">
-                        {student.currentEnrollment?.classId?.name}
-                        {student.currentEnrollment?.sectionId?.name
-                          ? ` - ${student.currentEnrollment.sectionId.name}`
-                          : ""}
-                      </TableCell>
-                      <TableCell className="text-center">
-                        {formatDate(student.dateOfBirth)}
-                      </TableCell>
-                      <TableCell className="text-center">
-                        <RowMenu
-                          items={[
-                            { label: t("buttons.edit"), onSelect: () => onClickEditStudent(student.id) },
-                            ...(pendingParent(student)
-                              ? [{ label: t("buttons.resend_invite"), onSelect: () => handleResendInvite(pendingParent(student)!.id) }]
-                              : []),
-                            { label: t("buttons.delete"), onSelect: () => handleDeleteAction(student.id), danger: true },
-                          ]}
-                        />
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              ) : (
-                <TableBody>
-                  <tr>
-                    <td colSpan={5}>
-                      {searchTerm ? (
-                        <EmptyState
-                          title="No matching students"
-                          description={`No student matches "${searchTerm}".`}
-                          action={
-                            <Button variant="secondary" onClick={clearFilters}>
-                              Clear search
-                            </Button>
-                          }
-                        />
-                      ) : (
-                        <EmptyState
-                          title="No students yet"
-                          description="Add your first student with Add New Student, or bring a whole class in with Bulk Upload (CSV)."
-                        />
-                      )}
-                    </td>
-                  </tr>
-                </TableBody>
-              )}
-            </Table>
-
-            <Pager page={currentPage} pageSize={itemsPerPage} total={studentTotalCount ?? 0} onPageChange={paginate} />
-          </>
-        )}
+        <DataTable
+          columns={columns}
+          data={studentDetail ?? []}
+          getRowId={(student) => student.id}
+          isLoading={isLoadingGetStudentDetails || isFetchingStudentList}
+          search={{ placeholder: t("messages.search"), value: searchInput, onChange: handleSearchChange }}
+          pagination={{ page, pageSize, total: studentTotalCount ?? 0, onPageChange: setPage, onPageSizeChange: setPageSize }}
+          itemLabel="students"
+          toolbar={
+            <>
+              <Label htmlFor="class-filter" className="mb-0 whitespace-nowrap">
+                {t("labels.filter_by_class")}
+              </Label>
+              <div className="w-full sm:w-48">
+                <CustomSelectDropdown
+                  options={[
+                    { id: "all", name: t("labels.all_classes") } as SelectOption,
+                    ...CLASS_OPTIONS.map((klass) => ({ id: klass.id, name: klass.name })),
+                  ]}
+                  value={
+                    classFilter === "all"
+                      ? { id: "all", name: t("labels.all_classes") }
+                      : CLASS_OPTIONS.find((k) => k.id === classFilter)
+                        ? { id: classFilter, name: CLASS_OPTIONS.find((k) => k.id === classFilter)!.name }
+                        : { id: "all", name: t("labels.all_classes") }
+                  }
+                  onChange={(o) => handleClassFilterChange(String(o.id))}
+                />
+              </div>
+            </>
+          }
+          actions={[
+            { label: "Export CSV", onClick: handleExportCsv },
+            { label: "Bulk Upload (CSV)", onClick: onClickBulkUpload, hidden: !canManage },
+          ]}
+          empty={
+            searchTerm
+              ? {
+                  title: "No matching students",
+                  description: `No student matches "${searchTerm}".`,
+                  action: (
+                    <Button variant="secondary" onClick={clearFilters}>
+                      Clear search
+                    </Button>
+                  ),
+                }
+              : {
+                  title: "No students yet",
+                  description: "Add your first student with Add New Student, or bring a whole class in with Bulk Upload (CSV).",
+                }
+          }
+        />
       </div>
 
       {/* Add Student Modal */}

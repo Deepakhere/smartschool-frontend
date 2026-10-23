@@ -12,5 +12,5 @@ export { exportToCsv } from "./exportCsv";
 export { authCookieOptions } from "./cookie-options";
 
 export * from "./emuns";
-export { localDateString } from "./local-date";
+export { localDateString, todayInIndia } from "./local-date";
 export { paymentMethodLabel } from "./payment-method";

@@ -1,17 +1,13 @@
-import { PlusIcon, MagnifyingGlassIcon } from "@heroicons/react/24/outline";
+import { PlusIcon } from "@heroicons/react/20/solid";
 
-import EmptyState from "@/components/empty-state";
 import CustomSelectDropdown from "@/components/custom-select";
-import { Badge, BadgeTone } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Table, TableHeader, TableHead, TableBody, TableRow, TableCell, TableSkeleton } from "@/components/table";
-import { CreateUpdateUserModal } from "./user-modal";
+import DataTable from "@/components/data-table";
+import { useHeaderActions } from "@/components/section-header";
 import DeleteConfirmationDialog from "@/components/delete-confirmation-dialog";
-import Pager from "@/components/pager";
+import { Button } from "@/components/ui/button";
+import { CreateUpdateUserModal } from "./user-modal";
+import { userColumns } from "./user-details-columns";
 import useUserDetailsController from "./user-details-controller";
-
-const STATUS_TONE: Record<string, BadgeTone> = { active: "green", pending: "yellow", suspended: "red" };
 
 const UserDetails = () => {
   const {
@@ -30,6 +26,7 @@ const UserDetails = () => {
     page,
     setPage,
     pageSize,
+    setPageSize,
     totalUsers,
     openAddUser,
     isSelf,
@@ -49,126 +46,52 @@ const UserDetails = () => {
     onClickDeleteUser,
     onCancelDeleteModal,
   } = useUserDetailsController();
+  useHeaderActions({ action: { label: t("labels.add_user"), icon: PlusIcon, onClick: openAddUser } });
+
+  const columns = userColumns({ t, isSelf, manageAccess, edit: handleEditUserDetails, remove: onClickDeleteUser });
 
   return (
     <div className="px-4 sm:px-6 lg:px-8">
-      <div className="flex flex-col sm:flex-row justify-between items-center mb-6 gap-4">
-        {/* Search field */}
-        <div className="relative w-full sm:w-64">
-          <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-            <MagnifyingGlassIcon className="h-5 w-5 text-gray-400" />
-          </div>
-          <Input
-            type="text"
-            placeholder="Search users..."
-            value={searchInput}
-            onChange={(e) => onSearchInputChange(e.target.value)}
-            className="pl-10 leading-5"
-          />
-        </div>
-
-        <div className="flex items-center space-x-4">
-          {/* Role filter dropdown */}
+      <DataTable
+        columns={columns}
+        data={users}
+        getRowId={(user) => user.id}
+        isLoading={isLoadingGetAllUserDetails || isFetchingGetAllUserDetails}
+        search={{ placeholder: "Search users...", value: searchInput, onChange: onSearchInputChange }}
+        pagination={{ page, pageSize, total: totalUsers, onPageChange: setPage, onPageSizeChange: setPageSize }}
+        itemLabel="users"
+        toolbar={
           <div className="w-56">
             <CustomSelectDropdown
-              options={roleOptionsDropDown.map((option) => ({
-                id: option.value,
-                name: option.label,
-                description: option.description,
-                icon: option.icon,
-              }))}
+              options={roleOptionsDropDown.map((option) => ({ id: option.value, name: option.label, description: option.description, icon: option.icon }))}
               value={(() => {
                 const match = roleOptionsDropDown.find((option) => option.value === sortBy);
-                return match
-                  ? { id: match.value, name: match.label, description: match.description, icon: match.icon }
-                  : null;
+                return match ? { id: match.value, name: match.label, description: match.description, icon: match.icon } : null;
               })()}
               onChange={(o) => onRoleChange(String(o.id))}
             />
           </div>
-
-          {/* Add user  */}
-          <Button onClick={openAddUser}>
-            <PlusIcon className="h-5 w-5" />
-            {t("labels.add_user")}
-          </Button>
-        </div>
-      </div>
-
-      {/* Table Section */}
-      <Table>
-        <TableHeader>
-          <TableHead>{t("labels.username")}</TableHead>
-          <TableHead className="text-center">{t("labels.email")}</TableHead>
-          <TableHead className="text-center">{t("labels.role")}</TableHead>
-          <TableHead className="text-center">Status</TableHead>
-          <TableHead className="text-center">{t("labels.actions")}</TableHead>
-        </TableHeader>
-        {isLoadingGetAllUserDetails || isFetchingGetAllUserDetails ? (
-          <TableSkeleton columns={5} />
-        ) : users && users.length > 0 ? (
-            <TableBody>
-              {users.map((user) => (
-                <TableRow key={user.id}>
-                  <TableCell className="text-gray-900">{user.name}</TableCell>
-                  <TableCell className="text-center">{user.email}</TableCell>
-                  <TableCell className="text-center">
-                    <Badge tone={user.role === "admin" ? "green" : "gray"} className="capitalize">
-                      {user.role}
-                    </Badge>
-                  </TableCell>
-                  <TableCell className="text-center">
-                    <Badge tone={STATUS_TONE[user.status] ?? "gray"} className="capitalize">
-                      {user.status}
-                    </Badge>
-                  </TableCell>
-                  <TableCell className="text-center">
-                    {user.role !== "parent" && (
-                      <Button variant="link" className="mr-4" onClick={() => manageAccess(user.id)}>
-                        Manage access
-                      </Button>
-                    )}
-                    <Button variant="link" className="mr-4" onClick={() => handleEditUserDetails(user.id)}>
-                      {t("labels.edit")}
-                    </Button>
-                    {!isSelf(user.id) && (
-                      <Button variant="link" className="text-red-600 hover:text-red-800" onClick={() => onClickDeleteUser(user.id)}>
-                        Remove
-                      </Button>
-                    )}
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          ) : (
-            <TableBody>
-              <tr>
-                <td colSpan={5}>
-                  {searchTerm ? (
-                    <EmptyState
-                      title="No matching users"
-                      description={`Nobody matches "${searchTerm}".`}
-                      action={
-                        <Button
-                          variant="secondary"
-                          onClick={() => {
-                            onSearchInputChange("");
-                            onRoleChange("all");
-                          }}
-                        >
-                          Clear search
-                        </Button>
-                      }
-                    />
-                  ) : (
-                    <EmptyState title="No users yet" description="Use Add User to invite the first teacher, accountant or admin." />
-                  )}
-                </td>
-              </tr>
-            </TableBody>
-        )}
-      </Table>
-      <Pager page={page} pageSize={pageSize} total={totalUsers} onPageChange={setPage} />
+        }
+        empty={
+          searchTerm
+            ? {
+                title: "No matching users",
+                description: `Nobody matches "${searchTerm}".`,
+                action: (
+                  <Button
+                    variant="secondary"
+                    onClick={() => {
+                      onSearchInputChange("");
+                      onRoleChange("all");
+                    }}
+                  >
+                    Clear search
+                  </Button>
+                ),
+              }
+            : { title: "No users yet", description: "Use Add User to invite the first teacher, accountant or admin." }
+        }
+      />
 
       <CreateUpdateUserModal
         t={t}

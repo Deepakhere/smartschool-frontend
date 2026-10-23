@@ -1,14 +1,13 @@
 import { useState } from "react";
 import { useParams } from "react-router-dom";
 import toast from "react-hot-toast";
-import { PlusIcon } from "@heroicons/react/24/outline";
+import { PlusIcon } from "@heroicons/react/20/solid";
 
 import CustomSelectDropdown from "@/components/custom-select";
 import DeleteConfirmationDialog from "@/components/delete-confirmation-dialog";
 import ErrorState from "@/components/error-state";
 import SectionHeader from "@/components/section-header";
 import Spinner from "@/components/spinner";
-import { Button } from "@/components/ui/button";
 import { useError } from "@/hooks";
 import { ITimetableSlot, SelectOption } from "@/types";
 import { useGetSubjects, useGetTeacherAssignments } from "../classes/service/academics-service";
@@ -55,11 +54,12 @@ const Timetable = () => {
       <SectionHeader
         title={isTeacher ? "My Timetable" : "Timetable"}
         description={isTeacher ? "Your periods for the week, across every class you teach" : "Set up each section's periods for the week"}
+        action={{ label: "Add period", icon: PlusIcon, onClick: () => setIsAdding(true), disabled: !sectionId, title: !sectionId ? "Pick a class and section first" : undefined, hidden: isTeacher }}
       />
 
       {!isTeacher && (
-        <div className="flex flex-wrap items-end gap-4 rounded-lg bg-white p-4 shadow">
-          <div className="grid flex-1 grid-cols-1 gap-4 sm:grid-cols-3">
+        <div className="rounded-lg bg-white p-4 shadow">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
             <Picker
               label="Academic Year"
               options={picker.academicYears.map((y) => ({ id: y.id, name: y.name }))}
@@ -81,10 +81,6 @@ const Timetable = () => {
               onChange={picker.setSectionId}
             />
           </div>
-          <Button onClick={() => setIsAdding(true)} disabled={!sectionId}>
-            <PlusIcon className="mr-1 h-4 w-4" />
-            Add period
-          </Button>
         </div>
       )}
 

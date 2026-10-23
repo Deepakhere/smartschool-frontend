@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { useParams } from "react-router-dom";
+import { AdjustmentsHorizontalIcon, ClipboardDocumentListIcon, PencilSquareIcon } from "@heroicons/react/24/outline";
 
-import SectionHeader from "@/components/section-header";
+import SectionHeader, { HeaderActionsProvider } from "@/components/section-header";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useGetAcademicYears, useGetClasses, useGetSubjects } from "../classes/service/academics-service";
 import ExamsTab from "./tabs/exams-tab";
@@ -9,9 +10,9 @@ import GradingSchemesTab from "./tabs/grading-schemes-tab";
 import MarksEntryTab from "./tabs/marks-entry-tab";
 
 const TABS = [
-  { key: "exams", label: "Exams" },
-  { key: "marks", label: "Marks Entry" },
-  { key: "schemes", label: "Grading Schemes" },
+  { key: "exams", label: "Exams", icon: ClipboardDocumentListIcon },
+  { key: "marks", label: "Marks Entry", icon: PencilSquareIcon },
+  { key: "schemes", label: "Grading Schemes", icon: AdjustmentsHorizontalIcon },
 ] as const;
 
 type TabKey = (typeof TABS)[number]["key"];
@@ -29,30 +30,33 @@ const AdminReports = () => {
   const subjectOptions = (subjects.data?.items ?? []).map((subject) => ({ id: subject.id, name: subject.name }));
 
   return (
-    <div className="mx-auto max-w-7xl">
-      <SectionHeader title="Exams & Results" description="Set up grading, define exams, enter marks and publish results" />
+    <HeaderActionsProvider>
+      <div className="mx-auto max-w-7xl">
+        <SectionHeader title="Exams & Results" description="Set up grading, define exams, enter marks and publish results" />
 
-      <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as TabKey)} className="mb-6 border-b border-gray-200">
-        <TabsList>
-          {TABS.map((tab) => (
-            <TabsTrigger key={tab.key} value={tab.key}>
-              {tab.label}
-            </TabsTrigger>
-          ))}
-        </TabsList>
-      </Tabs>
+        <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as TabKey)} className="mb-6">
+          <TabsList>
+            {TABS.map(({ key, label, icon: Icon }) => (
+              <TabsTrigger key={key} value={key}>
+                <Icon />
+                {label}
+              </TabsTrigger>
+            ))}
+          </TabsList>
+        </Tabs>
 
-      {activeTab === "schemes" && <GradingSchemesTab organizationId={organizationId} />}
-      {activeTab === "exams" && (
-        <ExamsTab
-          organizationId={organizationId}
-          academicYearId={currentYearId}
-          classOptions={classOptions}
-          subjectOptions={subjectOptions}
-        />
-      )}
-      {activeTab === "marks" && <MarksEntryTab organizationId={organizationId} />}
-    </div>
+        {activeTab === "schemes" && <GradingSchemesTab organizationId={organizationId} />}
+        {activeTab === "exams" && (
+          <ExamsTab
+            organizationId={organizationId}
+            academicYearId={currentYearId}
+            classOptions={classOptions}
+            subjectOptions={subjectOptions}
+          />
+        )}
+        {activeTab === "marks" && <MarksEntryTab organizationId={organizationId} />}
+      </div>
+    </HeaderActionsProvider>
   );
 };
 

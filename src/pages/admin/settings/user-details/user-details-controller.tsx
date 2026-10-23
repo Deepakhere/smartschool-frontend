@@ -10,8 +10,7 @@ import { UsersIcon } from "@heroicons/react/20/solid";
 import { IAllUserDetails, IRoleOptionDropDown } from "@/types";
 import { ROLE_OPTIONS } from "../access";
 import { useAddUserDetail, useDeleteUser, useGetAllUserDetails, useUpdateUserDetail } from "./service";
-import { USERS_PAGE_SIZE } from "./service/get-all-user-details/get-all-user-details";
-import { useError } from "@/hooks";
+import { useError, usePaging } from "@/hooks";
 import { useAuth } from "@/context/auth-context";
 import { useAreaBase } from "@/context/tenant-context";
 import { userFormSchema, defaultUserFormValues, UserFormValues } from "./user-details.schema";
@@ -33,13 +32,13 @@ const useUserDetailsController = () => {
   const [sortBy, setSortBy] = useState("all");
   const [searchInput, setSearchInput] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
-  const [page, setPage] = useState(1);
+  const { page, pageSize, setPage, setPageSize, resetPage } = usePaging();
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [deleteUserId, setDeleteUserId] = useState("");
   const form = useForm<UserFormValues>({ resolver: zodResolver(userFormSchema), defaultValues: defaultUserFormValues });
 
   const addUserDetail = useAddUserDetail(organizationId);
-  const getAllUserDetails = useGetAllUserDetails(organizationId, searchTerm, sortBy === "all" ? "" : sortBy, page);
+  const getAllUserDetails = useGetAllUserDetails(organizationId, searchTerm, sortBy === "all" ? "" : sortBy, page, pageSize);
   const users: IAllUserDetails[] = getAllUserDetails.data?.rows ?? [];
   const deleteUser = useDeleteUser(organizationId);
   const updateUserDetails = useUpdateUserDetail(organizationId);
@@ -51,16 +50,16 @@ const useUserDetailsController = () => {
 
   const onRoleChange = (role: string) => {
     setSortBy(role);
-    setPage(1);
+    resetPage();
   };
 
   const runSearch = useMemo(
     () =>
       debounce((value: string) => {
         setSearchTerm(value);
-        setPage(1);
+        resetPage();
       }, 500),
-    []
+    [resetPage]
   );
   useEffect(() => () => runSearch.cancel(), [runSearch]);
 
@@ -144,7 +143,8 @@ const useUserDetailsController = () => {
     onSearchInputChange,
     page,
     setPage,
-    pageSize: USERS_PAGE_SIZE,
+    pageSize,
+    setPageSize,
     totalUsers: getAllUserDetails.data?.pagination.totalItems ?? 0,
     openAddUser,
     isSelf: (userId: string) => userId === currentUser?.id,

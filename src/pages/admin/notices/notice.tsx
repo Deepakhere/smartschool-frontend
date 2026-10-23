@@ -1,16 +1,13 @@
-import Pager from "@/components/pager";
-import { DocumentArrowDownIcon, EyeIcon, EllipsisHorizontalIcon, TrashIcon } from "@heroicons/react/24/outline";
+import { PlusIcon } from "@heroicons/react/20/solid";
 
+import DataTable from "@/components/data-table";
+import DeleteConfirmationDialog from "@/components/delete-confirmation-dialog";
 import NoticeModal from "@/components/notice-modal";
 import NoticePreviewModal from "@/components/notice-preview-modal/notice-preview-modal";
-import DeleteConfirmationDialog from "@/components/delete-confirmation-dialog";
-import EmptyState from "@/components/empty-state";
+import SectionHeader from "@/components/section-header";
+import { noticeColumns } from "./notice-columns";
 import useNoticeController from "./notice-controller";
 import AttachmentPreviewModal from "./preview-modal";
-import { Table, TableHeader, TableHead, TableBody, TableRow, TableCell, TableSkeleton } from "@/components/table";
-import SectionHeader from "@/components/section-header";
-import { Button } from "@/components/ui/button";
-import { usePageHeader } from "@/hooks";
 
 const AdminNotices = () => {
   const {
@@ -19,6 +16,7 @@ const AdminNotices = () => {
     page,
     setPage,
     pageSize,
+    setPageSize,
     totalNotices,
     isNoticeModalOpen,
     isLoadingNoticeList,
@@ -38,156 +36,37 @@ const AdminNotices = () => {
     confirmDeleteNotice,
     isDeletingNotice,
     setPreviewModalOpen,
-    activeDropdown,
-    dropdownRef,
-    toggleDropdown,
     previewNotice,
     onClickPreviewNotice,
     closePreviewNotice,
     onClickDeleteFromDropdown,
   } = useNoticeController();
 
-  usePageHeader({
-    actions: (
-      <Button onClick={onClickCreateNotice}>{t("labels.create_notice")}</Button>
-    ),
+  const columns = noticeColumns({
+    viewAttachment: handleViewAttachment,
+    downloadAttachment: handleDownloadAttachment,
+    preview: onClickPreviewNotice,
+    remove: onClickDeleteFromDropdown,
   });
 
   return (
     <>
       <div className="max-w-7xl mx-auto">
-        <SectionHeader title="All Notices" description="View and manage all school notices" />
+        <SectionHeader
+          title="All Notices"
+          description="View and manage all school notices"
+          action={{ label: t("labels.create_notice"), icon: PlusIcon, onClick: onClickCreateNotice }}
+        />
 
-        {/* Notices Table */}
-        <div className="bg-white shadow overflow-hidden sm:rounded-lg">
-          <div>
-            {isLoadingNoticeList ? (
-              <Table>
-                <TableHeader>
-                  <TableHead>Title</TableHead>
-                  <TableHead className="text-center">Type</TableHead>
-                  <TableHead className="text-center">Audience</TableHead>
-                  <TableHead className="text-center">Date</TableHead>
-                  <TableHead className="text-center">Created At</TableHead>
-                  <TableHead className="text-center">Actions</TableHead>
-                </TableHeader>
-                <TableSkeleton columns={6} />
-              </Table>
-            ) : notices.length === 0 ? (
-              <EmptyState title="No notices yet" description="Use Create Notice to publish the first one." />
-            ) : (
-              <Table>
-                <TableHeader>
-                  <TableHead>Title</TableHead>
-                  <TableHead className="text-center">Type</TableHead>
-                  <TableHead className="text-center">Audience</TableHead>
-                  <TableHead className="text-center">Date</TableHead>
-                  <TableHead className="text-center">Created At</TableHead>
-                  <TableHead className="text-center">Actions</TableHead>
-                </TableHeader>
-                {!isFetchingNoticeList ? (
-                  <TableBody>
-                    {notices.map((notice) => (
-                      <TableRow key={notice.id}>
-                        <TableCell>
-                          <div className="text-sm font-medium text-gray-900">{notice.title}</div>
-                          <div className="text-sm text-gray-500 truncate max-w-xs">{notice.content}</div>
-                        </TableCell>
-                        <TableCell className="text-center">
-                          <span
-                            className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                              notice.type === "holiday" ? "bg-green-100 text-green-800" : "bg-gray-100 text-gray-800"
-                            }`}
-                          >
-                            {notice.type}
-                          </span>
-                        </TableCell>
-                        <TableCell className="text-center">
-                          <span className="px-2 py-1 inline-flex text-xs leading-5 font-medium rounded-full bg-gray-100 text-gray-700">
-                            {notice.audience?.scope === "SCHOOL" || !notice.audience
-                              ? "Whole School"
-                              : notice.audience.scope === "ROLE"
-                              ? `Roles: ${notice.audience.roles.join(", ")}`
-                              : notice.audience.scope === "CLASS"
-                              ? `${notice.audience.classIds.length} class(es)`
-                              : `${notice.audience.sectionIds.length} section(s)`}
-                          </span>
-                        </TableCell>
-                        <TableCell className="text-center text-gray-500">
-                          {notice.date ? new Date(notice.date).toLocaleDateString() : "-"}
-                        </TableCell>
-                        <TableCell className="text-center text-gray-500">{new Date(notice.createdAt).toLocaleDateString()}</TableCell>
-                        <TableCell className="text-center">
-                          <div className="flex justify-center items-center gap-2">
-                            {notice.attachmentURL && (
-                              <>
-                                <button
-                                  onClick={() => handleViewAttachment(notice.attachmentURL!, notice.title)}
-                                  className="text-primary-600 hover:text-primary-900"
-                                  title="View attachment"
-                                >
-                                  <EyeIcon className="h-5 w-5" />
-                                </button>
-                                <button
-                                  onClick={() => handleDownloadAttachment(notice.attachmentURL!, `notice-${notice.id}`)}
-                                  className="text-primary-600 hover:text-primary-900"
-                                  title="Download attachment"
-                                >
-                                  <DocumentArrowDownIcon className="h-5 w-5" />
-                                </button>
-                              </>
-                            )}
-                            <div
-                              className="relative inline-block text-left"
-                              ref={activeDropdown === notice.id ? dropdownRef : undefined}
-                            >
-                              <button
-                                onClick={() => toggleDropdown(notice.id)}
-                                className="text-gray-500 hover:text-gray-700 focus:outline-none"
-                                aria-expanded={activeDropdown === notice.id}
-                                aria-haspopup="true"
-                              >
-                                <EllipsisHorizontalIcon className="h-5 w-5" />
-                              </button>
-
-                              {activeDropdown === notice.id && (
-                                <div
-                                  className="absolute right-0 top-full mt-1 w-36 bg-white border rounded-lg shadow-lg overflow-hidden z-20"
-                                  role="menu"
-                                  aria-orientation="vertical"
-                                >
-                                  <button
-                                    className="w-full text-left flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
-                                    role="menuitem"
-                                    onClick={() => onClickPreviewNotice(notice)}
-                                  >
-                                    <EyeIcon className="h-4 w-4" />
-                                    Preview
-                                  </button>
-                                  <button
-                                    className="w-full text-left flex items-center gap-2 px-4 py-2 text-sm text-red-600 hover:bg-gray-50"
-                                    role="menuitem"
-                                    onClick={() => onClickDeleteFromDropdown(notice.id)}
-                                  >
-                                    <TrashIcon className="h-4 w-4" />
-                                    Delete
-                                  </button>
-                                </div>
-                              )}
-                            </div>
-                          </div>
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                ) : (
-                  <TableSkeleton columns={6} />
-                )}
-              </Table>
-            )}
-            <Pager page={page} pageSize={pageSize} total={totalNotices} onPageChange={setPage} />
-          </div>
-        </div>
+        <DataTable
+          columns={columns}
+          data={notices}
+          getRowId={(notice) => notice.id}
+          isLoading={isLoadingNoticeList || isFetchingNoticeList}
+          pagination={{ page, pageSize, total: totalNotices, onPageChange: setPage, onPageSizeChange: setPageSize }}
+          itemLabel="notices"
+          empty={{ title: "No notices yet", description: "Use Create Notice to publish the first one." }}
+        />
       </div>
 
       <NoticeModal

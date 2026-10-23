@@ -1,17 +1,24 @@
 import { PencilIcon, TrashIcon } from "@heroicons/react/24/outline";
 
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Table, TableHeader, TableHead, TableBody, TableRow, TableCell, TableSkeleton } from "@/components/table";
-import DeleteConfirmationDialog from "@/components/delete-confirmation-dialog";
-import CreateUpdateStudentModal from "../student-modal/create-update-student-modal";
-import useStudentDetailController from "./student-detail-controller";
-import PageLoader from "@/components/page-loader";
 import Avatar from "@/components/avatar";
-import GuardianModal from "./guardian-modal";
-import { usePageHeader } from "@/hooks";
+import DataTable from "@/components/data-table";
+import DeleteConfirmationDialog from "@/components/delete-confirmation-dialog";
 import EmptyState from "@/components/empty-state";
-import { useCan } from "@/context/tenant-context";
+import PageLoader from "@/components/page-loader";
+import { Button } from "@/components/ui/button";
+import { usePageHeader } from "@/hooks";
+import CreateUpdateStudentModal from "../student-modal/create-update-student-modal";
+import GuardianModal from "./guardian-modal";
+import { attendanceRecordColumns, examResultColumns } from "./student-details-columns";
+import useStudentDetailController from "./student-detail-controller";
+
+const enrollmentStatusBadgeClass: Record<string, string> = {
+  ACTIVE: "bg-green-100 text-green-800",
+  PROMOTED: "bg-primary-100 text-primary-800",
+  DETAINED: "bg-amber-100 text-amber-800",
+  TRANSFERRED: "bg-gray-100 text-gray-600",
+  WITHDRAWN: "bg-red-100 text-red-800",
+};
 
 const StudentDetails = () => {
   const {
@@ -62,16 +69,8 @@ const StudentDetails = () => {
     setAttendanceTo,
     examResults,
     isLoadingExamResults,
+    canManage,
   } = useStudentDetailController();
-  const canManage = useCan()("students.manage");
-
-  const enrollmentStatusBadgeClass: Record<string, string> = {
-    ACTIVE: "bg-green-100 text-green-800",
-    PROMOTED: "bg-primary-100 text-primary-800",
-    DETAINED: "bg-amber-100 text-amber-800",
-    TRANSFERRED: "bg-gray-100 text-gray-600",
-    WITHDRAWN: "bg-red-100 text-red-800",
-  };
 
   usePageHeader({ title: "Student Profile", onBack: onBackClick });
 
@@ -329,55 +328,13 @@ const StudentDetails = () => {
               {/* Exam Results */}
               <div className="mb-6">
                 <h4 className="text-md font-medium text-gray-900 mb-3">Exam Results</h4>
-                {isLoadingExamResults ? (
-                  <Table>
-                    <TableHeader>
-                      <TableHead>Exam</TableHead>
-                      <TableHead>Date</TableHead>
-                      <TableHead>Result</TableHead>
-                      <TableHead>Marks</TableHead>
-                      <TableHead>Percentage</TableHead>
-                      <TableHead>Grade</TableHead>
-                    </TableHeader>
-                    <TableSkeleton columns={6} />
-                  </Table>
-                ) : examResults.length === 0 ? (
-                  <EmptyState compact title="No published exam results yet" />
-                ) : (
-                  <Table>
-                    <TableHeader>
-                      <TableHead>Exam</TableHead>
-                      <TableHead>Date</TableHead>
-                      <TableHead>Result</TableHead>
-                      <TableHead>Marks</TableHead>
-                      <TableHead>Percentage</TableHead>
-                      <TableHead>Grade</TableHead>
-                    </TableHeader>
-                    <TableBody>
-                      {examResults.map((result) => {
-                        const exam = typeof result.examId === "object" ? result.examId : null;
-                        return (
-                          <TableRow key={result.id}>
-                            <TableCell className="font-medium text-gray-900">{exam?.name || "-"}</TableCell>
-                            <TableCell className="text-gray-500">
-                              {exam?.startDate ? new Date(exam.startDate).toLocaleDateString() : "-"}
-                            </TableCell>
-                            <TableCell>
-                              <Badge tone={result.promotionStatus === "pass" ? "green" : result.promotionStatus === "fail" ? "red" : "gray"} className="capitalize">
-                                {result.promotionStatus}
-                              </Badge>
-                            </TableCell>
-                            <TableCell className="text-gray-500">
-                              {result.totals.obtained} / {result.totals.max}
-                            </TableCell>
-                            <TableCell className="text-gray-500">{result.totals.percentage}%</TableCell>
-                            <TableCell className="text-gray-500">{result.grade || "-"}</TableCell>
-                          </TableRow>
-                        );
-                      })}
-                    </TableBody>
-                  </Table>
-                )}
+                <DataTable
+                  columns={examResultColumns}
+                  data={examResults}
+                  getRowId={(result) => result.id}
+                  isLoading={isLoadingExamResults}
+                  empty={{ title: "No published exam results yet" }}
+                />
               </div>
 
               {/* Attendance Summary */}
@@ -428,25 +385,13 @@ const StudentDetails = () => {
                 )}
 
                 {attendanceRecords.length > 0 && (
-                  <div className="mt-4 max-h-64 overflow-y-auto rounded-md border border-gray-100">
-                    <Table>
-                      <TableHeader>
-                        <TableHead>Date</TableHead>
-                        <TableHead>Status</TableHead>
-                        <TableHead>Reason</TableHead>
-                      </TableHeader>
-                      <TableBody>
-                        {attendanceRecords.map((record) => (
-                          <TableRow key={record.id}>
-                            <TableCell className="text-gray-900">
-                              {record.date ? new Date(record.date).toLocaleDateString() : "-"}
-                            </TableCell>
-                            <TableCell className="capitalize">{record.status}</TableCell>
-                            <TableCell className="text-gray-500">{record.reason || "-"}</TableCell>
-                          </TableRow>
-                        ))}
-                      </TableBody>
-                    </Table>
+                  <div className="mt-4 max-h-64 overflow-y-auto">
+                    <DataTable
+                      columns={attendanceRecordColumns}
+                      data={attendanceRecords}
+                      getRowId={(record) => record.id}
+                      empty={{ title: "No attendance recorded yet" }}
+                    />
                   </div>
                 )}
               </div>

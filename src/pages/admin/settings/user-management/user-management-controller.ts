@@ -1,16 +1,19 @@
-import { useEffect } from "react";
+import { ComponentType, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { useLocation, useNavigate } from "react-router-dom";
+import { BellIcon, CreditCardIcon, ShieldCheckIcon, UserCircleIcon, UsersIcon } from "@heroicons/react/24/outline";
 
 import { useAreaBase, useCan, useCurrentRole } from "@/context/tenant-context";
 import { PermissionKey } from "@/types";
 
-export const SETTINGS_TABS: { path: string; label?: string; labelKey?: string; anyOf?: PermissionKey[]; adminOnly?: boolean }[] = [
-  { path: "profile", labelKey: "labels.profile" },
-  { path: "add-user", labelKey: "labels.user_management", anyOf: ["people.manage"] },
-  { path: "roles", label: "Roles", adminOnly: true },
-  { path: "notifications", labelKey: "labels.notifications", anyOf: ["school.settings"] },
-  { path: "online-payments", label: "Online payments", anyOf: ["fees.setup"] },
+type SettingsTab = { path: string; label?: string; labelKey?: string; icon: ComponentType; anyOf?: PermissionKey[]; adminOnly?: boolean };
+
+export const SETTINGS_TABS: SettingsTab[] = [
+  { path: "profile", labelKey: "labels.profile", icon: UserCircleIcon },
+  { path: "add-user", labelKey: "labels.user_management", icon: UsersIcon, anyOf: ["people.manage"] },
+  { path: "roles", label: "Roles", icon: ShieldCheckIcon, adminOnly: true },
+  { path: "notifications", labelKey: "labels.notifications", icon: BellIcon, anyOf: ["school.settings"] },
+  { path: "online-payments", label: "Online payments", icon: CreditCardIcon, anyOf: ["fees.setup"] },
 ];
 
 const useUserManagementController = () => {

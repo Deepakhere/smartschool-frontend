@@ -8,15 +8,18 @@ import {
   useGetSectionAttendance,
   useMarkAttendance,
   useGetSectionAttendanceReport,
+  ISectionAttendanceReportRow,
 } from "./service/attendance-service";
 import { useGetCalendarMonth } from "../calendar/service/calendar-service";
 import { AttendanceStatus } from "@/types";
-import { localDateString } from "@/utils";
+import { exportToCsv, localDateString } from "@/utils";
 
 const today = () => localDateString();
 const firstOfMonth = () => `${today().slice(0, 7)}-01`;
 
 type Tab = "mark" | "report" | "register";
+
+export const percent = (row: ISectionAttendanceReportRow) => (row.total ? ((row.present / row.total) * 100).toFixed(1) : "0");
 
 const useAttendanceController = () => {
   const { organizationId = "" } = useParams();
@@ -84,6 +87,33 @@ const useAttendanceController = () => {
     setStatuses(next);
   };
 
+  const exportRoster = () =>
+    exportToCsv(
+      `attendance-${date}`,
+      (roster.data?.items || []).map((student) => ({
+        student: student.name,
+        roll_number: student.currentEnrollment?.rollNumber ?? "",
+        status: statuses[student.id] || "present",
+        reason: reasons[student.id] || "",
+        date,
+      }))
+    );
+
+  const exportReport = () =>
+    exportToCsv(
+      `attendance-report-${reportFrom}-to-${reportTo}`,
+      (report.data?.items || []).map((row) => ({
+        roll_number: row.rollNumber,
+        student: row.studentName,
+        present: row.present,
+        absent: row.absent,
+        late: row.late,
+        excused: row.excused,
+        total_days: row.total,
+        attendance_percent: percent(row),
+      }))
+    );
+
   const submit = () => {
     const students = roster.data?.items || [];
     if (!sectionId || !date || students.length === 0) {
@@ -140,6 +170,8 @@ const useAttendanceController = () => {
     setStatus,
     setReason,
     markAll,
+    exportRoster,
+    exportReport,
     submit,
     isSaving: markAttendance.isPending,
     summary: existing.data?.item?.session?.summary || null,

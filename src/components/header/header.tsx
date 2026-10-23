@@ -64,9 +64,7 @@ const Header = ({ onToggleSidebar, isCollapsed, onToggleCollapse }: HeaderProps)
           )}
         </div>
 
-        {/* Page header segment - each page registers its own title/back/actions via usePageHeader().
-            The user menu used to live at the far right here - it now lives at the bottom of the
-            Sidebar instead. */}
+        {/* Page title and back button, set by each page via usePageHeader() */}
         <div className="flex-1 flex items-center justify-between px-4 min-w-0 border-b border-gray-200">
           <div className="flex items-center gap-2 min-w-0">
             {pageHeaderConfig?.onBack && (
@@ -85,7 +83,6 @@ const Header = ({ onToggleSidebar, isCollapsed, onToggleCollapse }: HeaderProps)
           </div>
 
           <div className="flex items-center gap-3 shrink-0">
-            {pageHeaderConfig?.actions}
             {canAskSupport && (
               <button
                 type="button"

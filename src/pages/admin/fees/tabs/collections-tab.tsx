@@ -1,15 +1,14 @@
-import { useState } from "react";
-
+import ActionButtons from "@/components/action-buttons";
+import DataTable, { DataTableColumn } from "@/components/data-table";
 import DatePicker from "@/components/date-picker";
 import ErrorState from "@/components/error-state";
 import Spinner from "@/components/spinner";
-import { Table, TableBody, TableCell, TableEmpty, TableHead, TableHeader, TableRow } from "@/components/table";
-import { Button } from "@/components/ui/button";
 import { Card, CardTitle } from "@/components/ui/card";
-import { exportToCsv, formatMoney, paymentMethodLabel } from "@/utils";
-import { useGetFeeCollections } from "../service/fees-service";
+import { formatMoney, paymentMethodLabel, todayInIndia } from "@/utils";
+import useCollectionsController from "./collections-controller";
 
-const todayInIndia = () => new Date(Date.now() + 5.5 * 3600_000).toISOString().slice(0, 10);
+type BreakdownRow = [string, string, string];
+
 const formatDay = (iso: string) =>
   new Intl.DateTimeFormat("en-IN", { weekday: "short", day: "numeric", month: "short" }).format(new Date(`${iso}T00:00:00`));
 
@@ -20,72 +19,46 @@ const Tile = ({ label, value, tone = "text-gray-900" }: { label: string; value: 
   </div>
 );
 
-const Breakdown = ({ title, columns, rows }: { title: string; columns: [string, string, string]; rows: [string, string, string][] }) => (
+const breakdownColumns = (names: BreakdownRow): DataTableColumn<BreakdownRow>[] => [
+  { id: "item", header: names[0], cell: ({ row }) => <span className="font-medium text-gray-900">{row.original[0]}</span> },
+  { id: "amount", header: names[1], meta: { align: "center" }, cell: ({ row }) => row.original[1] },
+  { id: "count", header: names[2], meta: { align: "center" }, cell: ({ row }) => row.original[2] },
+];
+
+const Breakdown = ({ title, columns, rows }: { title: string; columns: BreakdownRow; rows: BreakdownRow[] }) => (
   <div>
     <h3 className="mb-2 text-sm font-semibold text-gray-900">{title}</h3>
-    <Table>
-      <TableHeader>
-        <TableHead>{columns[0]}</TableHead>
-        <TableHead className="text-center">{columns[1]}</TableHead>
-        <TableHead className="text-center">{columns[2]}</TableHead>
-      </TableHeader>
-      <TableBody>
-        {rows.length === 0 ? (
-          <TableEmpty colSpan={3} title="Nothing collected" description="No payments in this date range." />
-        ) : (
-          rows.map(([a, b, c]) => (
-            <TableRow key={a}>
-              <TableCell className="font-medium text-gray-900">{a}</TableCell>
-              <TableCell className="text-center">{b}</TableCell>
-              <TableCell className="text-center">{c}</TableCell>
-            </TableRow>
-          ))
-        )}
-      </TableBody>
-    </Table>
+    <DataTable
+      columns={breakdownColumns(columns)}
+      data={rows}
+      getRowId={(row) => row[0]}
+      empty={{ title: "Nothing collected", description: "No payments in this date range." }}
+    />
   </div>
 );
 
 // money received over a date range, and the same money by day, payment method and class
 const CollectionsTab = ({ organizationId }: { organizationId: string }) => {
-  const [from, setFrom] = useState(() => `${todayInIndia().slice(0, 7)}-01`);
-  const [to, setTo] = useState(todayInIndia());
-  const rangeIssue =
-    !from || !to
-      ? "Pick both dates to see collections."
-      : (Date.parse(to) - Date.parse(from)) / 86400000 > 366
-        ? "Choose a range of one year or less."
-        : null;
-  const report = useGetFeeCollections(organizationId, rangeIssue ? "" : from, rangeIssue ? "" : to);
-  const data = report.data;
-
-  const onExport = () => {
-    if (!data) return;
-    exportToCsv(`fee-collections-${from}-to-${to}`, [
-      ...data.byDay.map((d) => ({ breakdown: "Day", item: d.date, amount_rupees: d.amount / 100, entries: d.count })),
-      ...data.byMethod.map((m) => ({ breakdown: "Method", item: paymentMethodLabel(m.method), amount_rupees: m.amount / 100, entries: m.count })),
-      ...data.byClass.map((c) => ({ breakdown: "Class", item: c.className, amount_rupees: c.amount / 100, entries: c.students })),
-    ]);
-  };
+  const c = useCollectionsController(organizationId);
+  const data = c.data;
 
   return (
-    <Card>
-      <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
-        <CardTitle className="font-medium">Fee Collections</CardTitle>
-        <Button variant="secondary" size="sm" onClick={onExport} disabled={!data || data.totals.payments === 0}>
-          Export to Excel
-        </Button>
-      </div>
+    <div className="space-y-6">
+      <Card>
+        <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+          <CardTitle className="font-medium">Fee Collections</CardTitle>
+          <ActionButtons actions={[{ label: "Export to Excel", onClick: c.onExport, disabled: !data || data.totals.payments === 0 }]} />
+        </div>
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-4">
+          <DatePicker label="From" value={c.from} max={c.to} onChange={c.setFrom} />
+          <DatePicker label="To" value={c.to} min={c.from} max={todayInIndia()} onChange={c.setTo} />
+        </div>
+      </Card>
 
-      <div className="mb-4 grid grid-cols-1 gap-4 sm:grid-cols-4">
-        <DatePicker label="From" value={from} max={to} onChange={setFrom} />
-        <DatePicker label="To" value={to} min={from} max={todayInIndia()} onChange={setTo} />
-      </div>
-
-      {rangeIssue ? (
-        <p className="py-12 text-center text-sm text-gray-500">{rangeIssue}</p>
-      ) : report.isError ? (
-        <ErrorState error={report.error} onRetry={() => report.refetch()} />
+      {c.rangeIssue ? (
+        <p className="py-12 text-center text-sm text-gray-500">{c.rangeIssue}</p>
+      ) : c.isError ? (
+        <ErrorState error={c.error} onRetry={c.retry} />
       ) : !data ? (
         <div className="flex justify-center py-12">
           <Spinner />
@@ -107,7 +80,7 @@ const CollectionsTab = ({ organizationId }: { organizationId: string }) => {
             <Breakdown
               title="By class"
               columns={["Class", "Amount", "Students"]}
-              rows={data.byClass.map((c) => [c.className, formatMoney(c.amount), String(c.students)])}
+              rows={data.byClass.map((klass) => [klass.className, formatMoney(klass.amount), String(klass.students)])}
             />
             <div className="lg:col-span-2">
               <Breakdown
@@ -119,7 +92,7 @@ const CollectionsTab = ({ organizationId }: { organizationId: string }) => {
           </div>
         </>
       )}
-    </Card>
+    </div>
   );
 };
 

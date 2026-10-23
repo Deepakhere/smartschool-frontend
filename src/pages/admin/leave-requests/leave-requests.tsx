@@ -25,7 +25,10 @@ const LeaveRequests = () => {
       <SectionHeader
         title="Leave Requests"
         description="Review and decide on student leave requests"
-        actions={
+      />
+
+      <div className="bg-white shadow rounded-lg">
+        <div className="flex justify-end border-b border-gray-200 px-4 py-3">
           <div className="w-40">
             <CustomSelectDropdown
               options={STATUS_OPTIONS}
@@ -33,10 +36,7 @@ const LeaveRequests = () => {
               onChange={(o) => c.setStatus(String(o.id))}
             />
           </div>
-        }
-      />
-
-      <div className="bg-white shadow rounded-lg">
+        </div>
         {c.isLoading ? (
           <Spinner />
         ) : c.leaveRequests.length === 0 ? (

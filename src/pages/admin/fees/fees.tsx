@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { ComponentType, useState } from "react";
 import { useParams } from "react-router-dom";
+import { BanknotesIcon, ChartBarIcon, DocumentTextIcon, ExclamationTriangleIcon, ReceiptPercentIcon, TagIcon } from "@heroicons/react/24/outline";
 
 import SectionHeader from "@/components/section-header";
 import { useCan } from "@/context/tenant-context";
@@ -12,13 +13,13 @@ import StudentFeesTab from "./tabs/student-fees-tab";
 import DefaultersTab from "./tabs/defaulters-tab";
 import CollectionsTab from "./tabs/collections-tab";
 
-const TABS: { key: string; label: string; anyOf: PermissionKey[] }[] = [
-  { key: "structures", label: "Fee Structures", anyOf: ["fees.setup"] },
-  { key: "heads", label: "Fee Heads", anyOf: ["fees.setup"] },
-  { key: "students", label: "Student Fees & Payments", anyOf: ["fees.collect", "fees.reverse", "fees.concession"] },
-  { key: "ledger", label: "Payment Ledger", anyOf: ["fees.collect", "fees.reports"] },
-  { key: "defaulters", label: "Defaulters", anyOf: ["fees.reports"] },
-  { key: "collections", label: "Collections", anyOf: ["fees.reports"] },
+const TABS: { key: string; label: string; icon: ComponentType; anyOf: PermissionKey[] }[] = [
+  { key: "structures", label: "Fee Structures", icon: DocumentTextIcon, anyOf: ["fees.setup"] },
+  { key: "heads", label: "Fee Heads", icon: TagIcon, anyOf: ["fees.setup"] },
+  { key: "students", label: "Student Fees & Payments", icon: BanknotesIcon, anyOf: ["fees.collect", "fees.reverse", "fees.concession"] },
+  { key: "ledger", label: "Payment Ledger", icon: ReceiptPercentIcon, anyOf: ["fees.collect", "fees.reports"] },
+  { key: "defaulters", label: "Defaulters", icon: ExclamationTriangleIcon, anyOf: ["fees.reports"] },
+  { key: "collections", label: "Collections", icon: ChartBarIcon, anyOf: ["fees.reports"] },
 ];
 
 const AdminFees = () => {
@@ -31,11 +32,12 @@ const AdminFees = () => {
     <div className="mx-auto max-w-7xl">
       <SectionHeader title="Fees" description="Fee setup, collection and reports" />
 
-      <Tabs value={activeTab} onValueChange={setActiveTab} className="mb-6 border-b border-gray-200">
-        <TabsList className="overflow-x-auto">
-          {tabs.map((tab) => (
-            <TabsTrigger key={tab.key} value={tab.key}>
-              {tab.label}
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="mb-6">
+        <TabsList>
+          {tabs.map(({ key, label, icon: Icon }) => (
+            <TabsTrigger key={key} value={key}>
+              <Icon />
+              {label}
             </TabsTrigger>
           ))}
         </TabsList>

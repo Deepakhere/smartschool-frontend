@@ -5,6 +5,7 @@ import userEvent from "@testing-library/user-event";
 import YearsTab from "./years-tab";
 import ClassesTab from "./classes-tab";
 import SectionsTab from "./sections-tab";
+import SectionHeader, { HeaderActionsProvider } from "@/components/section-header";
 
 const mutation = () => ({ mutate: vi.fn(), isPending: false, isSuccess: false, isError: false });
 
@@ -136,9 +137,15 @@ describe("YearsTab", () => {
   });
 
   it("does not send a new year whose end is before its start", async () => {
-    render(<YearsTab organizationId="org" />);
+    // the tab's add button lives in the page header
+    render(
+      <HeaderActionsProvider>
+        <SectionHeader title="Academics" />
+        <YearsTab organizationId="org" />
+      </HeaderActionsProvider>
+    );
     const user = userEvent.setup();
-    await user.click(screen.getByRole("button", { name: "+ Add academic year" }));
+    await user.click(screen.getByRole("button", { name: "Add academic year" }));
 
     await user.type(screen.getByLabelText("Name"), "2027-28");
     await user.type(screen.getByLabelText("Starts"), "2027-04-01");

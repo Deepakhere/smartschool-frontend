@@ -88,6 +88,7 @@ export const useHomeworkController = () => {
     setSectionId: picker.setSectionId,
     showForm,
     setShowForm,
+    toggleForm: () => setShowForm((open) => !open),
     form,
     handleFileChange,
     onSubmit,

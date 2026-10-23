@@ -1,13 +1,12 @@
 import { useState } from "react";
 import { useParams } from "react-router-dom";
 import { ChevronDownIcon } from "@heroicons/react/24/outline";
+import { PlusIcon } from "@heroicons/react/20/solid";
 
 import ErrorState from "@/components/error-state";
 import EmptyState from "@/components/empty-state";
 import SectionHeader from "@/components/section-header";
 import Spinner from "@/components/spinner";
-import { Button } from "@/components/ui/button";
-import { usePageHeader } from "@/hooks";
 import { cn } from "@/lib/utils";
 import { SelectOption } from "@/types";
 import {
@@ -37,8 +36,6 @@ const AdminPTM = () => {
     name: `${classes.data?.items.find((klass) => klass.id === section.classId)?.name ?? ""} - ${section.name}`,
   }));
 
-  usePageHeader({ actions: <Button onClick={() => setIsCreateOpen(true)}>Schedule PTM</Button> });
-
   const items = events.data?.items ?? [];
 
   return (
@@ -46,6 +43,7 @@ const AdminPTM = () => {
       <SectionHeader
         title="Parent-Teacher Meetings"
         description="Schedule PTM events, open teacher availability, and track parent bookings"
+        action={{ label: "Schedule PTM", icon: PlusIcon, onClick: () => setIsCreateOpen(true) }}
       />
 
       {events.isError ? (

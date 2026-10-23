@@ -45,7 +45,8 @@ const useStudentDetailController = () => {
 
   const [isTransferModalOpen, setIsTransferModalOpen] = useState(false);
   const [isWithdrawModalOpen, setIsWithdrawModalOpen] = useState(false);
-  const enrollmentHistory = useGetEnrollmentHistory(organizationId || "", useCan()("students.manage") ? studentId || "" : "");
+  const canManage = useCan()("students.manage");
+  const enrollmentHistory = useGetEnrollmentHistory(organizationId || "", canManage ? studentId || "" : "");
   const transferStudent = useTransferStudent(organizationId || "", studentId || "");
   const withdrawStudent = useWithdrawStudent(organizationId || "", studentId || "");
   const [attendanceFrom, setAttendanceFrom] = useState("");
@@ -188,6 +189,7 @@ const useStudentDetailController = () => {
   };
 
   return {
+    canManage,
     t,
     organizationId: organizationId || "",
     studentId: studentId || "",

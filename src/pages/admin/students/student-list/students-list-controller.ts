@@ -13,15 +13,18 @@ import {
   useUpdateStudentDetail,
 } from "../service";
 import { IStudentFormData } from "@/types";
-import { EMAIL_REGEX_PATTERN, TOTAL_STEPS } from "@/utils";
+import { EMAIL_REGEX_PATTERN, exportToCsv, TOTAL_STEPS } from "@/utils";
 import { useNavigate, useParams } from "react-router-dom";
 import useGetParentByEmail from "../service/get-parent-by-email";
-import { useError } from "@/hooks";
+import { useError, usePaging } from "@/hooks";
 import { useGetAcademicYears, useGetClasses } from "@/pages/admin/classes/service/academics-service";
 import { createStudentSchema } from "../student-modal/create-update-student-modal/student-form.schema";
-import { useAreaBase } from "@/context/tenant-context";
+import { useAreaBase, useCan } from "@/context/tenant-context";
+import { studentToCsvRow } from "../student-csv";
 
 const emptyFormData = {} as IStudentFormData;
+
+export type StudentListRow = NonNullable<ReturnType<typeof useGetStudentDetails>["data"]>["rows"][number];
 
 const useStudentsListController = () => {
   const { t } = useTranslation();
@@ -35,9 +38,7 @@ const useStudentsListController = () => {
   const [currentStep, setCurrentStep] = useState(1);
   const [isParentExist, setIsParentExist] = useState(false);
 
-  // Pagination state
-  const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage] = useState(10);
+  const { page, pageSize, setPage, setPageSize, resetPage } = usePaging();
   // what is typed shows at once; the search runs half a second after typing stops
   const [searchInput, setSearchInput] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
@@ -61,9 +62,9 @@ const useStudentsListController = () => {
     () =>
       debounce((value: string) => {
         setSearchTerm(value);
-        setCurrentPage(1);
+        resetPage();
       }, 500),
-    []
+    [resetPage]
   );
   useEffect(() => () => runSearch.cancel(), [runSearch]);
 
@@ -77,25 +78,21 @@ const useStudentsListController = () => {
     setSearchInput("");
     setSearchTerm("");
     setClassFilter("all");
-    setCurrentPage(1);
+    resetPage();
   };
 
   // Handle class filter change
   const handleClassFilterChange = (classId: string) => {
     setClassFilter(classId);
-    setCurrentPage(1);
+    resetPage();
   };
 
-  // Toggle dropdown menu
   const academicYears = useGetAcademicYears(organizationId || "");
   const currentAcademicYearId =
     academicYears.data?.items.find((y) => y.isCurrent)?.id || academicYears.data?.items[0]?.id || "";
   const classesForFilter = useGetClasses(organizationId || "", currentAcademicYearId, "active");
   const CLASS_OPTIONS = classesForFilter.data?.items || [];
 
-
-  // Change page
-  const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
 
   const nextStep = () => {
     setCurrentStep((prev) => Math.min(prev + 1, TOTAL_STEPS));
@@ -114,9 +111,20 @@ const useStudentsListController = () => {
     organizationId || "",
     classFilter,
     searchTerm,
-    itemsPerPage,
-    currentPage
+    pageSize,
+    page
   );
+
+  const handleExportCsv = () => {
+    const rows = (getStudentDetails.data?.rows || []).map(studentToCsvRow);
+    if (!rows.length) {
+      toast.error("There are no students to export.");
+      return;
+    }
+    exportToCsv("students", rows);
+  };
+
+  const canManage = useCan()("students.manage");
 
   const addStudentProfile = useAddStudent(organizationId || "");
 
@@ -238,8 +246,10 @@ const useStudentsListController = () => {
     searchInput,
     clearFilters,
     CLASS_OPTIONS,
-    currentPage,
-    itemsPerPage,
+    page,
+    pageSize,
+    setPage,
+    setPageSize,
     searchTerm,
     classFilter,
     isDeleteModalOpen,
@@ -257,7 +267,6 @@ const useStudentsListController = () => {
     prevStep,
     setCurrentStep,
     onClickAddStudent,
-    paginate,
     setSearchTerm,
     handleClassFilterChange,
     handleDeleteAction,
@@ -267,6 +276,8 @@ const useStudentsListController = () => {
     setClassFilter,
     navigateToStudentDetails,
     onClickEditStudent,
+    handleExportCsv,
+    canManage,
   };
 };
 

@@ -1,13 +1,15 @@
 import { useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
 import toast from "react-hot-toast";
-import { ChevronLeftIcon, ChevronRightIcon, PlusIcon } from "@heroicons/react/24/outline";
+import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/outline";
+import { PlusIcon } from "@heroicons/react/20/solid";
 
 import DeleteConfirmationDialog from "@/components/delete-confirmation-dialog";
 import ErrorState from "@/components/error-state";
+import SectionHeader from "@/components/section-header";
 import { Button } from "@/components/ui/button";
 import { useCan } from "@/context/tenant-context";
-import { useError, usePageHeader } from "@/hooks";
+import { useError } from "@/hooks";
 import { ICalendarEntry } from "@/types";
 import { localDateString } from "@/utils";
 import EntryDialog from "./components/entry-dialog";
@@ -30,15 +32,6 @@ const AdminCalendar = () => {
   const deleteEntry = useDeleteCalendarEntry(organizationId);
   useError({ mutation: deleteEntry });
 
-  usePageHeader({
-    actions: canEdit ? (
-      <Button onClick={() => setDialog({ entry: null, date: today })}>
-        <PlusIcon className="mr-1 h-4 w-4" />
-        Add Event
-      </Button>
-    ) : undefined,
-  });
-
   const itemsByDate = useMemo(
     () => toGridItems(month.data?.entries ?? [], [...(month.data?.examDays ?? []), ...(month.data?.birthdays ?? [])]),
     [month.data]
@@ -54,6 +47,12 @@ const AdminCalendar = () => {
 
   return (
     <div className="mx-auto max-w-7xl">
+      <SectionHeader
+        title="Calendar"
+        description="School events, holidays, exams and birthdays for the month"
+        action={{ label: "Add event", icon: PlusIcon, onClick: () => setDialog({ entry: null, date: today }), hidden: !canEdit }}
+      />
+
       <div className="mb-4 flex items-center justify-between">
         <h2 className="text-lg font-semibold text-gray-900">{label}</h2>
         <div className="flex items-center gap-2">

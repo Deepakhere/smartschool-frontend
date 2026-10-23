@@ -1,7 +1,6 @@
-import PageLoader from "@/components/page-loader";
-import EmptyState from "@/components/empty-state";
-import { Table, TableHeader, TableHead, TableBody, TableRow, TableCell } from "@/components/table";
+import DataTable, { DataTableColumn } from "@/components/data-table";
 import { Switch } from "@/components/ui/switch";
+import { IEmailLog } from "@/types";
 import useNotificationsController from "./notifications-controller";
 
 const statusColors: Record<string, string> = {
@@ -11,6 +10,36 @@ const statusColors: Record<string, string> = {
   failed: "bg-red-100 text-red-800",
   skipped: "bg-gray-100 text-gray-600",
 };
+
+const columns: DataTableColumn<IEmailLog>[] = [
+  { id: "recipient", header: "Recipient", cell: ({ row }) => <span className="font-medium text-gray-900">{row.original.recipientEmail}</span> },
+  {
+    id: "subject",
+    header: "Subject",
+    cell: ({ row }) => (
+      <span className="text-gray-600">
+        {row.original.subject}
+        {row.original.reason && <span className="block text-xs text-gray-400">{row.original.reason}</span>}
+      </span>
+    ),
+  },
+  {
+    id: "status",
+    header: "Status",
+    meta: { align: "center" },
+    cell: ({ row }) => (
+      <span className={`px-2 py-0.5 rounded-full text-xs font-medium capitalize ${statusColors[row.original.status]}`}>
+        {row.original.status}
+      </span>
+    ),
+  },
+  {
+    id: "date",
+    header: "Date",
+    meta: { align: "center", className: "text-gray-500" },
+    cell: ({ row }) => new Date(row.original.createdAt).toLocaleString(),
+  },
+];
 
 const Notifications = () => {
   const { t, emailNotificationsEnabled, feeRemindersEnabled, emailLog, isLoading, isUpdating, toggleEmailNotifications, toggleFeeReminders } =
@@ -42,41 +71,17 @@ const Notifications = () => {
         </div>
       </div>
 
-      <div className="bg-white rounded-lg shadow p-6">
-        <p className="text-sm font-medium text-gray-900 mb-4">Recent email activity</p>
-        {isLoading ? (
-          <PageLoader />
-        ) : emailLog.length === 0 ? (
-          <EmptyState title="No emails sent yet" description="Every email the school sends will be listed here." />
-        ) : (
-          <Table>
-            <TableHeader>
-              <TableHead>Recipient</TableHead>
-              <TableHead>Subject</TableHead>
-              <TableHead className="text-center">Status</TableHead>
-              <TableHead className="text-center">Date</TableHead>
-            </TableHeader>
-            <TableBody>
-              {emailLog.map((log) => (
-                <TableRow key={log.id}>
-                  <TableCell className="font-medium text-gray-900">{log.recipientEmail}</TableCell>
-                  <TableCell className="text-gray-600">
-                    {log.subject}
-                    {log.reason && <span className="block text-xs text-gray-400">{log.reason}</span>}
-                  </TableCell>
-                  <TableCell className="text-center">
-                    <span className={`px-2 py-0.5 rounded-full text-xs font-medium capitalize ${statusColors[log.status]}`}>
-                      {log.status}
-                    </span>
-                  </TableCell>
-                  <TableCell className="text-center text-sm text-gray-500">
-                    {new Date(log.createdAt).toLocaleString()}
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        )}
+      <div>
+        <h3 className="text-sm font-medium text-gray-900 mb-3">Recent email activity</h3>
+        <DataTable
+          columns={columns}
+          data={emailLog}
+          getRowId={(log) => log.id}
+          isLoading={isLoading}
+          itemLabel="emails"
+          pagination={{ pageSize: 20 }}
+          empty={{ title: "No emails sent yet", description: "Every email the school sends will be listed here." }}
+        />
       </div>
     </div>
   );

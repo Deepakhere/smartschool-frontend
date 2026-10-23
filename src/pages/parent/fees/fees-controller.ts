@@ -2,7 +2,7 @@ import { useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import toast from "react-hot-toast";
 
-import { useGetMyFees } from "@/pages/admin/fees/service/fees-service";
+import { downloadFeeReceipt, useEmailFeeReceipt, useGetMyFees } from "@/pages/admin/fees/service/fees-service";
 import { IAPIError } from "@/types";
 import { usePayFeesOnline } from "./online-payment-service";
 
@@ -13,6 +13,9 @@ const useParentFeesController = () => {
   const getMyFees = useGetMyFees(organizationId || "");
   const fees = getMyFees.data?.items || [];
   const payFeesOnline = usePayFeesOnline(organizationId || "");
+  const emailFeeReceipt = useEmailFeeReceipt(organizationId || "");
+  // which fee (and instalment) is being paid right now, for its button's spinner
+  const paying = payFeesOnline.isPending ? payFeesOnline.variables : null;
 
   const payOnline = (studentFeeId: string, installmentLabels?: string[]) =>
     payFeesOnline.mutate(
@@ -28,13 +31,34 @@ const useParentFeesController = () => {
       }
     );
 
+  const isPaying = (studentFeeId: string, label?: string) =>
+    paying?.studentFeeId === studentFeeId && (label ? paying.installmentLabels?.[0] === label : !paying.installmentLabels);
+
+  const downloadReceipt = async (paymentId: string) => {
+    try {
+      await downloadFeeReceipt(organizationId || "", paymentId);
+    } catch (error) {
+      toast.error((error as IAPIError)?.response?.Error?.message || "Could not download the receipt. Please try again.");
+    }
+  };
+
+  const emailReceipt = (paymentId: string) =>
+    emailFeeReceipt.mutate(paymentId, {
+      onSuccess: () => toast.success("Receipt emailed to your registered email address."),
+      // for example "No registered email address found" says what to fix
+      onError: (error) => toast.error(error?.response?.Error?.message || "Could not email the receipt. Please try again."),
+    });
+
   return {
     t,
     fees,
     canPayOnline: Boolean(getMyFees.data?.onlinePaymentsEnabled),
     payOnline,
-    // which fee (and instalment) is being paid right now, for its button's spinner
-    paying: payFeesOnline.isPending ? payFeesOnline.variables : null,
+    paying,
+    isPaying,
+    downloadReceipt,
+    emailReceipt,
+    isEmailing: emailFeeReceipt.isPending,
     isLoading: getMyFees.isLoading,
     // a failed load shows an error with a retry, not an empty page
     loadError: getMyFees.isError ? getMyFees.error : null,

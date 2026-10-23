@@ -211,8 +211,6 @@ export const useReversePayment = (organizationId: string) => {
   });
 };
 
-export const LEDGER_PAGE_SIZE = 50;
-
 const fetchLedgerPage = async (organizationId: string, page: number, limit: number) => {
   const result = await apiClient.get<null, IAxiosResponse<Paged<IPayment>>>(`${base(organizationId)}/payment`, {
     params: { page, limit },
@@ -220,10 +218,10 @@ const fetchLedgerPage = async (organizationId: string, page: number, limit: numb
   return result.data.Data;
 };
 
-export const useGetPaymentLedger = (organizationId: string, page: number) =>
+export const useGetPaymentLedger = (organizationId: string, page: number, pageSize: number) =>
   useQuery<Paged<IPayment>, IAPIError>({
-    queryKey: [API_QUERY_KEY.GET_PAYMENT_LEDGER, organizationId, page],
-    queryFn: () => fetchLedgerPage(organizationId, page, LEDGER_PAGE_SIZE),
+    queryKey: [API_QUERY_KEY.GET_PAYMENT_LEDGER, organizationId, page, pageSize],
+    queryFn: () => fetchLedgerPage(organizationId, page, pageSize),
     enabled: !!organizationId,
     // the current page stays on screen while the next one loads
     placeholderData: keepPreviousData,
@@ -285,8 +283,6 @@ export const useGrantConcession = (organizationId: string) => {
   });
 };
 
-export const DEFAULTERS_PAGE_SIZE = 50;
-
 export interface DefaulterFilters {
   academicYearId?: string;
   classId?: string;
@@ -301,10 +297,10 @@ const fetchDefaultersPage = async (organizationId: string, filters: DefaulterFil
   return result.data.Data;
 };
 
-export const useGetFeeDefaulters = (organizationId: string, filters: DefaulterFilters, page: number) =>
+export const useGetFeeDefaulters = (organizationId: string, filters: DefaulterFilters, page: number, pageSize: number) =>
   useQuery<IFeeDefaultersResult, IAPIError>({
-    queryKey: [API_QUERY_KEY.GET_FEE_DEFAULTERS, organizationId, filters, page],
-    queryFn: () => fetchDefaultersPage(organizationId, filters, page, DEFAULTERS_PAGE_SIZE),
+    queryKey: [API_QUERY_KEY.GET_FEE_DEFAULTERS, organizationId, filters, page, pageSize],
+    queryFn: () => fetchDefaultersPage(organizationId, filters, page, pageSize),
     enabled: !!organizationId && !!filters.academicYearId,
     placeholderData: keepPreviousData,
   });

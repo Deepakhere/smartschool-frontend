@@ -1,0 +1,43 @@
+import { ReactNode } from "react";
+import type { Action } from "@/components/action-buttons";
+import { ColumnDef, RowData } from "@tanstack/react-table";
+
+declare module "@tanstack/react-table" {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  interface ColumnMeta<TData extends RowData, TValue> {
+    // alignment and extra classes for the column's header and cells
+    align?: "left" | "center" | "right";
+    className?: string;
+  }
+}
+
+export type DataTableColumn<T> = ColumnDef<T, unknown>;
+
+// the server already paged the rows: show its page and total, ask it for another page
+export interface ServerPagination {
+  page: number;
+  pageSize: number;
+  total: number;
+  onPageChange: (page: number) => void;
+  onPageSizeChange?: (size: number) => void;
+}
+
+export interface DataTableProps<T> {
+  columns: DataTableColumn<T>[];
+  data: T[];
+  getRowId?: (row: T) => string;
+  isLoading?: boolean;
+  empty: { title: string; description?: ReactNode; action?: ReactNode };
+  onRowClick?: (row: T) => void;
+  // client: rows are paged in the browser; server: the API pages them
+  pagination?: { pageSize: number } | ServerPagination;
+  // the caller sends `value` to the API
+  search?: { placeholder?: string; value: string; onChange: (value: string) => void };
+  // filters shown beside the search
+  toolbar?: ReactNode;
+  // list buttons (export, bulk upload), drawn after the toolbar
+  actions?: Action[];
+  // plural noun for the footer count, e.g. "students"
+  itemLabel?: string;
+  className?: string;
+}

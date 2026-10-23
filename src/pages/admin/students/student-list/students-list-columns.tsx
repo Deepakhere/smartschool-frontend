@@ -1,0 +1,87 @@
+import { TFunction } from "i18next";
+
+import { DataTableColumn } from "@/components/data-table";
+import RowMenu from "@/components/row-menu";
+import { Button } from "@/components/ui/button";
+import { formatDate } from "@/utils";
+import { StudentListRow } from "./students-list-controller";
+
+// the parent of this student, when they were invited but have not set a password yet
+const pendingParent = (student: StudentListRow) => {
+  const parent = student.parentId;
+  return parent && typeof parent === "object" && parent.status === "pending" ? (parent as { id: string }) : null;
+};
+
+interface StudentColumnActions {
+  t: TFunction;
+  open: (studentId: string) => void;
+  edit: (studentId: string) => void;
+  resendInvite: (parentUserId: string) => void;
+  remove: (studentId: string) => void;
+}
+
+export const studentColumns = ({ t, open, edit, resendInvite, remove }: StudentColumnActions): DataTableColumn<StudentListRow>[] => [
+  {
+    id: "name",
+    header: t("labels.student_name"),
+    cell: ({ row }) => {
+      const student = row.original;
+      return (
+        <div className="flex items-center">
+          <div className="flex-shrink-0 h-10 w-10 rounded-full bg-primary-100 flex items-center justify-center">
+            <span className="text-primary-600 font-medium">{student.name.charAt(0)}</span>
+          </div>
+          <div className="ml-4">
+            <Button variant="link" className="font-medium text-gray-900 hover:text-primary-600" onClick={() => open(student.id)}>
+              {student.name}
+            </Button>
+            {pendingParent(student) && (
+              <span className="mt-0.5 inline-block rounded-full bg-gray-100 px-2 py-0.5 text-xs text-gray-600">
+                {t("labels.invite_pending")}
+              </span>
+            )}
+          </div>
+        </div>
+      );
+    },
+  },
+  {
+    id: "rollNumber",
+    header: t("labels.roll_number"),
+    meta: { align: "center" },
+    cell: ({ row }) => row.original.currentEnrollment?.rollNumber,
+  },
+  {
+    id: "class",
+    header: t("labels.class_id"),
+    meta: { align: "center" },
+    cell: ({ row }) => {
+      const enrollment = row.original.currentEnrollment;
+      return `${enrollment?.classId?.name ?? ""}${enrollment?.sectionId?.name ? ` - ${enrollment.sectionId.name}` : ""}`;
+    },
+  },
+  {
+    id: "dateOfBirth",
+    header: t("labels.date_of_birth"),
+    meta: { align: "center" },
+    cell: ({ row }) => formatDate(row.original.dateOfBirth),
+  },
+  {
+    id: "actions",
+    header: t("labels.actions"),
+    meta: { align: "center" },
+    cell: ({ row }) => {
+      const student = row.original;
+      const parent = pendingParent(student);
+      return (
+        <RowMenu
+          items={[
+            { label: t("buttons.edit"), onSelect: () => edit(student.id) },
+            ...(parent ? [{ label: t("buttons.resend_invite"), onSelect: () => resendInvite(parent.id) }] : []),
+            { label: t("buttons.delete"), onSelect: () => remove(student.id), danger: true },
+          ]}
+        />
+      );
+    },
+  },
+];
