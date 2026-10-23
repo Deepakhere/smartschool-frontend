@@ -1,43 +1,21 @@
 import ErrorState from "@/components/error-state";
-import { useParams } from "react-router-dom";
-import {
-  UserGroupIcon,
-  BookOpenIcon,
-  CurrencyDollarIcon,
-  BellIcon,
-} from "@heroicons/react/24/outline";
-
 import SectionHeader from "@/components/section-header";
 import Spinner from "@/components/spinner";
-import useGetParentDashboard from "./service/get-parent-dashboard";
-
-import { formatMoney } from "@/utils";
 import EmptyState from "@/components/empty-state";
+import useParentDashboardController from "./dashboard-controller";
 
 const ParentDashboard = () => {
-  const { organizationId } = useParams();
-  const { data, isLoading, isError, error, refetch } = useGetParentDashboard(organizationId || "");
-
-  const cards = [
-    { title: "My Children", value: data?.childrenCount ?? "-", icon: UserGroupIcon },
-    { title: "Upcoming Homework", value: data?.upcomingHomeworkCount ?? "-", icon: BookOpenIcon },
-    {
-      title: "Pending Fees",
-      value: data ? formatMoney(data.pendingFeesTotal) : "-",
-      icon: CurrencyDollarIcon,
-    },
-    { title: "Active Notices", value: data?.recentNoticesCount ?? "-", icon: BellIcon },
-  ];
+  const { cards, isLoading, error, retry, hasNoChildren } = useParentDashboardController();
 
   return (
     <div className="max-w-7xl mx-auto">
       <SectionHeader title="Dashboard" description="A quick overview of your child's school activity" />
 
-      {(isError ? error : null) ? (
-        <ErrorState error={(isError ? error : null)} onRetry={() => refetch()} />
+      {error ? (
+        <ErrorState error={error} onRetry={retry} />
       ) : isLoading ? (
         <Spinner />
-      ) : data && data.childrenCount === 0 ? (
+      ) : hasNoChildren ? (
         <div className="rounded-xl bg-white shadow">
           <EmptyState
             title="No child linked yet"

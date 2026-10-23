@@ -13,7 +13,7 @@ import useParentPTMController from "./ptm-controller";
 const ParentPTM = () => {
   const {
     events,
-    slots,
+    slotItems,
     eventOptions,
     childOptions,
     bookings,
@@ -24,15 +24,17 @@ const ParentPTM = () => {
     isLoadingSlots,
     isBooking,
     selectedEventId,
-    setSelectedEventId,
+    selectedEventOption,
+    selectEvent,
     bookingSlotId,
-    bookingSlot,
+    bookingDescription,
     bookingForm,
     openBookingFor,
     closeBooking,
     confirmBooking,
     bookingToCancel,
     setBookingToCancel,
+    closeCancel,
     confirmCancelBooking,
     isCancelling,
   } = useParentPTMController();
@@ -71,38 +73,34 @@ const ParentPTM = () => {
             <CustomSelectDropdown
               options={eventOptions}
               placeholder="Select PTM event"
-              value={eventOptions.find((o) => o.id === selectedEventId) || null}
-              onChange={(o) => setSelectedEventId(String(o.id))}
+              value={selectedEventOption}
+              onChange={selectEvent}
             />
 
             {selectedEventId && (
               <div className="mt-4">
                 {isLoadingSlots ? (
                   <Spinner />
-                ) : slots.length === 0 ? (
+                ) : slotItems.length === 0 ? (
                   <EmptyState compact title="No open slots yet" description="Teachers haven't opened time for your child's section." />
                 ) : (
                   <div className="flex flex-wrap gap-2">
-                    {slots.map((slot) => {
-                      const teacherName = typeof slot.teacherUserId === "object" ? slot.teacherUserId.name : "";
-                      const full = slot.bookedCount >= slot.capacity;
-                      return (
-                        <button
-                          type="button"
-                          key={slot.id}
-                          disabled={full}
-                          onClick={() => openBookingFor(slot.id)}
-                          className={`px-3 py-2 rounded-md text-xs border text-left ${
-                            full
-                              ? "bg-gray-100 text-gray-400 border-gray-200 cursor-not-allowed"
-                              : "bg-white text-gray-700 border-gray-300 hover:bg-primary-50"
-                          }`}
-                        >
-                          <div className="font-medium">{teacherName}</div>
-                          <div>{new Date(slot.startAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}</div>
-                        </button>
-                      );
-                    })}
+                    {slotItems.map((slot) => (
+                      <button
+                        type="button"
+                        key={slot.id}
+                        disabled={slot.full}
+                        onClick={() => openBookingFor(slot.id)}
+                        className={`px-3 py-2 rounded-md text-xs border text-left ${
+                          slot.full
+                            ? "bg-gray-100 text-gray-400 border-gray-200 cursor-not-allowed"
+                            : "bg-white text-gray-700 border-gray-300 hover:bg-primary-50"
+                        }`}
+                      >
+                        <div className="font-medium">{slot.teacherName}</div>
+                        <div>{slot.time}</div>
+                      </button>
+                    ))}
                   </div>
                 )}
               </div>
@@ -116,13 +114,7 @@ const ParentPTM = () => {
         open={!!bookingSlotId}
         onClose={closeBooking}
         title="Confirm booking"
-        description={
-          bookingSlot
-            ? `${typeof bookingSlot.teacherUserId === "object" ? bookingSlot.teacherUserId.name : ""}, ${new Date(
-                bookingSlot.startAt
-              ).toLocaleString([], { dateStyle: "medium", timeStyle: "short" })}`
-            : undefined
-        }
+        description={bookingDescription}
         submitLabel="Confirm"
         isSubmitting={isBooking}
         submitDisabled={!childOptions.length}
@@ -138,7 +130,7 @@ const ParentPTM = () => {
 
       <DeleteConfirmationDialog
         open={!!bookingToCancel}
-        onClose={() => setBookingToCancel(null)}
+        onClose={closeCancel}
         onConfirm={confirmCancelBooking}
         isLoading={isCancelling}
         title="Cancel this meeting?"

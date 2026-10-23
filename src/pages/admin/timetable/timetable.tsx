@@ -1,20 +1,14 @@
-import { useState } from "react";
-import { useParams } from "react-router-dom";
-import toast from "react-hot-toast";
 import { PlusIcon } from "@heroicons/react/20/solid";
 
 import CustomSelectDropdown from "@/components/custom-select";
 import DeleteConfirmationDialog from "@/components/delete-confirmation-dialog";
 import ErrorState from "@/components/error-state";
 import SectionHeader from "@/components/section-header";
-import { useError } from "@/hooks";
-import { ITimetableSlot, SelectOption } from "@/types";
-import { useGetSubjects, useGetTeacherAssignments } from "../classes/service/academics-service";
-import { useSectionPicker } from "../classes/service/use-section-picker";
+import { SelectOption } from "@/types";
 import PeriodDialog from "./components/period-dialog";
 import WeekGrid from "./components/week-grid";
-import { useDeleteTimetableSlot, useGetTimetable } from "./service/timetable-service";
 import { DAY_NAMES, formatTime } from "./timetable.utils";
+import useTimetableController from "./timetable-controller";
 import EmptyState from "@/components/empty-state";
 
 const Picker = ({ label, options, value, disabled, onChange }: { label: string; options: SelectOption[]; value: string; disabled?: boolean; onChange: (id: string) => void }) => (
@@ -30,30 +24,17 @@ const Picker = ({ label, options, value, disabled, onChange }: { label: string; 
   </div>
 );
 
-// admins build each section's week; a teacher sees their own week across every class they teach
 const Timetable = () => {
-  const { organizationId = "" } = useParams();
-  const picker = useSectionPicker(organizationId);
+  const c = useTimetableController();
+  const { picker, toRemove } = c;
   const { isTeacher, academicYearId, classId, sectionId } = picker;
-  const [isAdding, setIsAdding] = useState(false);
-  const [toRemove, setToRemove] = useState<ITimetableSlot | null>(null);
-
-  const timetable = useGetTimetable(organizationId, isTeacher ? "" : sectionId, isTeacher || !!sectionId);
-  const assignments = useGetTeacherAssignments(organizationId, academicYearId, !isTeacher && !!academicYearId);
-  const subjects = useGetSubjects(organizationId, isTeacher ? undefined : academicYearId, "active");
-  const remove = useDeleteTimetableSlot(organizationId);
-  useError({ mutation: remove });
-
-  const slots = timetable.data?.items ?? [];
-  const sectionAssignments = (assignments.data?.items ?? []).filter((a) => a.sectionId?.id === sectionId && a.status !== "inactive");
-  const ready = isTeacher || !!sectionId;
 
   return (
     <div className="mx-auto max-w-7xl space-y-6">
       <SectionHeader
         title={isTeacher ? "My Timetable" : "Timetable"}
         description={isTeacher ? "Your periods for the week, across every class you teach" : "Set up each section's periods for the week"}
-        action={{ label: "Add period", icon: PlusIcon, onClick: () => setIsAdding(true), disabled: !sectionId, title: !sectionId ? "Pick a class and section first" : undefined, hidden: isTeacher }}
+        action={{ label: "Add period", icon: PlusIcon, onClick: c.openAdd, disabled: !sectionId, title: !sectionId ? "Pick a class and section first" : undefined, hidden: isTeacher }}
       />
 
       {!isTeacher && (
@@ -83,40 +64,40 @@ const Timetable = () => {
         </div>
       )}
 
-      {!ready ? (
+      {!c.ready ? (
         <div className="rounded-lg bg-white shadow">
           <EmptyState
             title={picker.classes.length ? "Pick a class and section" : "No classes yet"}
             description={picker.classes.length ? "Choose a class and section above to see and build its week." : "Add an academic year, classes and sections on the Classes page first."}
           />
         </div>
-      ) : timetable.isError ? (
-        <ErrorState error={timetable.error} onRetry={() => timetable.refetch()} />
+      ) : c.timetable.isError ? (
+        <ErrorState error={c.timetable.error} onRetry={() => c.timetable.refetch()} />
       ) : (
         <WeekGrid
-          slots={slots}
-          isLoading={timetable.isLoading}
+          slots={c.slots}
+          isLoading={c.timetable.isLoading}
           emptyDescription={isTeacher ? "Your school admin sets up your week on the Timetable page." : "Use Add period to build this section's week."}
           showSection={isTeacher}
-          onDelete={isTeacher ? undefined : setToRemove}
+          onDelete={c.askRemove}
         />
       )}
 
       {!isTeacher && sectionId && (
         <PeriodDialog
-          organizationId={organizationId}
+          organizationId={c.organizationId}
           academicYearId={academicYearId}
           classId={classId}
           sectionId={sectionId}
-          assignments={sectionAssignments}
-          subjects={subjects.data?.items ?? []}
-          open={isAdding}
-          onClose={() => setIsAdding(false)}
+          assignments={c.sectionAssignments}
+          subjects={c.subjects}
+          open={c.isAdding}
+          onClose={c.closeAdd}
         />
       )}
       <DeleteConfirmationDialog
         open={!!toRemove}
-        onClose={() => setToRemove(null)}
+        onClose={c.closeRemove}
         title="Remove period?"
         description={
           toRemove
@@ -124,16 +105,8 @@ const Timetable = () => {
             : ""
         }
         confirmLabel="Remove"
-        isLoading={remove.isPending}
-        onConfirm={() =>
-          toRemove &&
-          remove.mutate(toRemove.id, {
-            onSuccess: () => {
-              toast.success("Period removed.");
-              setToRemove(null);
-            },
-          })
-        }
+        isLoading={c.isRemoving}
+        onConfirm={c.confirmRemove}
       />
     </div>
   );

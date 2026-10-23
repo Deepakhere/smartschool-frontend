@@ -4,7 +4,7 @@ import toast from "react-hot-toast";
 
 import { downloadFeeReceipt, useEmailFeeReceipt, useGetMyFees } from "@/pages/admin/fees/service/fees-service";
 import { IAPIError } from "@/types";
-import { usePayFeesOnline } from "./online-payment-service";
+import { usePayFeesOnline } from "./service/online-payment-service";
 
 const useParentFeesController = () => {
   const { t } = useTranslation();

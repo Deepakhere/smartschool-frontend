@@ -1,10 +1,3 @@
-import { useEffect } from "react";
-import { useParams } from "react-router-dom";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
-import toast from "react-hot-toast";
-
 import ErrorState from "@/components/error-state";
 import PageLoader from "@/components/page-loader";
 import { TextField } from "@/components/form-fields";
@@ -12,64 +5,14 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import { Switch } from "@/components/ui/switch";
-import { useError } from "@/hooks";
-import { useGetOnlinePaymentSettings, useSaveOnlinePaymentSettings } from "./online-payments-service";
+import useOnlinePaymentsController from "./online-payments-controller";
 
-const schema = z.object({
-  keyId: z
-    .string()
-    .trim()
-    .refine((value) => value === "" || /^rzp_(test|live)_[A-Za-z0-9]+$/.test(value), "A Razorpay key id starts with rzp_test_ or rzp_live_."),
-  keySecret: z.string().trim(),
-  webhookSecret: z.string().trim(),
-});
-type Values = z.infer<typeof schema>;
-
-// the school connects its own Razorpay account, so parents' fees go straight to the school's bank
 const OnlinePayments = () => {
-  const { organizationId = "" } = useParams();
-  const settings = useGetOnlinePaymentSettings(organizationId);
-  const save = useSaveOnlinePaymentSettings(organizationId);
-  useError({ mutation: save });
-
-  const form = useForm<Values>({ resolver: zodResolver(schema), defaultValues: { keyId: "", keySecret: "", webhookSecret: "" } });
-  // filled on load and after new keys are saved; turning the switch leaves typed values alone
-  const savedKeyId = settings.data?.keyId;
-  const connectedAt = settings.data?.connectedAt;
-  useEffect(() => {
-    if (savedKeyId !== undefined) form.reset({ keyId: savedKeyId, keySecret: "", webhookSecret: "" });
-  }, [savedKeyId, connectedAt, form]);
-
-  const webhookUrl = `${import.meta.env.VITE_API_URL}/payment-webhook/v1/razorpay/${organizationId}`;
-
-  const onSubmit = form.handleSubmit((values) => {
-    // blank secrets keep the saved ones, so they are only sent when typed
-    save.mutate(
-      {
-        keyId: values.keyId || undefined,
-        keySecret: values.keySecret || undefined,
-        webhookSecret: values.webhookSecret || undefined,
-      },
-      { onSuccess: () => toast.success("Razorpay keys saved and checked.") }
-    );
-  });
-
-  const toggle = (enabled: boolean) =>
-    save.mutate({ enabled }, { onSuccess: () => toast.success(enabled ? "Parents can now pay fees online." : "Online fee payments turned off.") });
-
-  const copyWebhook = async () => {
-    try {
-      await navigator.clipboard.writeText(webhookUrl);
-      toast.success("Webhook address copied.");
-    } catch {
-      toast.error("Couldn't copy. Select the address and copy it instead.");
-    }
-  };
+  const { settings, data, connected, form, submit, isSaving, toggle, webhookUrl, copyWebhook } = useOnlinePaymentsController();
 
   if (settings.isLoading) return <PageLoader />;
   if (settings.isError) return <ErrorState error={settings.error} onRetry={() => settings.refetch()} />;
-  const data = settings.data!;
-  const connected = Boolean(data.keyId && data.hasKeySecret);
+  if (!data) return null;
 
   return (
     <div className="space-y-6">
@@ -86,7 +29,7 @@ const OnlinePayments = () => {
               receipt and shows in the ledger and reports, like any other payment. Razorpay&apos;s charge comes out of what the school receives.
             </p>
           </div>
-          <Switch checked={data.enabled} disabled={!connected || save.isPending} onCheckedChange={toggle} />
+          <Switch checked={data.enabled} disabled={!connected || isSaving} onCheckedChange={toggle} />
         </div>
         {!connected && <p className="mt-3 text-sm text-amber-700">Connect your Razorpay account below to turn this on.</p>}
       </div>
@@ -110,7 +53,7 @@ const OnlinePayments = () => {
         </div>
 
         <Form {...form}>
-          <form onSubmit={onSubmit} noValidate className="mt-5 grid grid-cols-1 gap-4 sm:grid-cols-3">
+          <form onSubmit={submit} noValidate className="mt-5 grid grid-cols-1 gap-4 sm:grid-cols-3">
             <TextField form={form} name="keyId" label="Key id" placeholder="rzp_live_..." />
             <TextField
               form={form}
@@ -127,7 +70,7 @@ const OnlinePayments = () => {
               placeholder={data.hasWebhookSecret ? "Saved. Leave blank to keep it." : "Paste the webhook secret"}
             />
             <div className="sm:col-span-3">
-              <Button type="submit" loading={save.isPending}>
+              <Button type="submit" loading={isSaving}>
                 Save and check keys
               </Button>
             </div>

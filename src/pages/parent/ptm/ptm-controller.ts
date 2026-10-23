@@ -1,10 +1,8 @@
 import { useState } from "react";
 import { useParams } from "react-router-dom";
-import { useTranslation } from "react-i18next";
 import toast from "react-hot-toast";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
 
 import {
   useGetPTMEvents,
@@ -15,20 +13,20 @@ import {
 } from "@/pages/admin/ptm/service/ptm-service";
 import { useGetMyChildren } from "./service/my-children-service";
 import { useError } from "@/hooks";
-import { SelectOption } from "@/types";
+import { IPTMSlot, SelectOption } from "@/types";
+import { bookingSchema, BookingFormValues, defaultBookingValues } from "./ptm.schema";
 
-const bookingSchema = z.object({ studentId: z.string().min(1, "Select a child to book for.") });
+const teacherNameOf = (slot: IPTMSlot) => (typeof slot.teacherUserId === "object" ? slot.teacherUserId.name : "");
 
 const useParentPTMController = () => {
-  const { t } = useTranslation();
   const { organizationId } = useParams();
   const org = organizationId || "";
 
   const [selectedEventId, setSelectedEventId] = useState("");
   const [bookingSlotId, setBookingSlotId] = useState("");
-  const bookingForm = useForm<z.infer<typeof bookingSchema>>({
+  const bookingForm = useForm<BookingFormValues>({
     resolver: zodResolver(bookingSchema),
-    defaultValues: { studentId: "" },
+    defaultValues: defaultBookingValues,
   });
   const [bookingToCancel, setBookingToCancel] = useState<string | null>(null);
 
@@ -53,7 +51,16 @@ const useParentPTMController = () => {
     return children.filter((c) => c.studentId.currentEnrollment?.sectionId?.id === slot?.sectionId);
   };
   const bookingChildren = bookingSlotId ? childrenForSlot(bookingSlotId) : [];
-  const bookingSlot = slots.find((s) => s.id === bookingSlotId) ?? null;
+  const bookingSlot = slots.find((s) => s.id === bookingSlotId);
+  const bookingDescription = bookingSlot
+    ? `${teacherNameOf(bookingSlot)}, ${new Date(bookingSlot.startAt).toLocaleString([], { dateStyle: "medium", timeStyle: "short" })}`
+    : undefined;
+  const slotItems = slots.map((slot) => ({
+    id: slot.id,
+    teacherName: teacherNameOf(slot),
+    time: new Date(slot.startAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+    full: slot.bookedCount >= slot.capacity,
+  }));
 
   const eventOptions: SelectOption[] = events.map((event) => ({
     id: event.id,
@@ -91,9 +98,8 @@ const useParentPTMController = () => {
   };
 
   return {
-    t,
     events,
-    slots,
+    slotItems,
     eventOptions,
     childOptions,
     bookings,
@@ -104,15 +110,17 @@ const useParentPTMController = () => {
     isLoadingSlots: getSlotsForEvent.isLoading,
     isBooking: bookSlot.isPending,
     selectedEventId,
-    setSelectedEventId,
+    selectedEventOption: eventOptions.find((o) => o.id === selectedEventId) || null,
+    selectEvent: (option: SelectOption) => setSelectedEventId(String(option.id)),
     bookingSlotId,
-    bookingSlot,
+    bookingDescription,
     bookingForm,
     openBookingFor,
     closeBooking,
     confirmBooking,
     bookingToCancel,
     setBookingToCancel,
+    closeCancel: () => setBookingToCancel(null),
     confirmCancelBooking,
     isCancelling: cancelBooking.isPending,
   };

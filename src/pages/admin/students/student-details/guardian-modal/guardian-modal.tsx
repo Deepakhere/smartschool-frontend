@@ -1,11 +1,7 @@
-import { useEffect } from "react";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-
 import FormDialog from "@/components/form-dialog";
 import { CheckboxField, SelectField, TextField } from "@/components/form-fields";
 import { IAddGuardianValue, SelectOption } from "@/types";
-import { guardianFormSchema, defaultGuardianFormValues, GuardianFormValues } from "./guardian-modal.schema";
+import useGuardianModalController from "./guardian-modal-controller";
 
 const relationshipOptions: SelectOption[] = [
   { id: "FATHER", name: "Father" },
@@ -22,15 +18,7 @@ interface GuardianModalProps {
 }
 
 const GuardianModal = ({ isOpen, isSubmitting, onClose, onSubmit }: GuardianModalProps) => {
-  const form = useForm<GuardianFormValues>({
-    resolver: zodResolver(guardianFormSchema),
-    defaultValues: defaultGuardianFormValues,
-  });
-
-  // every opening starts empty, never with the guardian added (or abandoned) last time
-  useEffect(() => {
-    if (isOpen) form.reset(defaultGuardianFormValues);
-  }, [isOpen, form]);
+  const { form, submit } = useGuardianModalController(isOpen, onSubmit);
 
   return (
     <FormDialog
@@ -40,7 +28,7 @@ const GuardianModal = ({ isOpen, isSubmitting, onClose, onSubmit }: GuardianModa
       title="Add Guardian"
       submitLabel="Save"
       isSubmitting={isSubmitting}
-      onSubmit={form.handleSubmit((values) => onSubmit(values))}
+      onSubmit={submit}
     >
       <TextField form={form} name="parentEmail" label="Email" type="email" autoFocus />
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">

@@ -1,15 +1,8 @@
-import { useEffect } from "react";
-import { useForm, useWatch } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import toast from "react-hot-toast";
-
 import FormDialog from "@/components/form-dialog";
 import { ChipsField, DateField, SelectField, TextField } from "@/components/form-fields";
-import { useError } from "@/hooks";
 import { SelectOption } from "@/types";
 import { localDateString } from "@/utils";
-import { defaultPTMEventValues, ptmEventSchema, PTMEventFormValues } from "../ptm.schema";
-import { useCreatePTMEvent } from "../service/ptm-service";
+import useCreateEventDialogController from "./create-event-dialog-controller";
 
 const modeOptions: SelectOption[] = [
   { id: "onsite", name: "Onsite" },
@@ -25,40 +18,7 @@ interface CreateEventDialogProps {
 }
 
 const CreateEventDialog = ({ organizationId, academicYearId, sectionOptions, open, onClose }: CreateEventDialogProps) => {
-  const createEvent = useCreatePTMEvent(organizationId);
-  useError({ mutation: createEvent });
-
-  const form = useForm<PTMEventFormValues>({ resolver: zodResolver(ptmEventSchema), defaultValues: defaultPTMEventValues });
-  const mode = useWatch({ control: form.control, name: "mode" });
-
-  useEffect(() => {
-    if (open) form.reset(defaultPTMEventValues);
-  }, [open, form]);
-
-  const onSubmit = form.handleSubmit((values) => {
-    if (!academicYearId) {
-      toast.error("Set a current academic year first (Academics page).");
-      return;
-    }
-    createEvent.mutate(
-      {
-        academicYearId,
-        title: values.title,
-        date: values.date,
-        mode: values.mode,
-        venue: values.mode === "onsite" ? values.venue || undefined : undefined,
-        defaultMeetingLink: values.mode === "online" ? values.defaultMeetingLink : undefined,
-        slotDurationMins: Number(values.slotDurationMins),
-        sectionIds: values.sectionIds,
-      },
-      {
-        onSuccess: () => {
-          toast.success("PTM event created.");
-          onClose();
-        },
-      }
-    );
-  });
+  const { form, mode, onSubmit, isSubmitting } = useCreateEventDialogController({ organizationId, academicYearId, open, onClose });
 
   return (
     <FormDialog
@@ -68,7 +28,7 @@ const CreateEventDialog = ({ organizationId, academicYearId, sectionOptions, ope
       title="New PTM Event"
       description="Parents of the chosen sections can book once teachers open their slots."
       submitLabel="Create"
-      isSubmitting={createEvent.isPending}
+      isSubmitting={isSubmitting}
       onSubmit={onSubmit}
       className="max-w-2xl"
     >
