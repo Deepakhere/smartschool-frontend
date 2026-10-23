@@ -28,7 +28,7 @@ export interface SidebarItem {
 
 type View = "main" | "more";
 
-// a short menu shows everything; a long one keeps daily pages on show and puts the rest behind More
+// short menus show flat; long ones put extras behind More
 const fitMenu = (menu: SidebarMenu): SidebarMenu => {
   const extras = menu.more.flatMap((group) => group.pages);
   return menu.main.length + extras.length <= FLAT_MENU_LIMIT
@@ -36,7 +36,7 @@ const fitMenu = (menu: SidebarMenu): SidebarMenu => {
     : menu;
 };
 
-// accountant and staff menus are built from what they were granted, so they are split by count
+// granted-page menus (accountant, staff) split by count
 const splitPages = (pages: SidebarPage[]): SidebarMenu =>
   pages.length <= FLAT_MENU_LIMIT
     ? { main: pages, more: [], bottom: [] }
@@ -93,7 +93,7 @@ export const useSidebarController = () => {
   const moreItems = more.flatMap((group) => group.items);
   const onMorePage = moreItems.some((item) => item.current);
 
-  // the panel follows the page: landing on a More page shows More, any other page shows the main list
+  // the open panel follows the current page
   const [view, setView] = useState<View>(onMorePage ? "more" : "main");
   const [viewFor, setViewFor] = useState(pathname);
   if (viewFor !== pathname) {
@@ -101,7 +101,7 @@ export const useSidebarController = () => {
     setView(onMorePage ? "more" : "main");
   }
 
-  // on a desktop More opens on its first page; on a phone the drawer would close on navigating, so it only opens
+  // desktop jumps to the first More page; the drawer only opens (navigating closes it)
   const openMore = () => {
     setView("more");
     const isDesktop = window.matchMedia("(min-width: 1024px)").matches;

@@ -8,7 +8,7 @@ interface ExportRowsOptions {
   // rows matching the current filters
   total: number;
   itemLabel: ItemLabel;
-  // asks the server for the CSV of up to `limit` rows with the screen's filters and saves it
+  // downloads up to `limit` rows as CSV with the screen's filters
   download: (limit: number) => Promise<void>;
 }
 

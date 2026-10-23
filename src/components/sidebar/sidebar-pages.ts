@@ -43,7 +43,7 @@ export interface SidebarMenu {
   bottom: SidebarPage[];
 }
 
-// a role with this many pages or fewer shows them all; above it, the extras go behind More
+// up to this many pages show flat; beyond it extras go behind More
 export const FLAT_MENU_LIMIT = 8;
 // how many pages a long, generated menu keeps on show before the rest go behind More
 export const MAIN_LIMIT = 6;

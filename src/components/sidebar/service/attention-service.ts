@@ -12,7 +12,7 @@ export interface Attention {
 
 export type AttentionKey = keyof Attention;
 
-// what waits on this person, for the sidebar's badges; refreshed every minute and when the tab regains focus
+// sidebar badge counts; refreshed every minute and on focus
 export const useGetAttention = (organizationId: string, enabled: boolean) =>
   useQuery<Attention, IAPIError>({
     queryKey: [API_QUERY_KEY.GET_ATTENTION, organizationId],

@@ -88,7 +88,7 @@ const SidebarEntry = ({
       open={isCollapsed && openHint === name}
       onOpenChange={(open) => setOpenHint(open && isCollapsed ? name : null)}
     >
-      {/* a plain wrapper as the trigger: Slot would mangle NavLink's className function */}
+      {/* plain wrapper: Slot breaks NavLink's className function */}
       <TooltipTrigger asChild>
         <div>
           {href ? (

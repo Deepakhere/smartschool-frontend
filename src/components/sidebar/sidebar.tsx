@@ -13,7 +13,7 @@ interface SidebarProps {
   isMobileOpen: boolean;
 }
 
-// two panels side by side: the main list, and More sliding in over it with a way back
+// main list and More panel, sliding side by side
 const Sidebar = ({ isCollapsed, isMobileOpen }: SidebarProps) => {
   const c = useSidebarController();
   // one card at a time, and only while collapsed: hovers while expanded are ignored

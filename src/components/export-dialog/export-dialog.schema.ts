@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-// the most rows one export fetches, to keep the load on the server and the browser small
+// most rows one export may hold
 export const EXPORT_CAP = 5000;
 
 export const exportSchema = (max: number) =>
