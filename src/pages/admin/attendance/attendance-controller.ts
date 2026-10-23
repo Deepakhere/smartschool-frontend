@@ -144,18 +144,17 @@ const useAttendanceController = () => {
       status: statuses[s.id] || "present",
       reason: reasons[s.id],
     }));
-    markAttendance.mutate({ sectionId, date, records }, { onSuccess: () => setIsDirty(false) });
+    markAttendance.mutate(
+      { sectionId, date, records },
+      {
+        onSuccess: () => {
+          setIsDirty(false);
+          toast.success("Attendance saved.");
+        },
+        onError: (error) => toast.error(error?.response?.Error?.message || "Failed to save attendance"),
+      }
+    );
   };
-
-  useEffect(() => {
-    if (markAttendance.isSuccess) {
-      toast.success("Attendance saved.");
-    }
-    if (markAttendance.isError) {
-      toast.error(markAttendance.error?.response?.Error?.message || "Failed to save attendance");
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [markAttendance.isSuccess, markAttendance.isError]);
 
   return {
     activeTab,
@@ -190,6 +189,8 @@ const useAttendanceController = () => {
     setSectionId,
     date,
     setDate,
+    // attendance is never marked or reported for days that haven't happened
+    maxDate: today(),
     statuses,
     reasons,
     setStatus,

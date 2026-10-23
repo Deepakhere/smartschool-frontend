@@ -87,12 +87,12 @@ const AdminAttendance = () => {
           {c.activeTab === "mark" ? (
             <div>
               <Label>Date</Label>
-              <Input type="date" value={c.date} onChange={(e) => c.setDate(e.target.value)} />
+              <Input type="date" value={c.date} max={c.maxDate} onChange={(e) => c.setDate(e.target.value)} />
             </div>
           ) : c.activeTab === "register" ? (
             <div>
               <Label>Month</Label>
-              <Input type="month" value={c.registerMonth} onChange={(e) => c.setRegisterMonth(e.target.value)} />
+              <Input type="month" value={c.registerMonth} max={c.maxDate.slice(0, 7)} onChange={(e) => c.setRegisterMonth(e.target.value)} />
             </div>
           ) : (
             <div className="flex min-w-0 gap-2">
@@ -100,6 +100,7 @@ const AdminAttendance = () => {
                 <Label>From</Label>
                 <Input
                   type="date"
+                  max={c.maxDate}
                   value={c.reportFrom}
                   onChange={(e) => c.setReportFrom(e.target.value)}
                 />
@@ -108,6 +109,7 @@ const AdminAttendance = () => {
                 <Label>To</Label>
                 <Input
                   type="date"
+                  max={c.maxDate}
                   value={c.reportTo}
                   onChange={(e) => c.setReportTo(e.target.value)}
                 />
