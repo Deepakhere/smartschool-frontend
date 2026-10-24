@@ -1,59 +1,36 @@
-import { useFieldArray, useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import toast from "react-hot-toast";
 import { TrashIcon } from "@heroicons/react/24/outline";
 
+import DataTable, { DataTableColumn } from "@/components/data-table";
 import ErrorState from "@/components/error-state";
 import { TextField } from "@/components/form-fields";
-import { Table, TableBody, TableCell, TableEmpty, TableHead, TableHeader, TableRow, TableSkeleton } from "@/components/table";
 import { Button } from "@/components/ui/button";
 import { Card, CardTitle } from "@/components/ui/card";
 import { Form } from "@/components/ui/form";
 import { Label } from "@/components/ui/label";
-import { useError } from "@/hooks";
-import { defaultGradingSchemeValues, gradingSchemeSchema, GradingSchemeFormValues } from "../reports.schema";
-import { useCreateGradingScheme, useGetGradingSchemes } from "../service/exams-service";
+import { IGradingScheme } from "@/types";
+import useGradingSchemesTabController from "./grading-schemes-tab-controller";
+
+const columns: DataTableColumn<IGradingScheme>[] = [
+  { id: "name", header: "Name", cell: ({ row }) => <span className="font-medium text-gray-900">{row.original.name}</span> },
+  { id: "passPercent", header: "Pass %", meta: { align: "center" }, cell: ({ row }) => `${row.original.passPercent}%` },
+  {
+    id: "bands",
+    header: "Bands",
+    meta: { align: "center" },
+    cell: ({ row }) => row.original.bands.map((band) => band.grade).join(", "),
+  },
+];
 
 const GradingSchemesTab = ({ organizationId }: { organizationId: string }) => {
-  const schemes = useGetGradingSchemes(organizationId);
-  const createScheme = useCreateGradingScheme(organizationId);
-  useError({ mutation: createScheme });
-
-  const form = useForm<GradingSchemeFormValues>({
-    resolver: zodResolver(gradingSchemeSchema),
-    defaultValues: defaultGradingSchemeValues(),
-  });
-  const bands = useFieldArray({ control: form.control, name: "bands" });
-
-  const onSubmit = form.handleSubmit((values) =>
-    createScheme.mutate(
-      {
-        name: values.name,
-        passPercent: Number(values.passPercent),
-        bands: values.bands.map((band) => ({
-          grade: band.grade,
-          minPercent: Number(band.minPercent),
-          maxPercent: Number(band.maxPercent),
-          gradePoint: Number(band.gradePoint),
-        })),
-      },
-      {
-        onSuccess: () => {
-          toast.success("Grading scheme created.");
-          form.reset(defaultGradingSchemeValues());
-        },
-      }
-    )
-  );
-
-  const items = schemes.data?.items ?? [];
+  const c = useGradingSchemesTabController(organizationId);
+  const { form, bands } = c;
 
   return (
     <div className="space-y-6">
       <Card>
         <CardTitle className="mb-4 font-medium">Create Grading Scheme</CardTitle>
         <Form {...form}>
-          <form onSubmit={onSubmit} noValidate className="space-y-4">
+          <form onSubmit={c.onSubmit} noValidate className="space-y-4">
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               <TextField form={form} name="name" label="Name" />
               <TextField form={form} name="passPercent" label="Pass Percent" type="number" min={0} max={100} />
@@ -88,49 +65,29 @@ const GradingSchemesTab = ({ organizationId }: { organizationId: string }) => {
               </div>
             </div>
 
-            <Button type="submit" loading={createScheme.isPending}>
+            <Button type="submit" loading={c.isCreating}>
               Create scheme
             </Button>
           </form>
         </Form>
       </Card>
 
-      <Card>
-        <CardTitle className="mb-4 font-medium">Existing Schemes</CardTitle>
-        {schemes.isError ? (
-          <ErrorState error={schemes.error} onRetry={() => schemes.refetch()} />
-        ) : schemes.isLoading ? (
-          <Table>
-            <TableHeader>
-              <TableHead>Name</TableHead>
-              <TableHead className="text-center">Pass %</TableHead>
-              <TableHead className="text-center">Bands</TableHead>
-            </TableHeader>
-            <TableSkeleton columns={3} />
-          </Table>
+      <div>
+        <h3 className="mb-3 text-lg font-medium text-gray-900">Existing Schemes</h3>
+        {c.error ? (
+          <ErrorState error={c.error} onRetry={c.retry} />
         ) : (
-          <Table>
-            <TableHeader>
-              <TableHead>Name</TableHead>
-              <TableHead className="text-center">Pass %</TableHead>
-              <TableHead className="text-center">Bands</TableHead>
-            </TableHeader>
-            <TableBody>
-              {items.length === 0 ? (
-                <TableEmpty colSpan={3} title="No grading schemes yet" description="Create one above; every exam needs a grading scheme." />
-              ) : (
-                items.map((scheme) => (
-                  <TableRow key={scheme.id}>
-                    <TableCell className="font-medium text-gray-900">{scheme.name}</TableCell>
-                    <TableCell className="text-center">{scheme.passPercent}%</TableCell>
-                    <TableCell className="text-center">{scheme.bands.map((band) => band.grade).join(", ")}</TableCell>
-                  </TableRow>
-                ))
-              )}
-            </TableBody>
-          </Table>
+          <DataTable
+            columns={columns}
+            data={c.schemes}
+            getRowId={(scheme) => scheme.id}
+            isLoading={c.isLoading}
+            itemLabel={{ one: "scheme", other: "schemes" }}
+            pagination={{ pageSize: 20 }}
+            empty={{ title: "No grading schemes yet", description: "Create one above; every exam needs a grading scheme." }}
+          />
         )}
-      </Card>
+      </div>
     </div>
   );
 };

@@ -101,13 +101,5 @@ describe("TenantProvider", () => {
       renderArea("admin");
       expect(screen.getByTestId("navigate")).toHaveTextContent("/org-1/parent/dashboard");
     });
-
-    it("falls back to the account role for older accounts without a role per school", () => {
-      mockOrgId = "org-1";
-      mockUser = { role: "teacher" };
-      mockOrganizations = [{ id: "org-1", name: "School One", myRole: null }];
-      renderArea("teacher");
-      expect(screen.getByTestId("consumer")).toBeInTheDocument();
-    });
   });
 });

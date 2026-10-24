@@ -1,35 +1,43 @@
-import { useState } from "react";
+import { ComponentType, useState } from "react";
 import { useParams } from "react-router-dom";
+import { BanknotesIcon, ChartBarIcon, DocumentTextIcon, ExclamationTriangleIcon, ReceiptPercentIcon, TagIcon } from "@heroicons/react/24/outline";
 
 import SectionHeader from "@/components/section-header";
+import { useCan } from "@/context/tenant-context";
+import { PermissionKey } from "@/types";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import FeeHeadsTab from "./tabs/fee-heads-tab";
 import FeeStructuresTab from "./tabs/fee-structures-tab";
 import LedgerTab from "./tabs/ledger-tab";
 import StudentFeesTab from "./tabs/student-fees-tab";
+import DefaultersTab from "./tabs/defaulters-tab";
+import CollectionsTab from "./tabs/collections-tab";
 
-const TABS = [
-  { key: "structures", label: "Fee Structures" },
-  { key: "heads", label: "Fee Heads" },
-  { key: "students", label: "Student Fees & Payments" },
-  { key: "ledger", label: "Payment Ledger" },
-] as const;
-
-type TabKey = (typeof TABS)[number]["key"];
+const TABS: { key: string; label: string; icon: ComponentType; anyOf: PermissionKey[] }[] = [
+  { key: "structures", label: "Fee Structures", icon: DocumentTextIcon, anyOf: ["fees.setup"] },
+  { key: "heads", label: "Fee Heads", icon: TagIcon, anyOf: ["fees.setup"] },
+  { key: "students", label: "Student Fees & Payments", icon: BanknotesIcon, anyOf: ["fees.collect", "fees.reverse", "fees.concession"] },
+  { key: "ledger", label: "Payment Ledger", icon: ReceiptPercentIcon, anyOf: ["fees.collect", "fees.reports"] },
+  { key: "defaulters", label: "Defaulters", icon: ExclamationTriangleIcon, anyOf: ["fees.reports"] },
+  { key: "collections", label: "Collections", icon: ChartBarIcon, anyOf: ["fees.reports"] },
+];
 
 const AdminFees = () => {
   const { organizationId = "" } = useParams();
-  const [activeTab, setActiveTab] = useState<TabKey>("structures");
+  const can = useCan();
+  const tabs = TABS.filter((tab) => can(...tab.anyOf));
+  const [activeTab, setActiveTab] = useState(tabs[0]?.key ?? "");
 
   return (
     <div className="mx-auto max-w-7xl">
-      <SectionHeader title="Fees" description="Manage fee heads, structures, student assignments and payment collection" />
+      <SectionHeader title="Fees" description="Fee setup, collection and reports" />
 
-      <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as TabKey)} className="mb-6 border-b border-gray-200">
-        <TabsList className="overflow-x-auto">
-          {TABS.map((tab) => (
-            <TabsTrigger key={tab.key} value={tab.key}>
-              {tab.label}
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="mb-6">
+        <TabsList>
+          {tabs.map(({ key, label, icon: Icon }) => (
+            <TabsTrigger key={key} value={key}>
+              <Icon />
+              {label}
             </TabsTrigger>
           ))}
         </TabsList>
@@ -39,6 +47,8 @@ const AdminFees = () => {
       {activeTab === "heads" && <FeeHeadsTab organizationId={organizationId} />}
       {activeTab === "students" && <StudentFeesTab organizationId={organizationId} />}
       {activeTab === "ledger" && <LedgerTab organizationId={organizationId} />}
+      {activeTab === "defaulters" && <DefaultersTab organizationId={organizationId} />}
+      {activeTab === "collections" && <CollectionsTab organizationId={organizationId} />}
     </div>
   );
 };

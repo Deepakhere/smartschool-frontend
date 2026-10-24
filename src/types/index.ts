@@ -1,3 +1,28 @@
+// every role a person can hold in a school, as the web app names them
+export type AccountRole = "admin" | "parent" | "teacher" | "accountant" | "staff";
+
+// mirrors smartschool-backend/core/access/permissions.js
+export type PermissionKey =
+  | "school.settings"
+  | "people.manage"
+  | "dashboard.view"
+  | "academics.manage"
+  | "students.view"
+  | "students.manage"
+  | "attendance.mark"
+  | "homework.manage"
+  | "leave.review"
+  | "exams.manage"
+  | "exams.marks"
+  | "notices.manage"
+  | "calendar.manage"
+  | "ptm.manage"
+  | "fees.collect"
+  | "fees.reports"
+  | "fees.reverse"
+  | "fees.concession"
+  | "fees.setup";
+
 import { ReactNode } from "react";
 import { UseFormReturn } from "react-hook-form";
 
@@ -16,6 +41,7 @@ export interface INotice {
   content: string;
   date: string;
   type: string;
+  publishAt?: string;
   createdAt: string;
   updatedAt: string;
   attachmentURL: string;
@@ -173,15 +199,7 @@ export interface ILoginResponse {
   token: string;
   refreshToken?: string;
   name: string;
-  role: "admin" | "parent" | "teacher";
   isPlatformAdmin?: boolean;
-  permissions: {
-    canRead: boolean;
-    canCreate: boolean;
-    canUpdate: boolean;
-    canDelete: boolean;
-    isGlobalAdmin: boolean;
-  };
   preferences?: IUserPreferences;
   avatar?: IUserAvatar;
 }
@@ -194,56 +212,32 @@ export interface IAddUser {
   id: number;
   username: string;
   email: string;
-  role: "admin" | "parent" | "teacher";
+  role: AccountRole;
 }
 
 export interface IAddUserValue {
   name: string;
   email: string;
-  role: string;
-  permissions: {
-    canRead: boolean;
-    canCreate: boolean;
-    canUpdate: boolean;
-    canDelete: boolean;
-  };
+  role: AccountRole;
 }
 
 export interface IAllUserDetails {
   id: string;
   name: string;
   email: string;
-  role: string;
-  status: string;
-  permissions: {
-    canRead: boolean;
-    canCreate: boolean;
-    canUpdate: boolean;
-    canDelete: boolean;
-  };
+  role: AccountRole | "student";
+  // "suspended" is this school's; pending and active are the account's
+  status: "pending" | "active" | "suspended" | "inactive";
 }
 
 export interface FormData {
   fullname: string;
   email: string;
-  role: "admin" | "parent" | "teacher";
-  permissions: {
-    canRead: boolean;
-    canCreate: boolean;
-    canUpdate: boolean;
-    canDelete: boolean;
-  };
+  role: AccountRole;
 }
 
 export interface RoleOption {
-  value: "admin" | "parent" | "teacher";
-  label: string;
-  description: string;
-  icon: ReactNode;
-}
-
-export interface PermissionOption {
-  id: keyof FormData["permissions"];
+  value: AccountRole;
   label: string;
   description: string;
   icon: ReactNode;
@@ -254,40 +248,17 @@ export interface ICreateUpdateUserModalProps {
   isOpen: boolean;
   form: UseFormReturn<FormData>;
   roleOptions: RoleOption[];
-  permissionOptions: PermissionOption[];
   isEditUser: boolean;
-  isEditingSelf?: boolean;
   isLoadingAddUserDetail: boolean;
   isLoadingUpdateUserDetail?: boolean;
   onClose: () => void;
   onSubmit: (e: React.FormEvent) => void;
-  handlePermissionChange: (permission: keyof FormData["permissions"]) => void;
-}
-
-export interface EditUserModalProps {
-  t: (t: string) => string;
-  isOpen: boolean;
-  formData: FormData;
-  isLoadingUpdateUserDetail: boolean;
-  roleOptions: RoleOption[];
-  permissionOptions: PermissionOption[];
-  onClose: () => void;
-  setFormData: React.Dispatch<React.SetStateAction<FormData>>;
-  handleSubmit: (e: React.FormEvent) => void;
-  handlePermissionChange: (permission: keyof FormData["permissions"]) => void;
 }
 
 export interface IUpdateUserValue {
   id: string;
   name: string;
   email: string;
-  role: "admin" | "parent" | "teacher";
-  permissions: {
-    canRead: boolean;
-    canCreate: boolean;
-    canUpdate: boolean;
-    canDelete: boolean;
-  };
 }
 
 export interface IUserPreferences {
@@ -306,21 +277,13 @@ export interface IUserDetailResponse {
   id: string;
   email: string;
   token: string;
-  role: "admin" | "parent" | "teacher";
   isPlatformAdmin?: boolean;
-  permissions: {
-    canRead: boolean;
-    canCreate: boolean;
-    canUpdate: boolean;
-    canDelete: boolean;
-    isGlobalAdmin: boolean;
-  };
   preferences?: IUserPreferences;
   avatar?: IUserAvatar;
 }
 
 export interface IRoleOptionDropDown {
-  value: "all" | "admin" | "parent" | "teacher";
+  value: "all" | AccountRole;
   label: string;
   description: string;
   icon: React.ReactNode;
@@ -367,10 +330,12 @@ export interface IOrganization {
     publicId: string;
     url: string;
   };
-  // the signed-in person's role in this school; it can differ from school to school
-  myRole?: "admin" | "teacher" | "parent" | null;
+  // differs per school
+  myRole?: AccountRole | "student" | null;
+  myPermissions?: PermissionKey[];
+  // modules the school's package includes; unset = every module
+  myModules?: ModuleKey[];
 }
-
 
 export interface IAcademicYear {
   id: string;
@@ -563,14 +528,19 @@ export interface IFeeStructure {
   sectionIds: { id: string; name: string }[];
   items: { feeHeadId: { id: string; name: string; code: string }; amount: number }[];
   installments: { label: string; dueDate: string; amount: number }[];
+  lateFee?: { amount: number; graceDays: number };
   version: number;
   status: string;
+  // active students in its classes who have no fees for its year yet
+  unassignedCount: number;
 }
 
 export interface IFeeInstallmentBalance {
   label: string;
   dueDate: string;
   netAmount: number;
+  // a late fee already added into netAmount
+  lateFeeAmount?: number;
   paidAmount: number;
   balance: number;
 }
@@ -828,3 +798,63 @@ export interface ITimetableSlot {
   sectionId: { id: string; name: string } | null;
   classId: { id: string; name: string } | null;
 }
+
+// fee desk reports (amounts in paise)
+export interface IFeeDefaulter {
+  studentId: string;
+  studentFeeId: string;
+  overdueAmount: number;
+  outstandingAmount: number;
+  overdueInstallments: { label: string; dueDate: string; balance: number }[];
+  oldestDueDate: string;
+  daysOverdue: number;
+  student: {
+    id: string;
+    name: string;
+    admissionNumber: string;
+    className: string;
+    sectionName: string;
+    guardian: { name: string; phoneNumber: string; email: string } | null;
+  } | null;
+}
+
+// every paged list endpoint answers in this shape (smartschool-backend/core/http/pagination.js)
+export interface Pagination {
+  currentPage: number;
+  totalItems: number;
+  itemsPerPage: number;
+  totalPages: number;
+  hasNextPage: boolean;
+  hasPreviousPage: boolean;
+}
+
+export interface Paged<T> {
+  rows: T[];
+  pagination: Pagination;
+}
+
+export interface IFeeDefaultersResult extends Paged<IFeeDefaulter> {
+  asOf: string;
+  summary: { students: number; overdueAmount: number; outstandingAmount: number };
+}
+
+export interface IFeeCollectionSummary {
+  from: string;
+  to: string;
+  totals: { received: number; reversed: number; net: number; payments: number; reversals: number };
+  byDay: { date: string; amount: number; count: number }[];
+  byMethod: { method: string; amount: number; count: number }[];
+  byClass: { classId: string | null; className: string; amount: number; students: number }[];
+}
+
+export type ModuleKey =
+  | "attendance"
+  | "homework"
+  | "timetable"
+  | "leave"
+  | "exams"
+  | "fees"
+  | "onlinePayments"
+  | "notices"
+  | "calendar"
+  | "ptm";

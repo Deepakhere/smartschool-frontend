@@ -1,24 +1,20 @@
 import { useEffect } from "react";
-import { ReactNode } from "react";
 
 import { usePageHeaderContext } from "@/context/page-header-context";
 
 interface UsePageHeaderOptions {
   title?: string;
   onBack?: () => void;
-  actions?: ReactNode;
 }
 
-// pages call this once to put their title (and optional back button / actions)
-// into the shared header row, instead of each page hardcoding its own <h1>
-const usePageHeader = ({ title, onBack, actions }: UsePageHeaderOptions) => {
+// pages call this to put their title and optional back button in the top bar
+const usePageHeader = ({ title, onBack }: UsePageHeaderOptions) => {
   const { setConfig } = usePageHeaderContext();
 
   useEffect(() => {
-    setConfig({ title, onBack, actions });
+    setConfig({ title, onBack });
     return () => setConfig(null);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [title, onBack]);
+  }, [title, onBack, setConfig]);
 };
 
 export default usePageHeader;

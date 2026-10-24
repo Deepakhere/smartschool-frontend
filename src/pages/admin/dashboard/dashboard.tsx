@@ -21,6 +21,8 @@ const Dashboard = () => {
     studentPerformanceOptions,
     teacherStudentRatioOptions,
     monthlyAttendanceOptions,
+    showAttendanceChart,
+    showNotices,
     hasTeacherStudentData,
     isStatsLoading,
     statsError,
@@ -42,7 +44,9 @@ const Dashboard = () => {
     handleSelectTeacher,
   } = useDashboardController();
 
-  const chartCard = (options: typeof studentPerformanceOptions | typeof teacherStudentRatioOptions | typeof monthlyAttendanceOptions) => (
+  const chartCard = (
+    options: typeof studentPerformanceOptions | typeof teacherStudentRatioOptions | typeof monthlyAttendanceOptions
+  ) => (
     <div className="flex h-full flex-col justify-center bg-white rounded-xl shadow-xl p-6">
       {isChartsLoading ? <ChartSkeleton /> : <HighchartsReact highcharts={Highcharts} options={options} />}
     </div>
@@ -92,51 +96,57 @@ const Dashboard = () => {
 
       {/* Row 1: Monthly Attendance (70%) + Recent Updates (30%) */}
       <div className="grid grid-cols-1 md:grid-cols-10 gap-8">
-        <div className="md:col-span-7">{chartCard(monthlyAttendanceOptions)}</div>
+        {showAttendanceChart && (
+          <div className={showNotices ? "md:col-span-7" : "md:col-span-10"}>{chartCard(monthlyAttendanceOptions)}</div>
+        )}
 
-        <div className="md:col-span-3 bg-white rounded-xl shadow-xl p-6 flex flex-col">
-          <div className="flex items-center justify-between mb-6">
-            <h2 className="text-xl font-semibold text-gray-900">{t("labels.recent_updates")}</h2>
-            {recentUpdates.length > 0 && (
-              <Link to={noticesPath} className="text-sm font-medium text-primary-600 hover:text-primary-700">
-                View all
-              </Link>
+        {showNotices && (
+          <div
+            className={`${showAttendanceChart ? "md:col-span-3" : "md:col-span-10"} bg-white rounded-xl shadow-xl p-6 flex flex-col`}
+          >
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-xl font-semibold text-gray-900">{t("labels.recent_updates")}</h2>
+              {recentUpdates.length > 0 && (
+                <Link to={noticesPath} className="text-sm font-medium text-primary-600 hover:text-primary-700">
+                  View all
+                </Link>
+              )}
+            </div>
+            {isNoticesLoading ? (
+              <UpdatesSkeleton />
+            ) : recentUpdates.length === 0 ? (
+              <div className="flex flex-1 flex-col items-center justify-center text-center space-y-3">
+                <div className="p-3 bg-primary-50 rounded-full">
+                  <BellIcon className="h-6 w-6 text-primary-600" />
+                </div>
+                <p className="text-sm text-gray-500">No notices yet. Post one and every parent sees it.</p>
+                <button
+                  onClick={openNoticeModal}
+                  className="px-4 py-2 rounded-md text-sm font-medium text-white bg-primary-600 hover:bg-primary-700"
+                >
+                  Post a notice
+                </button>
+              </div>
+            ) : (
+              // four fit beside the chart; View all opens the rest
+              <div className="divide-y divide-gray-100">
+                {recentUpdates.slice(0, 4).map((update, index) => (
+                  <Link
+                    key={index}
+                    to={noticesPath}
+                    className="flex items-center justify-between gap-3 -mx-3 px-3 py-4 rounded-lg hover:bg-gray-50 transition-colors"
+                  >
+                    <div className="min-w-0">
+                      <p className="text-sm font-semibold text-gray-900 truncate">{update.title}</p>
+                      <p className="text-sm text-gray-500 capitalize">{update.type}</p>
+                    </div>
+                    <p className="text-sm text-gray-500 shrink-0">{update.date}</p>
+                  </Link>
+                ))}
+              </div>
             )}
           </div>
-          {isNoticesLoading ? (
-            <UpdatesSkeleton />
-          ) : recentUpdates.length === 0 ? (
-            <div className="flex flex-1 flex-col items-center justify-center text-center space-y-3">
-              <div className="p-3 bg-primary-50 rounded-full">
-                <BellIcon className="h-6 w-6 text-primary-600" />
-              </div>
-              <p className="text-sm text-gray-500">No notices yet. Post one and every parent sees it.</p>
-              <button
-                onClick={openNoticeModal}
-                className="px-4 py-2 rounded-md text-sm font-medium text-white bg-primary-600 hover:bg-primary-700"
-              >
-                Post a notice
-              </button>
-            </div>
-          ) : (
-            // four fit beside the chart; View all opens the rest
-            <div className="divide-y divide-gray-100">
-              {recentUpdates.slice(0, 4).map((update, index) => (
-                <Link
-                  key={index}
-                  to={noticesPath}
-                  className="flex items-center justify-between gap-3 -mx-3 px-3 py-4 rounded-lg hover:bg-gray-50 transition-colors"
-                >
-                  <div className="min-w-0">
-                    <p className="text-sm font-semibold text-gray-900 truncate">{update.title}</p>
-                    <p className="text-sm text-gray-500 capitalize">{update.type}</p>
-                  </div>
-                  <p className="text-sm text-gray-500 shrink-0">{update.date}</p>
-                </Link>
-              ))}
-            </div>
-          )}
-        </div>
+        )}
       </div>
 
       {/* Row 2: Teacher-Student Ratio (30%) + Exam Performance Trend (70%) */}

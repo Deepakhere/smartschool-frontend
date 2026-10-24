@@ -87,15 +87,8 @@ describe("PublicRoute", () => {
     expect(screen.getByText("public page")).toBeInTheDocument();
   });
 
-  it("sends a signed-in user to their dashboard when an organization is selected", () => {
-    mockUser = { role: "teacher" };
-    Cookies.set("kidSightOrganizationId", "org1");
-    renderAt("/page", page);
-    expect(screen.getByText("teacher home")).toBeInTheDocument();
-  });
-
-  it("sends a signed-in user with no organization yet to the picker", () => {
-    mockUser = { role: "teacher" };
+  it("sends a signed-in user to the school picker, which opens their school in their role there", () => {
+    mockUser = { isPlatformAdmin: false };
     renderAt("/page", page);
     expect(screen.getByText("organization page")).toBeInTheDocument();
   });

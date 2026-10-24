@@ -1,10 +1,10 @@
 import { UseFormReturn } from "react-hook-form";
 
-import { IStudentFormData, SelectOption } from "@/types";
-import { useGetAcademicYears, useGetClasses, useGetSections } from "@/pages/admin/classes/service/academics-service";
+import { IStudentFormData } from "@/types";
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import CustomSelectDropdown from "@/components/custom-select";
+import useStudentDetailsController from "./student-details-controller";
 
 interface IStudentDetailsFormProps {
   t: (key: string) => string;
@@ -14,11 +14,8 @@ interface IStudentDetailsFormProps {
 }
 
 const StudentDetailsForm = ({ t, organizationId, form, isEditStudent }: IStudentDetailsFormProps) => {
-  const academicYearId = form.watch("academicYearId");
-  const classId = form.watch("classId");
-  const academicYears = useGetAcademicYears(organizationId);
-  const classes = useGetClasses(organizationId, academicYearId, "active");
-  const sections = useGetSections(organizationId, classId, "active");
+  const { academicYearId, classId, yearOptions, classOptions, sectionOptions, selectYear, selectClass } =
+    useStudentDetailsController(organizationId, form);
 
   return (
     <>
@@ -76,22 +73,9 @@ const StudentDetailsForm = ({ t, organizationId, form, isEditStudent }: IStudent
                     <FormControl>
                       <CustomSelectDropdown
                         placeholder="Select academic year"
-                        options={(academicYears.data?.items || []).map((y): SelectOption => ({
-                          id: y.id,
-                          name: y.name,
-                        }))}
-                        value={(() => {
-                          const y = (academicYears.data?.items || []).find((y) => y.id === field.value);
-                          return y ? { id: y.id, name: y.name } : null;
-                        })()}
-                        onChange={(o) => {
-                          // a class and section from another year cannot stay picked
-                          if (String(o.id) !== field.value) {
-                            form.setValue("classId", "");
-                            form.setValue("sectionId", "");
-                          }
-                          field.onChange(String(o.id));
-                        }}
+                        options={yearOptions}
+                        value={yearOptions.find((o) => o.id === field.value) ?? null}
+                        onChange={(o) => selectYear(String(o.id), field)}
                       />
                     </FormControl>
                     <FormMessage />
@@ -109,15 +93,9 @@ const StudentDetailsForm = ({ t, organizationId, form, isEditStudent }: IStudent
                       <CustomSelectDropdown
                         placeholder="Select class"
                         disabled={!academicYearId}
-                        options={(classes.data?.items || []).map((k): SelectOption => ({ id: k.id, name: k.name }))}
-                        value={(() => {
-                          const k = (classes.data?.items || []).find((k) => k.id === field.value);
-                          return k ? { id: k.id, name: k.name } : null;
-                        })()}
-                        onChange={(o) => {
-                          if (String(o.id) !== field.value) form.setValue("sectionId", "");
-                          field.onChange(String(o.id));
-                        }}
+                        options={classOptions}
+                        value={classOptions.find((o) => o.id === field.value) ?? null}
+                        onChange={(o) => selectClass(String(o.id), field)}
                       />
                     </FormControl>
                     <FormMessage />
@@ -135,11 +113,8 @@ const StudentDetailsForm = ({ t, organizationId, form, isEditStudent }: IStudent
                       <CustomSelectDropdown
                         placeholder="Select section"
                         disabled={!classId}
-                        options={(sections.data?.items || []).map((s): SelectOption => ({ id: s.id, name: s.name }))}
-                        value={(() => {
-                          const s = (sections.data?.items || []).find((s) => s.id === field.value);
-                          return s ? { id: s.id, name: s.name } : null;
-                        })()}
+                        options={sectionOptions}
+                        value={sectionOptions.find((o) => o.id === field.value) ?? null}
                         onChange={(o) => field.onChange(String(o.id))}
                       />
                     </FormControl>

@@ -1,4 +1,5 @@
 import { useTranslation } from "react-i18next";
+import { PlusIcon } from "@heroicons/react/20/solid";
 
 import Spinner from "@/components/spinner";
 import EmptyState from "@/components/empty-state";
@@ -29,15 +30,13 @@ const LeaveRequests = () => {
       <SectionHeader
         title="Leave Requests"
         description="Request leave for your child and track its status"
-        actions={
-          <Button
-            onClick={() => c.setShowForm(!c.showForm)}
-            disabled={c.children.length === 0}
-            title={c.children.length === 0 ? "Leave can be requested once the school links your child to this account" : undefined}
-          >
-            + New Leave Request
-          </Button>
-        }
+        action={{
+          label: "New Leave Request",
+          icon: PlusIcon,
+          onClick: c.toggleForm,
+          disabled: c.children.length === 0,
+          title: c.children.length === 0 ? "Leave can be requested once the school links your child to this account" : undefined,
+        }}
       />
 
       {c.showForm && (

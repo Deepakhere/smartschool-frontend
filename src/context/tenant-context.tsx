@@ -4,15 +4,17 @@ import { useParams, Navigate } from "react-router-dom";
 import { useAuth } from "./auth-context";
 import useGetAllOrganizations from "../pages/auth/service/get-all-organization/get-all-organization";
 import LogoSpinner from "../components/logo-spinner";
-import { IOrganization } from "../types";
+import { IOrganization, ModuleKey, PermissionKey } from "../types";
+import { ALL_MODULES } from "../utils/modules";
 import { homePathFor, UserRole } from "../routes/access";
 
 interface ITenantContext {
   organizationId: string;
   organization: IOrganization | undefined;
   organizations: IOrganization[];
-  // the signed-in person's role in this school
   role: UserRole | undefined;
+  permissions: ReadonlySet<PermissionKey>;
+  modules: ReadonlySet<ModuleKey>;
 }
 
 const TenantContext = createContext<ITenantContext | undefined>(undefined);
@@ -39,13 +41,17 @@ export const TenantProvider = ({ children, requiredRole }: { children: ReactNode
     return <Navigate to="/not-access" replace />;
   }
 
-  const role = (organization?.myRole ?? user?.role) as UserRole | undefined;
+  const role = organization?.myRole as UserRole | undefined;
   if (requiredRole && role !== requiredRole) {
     return <Navigate to={role ? homePathFor(organizationId, role) : "/not-access"} replace />;
   }
 
+  const permissions = new Set(organization?.myPermissions ?? []);
+  const modules = new Set(organization?.myModules ?? ALL_MODULES);
   return (
-    <TenantContext.Provider value={{ organizationId, organization, organizations, role }}>{children}</TenantContext.Provider>
+    <TenantContext.Provider value={{ organizationId, organization, organizations, role, permissions, modules }}>
+      {children}
+    </TenantContext.Provider>
   );
 };
 
@@ -57,9 +63,22 @@ export const useTenant = () => {
   return context;
 };
 
-// the signed-in person's role where they are now: their role in the current school, or their account role outside one
-export const useCurrentRole = (): UserRole | undefined => {
+// the signed-in person's role in the current school
+export const useCurrentRole = (): UserRole | undefined => useContext(TenantContext)?.role;
+
+// e.g. /org/teacher, so shared pages link within the person's area
+export const useAreaBase = () => {
   const tenant = useContext(TenantContext);
-  const { user } = useAuth();
-  return tenant?.role ?? (user?.role as UserRole | undefined);
+  return `/${tenant?.organizationId}/${tenant?.role ?? "admin"}`;
+};
+
+export const useCan = () => {
+  const permissions = useContext(TenantContext)?.permissions;
+  return (...keys: PermissionKey[]) => keys.some((key) => permissions?.has(key));
+};
+
+// whether the school's package includes a module
+export const useHasModule = () => {
+  const modules = useContext(TenantContext)?.modules;
+  return (key: ModuleKey) => !modules || modules.has(key);
 };

@@ -12,22 +12,38 @@ const useNotificationsController = () => {
   const updateSettings = useUpdateEmailNotificationSettings(organizationId || "");
 
   const emailNotificationsEnabled = getEmailNotificationLog.data?.settings.emailNotificationsEnabled ?? true;
-  const emailLog = getEmailNotificationLog.data?.items || [];
+  const feeRemindersEnabled = getEmailNotificationLog.data?.settings.feeRemindersEnabled ?? true;
+  const emailLog = getEmailNotificationLog.data?.rows || [];
 
   const toggleEmailNotifications = (checked: boolean) => {
-    updateSettings.mutate(checked, {
-      onSuccess: () => toast.success(checked ? "Email notifications enabled for this school." : "Email notifications turned off for this school."),
-      onError: () => toast.error("Could not update the setting. Please try again."),
-    });
+    updateSettings.mutate(
+      { emailNotificationsEnabled: checked },
+      {
+        onSuccess: () => toast.success(checked ? "Email notifications enabled for this school." : "Email notifications turned off for this school."),
+        onError: () => toast.error("Could not update the setting. Please try again."),
+      }
+    );
+  };
+
+  const toggleFeeReminders = (checked: boolean) => {
+    updateSettings.mutate(
+      { feeRemindersEnabled: checked },
+      {
+        onSuccess: () => toast.success(checked ? "Parents will get fee due reminders." : "Fee due reminders turned off."),
+        onError: () => toast.error("Could not update the setting. Please try again."),
+      }
+    );
   };
 
   return {
     t,
     emailNotificationsEnabled,
+    feeRemindersEnabled,
     emailLog,
     isLoading: getEmailNotificationLog.isLoading,
     isUpdating: updateSettings.isPending,
     toggleEmailNotifications,
+    toggleFeeReminders,
   };
 };
 

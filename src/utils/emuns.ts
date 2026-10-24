@@ -29,6 +29,8 @@ export const APIS_ROUTES = {
   FEE_SERVICE: "/fee-service/v1",
   EXAM_SERVICE: "/exam-service/v1",
   LEAVE_SERVICE: "/leave-service/v1",
+  ACCESS_SERVICE: "/access-service/v1",
+  SUPPORT_SERVICE: "/support-service/v1",
 };
 
 export const API_QUERY_KEY = {
@@ -49,6 +51,7 @@ export const API_QUERY_KEY = {
   GET_TEACHER_ASSIGNMENTS: "get-teacher-assignments",
   GET_ALL_TEACHERS: "get-all-teachers",
   GET_DASHBOARD_STATS: "get-dashboard-stats",
+  GET_ATTENTION: "get-attention",
   GET_DASHBOARD_CHARTS: "get-dashboard-charts",
   GET_PARENT_DASHBOARD: "get-parent-dashboard",
   GET_TEACHER_DIRECTORY: "get-teacher-directory",
@@ -70,6 +73,8 @@ export const API_QUERY_KEY = {
   GET_STUDENT_FEE_SUMMARY: "get-student-fee-summary",
   GET_MY_FEES: "get-my-fees",
   GET_PAYMENT_LEDGER: "get-payment-ledger",
+  GET_FEE_DEFAULTERS: "get-fee-defaulters",
+  GET_FEE_COLLECTIONS: "get-fee-collections",
   GET_GRADING_SCHEMES: "get-grading-schemes",
   GET_EXAMS: "get-exams",
   GET_EXAM_SUBJECTS: "get-exam-subjects",
@@ -128,10 +133,14 @@ export const API_MUTATION_KEY = {
   CREATE_FEE_HEAD: "create-fee-head",
   CREATE_FEE_STRUCTURE: "create-fee-structure",
   ASSIGN_FEE_STRUCTURE: "assign-fee-structure",
+  UPDATE_FEE_STRUCTURE: "update-fee-structure",
+  UPDATE_FEE_HEAD: "update-fee-head",
+  DEACTIVATE_FEE_HEAD: "deactivate-fee-head",
   RECORD_PAYMENT: "record-payment",
   REVERSE_PAYMENT: "reverse-payment",
   GRANT_CONCESSION: "grant-concession",
   EMAIL_FEE_RECEIPT: "email-fee-receipt",
+  DOWNLOAD_FEE_RECEIPT: "download-fee-receipt",
   EMAIL_REPORT_CARD: "email-report-card",
   CREATE_GRADING_SCHEME: "create-grading-scheme",
   CREATE_EXAM: "create-exam",
@@ -149,7 +158,8 @@ export const API_MUTATION_KEY = {
   DECIDE_LEAVE_REQUEST: "decide-leave-request",
 };
 
-export const GOOGLE_CAPTCHA_KEY = "6LeCtSorAAAAAN38EwKA3qBHzEWYsx6is3RT8eSa";
+// reCAPTCHA site key from VITE_RECAPTCHA_SITE_KEY; its Google settings must list every domain the app runs on
+export const GOOGLE_CAPTCHA_KEY = import.meta.env.VITE_RECAPTCHA_SITE_KEY ?? "";
 
 export const EMAIL_REGEX_PATTERN = new RegExp(/^[a-zA-Z0-9._+-]+@([a-zA-Z0-9.-]+\.[a-zA-Z]{2,10})$/i);
 

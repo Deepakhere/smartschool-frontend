@@ -1,20 +1,25 @@
 import { useState } from "react";
-import { NavLink } from "react-router-dom";
+import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/20/solid";
+import { Squares2X2Icon } from "@heroicons/react/24/outline";
 
+import { cn } from "@/lib/utils";
 import SidebarUserMenu from "../sidebar-user-menu";
-import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
 import { useSidebarController } from "./sidebar-controller";
-import { panelMotion, revealMotion } from "./sidebar-motion";
+import SidebarEntry from "./sidebar-entry";
+import { revealMotion } from "./sidebar-motion";
 
 interface SidebarProps {
   isCollapsed: boolean;
   isMobileOpen: boolean;
 }
 
+// main list and More panel, sliding side by side
 const Sidebar = ({ isCollapsed, isMobileOpen }: SidebarProps) => {
-  const { sections } = useSidebarController();
+  const c = useSidebarController();
   // one card at a time, and only while collapsed: hovers while expanded are ignored
   const [openHint, setOpenHint] = useState<string | null>(null);
+  const entry = { isCollapsed, openHint, setOpenHint };
+  const onMore = c.view === "more";
 
   return (
     <div
@@ -26,74 +31,98 @@ const Sidebar = ({ isCollapsed, isMobileOpen }: SidebarProps) => {
         app-shell-surface bg-white border-r border-gray-200 shrink-0 flex flex-col h-full
       `}
     >
-      <div className="flex-1 overflow-y-auto pb-4">
-        {sections.map((section, sectionIndex) => (
-          <div key={sectionIndex} className={sectionIndex === 0 ? "pt-3" : "pt-4 mt-4 border-t border-gray-100"}>
-            {section.label && (
-              <p
-                className={`px-5 overflow-hidden whitespace-nowrap text-xs font-semibold text-gray-400 uppercase tracking-wider ${revealMotion(isCollapsed)} ${
-                  isCollapsed ? "max-h-0 pb-0" : "max-h-6 pb-2"
-                }`}
-              >
-                {section.label}
-              </p>
+      <div className="relative flex-1 overflow-hidden">
+        <div
+          className={cn(
+            "flex h-full w-[200%] transition-transform duration-200 ease-out motion-reduce:transition-none",
+            onMore && "-translate-x-1/2"
+          )}
+        >
+          <nav aria-label="Main menu" aria-hidden={onMore} className="h-full w-1/2 overflow-y-auto px-2 pb-4 pt-3">
+            <div className="space-y-1">
+              {c.main.map((item) => (
+                <SidebarEntry key={item.href} {...entry} {...item} inactive={onMore} />
+              ))}
+            </div>
+            {c.hasMore && (
+              <div className="mt-3 border-t border-gray-100 pt-3">
+                <SidebarEntry
+                  {...entry}
+                  name="More"
+                  hint="Every other page"
+                  icon={Squares2X2Icon}
+                  onClick={c.openMore}
+                  active={c.moreIsActive}
+                  dot={c.moreNeedsAttention}
+                  trailing={<ChevronRightIcon className="h-4 w-4" />}
+                  inactive={onMore}
+                />
+              </div>
             )}
-            <nav className="px-2 space-y-1">
-              {section.items.map((item) => {
-                const Icon = item.icon;
-                return (
-                  <Tooltip
-                    key={item.name}
-                    open={isCollapsed && openHint === item.name}
-                    onOpenChange={(open) => setOpenHint(open && isCollapsed ? item.name : null)}
-                  >
-                    {/* a plain wrapper as the trigger: Slot would mangle NavLink's className function */}
-                    <TooltipTrigger asChild>
-                      <div>
-                        <NavLink
-                          to={item.href}
-                          className={({ isActive }) =>
-                            `group flex items-center py-2 pr-3 text-sm font-medium rounded-md transition-[padding] ${panelMotion(isCollapsed)} ${isCollapsed ? "pl-[13.5px]" : "pl-3"} ${
-                              isActive
-                                ? "bg-gray-100 text-primary-600"
-                                : "text-gray-600 hover:bg-gray-50 hover:text-primary-600"
-                            }`
-                          }
-                        >
-                          {({ isActive }) => (
-                            <>
-                              <Icon
-                                className={`h-5 w-5 flex-shrink-0 ${
-                                  isActive
-                                    ? "text-primary-600"
-                                    : "text-gray-400 group-hover:text-primary-600"
-                                }`}
-                                aria-hidden="true"
-                              />
-                              <span
-                                className={`overflow-hidden whitespace-nowrap ${revealMotion(isCollapsed)} ${
-                                  isCollapsed ? "max-w-0 ml-0" : "max-w-[10rem] ml-3"
-                                }`}
-                              >
-                                {item.name}
-                              </span>
-                            </>
-                          )}
-                        </NavLink>
-                      </div>
-                    </TooltipTrigger>
-                    {/* name and a one-line hint, only while the sidebar is collapsed */}
-                    <TooltipContent side="right" sideOffset={14}>
-                      <p className="font-semibold text-gray-900">{item.name}</p>
-                      <p className="mt-0.5 text-gray-500">{item.hint}</p>
-                    </TooltipContent>
-                  </Tooltip>
-                );
-              })}
-            </nav>
-          </div>
-        ))}
+          </nav>
+
+          <nav aria-label="More pages" aria-hidden={!onMore} className="h-full w-1/2 overflow-y-auto px-2 pb-4 pt-3">
+            <div
+              className={cn(
+                "flex items-center gap-3 border-b border-gray-100 pb-3",
+                isCollapsed ? "justify-center" : "px-1"
+              )}
+            >
+              <button
+                type="button"
+                onClick={c.back}
+                tabIndex={onMore ? undefined : -1}
+                aria-label="Back to the main menu"
+                title="Back to the main menu"
+                className="inline-flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg border border-gray-200 bg-white text-gray-500 shadow-sm transition-colors hover:border-gray-300 hover:bg-gray-50 hover:text-gray-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500"
+              >
+                <ChevronLeftIcon className="h-4 w-4" />
+              </button>
+              <div
+                className={cn(
+                  "min-w-0 overflow-hidden whitespace-nowrap",
+                  revealMotion(isCollapsed),
+                  isCollapsed && "hidden"
+                )}
+              >
+                <p className="text-sm font-semibold text-gray-900">More</p>
+                <p className="text-xs text-gray-500">Every other page</p>
+              </div>
+            </div>
+
+            {c.more.map((group, index) => (
+              <section
+                key={group.label}
+                aria-label={group.label}
+                className={cn("pt-3", index > 0 && "mt-3 border-t border-gray-100", isCollapsed && index > 0 && "mx-1")}
+              >
+                <p
+                  className={cn(
+                    "overflow-hidden whitespace-nowrap px-3 text-[11px] font-semibold uppercase tracking-wider text-gray-400",
+                    revealMotion(isCollapsed),
+                    isCollapsed ? "max-h-0 pb-0" : "max-h-6 pb-1.5"
+                  )}
+                >
+                  {group.label}
+                </p>
+                <div className="space-y-1">
+                  {group.items.map((item) => (
+                    <SidebarEntry key={item.href} {...entry} {...item} inactive={!onMore} />
+                  ))}
+                </div>
+              </section>
+            ))}
+          </nav>
+        </div>
       </div>
+
+      {c.bottom.length > 0 && (
+        <nav aria-label="Settings" className="space-y-1 border-t border-gray-100 px-2 py-2">
+          {c.bottom.map((item) => (
+            <SidebarEntry key={item.href} {...entry} {...item} />
+          ))}
+        </nav>
+      )}
 
       <SidebarUserMenu isCollapsed={isCollapsed} />
     </div>

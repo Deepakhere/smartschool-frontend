@@ -1,3 +1,4 @@
-import useGetAllUserDetails from "@/pages/admin/settings/user-details/service/get-all-user-details";
+import { useGetTeacherDirectory } from "@/pages/admin/teachers/service/teacher-directory-service";
 
-export const useGetAllTeachers = (organizationId: string) => useGetAllUserDetails(organizationId, "", "teacher");
+// the staff teacher list is unpaged, so every teacher of the school can be picked
+export const useGetAllTeachers = (organizationId: string) => useGetTeacherDirectory(organizationId);

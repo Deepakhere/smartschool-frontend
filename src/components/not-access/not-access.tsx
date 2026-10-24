@@ -2,23 +2,11 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
 import { USER_ACCESS_KEY } from "@/utils";
-import { homePathFor, UserRole } from "@/routes/access";
 
 const NotAccess: React.FC = () => {
   const navigate = useNavigate();
 
-  const userRole = Cookies.get(USER_ACCESS_KEY.ROLE);
-  const token = Cookies.get(USER_ACCESS_KEY.TOKEN);
-  const organizationId = Cookies.get(USER_ACCESS_KEY.ORGANIZATION_ID);
-
-  const handleGoToDashboard = () => {
-    // without a remembered school this goes to the school picker instead of a broken "/undefined/..." link
-    if (token && userRole) {
-      navigate(homePathFor(organizationId, userRole as UserRole));
-    } else {
-      navigate("/login");
-    }
-  };
+  const handleGoToDashboard = () => navigate(Cookies.get(USER_ACCESS_KEY.TOKEN) ? "/organization" : "/login");
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100">

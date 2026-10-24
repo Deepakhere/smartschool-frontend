@@ -1,29 +1,25 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import toast from "react-hot-toast";
 import { useTranslation } from "react-i18next";
 
 import { useCreateNotice, useGetNoticeList, useDeleteNotice } from "./service";
 import { ICreateNoticeRequest, INotice } from "@/types";
-import { useError } from "@/hooks";
-
-const NOTICES_PAGE_SIZE = 20;
+import { useError, usePaging } from "@/hooks";
 
 const useNoticeController = () => {
   const { t } = useTranslation();
   const { organizationId } = useParams();
 
-  const [page, setPage] = useState(1);
+  const { page, pageSize, setPage, setPageSize } = usePaging();
   const [previewModalOpen, setPreviewModalOpen] = useState(false);
   const [previewAttachmentURL, setPreviewAttachmentURL] = useState("");
   const [previewFileName, setPreviewFileName] = useState("");
   const [isNoticeModalOpen, setIsNoticeModalOpen] = useState(false);
-  const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
   const [previewNotice, setPreviewNotice] = useState<INotice | null>(null);
-  const dropdownRef = useRef<HTMLDivElement>(null);
 
-  const getNoticeList = useGetNoticeList(organizationId, "", "", NOTICES_PAGE_SIZE, page);
-  const notices: INotice[] = getNoticeList.data?.items ?? [];
+  const getNoticeList = useGetNoticeList(organizationId, "", "", pageSize, page);
+  const notices: INotice[] = getNoticeList.data?.rows ?? [];
   const createNotice = useCreateNotice(organizationId || "");
   const deleteNotice = useDeleteNotice(organizationId || "");
 
@@ -84,32 +80,15 @@ const useNoticeController = () => {
 
   const cancelDeleteNotice = () => setNoticeIdPendingDelete(null);
 
-  const toggleDropdown = (noticeId: string) => {
-    setActiveDropdown(activeDropdown === noticeId ? null : noticeId);
-  };
-
   const onClickPreviewNotice = (notice: INotice) => {
     setPreviewNotice(notice);
-    setActiveDropdown(null);
   };
 
   const closePreviewNotice = () => setPreviewNotice(null);
 
   const onClickDeleteFromDropdown = (id: string) => {
     handleDeleteNotice(id);
-    setActiveDropdown(null);
   };
-
-  // close the row action dropdown on an outside click
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
-        setActiveDropdown(null);
-      }
-    };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
 
   const confirmDeleteNotice = () => {
     if (!noticeIdPendingDelete) return;
@@ -142,8 +121,9 @@ const useNoticeController = () => {
     notices,
     page,
     setPage,
-    pageSize: NOTICES_PAGE_SIZE,
-    totalNotices: getNoticeList.data?.total_count ?? 0,
+    pageSize,
+    setPageSize,
+    totalNotices: getNoticeList.data?.pagination.totalItems ?? 0,
     isNoticeModalOpen,
     isLoadingNoticeList: getNoticeList.isLoading,
     isFetchingNoticeList: getNoticeList.isFetching,
@@ -163,9 +143,6 @@ const useNoticeController = () => {
     confirmDeleteNotice,
     isDeletingNotice: deleteNotice.isPending,
     setPreviewModalOpen,
-    activeDropdown,
-    dropdownRef,
-    toggleDropdown,
     previewNotice,
     onClickPreviewNotice,
     closePreviewNotice,

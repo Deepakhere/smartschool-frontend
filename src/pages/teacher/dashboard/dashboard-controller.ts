@@ -2,6 +2,7 @@ import { useParams } from "react-router-dom";
 
 import useGetMyTeachingLoad from "./service/get-my-teaching-load";
 import { useAuth } from "@/context/auth-context";
+import { useHasModule } from "@/context/tenant-context";
 import { useGetCalendarMonth } from "@/pages/admin/calendar/service/calendar-service";
 import { localDateString } from "@/utils";
 
@@ -10,6 +11,7 @@ const DAY_NAMES = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Frid
 const useTeacherDashboardController = () => {
   const { organizationId = "" } = useParams();
   const { user } = useAuth();
+  const hasModule = useHasModule();
 
   const teachingLoad = useGetMyTeachingLoad(organizationId);
   const today = localDateString();
@@ -27,6 +29,8 @@ const useTeacherDashboardController = () => {
     recentNotices: teachingLoad.data?.recentNotices || [],
     todayName: DAY_NAMES[new Date().getDay()],
     holidayTitle: holiday?.title ?? "",
+    showTimetable: hasModule("timetable"),
+    showNotices: hasModule("notices"),
   };
 };
 

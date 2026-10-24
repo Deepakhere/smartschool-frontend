@@ -12,16 +12,8 @@ type User = {
   name?: string;
   id?: string;
   email?: string;
-  role?: "admin" | "parent" | "teacher";
   phoneNumber?: string;
   isPlatformAdmin?: boolean;
-  permissions?: {
-    canRead: boolean;
-    canCreate: boolean;
-    canUpdate: boolean;
-    canDelete: boolean;
-    isGlobalAdmin: boolean;
-  };
   preferences?: IUserPreferences;
   avatar?: IUserAvatar;
 } | null;
@@ -61,7 +53,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     if (data.refreshToken) {
       Cookies.set(USER_ACCESS_KEY.REFRESH_TOKEN, data.refreshToken, authCookieOptions(30));
     }
-    Cookies.set(USER_ACCESS_KEY.ROLE, data.role, authCookieOptions(30));
     setUser(data);
   };
 
@@ -100,14 +91,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   useEffect(() => {
     if (Cookies.get(USER_ACCESS_KEY.TOKEN)) {
-      if (getUserDetails.isSuccess && getUserDetails.data) {
-        if (getUserDetails.data.role !== Cookies.get(USER_ACCESS_KEY.ROLE)) {
-          clearSessionCookies();
-          window.location.href = "/login";
-        } else {
-          setUser(getUserDetails.data);
-        }
-      }
+      if (getUserDetails.isSuccess && getUserDetails.data) setUser(getUserDetails.data);
     }
   }, [getUserDetails.isSuccess, getUserDetails.data]);
 

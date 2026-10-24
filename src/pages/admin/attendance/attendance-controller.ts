@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
 import toast from "react-hot-toast";
 
@@ -8,15 +8,18 @@ import {
   useGetSectionAttendance,
   useMarkAttendance,
   useGetSectionAttendanceReport,
+  ISectionAttendanceReportRow,
 } from "./service/attendance-service";
 import { useGetCalendarMonth } from "../calendar/service/calendar-service";
 import { AttendanceStatus } from "@/types";
-import { localDateString } from "@/utils";
+import { exportToCsv, localDateString } from "@/utils";
 
 const today = () => localDateString();
 const firstOfMonth = () => `${today().slice(0, 7)}-01`;
 
 type Tab = "mark" | "report" | "register";
+
+export const percent = (row: ISectionAttendanceReportRow) => (row.total ? ((row.present / row.total) * 100).toFixed(1) : "0");
 
 const useAttendanceController = () => {
   const { organizationId = "" } = useParams();
@@ -41,8 +44,11 @@ const useAttendanceController = () => {
 
   const [statuses, setStatuses] = useState<Record<string, AttendanceStatus>>({});
   const [reasons, setReasons] = useState<Record<string, string>>({});
+  const [isDirty, setIsDirty] = useState(false);
+  const [rosterSearch, setRosterSearch] = useState("");
 
   useEffect(() => {
+    setIsDirty(false);
     if (!existing.data?.item) {
       setStatuses({});
       setReasons({});
@@ -72,17 +78,60 @@ const useAttendanceController = () => {
 
   const setStatus = (studentId: string, status: AttendanceStatus) => {
     setStatuses((prev) => ({ ...prev, [studentId]: status }));
+    setIsDirty(true);
   };
 
   const setReason = (studentId: string, reason: string) => {
     setReasons((prev) => ({ ...prev, [studentId]: reason }));
+    setIsDirty(true);
   };
 
   const markAll = (status: AttendanceStatus) => {
     const next: Record<string, AttendanceStatus> = {};
     for (const s of roster.data?.items || []) next[s.id] = status;
     setStatuses(next);
+    setIsDirty(true);
   };
+
+  const students = useMemo(() => roster.data?.items ?? [], [roster.data]);
+
+  const counts = useMemo(() => {
+    const tally: Record<AttendanceStatus, number> = { present: 0, absent: 0, late: 0, excused: 0 };
+    for (const student of students) tally[statuses[student.id] || "present"] += 1;
+    return { total: students.length, ...tally };
+  }, [students, statuses]);
+
+  const visibleStudents = useMemo(() => {
+    const term = rosterSearch.trim().toLowerCase();
+    return term ? students.filter((s) => `${s.name} ${s.currentEnrollment?.rollNumber ?? ""}`.toLowerCase().includes(term)) : students;
+  }, [students, rosterSearch]);
+
+  const exportRoster = () =>
+    exportToCsv(
+      `attendance-${date}`,
+      (roster.data?.items || []).map((student) => ({
+        student: student.name,
+        roll_number: student.currentEnrollment?.rollNumber ?? "",
+        status: statuses[student.id] || "present",
+        reason: reasons[student.id] || "",
+        date,
+      }))
+    );
+
+  const exportReport = () =>
+    exportToCsv(
+      `attendance-report-${reportFrom}-to-${reportTo}`,
+      (report.data?.items || []).map((row) => ({
+        roll_number: row.rollNumber,
+        student: row.studentName,
+        present: row.present,
+        absent: row.absent,
+        late: row.late,
+        excused: row.excused,
+        total_days: row.total,
+        attendance_percent: percent(row),
+      }))
+    );
 
   const submit = () => {
     const students = roster.data?.items || [];
@@ -95,18 +144,17 @@ const useAttendanceController = () => {
       status: statuses[s.id] || "present",
       reason: reasons[s.id],
     }));
-    markAttendance.mutate({ sectionId, date, records });
+    markAttendance.mutate(
+      { sectionId, date, records },
+      {
+        onSuccess: () => {
+          setIsDirty(false);
+          toast.success("Attendance saved.");
+        },
+        onError: (error) => toast.error(error?.response?.Error?.message || "Failed to save attendance"),
+      }
+    );
   };
-
-  useEffect(() => {
-    if (markAttendance.isSuccess) {
-      toast.success("Attendance saved.");
-    }
-    if (markAttendance.isError) {
-      toast.error(markAttendance.error?.response?.Error?.message || "Failed to save attendance");
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [markAttendance.isSuccess, markAttendance.isError]);
 
   return {
     activeTab,
@@ -125,7 +173,13 @@ const useAttendanceController = () => {
     classes: picker.classes,
     sections: picker.sections,
     hasNoClasses: picker.hasNoClasses,
-    students: roster.data?.items || [],
+    students,
+    visibleStudents,
+    rosterSearch,
+    setRosterSearch,
+    counts,
+    isDirty,
+    isMarked: !!existing.data?.item,
     isLoadingRoster: roster.isLoading || existing.isLoading,
     academicYearId,
     setAcademicYearId: picker.setAcademicYearId,
@@ -135,14 +189,17 @@ const useAttendanceController = () => {
     setSectionId,
     date,
     setDate,
+    // attendance is never marked or reported for days that haven't happened
+    maxDate: today(),
     statuses,
     reasons,
     setStatus,
     setReason,
     markAll,
+    exportRoster,
+    exportReport,
     submit,
     isSaving: markAttendance.isPending,
-    summary: existing.data?.item?.session?.summary || null,
     holidayTitle: holiday?.title ?? "",
   };
 };

@@ -1,5 +1,7 @@
-export type UserRole = "admin" | "teacher" | "parent";
+import type { AccountRole } from "@/types";
 
-// the one place that knows where each role lands after sign-in
+export type UserRole = AccountRole;
+
+// accountants and staff land on their first permitted page
 export const homePathFor = (organizationId: string | undefined, role: UserRole) =>
-  organizationId ? `/${organizationId}/${role}/dashboard` : "/organization";
+  !organizationId ? "/organization" : role === "accountant" || role === "staff" ? `/${organizationId}/${role}` : `/${organizationId}/${role}/dashboard`;

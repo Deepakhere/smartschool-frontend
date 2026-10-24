@@ -1,21 +1,21 @@
-import Spinner from "@/components/spinner";
-import EmptyState from "@/components/empty-state";
 import CustomSelectDropdown from "@/components/custom-select";
-import { Table, TableHeader, TableHead, TableBody, TableRow, TableCell, TableSkeleton } from "@/components/table";
-import { SelectOption } from "@/types";
-import SectionHeader from "@/components/section-header";
+import DataTable from "@/components/data-table";
 import DeleteConfirmationDialog from "@/components/delete-confirmation-dialog";
+import EmptyState from "@/components/empty-state";
 import ErrorState from "@/components/error-state";
 import FormDialog from "@/components/form-dialog";
 import { SelectField } from "@/components/form-fields";
-import { Button } from "@/components/ui/button";
+import SectionHeader from "@/components/section-header";
+import Spinner from "@/components/spinner";
+import { bookingColumns } from "./ptm-columns";
 import useParentPTMController from "./ptm-controller";
 
 const ParentPTM = () => {
   const {
     events,
-    slots,
-    bookingChildren,
+    slotItems,
+    eventOptions,
+    childOptions,
     bookings,
     isLoadingBookings,
     bookingsError,
@@ -24,24 +24,22 @@ const ParentPTM = () => {
     isLoadingSlots,
     isBooking,
     selectedEventId,
-    setSelectedEventId,
+    selectedEventOption,
+    selectEvent,
     bookingSlotId,
-    bookingSlot,
+    bookingDescription,
     bookingForm,
     openBookingFor,
     closeBooking,
     confirmBooking,
     bookingToCancel,
     setBookingToCancel,
+    closeCancel,
     confirmCancelBooking,
     isCancelling,
   } = useParentPTMController();
 
-  const eventOptions: SelectOption[] = events.map((event) => ({
-    id: event.id,
-    name: `${event.title} (${new Date(event.date).toLocaleDateString()})`,
-  }));
-  const childOptions: SelectOption[] = bookingChildren.map((c) => ({ id: c.studentId.id, name: c.studentId.name }));
+  const columns = bookingColumns(setBookingToCancel);
 
   return (
     <div className="max-w-7xl mx-auto">
@@ -49,62 +47,18 @@ const ParentPTM = () => {
         title="Parent-Teacher Meetings"
         description="Book a slot with your child's teacher and track your bookings"
       />
-      <div className="bg-white rounded-lg shadow p-6 mb-6">
-        <h2 className="text-lg font-medium text-gray-900 mb-4">My bookings</h2>
+      <div className="mb-6">
+        <h2 className="text-lg font-medium text-gray-900 mb-3">My bookings</h2>
         {bookingsError ? (
           <ErrorState error={bookingsError} onRetry={retryBookings} />
-        ) : isLoadingBookings ? (
-          <Table>
-            <TableHeader>
-              <TableHead>Student</TableHead>
-              <TableHead className="text-center">Time</TableHead>
-              <TableHead className="text-center">Join</TableHead>
-              <TableHead className="text-center">Action</TableHead>
-            </TableHeader>
-            <TableSkeleton columns={4} />
-          </Table>
-        ) : bookings.length === 0 ? (
-          <EmptyState compact title="No bookings yet" description="Slots you book appear here." />
         ) : (
-          <Table>
-            <TableHeader>
-              <TableHead>Student</TableHead>
-              <TableHead className="text-center">Time</TableHead>
-              <TableHead className="text-center">Join</TableHead>
-              <TableHead className="text-center">Action</TableHead>
-            </TableHeader>
-            <TableBody>
-              {bookings.map((b) => {
-                const slot = typeof b.slotId === "object" ? b.slotId : null;
-                return (
-                  <TableRow key={b.id}>
-                    <TableCell className="font-medium text-gray-900">
-                      {typeof b.studentId === "object" ? b.studentId.name : ""}
-                    </TableCell>
-                    <TableCell className="text-center">{slot ? new Date(slot.startAt).toLocaleString() : ""}</TableCell>
-                    <TableCell className="text-center">
-                      {slot?.meetingLink ? (
-                        <a href={slot.meetingLink} target="_blank" rel="noreferrer" className="text-primary-600 hover:underline">
-                          Join link
-                        </a>
-                      ) : (
-                        "-"
-                      )}
-                    </TableCell>
-                    <TableCell className="text-center">
-                      {slot && new Date(slot.startAt) > new Date() ? (
-                        <Button variant="link" onClick={() => setBookingToCancel(b.id)} className="text-red-600 hover:text-red-800">
-                          Cancel
-                        </Button>
-                      ) : (
-                        <span className="text-sm text-gray-400">Past</span>
-                      )}
-                    </TableCell>
-                  </TableRow>
-                );
-              })}
-            </TableBody>
-          </Table>
+          <DataTable
+            columns={columns}
+            data={bookings}
+            getRowId={(booking) => booking.id}
+            isLoading={isLoadingBookings}
+            empty={{ title: "No bookings yet", description: "Slots you book appear here." }}
+          />
         )}
       </div>
 
@@ -119,38 +73,34 @@ const ParentPTM = () => {
             <CustomSelectDropdown
               options={eventOptions}
               placeholder="Select PTM event"
-              value={eventOptions.find((o) => o.id === selectedEventId) || null}
-              onChange={(o) => setSelectedEventId(String(o.id))}
+              value={selectedEventOption}
+              onChange={selectEvent}
             />
 
             {selectedEventId && (
               <div className="mt-4">
                 {isLoadingSlots ? (
                   <Spinner />
-                ) : slots.length === 0 ? (
+                ) : slotItems.length === 0 ? (
                   <EmptyState compact title="No open slots yet" description="Teachers haven't opened time for your child's section." />
                 ) : (
                   <div className="flex flex-wrap gap-2">
-                    {slots.map((slot) => {
-                      const teacherName = typeof slot.teacherUserId === "object" ? slot.teacherUserId.name : "";
-                      const full = slot.bookedCount >= slot.capacity;
-                      return (
-                        <button
-                          type="button"
-                          key={slot.id}
-                          disabled={full}
-                          onClick={() => openBookingFor(slot.id)}
-                          className={`px-3 py-2 rounded-md text-xs border text-left ${
-                            full
-                              ? "bg-gray-100 text-gray-400 border-gray-200 cursor-not-allowed"
-                              : "bg-white text-gray-700 border-gray-300 hover:bg-primary-50"
-                          }`}
-                        >
-                          <div className="font-medium">{teacherName}</div>
-                          <div>{new Date(slot.startAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}</div>
-                        </button>
-                      );
-                    })}
+                    {slotItems.map((slot) => (
+                      <button
+                        type="button"
+                        key={slot.id}
+                        disabled={slot.full}
+                        onClick={() => openBookingFor(slot.id)}
+                        className={`px-3 py-2 rounded-md text-xs border text-left ${
+                          slot.full
+                            ? "bg-gray-100 text-gray-400 border-gray-200 cursor-not-allowed"
+                            : "bg-white text-gray-700 border-gray-300 hover:bg-primary-50"
+                        }`}
+                      >
+                        <div className="font-medium">{slot.teacherName}</div>
+                        <div>{slot.time}</div>
+                      </button>
+                    ))}
                   </div>
                 )}
               </div>
@@ -164,13 +114,7 @@ const ParentPTM = () => {
         open={!!bookingSlotId}
         onClose={closeBooking}
         title="Confirm booking"
-        description={
-          bookingSlot
-            ? `${typeof bookingSlot.teacherUserId === "object" ? bookingSlot.teacherUserId.name : ""}, ${new Date(
-                bookingSlot.startAt
-              ).toLocaleString([], { dateStyle: "medium", timeStyle: "short" })}`
-            : undefined
-        }
+        description={bookingDescription}
         submitLabel="Confirm"
         isSubmitting={isBooking}
         submitDisabled={!childOptions.length}
@@ -186,7 +130,7 @@ const ParentPTM = () => {
 
       <DeleteConfirmationDialog
         open={!!bookingToCancel}
-        onClose={() => setBookingToCancel(null)}
+        onClose={closeCancel}
         onConfirm={confirmCancelBooking}
         isLoading={isCancelling}
         title="Cancel this meeting?"

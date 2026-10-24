@@ -1,28 +1,15 @@
-import { useEffect, useMemo, useState } from "react";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { PlusIcon } from "@heroicons/react/20/solid";
 
+import type { Action } from "@/components/action-buttons";
+import { useHeaderActions } from "@/components/section-header";
 import CustomSelectDropdown from "@/components/custom-select";
+import DataTable from "@/components/data-table";
 import DeleteConfirmationDialog from "@/components/delete-confirmation-dialog";
-import EmptyState from "@/components/empty-state";
 import FormDialog from "@/components/form-dialog";
-import RowMenu, { RowMenuItem } from "@/components/row-menu";
-import StatusBadge from "@/components/status-badge";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow, TableSkeleton } from "@/components/table";
-import { useMutationFeedback } from "@/hooks";
-import { ISection } from "@/types";
-import {
-  useCreateSection,
-  useDeactivateSection,
-  useGetClasses,
-  useGetSections,
-  useUpdateSection,
-} from "../service/academics-service";
-import { useGetAllTeachers } from "../service/teachers-service";
-import { defaultSectionFormValues, sectionFormSchema, SectionFormValues } from "../classes.schema";
 import { SelectField, TextField } from "@/components/form-fields";
 import ShowInactiveToggle from "../components/show-inactive-toggle";
-import Toolbar, { PrimaryButton } from "../components/toolbar";
+import { sectionColumns } from "./sections-tab-columns";
+import useSectionsTabController from "./sections-tab-controller";
 
 interface SectionsTabProps {
   organizationId: string;
@@ -31,208 +18,72 @@ interface SectionsTabProps {
   onClassChange: (classId: string) => void;
 }
 
-const NO_TEACHER = "none";
-
 const SectionsTab = ({ organizationId, yearId, classId, onClassChange }: SectionsTabProps) => {
-  const [showInactive, setShowInactive] = useState(false);
-
-  // all classes load so an inactive one opened from the classes tab still shows its sections
-  const classes = useGetClasses(organizationId, yearId);
-  const allClasses = classes.data?.items ?? [];
-  const classOptions = allClasses.filter((klass) => klass.status === "active" || klass.id === classId);
-  const selectedClass = classOptions.find((klass) => klass.id === classId);
-  const classInactive = selectedClass?.status === "inactive";
-
-  // an inactive class only has inactive sections, so they show without the toggle
-  const sections = useGetSections(organizationId, classId, showInactive || classInactive ? undefined : "active");
-  const teachers = useGetAllTeachers(organizationId);
-  const createSection = useCreateSection(organizationId);
-  const updateSection = useUpdateSection(organizationId);
-  const deactivateSection = useDeactivateSection(organizationId);
-
-  const [dialog, setDialog] = useState<{ section?: ISection } | null>(null);
-  const [toDeactivate, setToDeactivate] = useState<ISection | null>(null);
-
-  const form = useForm<SectionFormValues>({
-    resolver: zodResolver(sectionFormSchema),
-    defaultValues: defaultSectionFormValues,
-  });
-
-  const teacherOptions = useMemo(
-    () => [
-      { id: NO_TEACHER, name: "No class teacher" },
-      ...(teachers.data?.items ?? []).map((teacher) => ({
-        id: teacher.id,
-        name: `${teacher.name} (${teacher.email})`,
-      })),
-    ],
-    [teachers.data],
-  );
-
-  useEffect(() => {
-    if (!dialog) return;
-    const section = dialog.section;
-    form.reset(
-      section
-        ? {
-            name: section.name,
-            capacity: section.capacity?.toString() ?? "",
-            roomNumber: section.roomNumber ?? "",
-            classTeacherId: section.classTeacherId?.id ?? NO_TEACHER,
-          }
-        : { ...defaultSectionFormValues, classTeacherId: NO_TEACHER },
-    );
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [dialog]);
-
-  useMutationFeedback(createSection, "Section created", () => setDialog(null));
-  useMutationFeedback(updateSection, "Section updated", () => setDialog(null));
-  useMutationFeedback(deactivateSection, "Section deactivated", () => setToDeactivate(null));
-
-  const submit = form.handleSubmit((values) => {
-    const capacity = values.capacity ? Number(values.capacity) : null;
-    const classTeacherId = values.classTeacherId === NO_TEACHER ? null : values.classTeacherId;
-
-    if (dialog?.section) {
-      // empty fields are sent as cleared so removing a capacity, room or teacher actually saves
-      updateSection.mutate({
-        id: dialog.section.id,
-        name: values.name,
-        capacity,
-        roomNumber: values.roomNumber,
-        classTeacherId,
-      });
-    } else {
-      createSection.mutate({
-        name: values.name,
-        capacity: capacity ?? undefined,
-        roomNumber: values.roomNumber || undefined,
-        classTeacherId: classTeacherId ?? undefined,
-        classId,
-        academicYearId: yearId,
-      });
-    }
-  });
-
-  const menuFor = (section: ISection): RowMenuItem[] => [
-    { label: "Edit", onSelect: () => setDialog({ section }) },
-    section.status === "active"
-      ? { label: "Deactivate", onSelect: () => setToDeactivate(section), danger: true }
-      : { label: "Reactivate", onSelect: () => updateSection.mutate({ id: section.id, status: "active" }) },
-  ];
-
-  const items = sections.data?.items ?? [];
-  const addButton = <PrimaryButton onClick={() => setDialog({})}>+ Add section</PrimaryButton>;
+  const c = useSectionsTabController(organizationId, yearId, classId);
+  const addAction: Action = { label: "Add section", icon: PlusIcon, onClick: c.openAdd, variant: "primary" };
+  useHeaderActions({ action: { ...addAction, hidden: !c.selectedClass || c.classInactive } });
 
   return (
-    <div className="rounded-lg bg-white shadow">
-      <Toolbar
-        title={
-          <div className="flex items-center gap-2">
-            <span className="text-sm text-gray-600">Class</span>
-            <CustomSelectDropdown
-              className="w-44"
-              placeholder="Select class"
-              options={classOptions.map((klass) => ({ id: klass.id, name: klass.name }))}
-              value={selectedClass ? { id: selectedClass.id, name: selectedClass.name } : null}
-              onChange={(option) => onClassChange(String(option.id))}
-            />
-          </div>
+    <div>
+      <DataTable
+        columns={sectionColumns(c.menuFor)}
+        data={c.items}
+        getRowId={(section) => section.id}
+        isLoading={c.isLoading}
+        itemLabel={{ one: "section", other: "sections" }}
+        pagination={{ pageSize: 20 }}
+        toolbar={
+          <>
+            <div className="flex items-center gap-2">
+              <span className="text-sm text-gray-600">Class</span>
+              <CustomSelectDropdown
+                className="w-44"
+                placeholder="Select class"
+                options={c.classOptions.map((klass) => ({ id: klass.id, name: klass.name }))}
+                value={c.selectedClass ? { id: c.selectedClass.id, name: c.selectedClass.name } : null}
+                onChange={(option) => onClassChange(String(option.id))}
+              />
+            </div>
+            <ShowInactiveToggle checked={c.showInactive} onChange={c.setShowInactive} />
+          </>
         }
-      >
-        <ShowInactiveToggle checked={showInactive} onChange={setShowInactive} />
-        {selectedClass && !classInactive && addButton}
-      </Toolbar>
-
-      {!classId ? (
-        <EmptyState
-          title="Choose a class"
-          description="Sections are the divisions of a class, such as A and B. Pick a class above to see or add them; no classes yet? Add them in the Classes tab."
-        />
-      ) : sections.isLoading ? (
-        <div className="p-4">
-          <Table>
-            <TableHeader>
-              <TableHead>Section</TableHead>
-              <TableHead className="text-center">Students</TableHead>
-              <TableHead className="text-center">Room</TableHead>
-              <TableHead className="text-center">Class teacher</TableHead>
-              <TableHead className="text-center">Status</TableHead>
-              <TableHead className="text-center">Actions</TableHead>
-            </TableHeader>
-            <TableSkeleton columns={6} />
-          </Table>
-        </div>
-      ) : items.length === 0 ? (
-        <EmptyState
-          title="No sections in this class"
-          description="Add a section, such as A, and set how many students it can hold."
-          action={classInactive ? undefined : addButton}
-        />
-      ) : (
-        <div className="p-4">
-          <Table>
-            <TableHeader>
-              <TableHead>Section</TableHead>
-              <TableHead className="text-center">Students</TableHead>
-              <TableHead className="text-center">Room</TableHead>
-              <TableHead className="text-center">Class teacher</TableHead>
-              <TableHead className="text-center">Status</TableHead>
-              <TableHead className="text-center">Actions</TableHead>
-            </TableHeader>
-            <TableBody>
-              {items.map((section) => {
-                const students = section.studentCount ?? 0;
-                const full = !!section.capacity && students >= section.capacity;
-                return (
-                  <TableRow key={section.id}>
-                    <TableCell className="font-medium text-gray-900">{section.name}</TableCell>
-                    <TableCell className="text-center">
-                      {students}
-                      {section.capacity ? ` / ${section.capacity}` : ""}
-                      {full && (
-                        <span className="ml-2 rounded-full bg-amber-100 px-2 py-0.5 text-xs text-amber-800">Full</span>
-                      )}
-                    </TableCell>
-                    <TableCell className="text-center">{section.roomNumber || "-"}</TableCell>
-                    <TableCell className="text-center">{section.classTeacherId?.name || "-"}</TableCell>
-                    <TableCell className="text-center">
-                      <StatusBadge status={section.status} />
-                    </TableCell>
-                    <TableCell className="text-center">
-                      <RowMenu items={menuFor(section)} />
-                    </TableCell>
-                  </TableRow>
-                );
-              })}
-            </TableBody>
-          </Table>
-        </div>
-      )}
+        empty={
+          classId
+            ? {
+                title: "No sections in this class",
+                description: "Add a section, such as A, and set how many students it can hold.",
+              }
+            : {
+                title: "Choose a class",
+                description:
+                  "Sections are the divisions of a class, such as A and B. Pick a class from the class menu to see or add them; no classes yet? Add them in the Classes tab.",
+              }
+        }
+      />
 
       <FormDialog
-        form={form}
-        open={!!dialog}
-        onClose={() => setDialog(null)}
-        title={dialog?.section ? "Edit section" : `Add section${selectedClass ? ` to ${selectedClass.name}` : ""}`}
-        submitLabel={dialog?.section ? "Save changes" : "Add section"}
-        isSubmitting={createSection.isPending || updateSection.isPending}
-        onSubmit={submit}
+        form={c.form}
+        open={!!c.dialog}
+        onClose={c.closeDialog}
+        title={c.dialog?.section ? "Edit section" : `Add section${c.selectedClass ? ` to ${c.selectedClass.name}` : ""}`}
+        submitLabel={c.dialog?.section ? "Save changes" : "Add section"}
+        isSubmitting={c.isSubmitting}
+        onSubmit={c.submit}
       >
-        <TextField form={form} name="name" label="Name" placeholder="A" autoFocus />
+        <TextField form={c.form} name="name" label="Name" placeholder="A" autoFocus />
         <div className="grid grid-cols-2 gap-4">
-          <TextField form={form} name="capacity" label="Capacity (optional)" placeholder="40" />
-          <TextField form={form} name="roomNumber" label="Room (optional)" placeholder="12" />
+          <TextField form={c.form} name="capacity" label="Capacity (optional)" placeholder="40" />
+          <TextField form={c.form} name="roomNumber" label="Room (optional)" placeholder="12" />
         </div>
-        <SelectField form={form} name="classTeacherId" label="Class teacher" options={teacherOptions} />
+        <SelectField form={c.form} name="classTeacherId" label="Class teacher" options={c.teacherOptions} />
       </FormDialog>
 
       <DeleteConfirmationDialog
-        open={!!toDeactivate}
-        onClose={() => setToDeactivate(null)}
-        onConfirm={() => toDeactivate && deactivateSection.mutate(toDeactivate.id)}
-        isLoading={deactivateSection.isPending}
-        title={`Deactivate section ${toDeactivate?.name ?? ""}?`}
+        open={!!c.toDeactivate}
+        onClose={c.closeDeactivate}
+        onConfirm={c.confirmDeactivate}
+        isLoading={c.isDeactivating}
+        title={`Deactivate section ${c.toDeactivate?.name ?? ""}?`}
         description="Nothing new can be added to it. This is only possible once it has no active students. History is kept, and you can reactivate it later."
         confirmLabel="Deactivate"
       />

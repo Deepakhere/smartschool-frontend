@@ -16,7 +16,7 @@ import {
 const TableHeader = UiTableHeader;
 
 // an empty table body, drawn with the app's one empty state
-const TableEmpty = ({ colSpan, title, description, action }: { colSpan: number; title: string; description?: string; action?: ReactNode }) => (
+const TableEmpty = ({ colSpan, title, description, action }: { colSpan: number; title: string; description?: ReactNode; action?: ReactNode }) => (
   <TableRow>
     <TableCell colSpan={colSpan} className="p-0">
       <EmptyState title={title} description={description} action={action} />
@@ -24,9 +24,7 @@ const TableEmpty = ({ colSpan, title, description, action }: { colSpan: number; 
   </TableRow>
 );
 
-// a table-shaped placeholder for while the rows are loading - keeps the header and
-// container in place instead of swapping the whole card for a spinner
-// the loading rows alone, for a body that is already open
+// loading rows that keep the table's header and card in place
 const TableSkeletonRows = ({ columns, rows = 5 }: { columns: number; rows?: number }) => (
   <>
     {Array.from({ length: rows }).map((_, rowIndex) => (
@@ -41,10 +39,4 @@ const TableSkeletonRows = ({ columns, rows = 5 }: { columns: number; rows?: numb
   </>
 );
 
-const TableSkeleton = ({ columns, rows = 5 }: { columns: number; rows?: number }) => (
-  <TableBody>
-    <TableSkeletonRows columns={columns} rows={rows} />
-  </TableBody>
-);
-
-export { Table, TableHeader, TableHead, TableBody, TableRow, TableCell, TableEmpty, TableSkeleton, TableSkeletonRows };
+export { Table, TableHeader, TableHead, TableBody, TableRow, TableCell, TableEmpty, TableSkeletonRows };

@@ -123,7 +123,15 @@
     "login_feature_fees": "Fees",
     "login_feature_results": "Results",
     "login_feature_mobile": "Parent app",
-    "invite_pending": "Invite pending"
+    "invite_pending": "Invite pending",
+    "found": "found",
+    "page": "Page",
+    "ofPages": "of {{count}}",
+    "rowsPerPage": "{{count}} rows/page",
+    "rowsPerPageLabel": "Rows per page",
+    "firstPage": "First page",
+    "lastPage": "Last page",
+    "result": "result"
   },
   "messages": {
     "enter_email_associate_with_account": "Don't worry! It happens. Please enter your email address associated with your account.",

@@ -1,14 +1,7 @@
-import { useEffect } from "react";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import toast from "react-hot-toast";
-
 import FormDialog from "@/components/form-dialog";
 import { ChipsField, DateField, SelectField, TextField } from "@/components/form-fields";
-import { useError } from "@/hooks";
 import { IGradingScheme, SelectOption } from "@/types";
-import { defaultExamValues, examSchema, ExamFormValues } from "../reports.schema";
-import { useCreateExam } from "../service/exams-service";
+import useCreateExamDialogController from "./create-exam-dialog-controller";
 
 const typeOptions: SelectOption[] = [
   { id: "unit_test", name: "Unit Test" },
@@ -27,32 +20,13 @@ interface CreateExamDialogProps {
 }
 
 const CreateExamDialog = ({ organizationId, academicYearId, classOptions, gradingSchemes, open, onClose }: CreateExamDialogProps) => {
-  const createExam = useCreateExam(organizationId);
-  useError({ mutation: createExam });
-
-  const form = useForm<ExamFormValues>({ resolver: zodResolver(examSchema), defaultValues: defaultExamValues });
-
-  useEffect(() => {
-    if (open) form.reset(defaultExamValues);
-  }, [open, form]);
-
-  const onSubmit = form.handleSubmit((values) => {
-    if (!academicYearId) {
-      toast.error("Set a current academic year first (Academics page).");
-      return;
-    }
-    createExam.mutate(
-      { ...values, academicYearId },
-      {
-        onSuccess: () => {
-          toast.success("Exam created.");
-          onClose();
-        },
-      }
-    );
+  const { form, onSubmit, isSubmitting, gradingSchemeOptions } = useCreateExamDialogController({
+    organizationId,
+    academicYearId,
+    gradingSchemes,
+    open,
+    onClose,
   });
-
-  const gradingSchemeOptions: SelectOption[] = gradingSchemes.map((scheme) => ({ id: scheme.id, name: scheme.name }));
 
   return (
     <FormDialog
@@ -61,7 +35,7 @@ const CreateExamDialog = ({ organizationId, academicYearId, classOptions, gradin
       onClose={onClose}
       title="Create Exam"
       submitLabel="Save"
-      isSubmitting={createExam.isPending}
+      isSubmitting={isSubmitting}
       onSubmit={onSubmit}
       className="max-w-2xl"
     >

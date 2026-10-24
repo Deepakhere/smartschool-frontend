@@ -1,23 +1,18 @@
-import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { PlusIcon } from "@heroicons/react/20/solid";
 
+import type { Action } from "@/components/action-buttons";
+import { useHeaderActions } from "@/components/section-header";
+import DataTable from "@/components/data-table";
 import DeleteConfirmationDialog from "@/components/delete-confirmation-dialog";
-import EmptyState from "@/components/empty-state";
 import FormDialog from "@/components/form-dialog";
-import RowMenu, { RowMenuItem } from "@/components/row-menu";
-import StatusBadge from "@/components/status-badge";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow, TableSkeleton } from "@/components/table";
-import { useMutationFeedback } from "@/hooks";
-import { IAcademicYear, ISubject } from "@/types";
-import { useCreateSubject, useDeactivateSubject, useGetSubjects, useUpdateSubject } from "../service/academics-service";
-import { defaultSubjectFormValues, SUBJECT_TYPES, subjectFormSchema, SubjectFormValues } from "../classes.schema";
 import { SelectField, TextField } from "@/components/form-fields";
+import { IAcademicYear } from "@/types";
+import { SUBJECT_TYPES } from "../classes.schema";
 import ShowInactiveToggle from "../components/show-inactive-toggle";
-import Toolbar, { PrimaryButton } from "../components/toolbar";
 import YearPicker from "../components/year-picker";
+import { subjectColumns, TYPE_LABELS } from "./subjects-tab-columns";
+import useSubjectsTabController from "./subjects-tab-controller";
 
-const TYPE_LABELS: Record<string, string> = { core: "Core", elective: "Elective", co_curricular: "Co-curricular" };
 const TYPE_OPTIONS = SUBJECT_TYPES.map((type) => ({ id: type, name: TYPE_LABELS[type] }));
 
 interface SubjectsTabProps {
@@ -28,133 +23,56 @@ interface SubjectsTabProps {
 }
 
 const SubjectsTab = ({ organizationId, years, yearId, onYearChange }: SubjectsTabProps) => {
-  const [showInactive, setShowInactive] = useState(false);
-  const subjects = useGetSubjects(organizationId, yearId, showInactive ? undefined : "active");
-  const createSubject = useCreateSubject(organizationId);
-  const updateSubject = useUpdateSubject(organizationId);
-  const deactivateSubject = useDeactivateSubject(organizationId);
-
-  const [dialog, setDialog] = useState<{ subject?: ISubject } | null>(null);
-  const [toDeactivate, setToDeactivate] = useState<ISubject | null>(null);
-
-  const form = useForm<SubjectFormValues>({
-    resolver: zodResolver(subjectFormSchema),
-    defaultValues: defaultSubjectFormValues,
-  });
-
-  useEffect(() => {
-    if (!dialog) return;
-    const subject = dialog.subject;
-    form.reset(
-      subject
-        ? { name: subject.name, code: subject.code, type: (subject.type as SubjectFormValues["type"]) ?? "core" }
-        : defaultSubjectFormValues,
-    );
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [dialog]);
-
-  useMutationFeedback(createSubject, "Subject created", () => setDialog(null));
-  useMutationFeedback(updateSubject, "Subject updated", () => setDialog(null));
-  useMutationFeedback(deactivateSubject, "Subject deactivated", () => setToDeactivate(null));
-
-  const submit = form.handleSubmit((values) => {
-    if (dialog?.subject) {
-      updateSubject.mutate({ id: dialog.subject.id, ...values });
-    } else {
-      createSubject.mutate({ ...values, academicYearId: yearId });
-    }
-  });
-
-  const menuFor = (subject: ISubject): RowMenuItem[] => [
-    { label: "Edit", onSelect: () => setDialog({ subject }) },
-    subject.status === "active"
-      ? { label: "Deactivate", onSelect: () => setToDeactivate(subject), danger: true }
-      : { label: "Reactivate", onSelect: () => updateSubject.mutate({ id: subject.id, status: "active" }) },
-  ];
-
-  const items = subjects.data?.items ?? [];
-  const addButton = <PrimaryButton onClick={() => setDialog({})}>+ Add subject</PrimaryButton>;
+  const c = useSubjectsTabController(organizationId, yearId);
+  const addAction: Action = { label: "Add subject", icon: PlusIcon, onClick: c.openAdd, variant: "primary" };
+  useHeaderActions({ action: { ...addAction, hidden: !yearId } });
 
   return (
-    <div className="rounded-lg bg-white shadow">
-      <Toolbar title={<YearPicker years={years} value={yearId} onChange={onYearChange} />}>
-        <ShowInactiveToggle checked={showInactive} onChange={setShowInactive} />
-        {yearId && addButton}
-      </Toolbar>
-
-      {!yearId ? (
-        <EmptyState
-          title="Choose an academic year"
-          description="Subjects are set up per academic year. Pick one above, or add a year first."
-        />
-      ) : subjects.isLoading ? (
-        <div className="p-4">
-          <Table>
-            <TableHeader>
-              <TableHead>Subject</TableHead>
-              <TableHead className="text-center">Code</TableHead>
-              <TableHead className="text-center">Type</TableHead>
-              <TableHead className="text-center">Status</TableHead>
-              <TableHead className="text-center">Actions</TableHead>
-            </TableHeader>
-            <TableSkeleton columns={5} />
-          </Table>
-        </div>
-      ) : items.length === 0 ? (
-        <EmptyState
-          title="No subjects in this year"
-          description="Add the subjects you teach, such as Mathematics (MATH). Homework, marks and teacher assignments use them."
-          action={addButton}
-        />
-      ) : (
-        <div className="p-4">
-          <Table>
-            <TableHeader>
-              <TableHead>Subject</TableHead>
-              <TableHead className="text-center">Code</TableHead>
-              <TableHead className="text-center">Type</TableHead>
-              <TableHead className="text-center">Status</TableHead>
-              <TableHead className="text-center">Actions</TableHead>
-            </TableHeader>
-            <TableBody>
-              {items.map((subject) => (
-                <TableRow key={subject.id}>
-                  <TableCell className="font-medium text-gray-900">{subject.name}</TableCell>
-                  <TableCell className="text-center">{subject.code}</TableCell>
-                  <TableCell className="text-center">{TYPE_LABELS[subject.type] ?? subject.type}</TableCell>
-                  <TableCell className="text-center">
-                    <StatusBadge status={subject.status} />
-                  </TableCell>
-                  <TableCell className="text-center">
-                    <RowMenu items={menuFor(subject)} />
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </div>
-      )}
+    <div>
+      <DataTable
+        columns={subjectColumns(c.menuFor)}
+        data={c.items}
+        getRowId={(subject) => subject.id}
+        isLoading={c.isLoading}
+        itemLabel={{ one: "subject", other: "subjects" }}
+        pagination={{ pageSize: 20 }}
+        toolbar={
+          <>
+            <YearPicker years={years} value={yearId} onChange={onYearChange} />
+            <ShowInactiveToggle checked={c.showInactive} onChange={c.setShowInactive} />
+          </>
+        }
+        empty={
+          yearId
+            ? {
+                title: "No subjects in this year",
+                description:
+                  "Add the subjects you teach, such as Mathematics (MATH). Homework, marks and teacher assignments use them.",
+              }
+            : { title: "Choose an academic year", description: "Subjects are set up per academic year. Pick one from the year menu, or add a year first." }
+        }
+      />
 
       <FormDialog
-        form={form}
-        open={!!dialog}
-        onClose={() => setDialog(null)}
-        title={dialog?.subject ? "Edit subject" : "Add subject"}
-        submitLabel={dialog?.subject ? "Save changes" : "Add subject"}
-        isSubmitting={createSubject.isPending || updateSubject.isPending}
-        onSubmit={submit}
+        form={c.form}
+        open={!!c.dialog}
+        onClose={c.closeDialog}
+        title={c.dialog?.subject ? "Edit subject" : "Add subject"}
+        submitLabel={c.dialog?.subject ? "Save changes" : "Add subject"}
+        isSubmitting={c.isSubmitting}
+        onSubmit={c.submit}
       >
-        <TextField form={form} name="name" label="Name" placeholder="Mathematics" autoFocus />
-        <TextField form={form} name="code" label="Code" placeholder="MATH" />
-        <SelectField form={form} name="type" label="Type" options={TYPE_OPTIONS} />
+        <TextField form={c.form} name="name" label="Name" placeholder="Mathematics" autoFocus />
+        <TextField form={c.form} name="code" label="Code" placeholder="MATH" />
+        <SelectField form={c.form} name="type" label="Type" options={TYPE_OPTIONS} />
       </FormDialog>
 
       <DeleteConfirmationDialog
-        open={!!toDeactivate}
-        onClose={() => setToDeactivate(null)}
-        onConfirm={() => toDeactivate && deactivateSubject.mutate(toDeactivate.id)}
-        isLoading={deactivateSubject.isPending}
-        title={`Deactivate ${toDeactivate?.name ?? "subject"}?`}
+        open={!!c.toDeactivate}
+        onClose={c.closeDeactivate}
+        onConfirm={c.confirmDeactivate}
+        isLoading={c.isDeactivating}
+        title={`Deactivate ${c.toDeactivate?.name ?? "subject"}?`}
         description="It will no longer be offered for new homework or assignments. Existing records keep it, and you can reactivate it later."
         confirmLabel="Deactivate"
       />

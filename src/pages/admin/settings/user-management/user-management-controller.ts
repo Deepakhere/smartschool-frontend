@@ -1,49 +1,43 @@
-import { useEffect, useState } from "react";
+import { ComponentType, useEffect } from "react";
 import { useTranslation } from "react-i18next";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
+import { BellIcon, CreditCardIcon, ShieldCheckIcon, UserCircleIcon, UsersIcon } from "@heroicons/react/24/outline";
+
+import { useAreaBase, useCan, useCurrentRole } from "@/context/tenant-context";
+import { PermissionKey } from "@/types";
+
+type SettingsTab = { path: string; label?: string; labelKey?: string; icon: ComponentType; anyOf?: PermissionKey[]; adminOnly?: boolean };
+
+export const SETTINGS_TABS: SettingsTab[] = [
+  { path: "profile", labelKey: "labels.profile", icon: UserCircleIcon },
+  { path: "add-user", labelKey: "labels.user_management", icon: UsersIcon, anyOf: ["people.manage"] },
+  { path: "roles", label: "Roles", icon: ShieldCheckIcon, adminOnly: true },
+  { path: "notifications", labelKey: "labels.notifications", icon: BellIcon, anyOf: ["school.settings"] },
+  { path: "online-payments", label: "Online payments", icon: CreditCardIcon, anyOf: ["fees.setup"] },
+];
 
 const useUserManagementController = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { t } = useTranslation();
+  const areaBase = useAreaBase();
+  const can = useCan();
+  const isAdmin = useCurrentRole() === "admin";
 
-  const { organizationId } = useParams<{ organizationId: string }>();
-  const [selectedIndex, setSelectedIndex] = useState(0);
+  const tabs = SETTINGS_TABS.filter((tab) => (tab.adminOnly ? isAdmin : !tab.anyOf || can(...tab.anyOf)));
+  const activePath = tabs.find((tab) => location.pathname.includes(`/settings/${tab.path}`))?.path;
 
   useEffect(() => {
-    if (location.pathname.includes("/settings/add-user")) {
-      setSelectedIndex(1);
-    } else if (location.pathname.includes("/settings/notifications")) {
-      setSelectedIndex(2);
-    } else if (location.pathname.includes("/settings/profile")) {
-      setSelectedIndex(0);
-    } else {
-      navigate(`/${organizationId}/admin/settings/profile`, { replace: true });
-    }
-  }, [location.pathname, navigate, organizationId]);
+    if (!activePath) navigate(`${areaBase}/settings/${tabs[0].path}`, { replace: true });
+  }, [activePath, navigate, areaBase, tabs]);
 
-  const handleTabChange = (index: number) => {
-    if (selectedIndex !== index) {
-      setSelectedIndex(index);
-
-      const targetPath =
-        index === 0
-          ? `/${organizationId}/admin/settings/profile`
-          : index === 1
-            ? `/${organizationId}/admin/settings/add-user`
-            : `/${organizationId}/admin/settings/notifications`;
-
-      if (location.pathname !== targetPath) {
-        navigate(targetPath);
-      }
-    }
+  const handleTabChange = (path: string) => {
+    if (path !== activePath) navigate(`${areaBase}/settings/${path}`);
   };
 
-  return {
-    t,
-    selectedIndex,
-    handleTabChange,
-  };
+  const tabLabel = (tab: (typeof SETTINGS_TABS)[number]) => (tab.labelKey ? t(tab.labelKey) : tab.label);
+
+  return { tabs, activePath: activePath ?? "profile", handleTabChange, tabLabel };
 };
 
 export default useUserManagementController;

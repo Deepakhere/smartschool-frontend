@@ -1,8 +1,18 @@
 import { keepPreviousData, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import apiClient from "@/config";
-import { IAPIError, IAxiosResponse, IFeeHead, IFeeStructure, IStudentFeeSummary, IPayment } from "@/types";
-import { APIS_ROUTES, API_QUERY_KEY, API_MUTATION_KEY } from "@/utils";
+import {
+  IAPIError,
+  IAxiosResponse,
+  IFeeHead,
+  IFeeStructure,
+  IStudentFeeSummary,
+  IPayment,
+  IFeeDefaultersResult,
+  IFeeCollectionSummary,
+  Paged,
+} from "@/types";
+import { APIS_ROUTES, API_QUERY_KEY, API_MUTATION_KEY, saveFile } from "@/utils";
 import { useIdempotencyKey } from "@/hooks";
 
 const base = (organizationId: string) => `${APIS_ROUTES.FEE_SERVICE}/${organizationId}`;
@@ -49,6 +59,7 @@ interface ICreateFeeStructurePayload {
   sectionIds: string[];
   items: { feeHeadId: string; amount: number }[];
   installments: { label: string; dueDate: string; amount: number }[];
+  lateFee: { amount: number; graceDays: number };
 }
 
 export const useCreateFeeStructure = (organizationId: string) => {
@@ -72,8 +83,74 @@ export const useAssignFeeStructure = (organizationId: string) => {
       );
       return result.data.Data;
     },
-    onSuccess: () =>
-      queryClient.invalidateQueries({ queryKey: [API_QUERY_KEY.GET_STUDENT_FEE_SUMMARY, organizationId] }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [API_QUERY_KEY.GET_STUDENT_FEE_SUMMARY, organizationId] });
+      queryClient.invalidateQueries({ queryKey: [API_QUERY_KEY.GET_FEE_STRUCTURES, organizationId] });
+      queryClient.invalidateQueries({ queryKey: [API_QUERY_KEY.GET_FEE_DEFAULTERS, organizationId] });
+    },
+  });
+};
+
+export interface FeeStructureUpdateResult {
+  newVersion: boolean;
+  moved_count: number;
+  kept_count: number;
+}
+
+export const useUpdateFeeStructure = (organizationId: string) => {
+  const queryClient = useQueryClient();
+  return useMutation<
+    FeeStructureUpdateResult,
+    IAPIError,
+    { feeStructureId: string; value: Omit<ICreateFeeStructurePayload, "academicYearId"> & { applyToUnpaid: boolean } }
+  >({
+    mutationKey: [API_MUTATION_KEY.UPDATE_FEE_STRUCTURE],
+    mutationFn: async ({ feeStructureId, value }) => {
+      const result = await apiClient.put<null, IAxiosResponse<FeeStructureUpdateResult>>(
+        `${base(organizationId)}/fee-structure/${feeStructureId}`,
+        value
+      );
+      return result.data.Data;
+    },
+    onSuccess: () => {
+      for (const key of [
+        API_QUERY_KEY.GET_FEE_STRUCTURES,
+        API_QUERY_KEY.GET_STUDENT_FEE_SUMMARY,
+        API_QUERY_KEY.GET_FEE_DEFAULTERS,
+      ]) {
+        queryClient.invalidateQueries({ queryKey: [key, organizationId] });
+      }
+    },
+  });
+};
+
+export const useUpdateFeeHead = (organizationId: string) => {
+  const queryClient = useQueryClient();
+  return useMutation<
+    void,
+    IAPIError,
+    { feeHeadId: string; value: { name: string; category: string; isRefundable: boolean } }
+  >({
+    mutationKey: [API_MUTATION_KEY.UPDATE_FEE_HEAD],
+    mutationFn: async ({ feeHeadId, value }) => {
+      await apiClient.patch(`${base(organizationId)}/fee-head/${feeHeadId}`, value);
+    },
+    // structures show each head's name, so they refresh too
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [API_QUERY_KEY.GET_FEE_HEADS, organizationId] });
+      queryClient.invalidateQueries({ queryKey: [API_QUERY_KEY.GET_FEE_STRUCTURES, organizationId] });
+    },
+  });
+};
+
+export const useDeactivateFeeHead = (organizationId: string) => {
+  const queryClient = useQueryClient();
+  return useMutation<void, IAPIError, string>({
+    mutationKey: [API_MUTATION_KEY.DEACTIVATE_FEE_HEAD],
+    mutationFn: async (feeHeadId) => {
+      await apiClient.delete(`${base(organizationId)}/fee-head/${feeHeadId}`);
+    },
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: [API_QUERY_KEY.GET_FEE_HEADS, organizationId] }),
   });
 };
 
@@ -90,12 +167,13 @@ export const useGetStudentFeeSummary = (organizationId: string, studentId?: stri
   });
 
 export const useGetMyFees = (organizationId: string) =>
-  useQuery<{ items: IStudentFeeSummary[] }, IAPIError>({
+  useQuery<{ items: IStudentFeeSummary[]; onlinePaymentsEnabled?: boolean }, IAPIError>({
     queryKey: [API_QUERY_KEY.GET_MY_FEES, organizationId],
     queryFn: async () => {
-      const result = await apiClient.get<null, IAxiosResponse<{ items: IStudentFeeSummary[] }>>(
-        `${base(organizationId)}/my-fees`
-      );
+      const result = await apiClient.get<
+        null,
+        IAxiosResponse<{ items: IStudentFeeSummary[]; onlinePaymentsEnabled?: boolean }>
+      >(`${base(organizationId)}/my-fees`);
       return result.data.Data;
     },
     enabled: !!organizationId,
@@ -124,6 +202,8 @@ export const useRecordPayment = (organizationId: string) => {
       idempotency.reset();
       queryClient.invalidateQueries({ queryKey: [API_QUERY_KEY.GET_STUDENT_FEE_SUMMARY, organizationId] });
       queryClient.invalidateQueries({ queryKey: [API_QUERY_KEY.GET_PAYMENT_LEDGER, organizationId] });
+      queryClient.invalidateQueries({ queryKey: [API_QUERY_KEY.GET_FEE_DEFAULTERS, organizationId] });
+      queryClient.invalidateQueries({ queryKey: [API_QUERY_KEY.GET_FEE_COLLECTIONS, organizationId] });
     },
   });
 };
@@ -144,49 +224,48 @@ export const useReversePayment = (organizationId: string) => {
       idempotency.reset();
       queryClient.invalidateQueries({ queryKey: [API_QUERY_KEY.GET_STUDENT_FEE_SUMMARY, organizationId] });
       queryClient.invalidateQueries({ queryKey: [API_QUERY_KEY.GET_PAYMENT_LEDGER, organizationId] });
+      queryClient.invalidateQueries({ queryKey: [API_QUERY_KEY.GET_FEE_DEFAULTERS, organizationId] });
+      queryClient.invalidateQueries({ queryKey: [API_QUERY_KEY.GET_FEE_COLLECTIONS, organizationId] });
     },
   });
 };
 
-export const LEDGER_PAGE_SIZE = 50;
-
 const fetchLedgerPage = async (organizationId: string, page: number, limit: number) => {
-  const result = await apiClient.get<null, IAxiosResponse<{ items: IPayment[]; total_count: number }>>(`${base(organizationId)}/payment`, {
+  const result = await apiClient.get<null, IAxiosResponse<Paged<IPayment>>>(`${base(organizationId)}/payment`, {
     params: { page, limit },
   });
   return result.data.Data;
 };
 
-export const useGetPaymentLedger = (organizationId: string, page: number) =>
-  useQuery<{ items: IPayment[]; total_count: number }, IAPIError>({
-    queryKey: [API_QUERY_KEY.GET_PAYMENT_LEDGER, organizationId, page],
-    queryFn: () => fetchLedgerPage(organizationId, page, LEDGER_PAGE_SIZE),
+export const useGetPaymentLedger = (organizationId: string, page: number, pageSize: number) =>
+  useQuery<Paged<IPayment>, IAPIError>({
+    queryKey: [API_QUERY_KEY.GET_PAYMENT_LEDGER, organizationId, page, pageSize],
+    queryFn: () => fetchLedgerPage(organizationId, page, pageSize),
     enabled: !!organizationId,
     // the current page stays on screen while the next one loads
     placeholderData: keepPreviousData,
   });
 
-// every payment of the school, page by page, for the export
-export const fetchWholeLedger = async (organizationId: string) => {
-  const all: IPayment[] = [];
-  for (let page = 1; ; page++) {
-    const { items, total_count } = await fetchLedgerPage(organizationId, page, 100);
-    all.push(...items);
-    if (!items.length || all.length >= total_count) return all;
-  }
+// the ledger as a CSV built and capped by the server, newest first
+export const downloadLedgerCsv = async (organizationId: string, limit: number) => {
+  const result = await apiClient.get(`${base(organizationId)}/payment/export`, {
+    params: { limit },
+    responseType: "blob",
+  });
+  saveFile(result.data, "payment-ledger.csv");
 };
 
 export const downloadFeeReceipt = async (organizationId: string, paymentId: string) => {
   const result = await apiClient.get(`${base(organizationId)}/payment/${paymentId}/receipt`, { responseType: "blob" });
-  const url = window.URL.createObjectURL(new Blob([result.data], { type: "application/pdf" }));
-  const link = document.createElement("a");
-  link.href = url;
-  link.download = `receipt-${paymentId}.pdf`;
-  document.body.appendChild(link);
-  link.click();
-  link.remove();
-  window.URL.revokeObjectURL(url);
+  saveFile(result.data, `receipt-${paymentId}.pdf`, "application/pdf");
 };
+
+// staff download; the pending paymentId drives the row spinner
+export const useDownloadFeeReceipt = (organizationId: string) =>
+  useMutation<void, IAPIError, string>({
+    mutationKey: [API_MUTATION_KEY.DOWNLOAD_FEE_RECEIPT],
+    mutationFn: (paymentId) => downloadFeeReceipt(organizationId, paymentId),
+  });
 
 // emails the same PDF to the caller's own registered address - no arbitrary recipient
 export const useEmailFeeReceipt = (organizationId: string) =>
@@ -221,3 +300,80 @@ export const useGrantConcession = (organizationId: string) => {
     },
   });
 };
+
+export interface DefaulterFilters {
+  academicYearId?: string;
+  classId?: string;
+  sectionId?: string;
+  asOf?: string;
+}
+
+const fetchDefaultersPage = async (organizationId: string, filters: DefaulterFilters, page: number, limit: number) => {
+  const result = await apiClient.get<null, IAxiosResponse<IFeeDefaultersResult>>(
+    `${base(organizationId)}/report/defaulters`,
+    {
+      params: { ...filters, page, limit },
+    }
+  );
+  return result.data.Data;
+};
+
+export const useGetFeeDefaulters = (
+  organizationId: string,
+  filters: DefaulterFilters,
+  page: number,
+  pageSize: number
+) =>
+  useQuery<IFeeDefaultersResult, IAPIError>({
+    queryKey: [API_QUERY_KEY.GET_FEE_DEFAULTERS, organizationId, filters, page, pageSize],
+    queryFn: () => fetchDefaultersPage(organizationId, filters, page, pageSize),
+    enabled: !!organizationId && !!filters.academicYearId,
+    placeholderData: keepPreviousData,
+  });
+
+// every defaulter for the current filters, page by page, for the export
+export const downloadDefaultersCsv = async (organizationId: string, filters: DefaulterFilters, limit: number) => {
+  const result = await apiClient.get(`${base(organizationId)}/report/defaulters/export`, {
+    params: { ...filters, limit },
+    responseType: "blob",
+  });
+  saveFile(result.data, `fee-defaulters-${filters.asOf ?? "today"}.csv`);
+};
+
+export const useGetFeeCollections = (organizationId: string, from: string, to: string) =>
+  useQuery<IFeeCollectionSummary, IAPIError>({
+    queryKey: [API_QUERY_KEY.GET_FEE_COLLECTIONS, organizationId, from, to],
+    queryFn: async () => {
+      const result = await apiClient.get<null, IAxiosResponse<{ item: IFeeCollectionSummary }>>(
+        `${base(organizationId)}/report/collections`,
+        {
+          params: { from, to },
+        }
+      );
+      return result.data.Data.item;
+    },
+    enabled: !!organizationId && !!from && !!to && from <= to,
+    placeholderData: keepPreviousData,
+  });
+
+export interface IOnlinePaymentForReview {
+  _id: string;
+  amount: number;
+  gatewayPaymentId?: string;
+  reviewReason?: string;
+  createdAt: string;
+  studentId: { name: string; admissionNumber?: string } | null;
+}
+
+// online payments that arrived but couldn't be applied (the balance changed in between)
+export const useGetOnlinePaymentsForReview = (organizationId: string) =>
+  useQuery<IOnlinePaymentForReview[], IAPIError>({
+    queryKey: ["get-online-payments-review", organizationId],
+    queryFn: async () => {
+      const result = await apiClient.get<null, IAxiosResponse<{ items: IOnlinePaymentForReview[] }>>(
+        `${base(organizationId)}/online-payment/review`
+      );
+      return result.data.Data.items;
+    },
+    enabled: !!organizationId,
+  });

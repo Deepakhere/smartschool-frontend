@@ -1,6 +1,4 @@
-import { useState } from "react";
 import { ChevronDownIcon } from "@heroicons/react/24/outline";
-import toast from "react-hot-toast";
 
 import DeleteConfirmationDialog from "@/components/delete-confirmation-dialog";
 import ErrorState from "@/components/error-state";
@@ -8,13 +6,12 @@ import EmptyState from "@/components/empty-state";
 import Spinner from "@/components/spinner";
 import { Badge, BadgeTone } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardTitle } from "@/components/ui/card";
-import { useError } from "@/hooks";
+import { Card } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import { SelectOption } from "@/types";
 import CreateExamDialog from "../components/create-exam-dialog";
 import ExamSubjectsPanel from "../components/exam-subjects-panel";
-import { useGetExams, useGetGradingSchemes, usePublishExam } from "../service/exams-service";
+import useExamsTabController from "./exams-tab-controller";
 
 const STATUS_TONE: Record<string, BadgeTone> = {
   published: "green",
@@ -31,51 +28,26 @@ interface ExamsTabProps {
 }
 
 const ExamsTab = ({ organizationId, academicYearId, classOptions, subjectOptions }: ExamsTabProps) => {
-  const [isCreateOpen, setIsCreateOpen] = useState(false);
-  const [expandedExamId, setExpandedExamId] = useState("");
-  const [examToPublish, setExamToPublish] = useState("");
-
-  const exams = useGetExams(organizationId);
-  const gradingSchemes = useGetGradingSchemes(organizationId);
-  const publishExam = usePublishExam(organizationId);
-  useError({ mutation: publishExam });
-
-  // results become visible to parents and marks lock permanently, so this is confirmed first
-  const confirmPublish = () => {
-    if (!examToPublish) return;
-    publishExam.mutate(examToPublish, {
-      onSuccess: () => {
-        toast.success("Results published.");
-        setExamToPublish("");
-      },
-    });
-  };
-
-  const items = exams.data?.items ?? [];
+  const c = useExamsTabController(organizationId);
 
   return (
     <Card>
-      <div className="mb-4 flex items-center justify-between">
-        <CardTitle className="font-medium">Exams</CardTitle>
-        <Button onClick={() => setIsCreateOpen(true)}>+ Create Exam</Button>
-      </div>
-
-      {exams.isError ? (
-        <ErrorState error={exams.error} onRetry={() => exams.refetch()} />
-      ) : exams.isLoading ? (
+      {c.error ? (
+        <ErrorState error={c.error} onRetry={c.retry} />
+      ) : c.isLoading ? (
         <Spinner />
-      ) : items.length === 0 ? (
-        <EmptyState title="No exams yet" description="Use Create Exam to schedule the first one." />
+      ) : c.items.length === 0 ? (
+        <EmptyState title="No exams yet" description="Use Create exam to schedule the first one." />
       ) : (
         <div className="divide-y divide-gray-100">
-          {items.map((exam) => {
-            const isOpen = expandedExamId === exam.id;
+          {c.items.map((exam) => {
+            const isOpen = c.expandedExamId === exam.id;
             return (
               <div key={exam.id} className="py-3">
                 <div className="flex items-center justify-between">
                   <button
                     type="button"
-                    onClick={() => setExpandedExamId(isOpen ? "" : exam.id)}
+                    onClick={() => c.toggleExpanded(exam.id)}
                     className="rounded text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500"
                   >
                     <p className="font-medium text-gray-900">
@@ -88,11 +60,11 @@ const ExamsTab = ({ organizationId, academicYearId, classOptions, subjectOptions
                   </button>
                   <div className="flex items-center gap-3">
                     {exam.status !== "published" && (
-                      <Button variant="link" onClick={() => setExamToPublish(exam.id)}>
+                      <Button variant="link" onClick={() => c.askPublish(exam.id)}>
                         Publish
                       </Button>
                     )}
-                    <Button variant="link" onClick={() => setExpandedExamId(isOpen ? "" : exam.id)} className="gap-1">
+                    <Button variant="link" onClick={() => c.toggleExpanded(exam.id)} className="gap-1">
                       {isOpen ? "Hide" : "Manage subjects"}
                       <ChevronDownIcon className={cn("h-4 w-4 transition-transform", isOpen && "rotate-180")} />
                     </Button>
@@ -112,16 +84,16 @@ const ExamsTab = ({ organizationId, academicYearId, classOptions, subjectOptions
         organizationId={organizationId}
         academicYearId={academicYearId}
         classOptions={classOptions}
-        gradingSchemes={gradingSchemes.data?.items ?? []}
-        open={isCreateOpen}
-        onClose={() => setIsCreateOpen(false)}
+        gradingSchemes={c.gradingSchemes}
+        open={c.isCreateOpen}
+        onClose={c.closeCreate}
       />
 
       <DeleteConfirmationDialog
-        open={!!examToPublish}
-        onClose={() => setExamToPublish("")}
-        onConfirm={confirmPublish}
-        isLoading={publishExam.isPending}
+        open={!!c.examToPublish}
+        onClose={c.cancelPublish}
+        onConfirm={c.confirmPublish}
+        isLoading={c.isPublishing}
         tone="neutral"
         title="Publish this exam?"
         description="Results become visible to parents and marks lock permanently. This cannot be undone."

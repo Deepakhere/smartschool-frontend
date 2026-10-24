@@ -5,12 +5,12 @@ import { IAPIError, IAxiosResponse, ITeacherDirectoryEntry, IStaffProfile } from
 import { APIS_ROUTES, API_QUERY_KEY } from "@/utils";
 
 export const useGetTeacherDirectory = (organizationId: string) =>
-  useQuery<{ items: ITeacherDirectoryEntry[]; total_count: number }, IAPIError>({
+  useQuery<{ items: ITeacherDirectoryEntry[] }, IAPIError>({
     queryKey: [API_QUERY_KEY.GET_TEACHER_DIRECTORY, organizationId],
     queryFn: async () => {
       const result = await apiClient.get<
         null,
-        IAxiosResponse<{ items: ITeacherDirectoryEntry[]; total_count: number }>
+        IAxiosResponse<{ items: ITeacherDirectoryEntry[] }>
       >(`${APIS_ROUTES.STAFF_SERVICE}/${organizationId}/teacher`);
       return result.data.Data;
     },

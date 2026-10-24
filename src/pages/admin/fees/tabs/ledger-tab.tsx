@@ -1,95 +1,123 @@
-import { useState } from "react";
-import toast from "react-hot-toast";
-
+import DataTable, { DataTableColumn } from "@/components/data-table";
 import ErrorState from "@/components/error-state";
-import Pager from "@/components/pager";
-import { Table, TableBody, TableCell, TableEmpty, TableSkeletonRows, TableHead, TableHeader, TableRow } from "@/components/table";
+import ExportDialog from "@/components/export-dialog";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardTitle } from "@/components/ui/card";
-import { exportToCsv, formatMoney } from "@/utils";
-import { fetchWholeLedger, LEDGER_PAGE_SIZE, useGetPaymentLedger } from "../service/fees-service";
+import { IPayment } from "@/types";
+import { formatMoney, paymentMethodLabel } from "@/utils";
+import { IOnlinePaymentForReview } from "../service/fees-service";
+import useLedgerController from "./ledger-controller";
+
+const reviewColumns: DataTableColumn<IOnlinePaymentForReview>[] = [
+  {
+    id: "student",
+    header: "Student",
+    cell: ({ row }) => <span className="font-medium text-gray-900">{row.original.studentId?.name ?? ""}</span>,
+  },
+  { id: "amount", header: "Amount", meta: { align: "center" }, cell: ({ row }) => formatMoney(row.original.amount) },
+  {
+    id: "gatewayPaymentId",
+    header: "Razorpay payment",
+    meta: { align: "center", className: "font-mono text-xs" },
+    cell: ({ row }) => row.original.gatewayPaymentId,
+  },
+  {
+    id: "date",
+    header: "Date",
+    meta: { align: "center" },
+    cell: ({ row }) => new Date(row.original.createdAt).toLocaleDateString(),
+  },
+];
+
+const ledgerColumns = (download: (paymentId: string) => void, downloadingId?: string): DataTableColumn<IPayment>[] => [
+  { id: "receipt", header: "Receipt", cell: ({ row }) => row.original.receiptNumber },
+  {
+    id: "student",
+    header: "Student",
+    meta: { align: "center", className: "font-medium text-gray-900" },
+    cell: ({ row }) => (typeof row.original.studentId === "object" ? row.original.studentId.name : ""),
+  },
+  {
+    id: "type",
+    header: "Type",
+    meta: { align: "center" },
+    cell: ({ row }) => (
+      <Badge tone={row.original.entryType === "reversal" ? "red" : "green"}>
+        {row.original.entryType === "reversal" ? "Reversal" : "Payment"}
+      </Badge>
+    ),
+  },
+  { id: "amount", header: "Amount", meta: { align: "center" }, cell: ({ row }) => formatMoney(row.original.amount) },
+  {
+    id: "method",
+    header: "Method",
+    meta: { align: "center" },
+    cell: ({ row }) => paymentMethodLabel(row.original.method),
+  },
+  {
+    id: "date",
+    header: "Date",
+    meta: { align: "center" },
+    cell: ({ row }) => new Date(row.original.paidAt).toLocaleDateString(),
+  },
+  {
+    id: "actions",
+    header: "Action",
+    meta: { align: "center" },
+    cell: ({ row }) => (
+      <Button variant="link" loading={downloadingId === row.original.id} onClick={() => download(row.original.id)}>
+        Receipt
+      </Button>
+    ),
+  },
+];
 
 const LedgerTab = ({ organizationId }: { organizationId: string }) => {
-  const [page, setPage] = useState(1);
-  const [isExporting, setIsExporting] = useState(false);
-  const ledger = useGetPaymentLedger(organizationId, page);
-  const payments = ledger.data?.items ?? [];
-  const total = ledger.data?.total_count ?? 0;
-
-  // the export holds every payment, not just the page on screen
-  const onExport = async () => {
-    setIsExporting(true);
-    try {
-      const all = await fetchWholeLedger(organizationId);
-      exportToCsv(
-        "payment-ledger",
-        all.map((payment) => ({
-          receipt: payment.receiptNumber,
-          student: typeof payment.studentId === "object" ? payment.studentId.name : "",
-          type: payment.entryType === "reversal" ? "Reversal" : "Payment",
-          amount: payment.amount / 100,
-          method: payment.method,
-          date: new Date(payment.paidAt).toLocaleDateString(),
-        }))
-      );
-    } catch {
-      toast.error("The ledger could not be exported. Please try again.");
-    } finally {
-      setIsExporting(false);
-    }
-  };
+  const c = useLedgerController(organizationId);
 
   return (
-    <Card>
-      <div className="mb-4 flex items-center justify-between">
-        <CardTitle className="font-medium">Payment Ledger</CardTitle>
-        <Button variant="secondary" size="sm" onClick={onExport} loading={isExporting} disabled={total === 0}>
-          Export CSV
-        </Button>
-      </div>
-      {ledger.isError ? (
-        <ErrorState error={ledger.error} onRetry={() => ledger.refetch()} />
-      ) : (
-        <>
-          <Table>
-            <TableHeader>
-              <TableHead>Receipt</TableHead>
-              <TableHead className="text-center">Student</TableHead>
-              <TableHead className="text-center">Type</TableHead>
-              <TableHead className="text-center">Amount</TableHead>
-              <TableHead className="text-center">Method</TableHead>
-              <TableHead className="text-center">Date</TableHead>
-            </TableHeader>
-            <TableBody>
-              {ledger.isLoading ? (
-                <TableSkeletonRows columns={6} />
-              ) : payments.length === 0 ? (
-                <TableEmpty colSpan={6} title="No payments recorded yet" description="Payments you record on Student Fees & Payments show up here, newest first." />
-              ) : (
-                payments.map((payment) => (
-                  <TableRow key={payment.id}>
-                    <TableCell>{payment.receiptNumber}</TableCell>
-                    <TableCell className="text-center font-medium text-gray-900">
-                      {typeof payment.studentId === "object" ? payment.studentId.name : ""}
-                    </TableCell>
-                    <TableCell className="text-center">
-                      <Badge tone={payment.entryType === "reversal" ? "red" : "green"}>
-                        {payment.entryType === "reversal" ? "Reversal" : "Payment"}
-                      </Badge>
-                    </TableCell>
-                    <TableCell className="text-center">{formatMoney(payment.amount)}</TableCell>
-                    <TableCell className="text-center capitalize">{payment.method.replace("_", " ")}</TableCell>
-                    <TableCell className="text-center">{new Date(payment.paidAt).toLocaleDateString()}</TableCell>
-                  </TableRow>
-                ))
-              )}
-            </TableBody>
-          </Table>
-          <Pager page={page} pageSize={LEDGER_PAGE_SIZE} total={total} onPageChange={setPage} />
-        </>
+    <div className="space-y-6">
+      {c.toReview.length > 0 && (
+        <Card className="border border-amber-200">
+          <CardTitle className="font-medium">Online payments that need a look</CardTitle>
+          <p className="mb-3 mt-1 text-sm text-gray-500">
+            These were paid online but couldn&apos;t be applied, usually because the same fee was paid another way
+            first. Record the amount on Student Fees &amp; Payments, or refund it from your Razorpay dashboard.
+          </p>
+          <DataTable
+            columns={reviewColumns}
+            data={c.toReview}
+            getRowId={(item) => item._id}
+            empty={{ title: "Nothing to review" }}
+          />
+        </Card>
       )}
-    </Card>
+      <div>
+        <h3 className="mb-3 text-lg font-medium text-gray-900">Payment Ledger</h3>
+        {c.error ? (
+          <ErrorState error={c.error} onRetry={c.retry} />
+        ) : (
+          <DataTable
+            columns={ledgerColumns(c.downloadReceipt, c.downloadingId)}
+            data={c.payments}
+            getRowId={(payment) => payment.id}
+            isLoading={c.isLoading}
+            pagination={c.pagination}
+            itemLabel={{ one: "payment", other: "payments" }}
+            actions={[
+              { label: "Export CSV", readOnlySafe: true, onClick: c.openExport, disabled: c.pagination.total === 0 },
+            ]}
+            empty={{
+              title: "No payments recorded yet",
+              description: "Payments you record on Student Fees & Payments show up here, newest first.",
+            }}
+          />
+        )}
+      </div>
+
+      <ExportDialog {...c.exportDialog} />
+    </div>
   );
 };
 

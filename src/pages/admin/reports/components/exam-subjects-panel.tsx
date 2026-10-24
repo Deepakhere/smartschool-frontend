@@ -1,17 +1,12 @@
-import { useEffect } from "react";
-import { useFieldArray, useForm, useWatch } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import toast from "react-hot-toast";
 import { TrashIcon } from "@heroicons/react/24/outline";
 
+import DataTable, { DataTableColumn } from "@/components/data-table";
 import { CheckboxField, SelectField, TextField } from "@/components/form-fields";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/table";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
-import { useError } from "@/hooks";
-import { IExam, SelectOption } from "@/types";
-import { defaultExamSubjectRow, defaultExamSubjectsValues, examSubjectsSchema, ExamSubjectsFormValues } from "../reports.schema";
-import { useAddExamSubjects, useGetExamSubjects } from "../service/exams-service";
+import { IExam, IExamSubject, SelectOption } from "@/types";
+import { defaultExamSubjectRow } from "../reports.schema";
+import useExamSubjectsPanelController from "./exam-subjects-panel-controller";
 
 interface ExamSubjectsPanelProps {
   organizationId: string;
@@ -19,47 +14,26 @@ interface ExamSubjectsPanelProps {
   subjectOptions: SelectOption[];
 }
 
+const columns: DataTableColumn<IExamSubject>[] = [
+  {
+    id: "subject",
+    header: "Subject",
+    cell: ({ row }) => (
+      <span className="font-medium text-gray-900">{typeof row.original.subjectId === "object" ? row.original.subjectId.name : ""}</span>
+    ),
+  },
+  { id: "maxMarks", header: "Max Marks", meta: { align: "center" }, cell: ({ row }) => row.original.maxMarks },
+  { id: "passMarks", header: "Pass Marks", meta: { align: "center" }, cell: ({ row }) => row.original.passMarks },
+  {
+    id: "practical",
+    header: "Practical",
+    meta: { align: "center" },
+    cell: ({ row }) => (row.original.hasPractical ? `Yes (${row.original.practicalMaxMarks})` : "No"),
+  },
+];
+
 const ExamSubjectsPanel = ({ organizationId, exam, subjectOptions }: ExamSubjectsPanelProps) => {
-  const form = useForm<ExamSubjectsFormValues>({
-    resolver: zodResolver(examSubjectsSchema),
-    defaultValues: defaultExamSubjectsValues(exam.classIds[0]?.id),
-  });
-  const rows = useFieldArray({ control: form.control, name: "rows" });
-  const classId = useWatch({ control: form.control, name: "classId" });
-
-  const existingSubjects = useGetExamSubjects(organizationId, exam.id, classId);
-  const addSubjects = useAddExamSubjects(organizationId);
-  useError({ mutation: addSubjects });
-
-  // switching the class resets the row list, since the subjects already saved for it differ
-  useEffect(() => {
-    rows.replace([{ ...defaultExamSubjectRow }]);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [classId]);
-
-  const onSubmit = form.handleSubmit((values) =>
-    addSubjects.mutate(
-      {
-        examId: exam.id,
-        classId: values.classId,
-        subjects: values.rows.map((row) => ({
-          subjectId: row.subjectId,
-          maxMarks: Number(row.maxMarks),
-          passMarks: Number(row.passMarks),
-          hasPractical: row.hasPractical,
-          practicalMaxMarks: row.hasPractical ? Number(row.practicalMaxMarks) : 0,
-        })),
-      },
-      {
-        onSuccess: () => {
-          toast.success("Exam subjects saved.");
-          rows.replace([{ ...defaultExamSubjectRow }]);
-        },
-      }
-    )
-  );
-
-  const classOptions: SelectOption[] = exam.classIds.map((klass) => ({ id: klass.id, name: klass.name }));
+  const { form, rows, classOptions, existingSubjects, isSaving, onSubmit } = useExamSubjectsPanelController(organizationId, exam);
 
   return (
     <div className="mt-4 rounded-md bg-gray-50 p-4">
@@ -100,32 +74,15 @@ const ExamSubjectsPanel = ({ organizationId, exam, subjectOptions }: ExamSubject
               </div>
             ))}
           </div>
-          <Button type="submit" className="mt-3" loading={addSubjects.isPending}>
+          <Button type="submit" className="mt-3" loading={isSaving}>
             Save subjects
           </Button>
         </form>
       </Form>
 
-      {(existingSubjects.data?.items.length ?? 0) > 0 && (
+      {existingSubjects.length > 0 && (
         <div className="mt-4">
-          <Table>
-            <TableHeader>
-              <TableHead>Subject</TableHead>
-              <TableHead className="text-center">Max Marks</TableHead>
-              <TableHead className="text-center">Pass Marks</TableHead>
-              <TableHead className="text-center">Practical</TableHead>
-            </TableHeader>
-            <TableBody>
-              {existingSubjects.data?.items.map((es) => (
-                <TableRow key={es.id}>
-                  <TableCell className="font-medium text-gray-900">{typeof es.subjectId === "object" ? es.subjectId.name : ""}</TableCell>
-                  <TableCell className="text-center">{es.maxMarks}</TableCell>
-                  <TableCell className="text-center">{es.passMarks}</TableCell>
-                  <TableCell className="text-center">{es.hasPractical ? `Yes (${es.practicalMaxMarks})` : "No"}</TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+          <DataTable columns={columns} data={existingSubjects} getRowId={(subject) => subject.id} empty={{ title: "No subjects yet" }} />
         </div>
       )}
     </div>

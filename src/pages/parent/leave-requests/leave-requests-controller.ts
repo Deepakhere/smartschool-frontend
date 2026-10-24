@@ -65,6 +65,7 @@ export const useLeaveRequestsController = () => {
     isLoading: leaveRequests.isLoading,
     showForm,
     setShowForm,
+    toggleForm: () => setShowForm((open) => !open),
     form,
     handleFileChange,
     onSubmit,

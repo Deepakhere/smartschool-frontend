@@ -1,16 +1,16 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
 import apiClient from "@/config";
-import { IAPIError, IAxiosResponse, IHomework } from "@/types";
+import { IAPIError, IAxiosResponse, IHomework, Paged } from "@/types";
 import { APIS_ROUTES, API_QUERY_KEY, API_MUTATION_KEY } from "@/utils";
 
 const base = (organizationId: string) => `${APIS_ROUTES.HOMEWORK_SERVICE}/${organizationId}`;
 
 export const useGetHomeworkList = (organizationId: string, sectionId: string) =>
-  useQuery<{ items: IHomework[]; total_count: number }, IAPIError>({
+  useQuery<Paged<IHomework>, IAPIError>({
     queryKey: [API_QUERY_KEY.GET_HOMEWORK_LIST, organizationId, sectionId],
     queryFn: async () => {
-      const result = await apiClient.get<null, IAxiosResponse<{ items: IHomework[]; total_count: number }>>(
+      const result = await apiClient.get<null, IAxiosResponse<Paged<IHomework>>>(
         `${base(organizationId)}/list`,
         { params: { sectionId } }
       );

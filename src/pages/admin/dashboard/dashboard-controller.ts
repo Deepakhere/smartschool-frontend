@@ -16,13 +16,14 @@ import {
   UserPlusIcon,
 } from "@heroicons/react/24/outline";
 
-import { ICreateNoticeRequest } from "@/types";
+import { ICreateNoticeRequest, ModuleKey } from "@/types";
 import { useGetNoticeList, useCreateNotice } from "../notices/service";
 import { useError } from "@/hooks";
 import { useTheme } from "@/context/theme-context";
 import { useAuth } from "@/context/auth-context";
 import useGetDashboardStats from "./service/get-dashboard-stats";
 import useGetDashboardCharts from "./service/get-dashboard-charts";
+import { useAreaBase, useHasModule } from "@/context/tenant-context";
 
 export const useDashboardController = () => {
   const navigate = useNavigate();
@@ -45,6 +46,9 @@ export const useDashboardController = () => {
   const studentSliceColor = isDark ? "#FBBF24" : "#F59E0B";
 
   const { organizationId } = useParams();
+
+  const areaBase = useAreaBase();
+  const hasModule = useHasModule();
   const [isNoticeModalOpen, setIsNoticeModalOpen] = useState(false);
   const [isUserTypeModalOpen, setIsUserTypeModalOpen] = useState(false);
 
@@ -55,7 +59,7 @@ export const useDashboardController = () => {
 
   useError({ mutation: createNotice });
 
-  const recentUpdates = (recentNotices.data?.items || []).map((notice) => ({
+  const recentUpdates = (recentNotices.data?.rows || []).map((notice) => ({
     type: notice.type,
     title: notice.title,
     date: new Date(notice.createdAt).toLocaleDateString(),
@@ -210,34 +214,63 @@ export const useDashboardController = () => {
 
   const handleSelectStudent = () => {
     closeUserTypeModal();
-    navigate(`/${organizationId}/admin/students`);
+    navigate(`${areaBase}/students`);
   };
 
   const handleSelectTeacher = () => {
     closeUserTypeModal();
-    navigate(`/${organizationId}/admin/teachers`);
+    navigate(`${areaBase}/teachers`);
   };
 
   const handleUploadHomework = () => {
-    navigate(`/${organizationId}/admin/homework`);
+    navigate(`${areaBase}/homework`);
   };
 
   const base = `/${organizationId}/admin`;
   const statCards = [
-    { title: "Total Students", value: stats.totalStudents as number | null, icon: UserGroupIcon, to: `${base}/students` },
+    {
+      title: "Total Students",
+      value: stats.totalStudents as number | null,
+      icon: UserGroupIcon,
+      to: `${base}/students`,
+    },
     { title: "Total Teachers", value: stats.totalTeachers as number | null, icon: UserIcon, to: `${base}/teachers` },
-    { title: "Total Classes", value: stats.totalClasses as number | null, icon: AcademicCapIcon, to: `${base}/classes` },
-    { title: "Active Notices", value: stats.activeNotices as number | null, icon: BellIcon, to: `${base}/notices` },
+    {
+      title: "Total Classes",
+      value: stats.totalClasses as number | null,
+      icon: AcademicCapIcon,
+      to: `${base}/classes`,
+    },
+    {
+      title: "Active Notices",
+      value: stats.activeNotices as number | null,
+      icon: BellIcon,
+      to: `${base}/notices`,
+      module: "notices",
+    },
     {
       title: "Pending Payments",
       value: stats.pendingPayments === null ? null : stats.pendingPayments / 100,
       icon: CurrencyDollarIcon,
       to: `${base}/fees`,
       currency: true,
+      module: "fees",
     },
-    { title: "Attendance Today", value: stats.attendanceSubmitted, icon: ClipboardDocumentCheckIcon, to: `${base}/attendance` },
-    { title: "Homeworks Today", value: stats.homeworksIssued, icon: BookOpenIcon, to: `${base}/homework` },
-  ];
+    {
+      title: "Attendance Today",
+      value: stats.attendanceSubmitted,
+      icon: ClipboardDocumentCheckIcon,
+      to: `${base}/attendance`,
+      module: "attendance",
+    },
+    {
+      title: "Homeworks Today",
+      value: stats.homeworksIssued,
+      icon: BookOpenIcon,
+      to: `${base}/homework`,
+      module: "homework",
+    },
+  ].filter((card) => !card.module || hasModule(card.module as ModuleKey));
 
   const hour = new Date().getHours();
   const greeting = hour < 12 ? "Good morning" : hour < 17 ? "Good afternoon" : "Good evening";
@@ -245,15 +278,18 @@ export const useDashboardController = () => {
   const greetingTitle = firstName ? `${greeting}, ${firstName}` : greeting;
   const todayLabel = new Date().toLocaleDateString("en-IN", { weekday: "long", day: "numeric", month: "long" });
 
+  // cards and shortcuts for a locked module are left out
   const quickActions = [
-    { title: "Add New Notice", icon: PlusIcon, action: openNoticeModal },
-    { title: "Upload Homework", icon: DocumentPlusIcon, action: handleUploadHomework },
+    { title: "Add New Notice", icon: PlusIcon, action: openNoticeModal, module: "notices" },
+    { title: "Upload Homework", icon: DocumentPlusIcon, action: handleUploadHomework, module: "homework" },
     { title: "Add Student/Teacher", icon: UserPlusIcon, action: openUserTypeModal },
-  ];
+  ].filter((quick) => !quick.module || hasModule(quick.module as ModuleKey));
 
   return {
     t,
     stats,
+    showAttendanceChart: hasModule("attendance"),
+    showNotices: hasModule("notices"),
     recentUpdates,
     studentPerformanceOptions,
     teacherStudentRatioOptions,
