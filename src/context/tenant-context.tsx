@@ -4,7 +4,8 @@ import { useParams, Navigate } from "react-router-dom";
 import { useAuth } from "./auth-context";
 import useGetAllOrganizations from "../pages/auth/service/get-all-organization/get-all-organization";
 import LogoSpinner from "../components/logo-spinner";
-import { IOrganization, PermissionKey } from "../types";
+import { IOrganization, ModuleKey, PermissionKey } from "../types";
+import { ALL_MODULES } from "../utils/modules";
 import { homePathFor, UserRole } from "../routes/access";
 
 interface ITenantContext {
@@ -13,6 +14,7 @@ interface ITenantContext {
   organizations: IOrganization[];
   role: UserRole | undefined;
   permissions: ReadonlySet<PermissionKey>;
+  modules: ReadonlySet<ModuleKey>;
 }
 
 const TenantContext = createContext<ITenantContext | undefined>(undefined);
@@ -45,8 +47,11 @@ export const TenantProvider = ({ children, requiredRole }: { children: ReactNode
   }
 
   const permissions = new Set(organization?.myPermissions ?? []);
+  const modules = new Set(organization?.myModules ?? ALL_MODULES);
   return (
-    <TenantContext.Provider value={{ organizationId, organization, organizations, role, permissions }}>{children}</TenantContext.Provider>
+    <TenantContext.Provider value={{ organizationId, organization, organizations, role, permissions, modules }}>
+      {children}
+    </TenantContext.Provider>
   );
 };
 
@@ -70,4 +75,10 @@ export const useAreaBase = () => {
 export const useCan = () => {
   const permissions = useContext(TenantContext)?.permissions;
   return (...keys: PermissionKey[]) => keys.some((key) => permissions?.has(key));
+};
+
+// whether the school's package includes a module
+export const useHasModule = () => {
+  const modules = useContext(TenantContext)?.modules;
+  return (key: ModuleKey) => !modules || modules.has(key);
 };

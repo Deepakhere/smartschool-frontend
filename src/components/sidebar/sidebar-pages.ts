@@ -17,6 +17,7 @@ import {
   UsersIcon,
 } from "@heroicons/react/24/outline";
 
+import type { ModuleKey } from "@/types";
 import type { AttentionKey } from "./service/attention-service";
 
 export interface SidebarPage {
@@ -27,6 +28,8 @@ export interface SidebarPage {
   icon: ComponentType<SVGProps<SVGSVGElement>>;
   // shows a count when something on this page waits on the user
   attention?: AttentionKey;
+  // the package module it belongs to; core pages have none
+  module?: ModuleKey;
 }
 
 export interface SidebarGroup {
@@ -48,6 +51,21 @@ export const FLAT_MENU_LIMIT = 8;
 // how many pages a long, generated menu keeps on show before the rest go behind More
 export const MAIN_LIMIT = 6;
 
+// a page's module follows from its path, the same way the routes gate it
+const MODULE_BY_PATH: Record<string, ModuleKey> = {
+  attendance: "attendance",
+  homework: "homework",
+  timetable: "timetable",
+  "leave-requests": "leave",
+  results: "exams",
+  marks: "exams",
+  reports: "exams",
+  fees: "fees",
+  notices: "notices",
+  calendar: "calendar",
+  ptm: "ptm",
+};
+
 const page = (
   name: string,
   hint: string,
@@ -60,6 +78,7 @@ const page = (
   path,
   icon,
   attention,
+  module: MODULE_BY_PATH[path],
 });
 
 export const ADMIN_MENU: SidebarMenu = {

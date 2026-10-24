@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import toast from "react-hot-toast";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
@@ -6,9 +6,20 @@ import { zodResolver } from "@hookform/resolvers/zod";
 
 import { useAreaBase } from "@/context/tenant-context";
 import { useError } from "@/hooks";
-import { defaultNewSupportRequest, NewSupportRequestValues, newSupportRequestSchema, useCreateSupportRequest } from "@/pages/support";
+import {
+  defaultNewSupportRequest,
+  NewSupportRequestValues,
+  newSupportRequestSchema,
+  useCreateSupportRequest,
+} from "@/pages/support";
 
-const useSupportDialogController = ({ open, onClose }: { open: boolean; onClose: () => void }) => {
+interface Options {
+  open: boolean;
+  onClose: () => void;
+  prefill?: Partial<NewSupportRequestValues>;
+}
+
+const useSupportDialogController = ({ open, onClose, prefill }: Options) => {
   const { organizationId = "" } = useParams();
   const { pathname } = useLocation();
   const navigate = useNavigate();
@@ -16,9 +27,15 @@ const useSupportDialogController = ({ open, onClose }: { open: boolean; onClose:
   const create = useCreateSupportRequest(organizationId);
   useError({ mutation: create });
 
-  const form = useForm<NewSupportRequestValues>({ resolver: zodResolver(newSupportRequestSchema), defaultValues: defaultNewSupportRequest });
+  const form = useForm<NewSupportRequestValues>({
+    resolver: zodResolver(newSupportRequestSchema),
+    defaultValues: defaultNewSupportRequest,
+  });
+  // prefill is read only when the dialog opens
+  const prefillRef = useRef(prefill);
+  prefillRef.current = prefill;
   useEffect(() => {
-    if (open) form.reset(defaultNewSupportRequest);
+    if (open) form.reset({ ...defaultNewSupportRequest, ...prefillRef.current });
   }, [open, form]);
 
   // the page they were on, for debugging

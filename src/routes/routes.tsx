@@ -1,3 +1,4 @@
+import { ReactNode } from "react";
 import { createBrowserRouter, Navigate } from "react-router-dom";
 
 import Layout from "../components/layout/layout";
@@ -45,9 +46,14 @@ import NotAccess from "../components/not-access";
 import { AuthenticatedRoute, FallbackRoute, ProtectedRoute, PublicRoute } from "./route-guards";
 import { sharedRoutes } from "./shared-pages";
 import { FirstPermittedPage } from "./permission-gate";
+import ModuleGate from "../components/module-gate";
+import { ModuleKey } from "../types";
 import SupportList from "../pages/support/support-list";
 import SupportThread from "../pages/support/support-thread";
 import Organization from "../pages/auth/organization";
+
+// a module the school's package leaves out opens read-only for staff
+const gate = (module: ModuleKey, element: ReactNode) => <ModuleGate module={module}>{element}</ModuleGate>;
 
 // built once at module load: re-creating the router on a re-render would reset navigation state
 const router = createBrowserRouter([
@@ -113,19 +119,19 @@ const router = createBrowserRouter([
       },
       {
         path: "notices",
-        element: <AdminNotices />,
+        element: gate("notices", <AdminNotices />),
       },
       {
         path: "homework",
-        element: <AdminHomework />,
+        element: gate("homework", <AdminHomework />),
       },
       {
         path: "results",
-        element: <AdminReports />,
+        element: gate("exams", <AdminReports />),
       },
       {
         path: "fees",
-        element: <AdminFees />,
+        element: gate("fees", <AdminFees />),
       },
       {
         path: "students/*",
@@ -141,23 +147,23 @@ const router = createBrowserRouter([
       },
       {
         path: "attendance",
-        element: <AdminAttendance />,
+        element: gate("attendance", <AdminAttendance />),
       },
       {
         path: "ptm",
-        element: <AdminPTM />,
+        element: gate("ptm", <AdminPTM />),
       },
       {
         path: "calendar",
-        element: <AdminCalendar />,
+        element: gate("calendar", <AdminCalendar />),
       },
       {
         path: "timetable",
-        element: <Timetable />,
+        element: gate("timetable", <Timetable />),
       },
       {
         path: "leave-requests",
-        element: <AdminLeaveRequests />,
+        element: gate("leave", <AdminLeaveRequests />),
       },
       {
         path: "promotion",
@@ -189,31 +195,31 @@ const router = createBrowserRouter([
       },
       {
         path: "attendance",
-        element: <AdminAttendance />,
+        element: gate("attendance", <AdminAttendance />),
       },
       {
         path: "homework",
-        element: <AdminHomework />,
+        element: gate("homework", <AdminHomework />),
       },
       {
         path: "ptm",
-        element: <TeacherPTM />,
+        element: gate("ptm", <TeacherPTM />),
       },
       {
         path: "marks",
-        element: <TeacherMarks />,
+        element: gate("exams", <TeacherMarks />),
       },
       {
         path: "timetable",
-        element: <Timetable />,
+        element: gate("timetable", <Timetable />),
       },
       {
         path: "calendar",
-        element: <AdminCalendar />,
+        element: gate("calendar", <AdminCalendar />),
       },
       {
         path: "leave-requests",
-        element: <AdminLeaveRequests />,
+        element: gate("leave", <AdminLeaveRequests />),
       },
       {
         path: "profile",
@@ -233,7 +239,7 @@ const router = createBrowserRouter([
     ),
     children: [
       { index: true, element: <FirstPermittedPage /> },
-      { path: "calendar", element: <AdminCalendar /> },
+      { path: "calendar", element: gate("calendar", <AdminCalendar />) },
       { path: "profile", element: <Profile /> },
       { path: "support", element: <SupportList /> },
       { path: "support/:requestId", element: <SupportThread /> },
@@ -258,31 +264,31 @@ const router = createBrowserRouter([
       },
       {
         path: "notices",
-        element: <ParentNotices />,
+        element: gate("notices", <ParentNotices />),
       },
       {
         path: "homework",
-        element: <ParentHomework />,
+        element: gate("homework", <ParentHomework />),
       },
       {
         path: "reports",
-        element: <ParentReports />,
+        element: gate("exams", <ParentReports />),
       },
       {
         path: "fees",
-        element: <ParentFees />,
+        element: gate("fees", <ParentFees />),
       },
       {
         path: "ptm",
-        element: <ParentPTM />,
+        element: gate("ptm", <ParentPTM />),
       },
       {
         path: "calendar",
-        element: <AdminCalendar />,
+        element: gate("calendar", <AdminCalendar />),
       },
       {
         path: "leave-requests",
-        element: <ParentLeaveRequests />,
+        element: gate("leave", <ParentLeaveRequests />),
       },
       {
         path: "profile",

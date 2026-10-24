@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import type { ComponentType, SVGProps } from "react";
 
-import { useCan, useCurrentRole } from "@/context/tenant-context";
+import { useCan, useCurrentRole, useHasModule } from "@/context/tenant-context";
 import { SHARED_PAGES } from "@/routes/shared-pages";
 import { useGetAttention } from "./service/attention-service";
 import {
@@ -24,6 +24,8 @@ export interface SidebarItem {
   icon: ComponentType<SVGProps<SVGSVGElement>>;
   current: boolean;
   count: number;
+  // its module isn't in the school's package
+  locked: boolean;
 }
 
 type View = "main" | "more";
@@ -53,10 +55,12 @@ export const useSidebarController = () => {
   // the role decides the menu; permissions add granted pages
   const role = useCurrentRole() ?? "admin";
   const can = useCan();
+  const hasModule = useHasModule();
 
   const granted: SidebarPage[] = SHARED_PAGES.filter((shared) => can(...shared.anyOf)).map((shared) => ({
     ...shared.nav,
     path: shared.path.replace("/*", ""),
+    module: shared.module,
   }));
   const menuByRole: Record<typeof role, () => SidebarMenu> = {
     admin: () => ADMIN_MENU,
@@ -68,7 +72,15 @@ export const useSidebarController = () => {
     accountant: () => splitPages([...granted, CALENDAR_PAGE]),
     staff: () => splitPages([...granted, CALENDAR_PAGE]),
   };
-  const menu = fitMenu(menuByRole[role]());
+  // parents never see a locked module; staff see it with a lock
+  const isLocked = (page: SidebarPage) => !!page.module && !hasModule(page.module);
+  const visible = (pages: SidebarPage[]) => (role === "parent" ? pages.filter((p) => !isLocked(p)) : pages);
+  const chosen = menuByRole[role]();
+  const menu = fitMenu({
+    main: visible(chosen.main),
+    more: chosen.more.map((g) => ({ ...g, pages: visible(g.pages) })).filter((g) => g.pages.length),
+    bottom: visible(chosen.bottom),
+  });
 
   const attention = useGetAttention(organizationId, role !== "parent").data;
   const isCurrent = (href: string) => pathname === href || pathname.startsWith(`${href}/`);
@@ -81,6 +93,7 @@ export const useSidebarController = () => {
       icon: page.icon,
       current: isCurrent(href),
       count: page.attention ? (attention?.[page.attention] ?? 0) : 0,
+      locked: isLocked(page),
     };
   };
 

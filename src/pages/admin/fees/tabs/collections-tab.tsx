@@ -10,7 +10,9 @@ import useCollectionsController from "./collections-controller";
 type BreakdownRow = [string, string, string];
 
 const formatDay = (iso: string) =>
-  new Intl.DateTimeFormat("en-IN", { weekday: "short", day: "numeric", month: "short" }).format(new Date(`${iso}T00:00:00`));
+  new Intl.DateTimeFormat("en-IN", { weekday: "short", day: "numeric", month: "short" }).format(
+    new Date(`${iso}T00:00:00`)
+  );
 
 const Tile = ({ label, value, tone = "text-gray-900" }: { label: string; value: string; tone?: string }) => (
   <div className="rounded-lg border border-gray-200 bg-white px-4 py-3">
@@ -20,7 +22,11 @@ const Tile = ({ label, value, tone = "text-gray-900" }: { label: string; value: 
 );
 
 const breakdownColumns = (names: BreakdownRow): DataTableColumn<BreakdownRow>[] => [
-  { id: "item", header: names[0], cell: ({ row }) => <span className="font-medium text-gray-900">{row.original[0]}</span> },
+  {
+    id: "item",
+    header: names[0],
+    cell: ({ row }) => <span className="font-medium text-gray-900">{row.original[0]}</span>,
+  },
   { id: "amount", header: names[1], meta: { align: "center" }, cell: ({ row }) => row.original[1] },
   { id: "count", header: names[2], meta: { align: "center" }, cell: ({ row }) => row.original[2] },
 ];
@@ -47,7 +53,16 @@ const CollectionsTab = ({ organizationId }: { organizationId: string }) => {
       <Card>
         <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
           <CardTitle className="font-medium">Fee Collections</CardTitle>
-          <ActionButtons actions={[{ label: "Export CSV", onClick: c.onExport, disabled: !data || data.totals.payments === 0 }]} />
+          <ActionButtons
+            actions={[
+              {
+                label: "Export CSV",
+                readOnlySafe: true,
+                onClick: c.onExport,
+                disabled: !data || data.totals.payments === 0,
+              },
+            ]}
+          />
         </div>
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-4">
           <DatePicker label="From" value={c.from} max={c.to} onChange={c.setFrom} />
@@ -67,7 +82,11 @@ const CollectionsTab = ({ organizationId }: { organizationId: string }) => {
         <>
           <div className="mb-6 grid grid-cols-2 gap-3 sm:grid-cols-4">
             <Tile label="Received" value={formatMoney(data.totals.received)} />
-            <Tile label="Reversed" value={formatMoney(data.totals.reversed)} tone={data.totals.reversed ? "text-red-700" : "text-gray-900"} />
+            <Tile
+              label="Reversed"
+              value={formatMoney(data.totals.reversed)}
+              tone={data.totals.reversed ? "text-red-700" : "text-gray-900"}
+            />
             <Tile label="Net collected" value={formatMoney(data.totals.net)} tone="text-green-700" />
             <Tile label="Payments" value={String(data.totals.payments)} />
           </div>

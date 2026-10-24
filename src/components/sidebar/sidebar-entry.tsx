@@ -1,5 +1,6 @@
 import { ComponentType, ReactNode, SVGProps } from "react";
 import { NavLink } from "react-router-dom";
+import { LockClosedIcon } from "@heroicons/react/20/solid";
 
 import { cn } from "@/lib/utils";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
@@ -19,6 +20,8 @@ interface SidebarEntryProps {
   // a small dot on the icon, e.g. More when a page behind it needs attention
   dot?: boolean;
   trailing?: ReactNode;
+  // its module isn't in the school's package
+  locked?: boolean;
   // off-screen in the sliding panel, so it is skipped by the keyboard
   inactive?: boolean;
   openHint: string | null;
@@ -44,6 +47,7 @@ const SidebarEntry = ({
   count = 0,
   dot = false,
   trailing,
+  locked = false,
   inactive = false,
   openHint,
   setOpenHint,
@@ -79,7 +83,10 @@ const SidebarEntry = ({
           {count > 99 ? "99+" : count}
         </span>
       )}
-      {!isCollapsed && !count && trailing && <span className="ml-auto text-gray-400">{trailing}</span>}
+      {!isCollapsed && locked && (
+        <LockClosedIcon className="ml-auto h-3.5 w-3.5 text-gray-400" aria-label="Not in your package" />
+      )}
+      {!isCollapsed && !count && !locked && trailing && <span className="ml-auto text-gray-400">{trailing}</span>}
     </>
   );
 
@@ -115,7 +122,7 @@ const SidebarEntry = ({
       {/* name and a one-line hint, only while the sidebar is collapsed */}
       <TooltipContent side="right" sideOffset={14}>
         <p className="font-semibold text-gray-900">{name}</p>
-        <p className="mt-0.5 text-gray-500">{hint}</p>
+        <p className="mt-0.5 text-gray-500">{locked ? `${hint} · not in your package` : hint}</p>
       </TooltipContent>
     </Tooltip>
   );

@@ -242,7 +242,6 @@ export interface RoleOption {
   icon: ReactNode;
 }
 
-
 export interface ICreateUpdateUserModalProps {
   t: (key: string) => string;
   isOpen: boolean;
@@ -254,7 +253,6 @@ export interface ICreateUpdateUserModalProps {
   onClose: () => void;
   onSubmit: (e: React.FormEvent) => void;
 }
-
 
 export interface IUpdateUserValue {
   id: string;
@@ -334,8 +332,9 @@ export interface IOrganization {
   // differs per school
   myRole?: AccountRole | "student" | null;
   myPermissions?: PermissionKey[];
+  // modules the school's package includes; unset = every module
+  myModules?: ModuleKey[];
 }
-
 
 export interface IAcademicYear {
   id: string;
@@ -846,3 +845,15 @@ export interface IFeeCollectionSummary {
   byMethod: { method: string; amount: number; count: number }[];
   byClass: { classId: string | null; className: string; amount: number; students: number }[];
 }
+
+export type ModuleKey =
+  | "attendance"
+  | "homework"
+  | "timetable"
+  | "leave"
+  | "exams"
+  | "fees"
+  | "onlinePayments"
+  | "notices"
+  | "calendar"
+  | "ptm";

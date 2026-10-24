@@ -25,7 +25,10 @@ const AdminAttendance = () => {
 
   return (
     <div className="max-w-7xl mx-auto space-y-6">
-      <SectionHeader title="Attendance" description="Mark daily attendance, review it over a date range, or see a month day by day" />
+      <SectionHeader
+        title="Attendance"
+        description="Mark daily attendance, review it over a date range, or see a month day by day"
+      />
 
       {c.hasNoClasses && (
         <p className="mb-4 rounded-lg bg-white p-4 text-sm text-gray-600 shadow">
@@ -92,7 +95,12 @@ const AdminAttendance = () => {
           ) : c.activeTab === "register" ? (
             <div>
               <Label>Month</Label>
-              <Input type="month" value={c.registerMonth} max={c.maxDate.slice(0, 7)} onChange={(e) => c.setRegisterMonth(e.target.value)} />
+              <Input
+                type="month"
+                value={c.registerMonth}
+                max={c.maxDate.slice(0, 7)}
+                onChange={(e) => c.setRegisterMonth(e.target.value)}
+              />
             </div>
           ) : (
             <div className="flex min-w-0 gap-2">
@@ -107,12 +115,7 @@ const AdminAttendance = () => {
               </div>
               <div className="min-w-0 flex-1">
                 <Label>To</Label>
-                <Input
-                  type="date"
-                  max={c.maxDate}
-                  value={c.reportTo}
-                  onChange={(e) => c.setReportTo(e.target.value)}
-                />
+                <Input type="date" max={c.maxDate} value={c.reportTo} onChange={(e) => c.setReportTo(e.target.value)} />
               </div>
             </div>
           )}
@@ -123,7 +126,11 @@ const AdminAttendance = () => {
         <div className="bg-white shadow rounded-lg">
           <EmptyState
             title={c.classes.length ? "Pick a class and section" : "No classes yet"}
-            description={c.classes.length ? "Choose a class and section above to mark or review attendance." : "Add an academic year, classes and sections on the Classes page first."}
+            description={
+              c.classes.length
+                ? "Choose a class and section above to mark or review attendance."
+                : "Add an academic year, classes and sections on the Classes page first."
+            }
           />
         </div>
       )}
@@ -150,15 +157,21 @@ const AdminAttendance = () => {
             isLoading={c.isLoadingReport}
             itemLabel={{ one: "student", other: "students" }}
             pagination={{ pageSize: 20 }}
-            actions={[{ label: "Export CSV", onClick: c.exportReport, hidden: c.reportRows.length === 0 }]}
-            empty={{ title: "No attendance in this range", description: "Nothing was marked for this section between these dates." }}
+            actions={[
+              { label: "Export CSV", readOnlySafe: true, onClick: c.exportReport, hidden: c.reportRows.length === 0 },
+            ]}
+            empty={{
+              title: "No attendance in this range",
+              description: "Nothing was marked for this section between these dates.",
+            }}
           />
         </div>
       )}
 
       {c.activeTab === "mark" && c.sectionId && c.holidayTitle && (
         <p className="rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
-          {formatDate(`${c.date}T00:00:00`)} is a holiday on the school calendar ({c.holidayTitle}). Only save attendance if the school is open that day.
+          {formatDate(`${c.date}T00:00:00`)} is a holiday on the school calendar ({c.holidayTitle}). Only save
+          attendance if the school is open that day.
         </p>
       )}
 
@@ -169,17 +182,22 @@ const AdminAttendance = () => {
           getRowId={(student) => student.id}
           isLoading={c.isLoadingRoster}
           search={{ placeholder: "Search students", value: c.rosterSearch, onChange: c.setRosterSearch }}
-          toolbar={c.students.length > 0 && <RegisterStatus counts={c.counts} isDirty={c.isDirty} isMarked={c.isMarked} />}
+          toolbar={
+            c.students.length > 0 && <RegisterStatus counts={c.counts} isDirty={c.isDirty} isMarked={c.isMarked} />
+          }
           actions={[
             { label: "Mark all present", onClick: () => c.markAll("present"), menu: true },
             { label: "Mark all absent", onClick: () => c.markAll("absent"), menu: true },
-            { label: "Export CSV", onClick: c.exportRoster, menu: true },
+            { label: "Export CSV", readOnlySafe: true, onClick: c.exportRoster, menu: true },
             { label: "Save attendance", onClick: c.submit, loading: c.isSaving, variant: "primary" as const },
           ].map((action) => ({ ...action, hidden: c.students.length === 0 }))}
           empty={
             c.rosterSearch
               ? { title: "No matching students", description: `No student matches "${c.rosterSearch}".` }
-              : { title: "No students in this section", description: "Students enrolled in this section appear here to be marked." }
+              : {
+                  title: "No students in this section",
+                  description: "Students enrolled in this section appear here to be marked.",
+                }
           }
         />
       )}

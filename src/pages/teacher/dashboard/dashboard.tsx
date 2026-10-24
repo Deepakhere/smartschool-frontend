@@ -19,56 +19,61 @@ const TeacherDashboard = () => {
     <div className="max-w-7xl mx-auto space-y-8">
       <SectionHeader title={`Welcome, ${c.name}`} description="Here's your teaching overview for today" />
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className={`grid grid-cols-1 gap-6 ${c.showTimetable && c.showNotices ? "lg:grid-cols-2" : ""}`}>
         {/* Today's Timetable */}
-        <div className="bg-white shadow rounded-lg">
-          <div className="px-4 py-4 border-b border-gray-200">
-            <h2 className="text-lg font-medium text-gray-900">Today's Timetable ({c.todayName})</h2>
-          </div>
-          {c.holidayTitle && (
-            <p className="border-b border-amber-100 bg-amber-50 px-4 py-3 text-sm text-amber-800">
-              Today is a holiday on the school calendar ({c.holidayTitle}). These are your usual periods for a {c.todayName}.
-            </p>
-          )}
-          <div className="divide-y divide-gray-100">
-            {c.todaySlots.length === 0 ? (
-              <EmptyState compact title="No classes scheduled for today" />
-            ) : (
-              c.todaySlots.map((slot) => (
-                <div key={slot.id} className="px-4 py-4 flex justify-between items-center">
-                  <div>
-                    <p className="text-sm font-medium text-gray-900">
-                      {slot.subjectId?.name} - {slot.classId?.name} {slot.sectionId?.name}
-                    </p>
-                    {slot.room && <p className="text-xs text-gray-500">Room {slot.room}</p>}
-                  </div>
-                  <p className="text-sm text-gray-500">
-                    {slot.startTime} - {slot.endTime}
-                  </p>
-                </div>
-              ))
+        {c.showTimetable && (
+          <div className="bg-white shadow rounded-lg">
+            <div className="px-4 py-4 border-b border-gray-200">
+              <h2 className="text-lg font-medium text-gray-900">Today's Timetable ({c.todayName})</h2>
+            </div>
+            {c.holidayTitle && (
+              <p className="border-b border-amber-100 bg-amber-50 px-4 py-3 text-sm text-amber-800">
+                Today is a holiday on the school calendar ({c.holidayTitle}). These are your usual periods for a{" "}
+                {c.todayName}.
+              </p>
             )}
+            <div className="divide-y divide-gray-100">
+              {c.todaySlots.length === 0 ? (
+                <EmptyState compact title="No classes scheduled for today" />
+              ) : (
+                c.todaySlots.map((slot) => (
+                  <div key={slot.id} className="px-4 py-4 flex justify-between items-center">
+                    <div>
+                      <p className="text-sm font-medium text-gray-900">
+                        {slot.subjectId?.name} - {slot.classId?.name} {slot.sectionId?.name}
+                      </p>
+                      {slot.room && <p className="text-xs text-gray-500">Room {slot.room}</p>}
+                    </div>
+                    <p className="text-sm text-gray-500">
+                      {slot.startTime} - {slot.endTime}
+                    </p>
+                  </div>
+                ))
+              )}
+            </div>
           </div>
-        </div>
+        )}
 
         {/* Recent Notices */}
-        <div className="bg-white shadow rounded-lg">
-          <div className="px-4 py-4 border-b border-gray-200">
-            <h2 className="text-lg font-medium text-gray-900">Recent Notices</h2>
+        {c.showNotices && (
+          <div className="bg-white shadow rounded-lg">
+            <div className="px-4 py-4 border-b border-gray-200">
+              <h2 className="text-lg font-medium text-gray-900">Recent Notices</h2>
+            </div>
+            <div className="divide-y divide-gray-100">
+              {c.recentNotices.length === 0 ? (
+                <EmptyState compact title="No notices yet" />
+              ) : (
+                c.recentNotices.map((notice) => (
+                  <div key={notice.id} className="px-4 py-4 flex justify-between items-center">
+                    <p className="text-sm font-medium text-gray-900">{notice.title}</p>
+                    <p className="text-sm text-gray-500">{new Date(notice.createdAt).toLocaleDateString()}</p>
+                  </div>
+                ))
+              )}
+            </div>
           </div>
-          <div className="divide-y divide-gray-100">
-            {c.recentNotices.length === 0 ? (
-              <EmptyState compact title="No notices yet" />
-            ) : (
-              c.recentNotices.map((notice) => (
-                <div key={notice.id} className="px-4 py-4 flex justify-between items-center">
-                  <p className="text-sm font-medium text-gray-900">{notice.title}</p>
-                  <p className="text-sm text-gray-500">{new Date(notice.createdAt).toLocaleDateString()}</p>
-                </div>
-              ))
-            )}
-          </div>
-        </div>
+        )}
       </div>
 
       {/* Assigned Classes */}

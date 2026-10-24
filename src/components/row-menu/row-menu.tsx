@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { EllipsisVerticalIcon } from "@heroicons/react/20/solid";
 
+import { useModuleLock } from "@/components/module-gate/module-lock-context";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
 
@@ -21,7 +22,9 @@ interface RowMenuProps {
 const RowMenu = ({ items, label = "Actions", className }: RowMenuProps) => {
   const [open, setOpen] = useState(false);
 
-  if (!items.length) return null;
+  // a locked module's rows can't be changed
+  const { readOnly } = useModuleLock();
+  if (!items.length || readOnly) return null;
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -45,7 +48,7 @@ const RowMenu = ({ items, label = "Actions", className }: RowMenuProps) => {
             role="menuitem"
             className={cn(
               "block w-full px-4 py-2 text-left text-sm hover:bg-gray-50",
-              item.danger ? "text-red-500" : "text-gray-700",
+              item.danger ? "text-red-500" : "text-gray-700"
             )}
             onClick={() => {
               setOpen(false);

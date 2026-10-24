@@ -9,7 +9,8 @@ import { IFeeDefaulter } from "@/types";
 import { formatMoney } from "@/utils";
 import useDefaultersController from "./defaulters-controller";
 
-const formatDay = (iso: string) => new Intl.DateTimeFormat("en-IN", { day: "numeric", month: "short", year: "numeric" }).format(new Date(iso));
+const formatDay = (iso: string) =>
+  new Intl.DateTimeFormat("en-IN", { day: "numeric", month: "short", year: "numeric" }).format(new Date(iso));
 
 const SummaryTile = ({ label, value }: { label: string; value: string }) => (
   <div className="rounded-lg border border-gray-200 bg-white px-4 py-3">
@@ -25,7 +26,9 @@ const columns: DataTableColumn<IFeeDefaulter>[] = [
     cell: ({ row }) => (
       <>
         <p className="font-medium text-gray-900">{row.original.student?.name}</p>
-        {row.original.student?.admissionNumber && <p className="text-xs text-gray-500">{row.original.student.admissionNumber}</p>}
+        {row.original.student?.admissionNumber && (
+          <p className="text-xs text-gray-500">{row.original.student.admissionNumber}</p>
+        )}
       </>
     ),
   },
@@ -33,7 +36,8 @@ const columns: DataTableColumn<IFeeDefaulter>[] = [
     id: "class",
     header: "Class",
     meta: { align: "center" },
-    cell: ({ row }) => (row.original.student ? `${row.original.student.className} ${row.original.student.sectionName}` : ""),
+    cell: ({ row }) =>
+      row.original.student ? `${row.original.student.className} ${row.original.student.sectionName}` : "",
   },
   {
     id: "overdue",
@@ -46,7 +50,12 @@ const columns: DataTableColumn<IFeeDefaulter>[] = [
       </>
     ),
   },
-  { id: "outstanding", header: "Outstanding", meta: { align: "center" }, cell: ({ row }) => formatMoney(row.original.outstandingAmount) },
+  {
+    id: "outstanding",
+    header: "Outstanding",
+    meta: { align: "center" },
+    cell: ({ row }) => formatMoney(row.original.outstandingAmount),
+  },
   {
     id: "oldestDue",
     header: "Oldest due",
@@ -111,7 +120,9 @@ const DefaultersTab = ({ organizationId }: { organizationId: string }) => {
           isLoading={c.isLoading}
           pagination={c.pagination}
           itemLabel={{ one: "defaulter", other: "defaulters" }}
-          actions={[{ label: "Export CSV", onClick: c.openExport, disabled: c.pagination.total === 0 }]}
+          actions={[
+            { label: "Export CSV", readOnlySafe: true, onClick: c.openExport, disabled: c.pagination.total === 0 },
+          ]}
           empty={{ title: "No overdue fees", description: "Every instalment due by this date has been paid." }}
         />
       )}

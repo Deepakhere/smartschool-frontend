@@ -15,7 +15,13 @@ interface MarksSheetCardProps {
 
 // the shared marks grid behind both the admin and teacher marks-entry screens: one student per row,
 // theory/practical/absent, saved as a batch. Shown once an exam, class, section and subject are all chosen.
-const MarksSheetCard = ({ organizationId, examSubjectId, sectionId, examPublished, canVerify = false }: MarksSheetCardProps) => {
+const MarksSheetCard = ({
+  organizationId,
+  examSubjectId,
+  sectionId,
+  examPublished,
+  canVerify = false,
+}: MarksSheetCardProps) => {
   const c = useMarksSheetCardController(organizationId, examSubjectId, sectionId);
   const columns = marksSheetColumns({
     form: c.form,
@@ -45,11 +51,14 @@ const MarksSheetCard = ({ organizationId, examSubjectId, sectionId, examPublishe
           getRowId={(row) => row.id}
           isLoading={c.isLoading}
           actions={[
-            { label: "Export CSV", onClick: c.onExport },
+            { label: "Export CSV", readOnlySafe: true, onClick: c.onExport },
             { label: "Verify all", onClick: c.onVerify, loading: c.isVerifying, hidden: examPublished || !canVerify },
             { label: "Save marks", onClick: c.onSave, loading: c.isSaving, variant: "primary", hidden: examPublished },
           ]}
-          empty={{ title: "No students in this section", description: "Marks can be entered once students are enrolled here." }}
+          empty={{
+            title: "No students in this section",
+            description: "Marks can be entered once students are enrolled here.",
+          }}
         />
       )}
     </div>

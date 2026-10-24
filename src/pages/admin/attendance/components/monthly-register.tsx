@@ -29,18 +29,24 @@ const MonthlyRegister = ({ organizationId, sectionId, month, sectionLabel }: Mon
               <Checkbox checked={c.showHolidays} onChange={(event) => c.setShowHolidays(event.target.checked)} />
               Show holidays
             </label>
-            {c.schoolDays !== undefined && <span className="text-sm text-gray-500">{c.schoolDays} school day(s) so far</span>}
+            {c.schoolDays !== undefined && (
+              <span className="text-sm text-gray-500">{c.schoolDays} school day(s) so far</span>
+            )}
           </>
         }
-        actions={[{ label: "Export CSV", onClick: c.exportCsv, disabled: !c.rows.length }]}
+        actions={[{ label: "Export CSV", readOnlySafe: true, onClick: c.exportCsv, disabled: !c.rows.length }]}
         empty={
           c.search
             ? { title: "No matching students", description: `No student matches "${c.search}".` }
-            : { title: "No students in this section", description: "Students enrolled in this section appear here with their month." }
+            : {
+                title: "No students in this section",
+                description: "Students enrolled in this section appear here with their month.",
+              }
         }
       />
       <p className="px-1 text-xs text-gray-500">
-        P present · A absent · L late · E excused · red columns are holidays from the school calendar. Late and excused count as attended.
+        P present · A absent · L late · E excused · red columns are holidays from the school calendar. Late and excused
+        count as attended.
       </p>
     </div>
   );
