@@ -30,14 +30,6 @@ export interface SidebarItem {
 
 type View = "main" | "more";
 
-// short menus show flat; long ones put extras behind More
-const fitMenu = (menu: SidebarMenu): SidebarMenu => {
-  const extras = menu.more.flatMap((group) => group.pages);
-  return menu.main.length + extras.length <= FLAT_MENU_LIMIT
-    ? { ...menu, main: [...menu.main, ...extras], more: [] }
-    : menu;
-};
-
 // granted-page menus (accountant, staff) split by count
 const splitPages = (pages: SidebarPage[]): SidebarMenu =>
   pages.length <= FLAT_MENU_LIMIT
@@ -76,11 +68,12 @@ export const useSidebarController = () => {
   const isLocked = (page: SidebarPage) => !!page.module && !hasModule(page.module);
   const visible = (pages: SidebarPage[]) => (role === "parent" ? pages.filter((p) => !isLocked(p)) : pages);
   const chosen = menuByRole[role]();
-  const menu = fitMenu({
+  // role menus keep their More groups, however short
+  const menu: SidebarMenu = {
     main: visible(chosen.main),
     more: chosen.more.map((g) => ({ ...g, pages: visible(g.pages) })).filter((g) => g.pages.length),
     bottom: visible(chosen.bottom),
-  });
+  };
 
   const attention = useGetAttention(organizationId, role !== "parent").data;
   const isCurrent = (href: string) => pathname === href || pathname.startsWith(`${href}/`);
