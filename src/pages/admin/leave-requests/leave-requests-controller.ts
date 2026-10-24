@@ -17,7 +17,10 @@ export const useLeaveRequestsController = () => {
     setNotesByRequest((prev) => ({ ...prev, [leaveRequestId]: note }));
 
   const handleDecide = (leaveRequestId: string, decision: "approved" | "rejected") => {
-    decideLeaveRequest.mutate({ leaveRequestId, status: decision, decisionNote: notesByRequest[leaveRequestId] });
+    decideLeaveRequest.mutate(
+      { leaveRequestId, status: decision, decisionNote: notesByRequest[leaveRequestId] },
+      { onSuccess: () => toast.success(decision === "approved" ? "Leave approved." : "Leave declined.") }
+    );
   };
 
   useEffect(() => {

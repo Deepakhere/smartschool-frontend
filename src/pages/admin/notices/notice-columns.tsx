@@ -64,7 +64,9 @@ export const noticeColumns = ({
     id: "date",
     header: "Date",
     meta: { align: "center", className: "text-gray-500" },
-    cell: ({ row }) => (row.original.date ? new Date(row.original.date).toLocaleDateString() : "-"),
+    // the event date when set, else when it was published
+    cell: ({ row }) =>
+      new Date(row.original.date || row.original.publishAt || row.original.createdAt).toLocaleDateString(),
   },
   {
     id: "createdAt",
@@ -98,7 +100,12 @@ export const noticeColumns = ({
               </button>
             </>
           )}
-          <RowMenu items={[{ label: "Preview", onSelect: () => preview(notice) }, { label: "Delete", onSelect: () => remove(notice.id), danger: true }]} />
+          <RowMenu
+            items={[
+              { label: "Preview", onSelect: () => preview(notice) },
+              { label: "Delete", onSelect: () => remove(notice.id), danger: true },
+            ]}
+          />
         </div>
       );
     },

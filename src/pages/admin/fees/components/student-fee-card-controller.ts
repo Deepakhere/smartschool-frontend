@@ -14,7 +14,7 @@ import {
   paymentSchema,
   PaymentFormValues,
 } from "../fees.schema";
-import { useGrantConcession, useRecordPayment } from "../service/fees-service";
+import { useDownloadFeeReceipt, useGrantConcession, useRecordPayment } from "../service/fees-service";
 
 // a select option cannot have an empty value
 const ANY_INSTALLMENT = "any";
@@ -22,11 +22,16 @@ const ANY_INSTALLMENT = "any";
 const useStudentFeeCardController = (organizationId: string, summary: IStudentFeeSummary) => {
   const recordPayment = useRecordPayment(organizationId);
   const grantConcession = useGrantConcession(organizationId);
+  const downloadReceipt = useDownloadFeeReceipt(organizationId);
   const can = useCan();
   useError({ mutation: recordPayment });
+  useError({ mutation: downloadReceipt });
   useError({ mutation: grantConcession });
 
-  const paymentForm = useForm<PaymentFormValues>({ resolver: zodResolver(paymentSchema), defaultValues: defaultPaymentValues });
+  const paymentForm = useForm<PaymentFormValues>({
+    resolver: zodResolver(paymentSchema),
+    defaultValues: defaultPaymentValues,
+  });
   const concessionDefaults = { ...defaultConcessionValues, installmentLabel: ANY_INSTALLMENT };
   const concessionForm = useForm<ConcessionFormValues>({
     resolver: zodResolver(concessionSchema),
@@ -80,6 +85,8 @@ const useStudentFeeCardController = (organizationId: string, summary: IStudentFe
     onGrantConcession,
     isRecording: recordPayment.isPending,
     isGranting: grantConcession.isPending,
+    downloadReceipt: (paymentId: string) => downloadReceipt.mutate(paymentId),
+    downloadingId: downloadReceipt.isPending ? downloadReceipt.variables : undefined,
     installmentOptions,
     canCollect: can("fees.collect"),
     canConcede: can("fees.concession"),

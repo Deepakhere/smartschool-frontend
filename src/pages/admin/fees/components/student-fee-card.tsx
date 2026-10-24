@@ -34,7 +34,9 @@ const StudentFeeCard = ({ organizationId, summary, onReverse }: StudentFeeCardPr
         <h3 className="text-base font-medium text-gray-900">
           Balance: {formatMoney(summary.totalBalance)} of {formatMoney(summary.totalNet)}
         </h3>
-        <Badge tone={summary.totalBalance > 0 ? "red" : "green"}>{summary.totalBalance > 0 ? "Due" : "Fully paid"}</Badge>
+        <Badge tone={summary.totalBalance > 0 ? "red" : "green"}>
+          {summary.totalBalance > 0 ? "Due" : "Fully paid"}
+        </Badge>
       </div>
 
       <DataTable
@@ -64,10 +66,19 @@ const StudentFeeCard = ({ organizationId, summary, onReverse }: StudentFeeCardPr
         <div className="mt-4 rounded-md bg-gray-50 p-4">
           <p className="mb-2 text-sm font-medium text-gray-700">Grant a concession</p>
           <Form {...concessionForm}>
-            <form onSubmit={c.onGrantConcession} noValidate className="grid grid-cols-1 items-start gap-3 sm:grid-cols-4">
+            <form
+              onSubmit={c.onGrantConcession}
+              noValidate
+              className="grid grid-cols-1 items-start gap-3 sm:grid-cols-4"
+            >
               <TextField form={concessionForm} name="amount" label="Amount (₹)" type="number" min={0} step="0.01" />
               <TextField form={concessionForm} name="reason" label="Reason" />
-              <SelectField form={concessionForm} name="installmentLabel" label="Apply to" options={c.installmentOptions} />
+              <SelectField
+                form={concessionForm}
+                name="installmentLabel"
+                label="Apply to"
+                options={c.installmentOptions}
+              />
               <Button type="submit" className="sm:mt-6" loading={c.isGranting}>
                 Grant
               </Button>
@@ -92,7 +103,12 @@ const StudentFeeCard = ({ organizationId, summary, onReverse }: StudentFeeCardPr
         <div className="mt-4">
           <p className="mb-2 text-sm font-medium text-gray-700">Payment history</p>
           <DataTable
-            columns={paymentColumns({ canReverse: c.canReverse, reverse: onReverse })}
+            columns={paymentColumns({
+              canReverse: c.canReverse,
+              reverse: onReverse,
+              download: c.downloadReceipt,
+              downloadingId: c.downloadingId,
+            })}
             data={summary.payments}
             getRowId={(payment) => payment.id}
             empty={{ title: "No payments" }}

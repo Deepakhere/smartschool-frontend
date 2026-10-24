@@ -2,6 +2,7 @@ import DataTable, { DataTableColumn } from "@/components/data-table";
 import ErrorState from "@/components/error-state";
 import ExportDialog from "@/components/export-dialog";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Card, CardTitle } from "@/components/ui/card";
 import { IPayment } from "@/types";
 import { formatMoney, paymentMethodLabel } from "@/utils";
@@ -29,7 +30,7 @@ const reviewColumns: DataTableColumn<IOnlinePaymentForReview>[] = [
   },
 ];
 
-const ledgerColumns: DataTableColumn<IPayment>[] = [
+const ledgerColumns = (download: (paymentId: string) => void, downloadingId?: string): DataTableColumn<IPayment>[] => [
   { id: "receipt", header: "Receipt", cell: ({ row }) => row.original.receiptNumber },
   {
     id: "student",
@@ -60,6 +61,16 @@ const ledgerColumns: DataTableColumn<IPayment>[] = [
     meta: { align: "center" },
     cell: ({ row }) => new Date(row.original.paidAt).toLocaleDateString(),
   },
+  {
+    id: "actions",
+    header: "Action",
+    meta: { align: "center" },
+    cell: ({ row }) => (
+      <Button variant="link" loading={downloadingId === row.original.id} onClick={() => download(row.original.id)}>
+        Receipt
+      </Button>
+    ),
+  },
 ];
 
 const LedgerTab = ({ organizationId }: { organizationId: string }) => {
@@ -88,7 +99,7 @@ const LedgerTab = ({ organizationId }: { organizationId: string }) => {
           <ErrorState error={c.error} onRetry={c.retry} />
         ) : (
           <DataTable
-            columns={ledgerColumns}
+            columns={ledgerColumns(c.downloadReceipt, c.downloadingId)}
             data={c.payments}
             getRowId={(payment) => payment.id}
             isLoading={c.isLoading}

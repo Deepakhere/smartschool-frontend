@@ -1,7 +1,17 @@
 import { keepPreviousData, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import apiClient from "@/config";
-import { IAPIError, IAxiosResponse, IFeeHead, IFeeStructure, IStudentFeeSummary, IPayment, IFeeDefaultersResult, IFeeCollectionSummary, Paged } from "@/types";
+import {
+  IAPIError,
+  IAxiosResponse,
+  IFeeHead,
+  IFeeStructure,
+  IStudentFeeSummary,
+  IPayment,
+  IFeeDefaultersResult,
+  IFeeCollectionSummary,
+  Paged,
+} from "@/types";
 import { APIS_ROUTES, API_QUERY_KEY, API_MUTATION_KEY, saveFile } from "@/utils";
 import { useIdempotencyKey } from "@/hooks";
 
@@ -103,7 +113,11 @@ export const useUpdateFeeStructure = (organizationId: string) => {
       return result.data.Data;
     },
     onSuccess: () => {
-      for (const key of [API_QUERY_KEY.GET_FEE_STRUCTURES, API_QUERY_KEY.GET_STUDENT_FEE_SUMMARY, API_QUERY_KEY.GET_FEE_DEFAULTERS]) {
+      for (const key of [
+        API_QUERY_KEY.GET_FEE_STRUCTURES,
+        API_QUERY_KEY.GET_STUDENT_FEE_SUMMARY,
+        API_QUERY_KEY.GET_FEE_DEFAULTERS,
+      ]) {
         queryClient.invalidateQueries({ queryKey: [key, organizationId] });
       }
     },
@@ -112,7 +126,11 @@ export const useUpdateFeeStructure = (organizationId: string) => {
 
 export const useUpdateFeeHead = (organizationId: string) => {
   const queryClient = useQueryClient();
-  return useMutation<void, IAPIError, { feeHeadId: string; value: { name: string; category: string; isRefundable: boolean } }>({
+  return useMutation<
+    void,
+    IAPIError,
+    { feeHeadId: string; value: { name: string; category: string; isRefundable: boolean } }
+  >({
     mutationKey: [API_MUTATION_KEY.UPDATE_FEE_HEAD],
     mutationFn: async ({ feeHeadId, value }) => {
       await apiClient.patch(`${base(organizationId)}/fee-head/${feeHeadId}`, value);
@@ -152,9 +170,10 @@ export const useGetMyFees = (organizationId: string) =>
   useQuery<{ items: IStudentFeeSummary[]; onlinePaymentsEnabled?: boolean }, IAPIError>({
     queryKey: [API_QUERY_KEY.GET_MY_FEES, organizationId],
     queryFn: async () => {
-      const result = await apiClient.get<null, IAxiosResponse<{ items: IStudentFeeSummary[]; onlinePaymentsEnabled?: boolean }>>(
-        `${base(organizationId)}/my-fees`
-      );
+      const result = await apiClient.get<
+        null,
+        IAxiosResponse<{ items: IStudentFeeSummary[]; onlinePaymentsEnabled?: boolean }>
+      >(`${base(organizationId)}/my-fees`);
       return result.data.Data;
     },
     enabled: !!organizationId,
@@ -229,7 +248,10 @@ export const useGetPaymentLedger = (organizationId: string, page: number, pageSi
 
 // the ledger as a CSV built and capped by the server, newest first
 export const downloadLedgerCsv = async (organizationId: string, limit: number) => {
-  const result = await apiClient.get(`${base(organizationId)}/payment/export`, { params: { limit }, responseType: "blob" });
+  const result = await apiClient.get(`${base(organizationId)}/payment/export`, {
+    params: { limit },
+    responseType: "blob",
+  });
   saveFile(result.data, "payment-ledger.csv");
 };
 
@@ -237,6 +259,13 @@ export const downloadFeeReceipt = async (organizationId: string, paymentId: stri
   const result = await apiClient.get(`${base(organizationId)}/payment/${paymentId}/receipt`, { responseType: "blob" });
   saveFile(result.data, `receipt-${paymentId}.pdf`, "application/pdf");
 };
+
+// staff download; the pending paymentId drives the row spinner
+export const useDownloadFeeReceipt = (organizationId: string) =>
+  useMutation<void, IAPIError, string>({
+    mutationKey: [API_MUTATION_KEY.DOWNLOAD_FEE_RECEIPT],
+    mutationFn: (paymentId) => downloadFeeReceipt(organizationId, paymentId),
+  });
 
 // emails the same PDF to the caller's own registered address - no arbitrary recipient
 export const useEmailFeeReceipt = (organizationId: string) =>
@@ -280,13 +309,21 @@ export interface DefaulterFilters {
 }
 
 const fetchDefaultersPage = async (organizationId: string, filters: DefaulterFilters, page: number, limit: number) => {
-  const result = await apiClient.get<null, IAxiosResponse<IFeeDefaultersResult>>(`${base(organizationId)}/report/defaulters`, {
-    params: { ...filters, page, limit },
-  });
+  const result = await apiClient.get<null, IAxiosResponse<IFeeDefaultersResult>>(
+    `${base(organizationId)}/report/defaulters`,
+    {
+      params: { ...filters, page, limit },
+    }
+  );
   return result.data.Data;
 };
 
-export const useGetFeeDefaulters = (organizationId: string, filters: DefaulterFilters, page: number, pageSize: number) =>
+export const useGetFeeDefaulters = (
+  organizationId: string,
+  filters: DefaulterFilters,
+  page: number,
+  pageSize: number
+) =>
   useQuery<IFeeDefaultersResult, IAPIError>({
     queryKey: [API_QUERY_KEY.GET_FEE_DEFAULTERS, organizationId, filters, page, pageSize],
     queryFn: () => fetchDefaultersPage(organizationId, filters, page, pageSize),
@@ -307,9 +344,12 @@ export const useGetFeeCollections = (organizationId: string, from: string, to: s
   useQuery<IFeeCollectionSummary, IAPIError>({
     queryKey: [API_QUERY_KEY.GET_FEE_COLLECTIONS, organizationId, from, to],
     queryFn: async () => {
-      const result = await apiClient.get<null, IAxiosResponse<{ item: IFeeCollectionSummary }>>(`${base(organizationId)}/report/collections`, {
-        params: { from, to },
-      });
+      const result = await apiClient.get<null, IAxiosResponse<{ item: IFeeCollectionSummary }>>(
+        `${base(organizationId)}/report/collections`,
+        {
+          params: { from, to },
+        }
+      );
       return result.data.Data.item;
     },
     enabled: !!organizationId && !!from && !!to && from <= to,
@@ -330,7 +370,9 @@ export const useGetOnlinePaymentsForReview = (organizationId: string) =>
   useQuery<IOnlinePaymentForReview[], IAPIError>({
     queryKey: ["get-online-payments-review", organizationId],
     queryFn: async () => {
-      const result = await apiClient.get<null, IAxiosResponse<{ items: IOnlinePaymentForReview[] }>>(`${base(organizationId)}/online-payment/review`);
+      const result = await apiClient.get<null, IAxiosResponse<{ items: IOnlinePaymentForReview[] }>>(
+        `${base(organizationId)}/online-payment/review`
+      );
       return result.data.Data.items;
     },
     enabled: !!organizationId,

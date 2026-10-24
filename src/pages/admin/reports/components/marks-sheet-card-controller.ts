@@ -26,7 +26,7 @@ const useMarksSheetCardController = (organizationId: string, examSubjectId: stri
       marksSheet.data.items.map((item) => ({
         studentId: item.student.id,
         theoryMarks: String(item.marks?.theoryMarks ?? ""),
-        practicalMarks: String(item.marks?.practicalMarks ?? ""),
+        practicalMarks: marksSheet.data.examSubject?.hasPractical ? String(item.marks?.practicalMarks ?? "") : "",
         isAbsent: item.marks?.isAbsent ?? false,
       }))
     );

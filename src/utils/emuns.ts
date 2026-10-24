@@ -140,6 +140,7 @@ export const API_MUTATION_KEY = {
   REVERSE_PAYMENT: "reverse-payment",
   GRANT_CONCESSION: "grant-concession",
   EMAIL_FEE_RECEIPT: "email-fee-receipt",
+  DOWNLOAD_FEE_RECEIPT: "download-fee-receipt",
   EMAIL_REPORT_CARD: "email-report-card",
   CREATE_GRADING_SCHEME: "create-grading-scheme",
   CREATE_EXAM: "create-exam",

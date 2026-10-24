@@ -29,6 +29,7 @@ import TeacherMarks from "../pages/teacher/marks";
 import ParentDashboard from "../pages/parent/dashboard";
 import ParentNotices from "../pages/parent/notices";
 import ParentHomework from "../pages/parent/homework";
+import ParentAttendance from "../pages/parent/attendance";
 import ParentReports from "../pages/parent/reports";
 import ParentFees from "../pages/parent/fees";
 import ParentPTM from "../pages/parent/ptm";
@@ -269,6 +270,10 @@ const router = createBrowserRouter([
       {
         path: "homework",
         element: gate("homework", <ParentHomework />),
+      },
+      {
+        path: "attendance",
+        element: gate("attendance", <ParentAttendance />),
       },
       {
         path: "reports",

@@ -142,7 +142,8 @@ export const TEACHER_MENU: SidebarMenu = {
 export const PARENT_MENU: SidebarMenu = {
   main: [
     page("Dashboard", "Your child's day at a glance", "dashboard", HomeIcon),
-    page("Homework", "What's due and when", "homework", ClipboardDocumentCheckIcon),
+    page("Attendance", "Present and absent days", "attendance", ClipboardDocumentCheckIcon),
+    page("Homework", "What's due and when", "homework", BookOpenIcon),
     page("Notices", "School announcements", "notices", ClipboardDocumentListIcon),
     page("Fees", "Dues, receipts and payments", "fees", CurrencyDollarIcon),
     page("Results", "Marks and report cards", "reports", ChartBarIcon),

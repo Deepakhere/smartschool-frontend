@@ -41,6 +41,7 @@ export interface INotice {
   content: string;
   date: string;
   type: string;
+  publishAt?: string;
   createdAt: string;
   updatedAt: string;
   attachmentURL: string;
