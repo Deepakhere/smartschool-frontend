@@ -9,7 +9,7 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "test": "vitest run",
-    "prepare": "husky"
+    "prepare": "husky || true"
   },
   "dependencies": {
     "@heroicons/react": "^2.2.0",
