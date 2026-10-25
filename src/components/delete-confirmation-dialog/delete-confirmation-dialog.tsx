@@ -38,7 +38,7 @@ const DeleteConfirmationDialog = ({
   cancelLabel = "Cancel",
   tone = "danger",
 }: DeleteConfirmationDialogProps) => (
-  <AlertDialog open={open} onOpenChange={(next) => !next && onClose()}>
+  <AlertDialog open={open} onOpenChange={(next) => !next && !isLoading && onClose()}>
     <AlertDialogContent>
       <div className="flex flex-col items-center p-4 text-center sm:p-6">
         <div

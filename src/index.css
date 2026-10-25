@@ -385,3 +385,52 @@
     padding 250ms cubic-bezier(0.65, 0, 0.35, 1) 80ms,
     width 250ms cubic-bezier(0.65, 0, 0.35, 1) 80ms;
 }
+
+/* hover, selected and highlighted states: without these, text turns near-black on hover and
+   the selected tab or menu item loses its contrast on the dark surfaces */
+.dark .hover\:text-gray-900:hover,
+.dark .hover\:text-gray-800:hover,
+.dark .hover\:text-gray-700:hover {
+  color: #f5f5f5;
+}
+.dark .hover\:text-gray-600:hover,
+.dark .hover\:text-gray-500:hover {
+  @apply text-gray-300;
+}
+.dark .hover\:text-primary-800:hover,
+.dark .hover\:text-primary-700:hover,
+.dark .group:hover .group-hover\:text-primary-700 {
+  color: #d4d4d4;
+}
+.dark .hover\:text-red-800:hover,
+.dark .hover\:text-red-600:hover {
+  @apply text-red-300;
+}
+.dark .hover\:bg-red-50:hover {
+  @apply bg-red-900 bg-opacity-30;
+}
+.dark .hover\:bg-white:hover {
+  background-color: #1a1a1a;
+}
+.dark .hover\:border-gray-300:hover {
+  border-color: #3f3f3f;
+}
+.dark .hover\:border-primary-300:hover,
+.dark .hover\:border-primary-200:hover {
+  border-color: #525252;
+}
+.dark .data-\[state\=active\]\:bg-white[data-state="active"] {
+  background-color: rgb(255 255 255 / 0.12);
+}
+.dark .data-\[state\=active\]\:text-gray-900[data-state="active"] {
+  color: #ffffff;
+}
+.dark .data-\[state\=checked\]\:bg-primary-600[data-state="checked"] {
+  background-color: #f5f5f5;
+}
+.dark .data-\[highlighted\]\:bg-primary-50[data-highlighted] {
+  background-color: rgb(255 255 255 / 0.1);
+}
+.dark .data-\[highlighted\]\:text-primary-900[data-highlighted] {
+  @apply text-primary-200;
+}

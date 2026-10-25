@@ -1,18 +1,13 @@
+// takes the button's text colour, so it shows on light and dark buttons alike
 const ButtonSpinner = () => (
   <svg
-    className="animate-spin text-gray-300 h-5 w-5"
+    className="h-4 w-4 animate-spin"
     xmlns="http://www.w3.org/2000/svg"
     fill="none"
     viewBox="0 0 24 24"
+    aria-hidden="true"
   >
-    <circle
-      className="opacity-25"
-      cx="12"
-      cy="12"
-      r="10"
-      stroke="currentColor"
-      strokeWidth="4"
-    ></circle>
+    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
     <path
       className="opacity-75"
       fill="currentColor"

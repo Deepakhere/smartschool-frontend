@@ -4,6 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useParams } from "react-router-dom";
 import toast from "react-hot-toast";
 
+import { useError } from "@/hooks";
 import { useGetMyChildren } from "../ptm/service/my-children-service";
 import { useGetMyLeaveRequests, useCreateLeaveRequest, useCancelLeaveRequest } from "./service/leave-request-service";
 import { leaveRequestFormSchema, defaultLeaveRequestFormValues } from "./leave-requests.schema";
@@ -22,6 +23,7 @@ export const useLeaveRequestsController = () => {
   const leaveRequests = useGetMyLeaveRequests(organizationId);
   const createLeaveRequest = useCreateLeaveRequest(organizationId);
   const cancelLeaveRequest = useCancelLeaveRequest(organizationId);
+  useError({ mutation: cancelLeaveRequest });
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     form.setValue("attachment", e.target.files?.[0] || null);
