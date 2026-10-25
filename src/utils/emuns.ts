@@ -26,6 +26,7 @@ export const APIS_ROUTES = {
   HOMEWORK_SERVICE: "/homework-service/v1",
   PTM_SERVICE: "/ptm-service/v1",
   CALENDAR_SERVICE: "/calendar-service/v1",
+  CERTIFICATE_SERVICE: "/certificate-service/v1",
   FEE_SERVICE: "/fee-service/v1",
   EXAM_SERVICE: "/exam-service/v1",
   LEAVE_SERVICE: "/leave-service/v1",
@@ -34,6 +35,8 @@ export const APIS_ROUTES = {
 };
 
 export const API_QUERY_KEY = {
+  GET_CERTIFICATE_DRAFT: "get-certificate-draft",
+  GET_CERTIFICATES: "get-certificates",
   GET_MODEL_STATISTICS_PERSONALIZATION: "get-model-statistics-personalization",
   GET_USER_DETAILS: "get-user-details",
   GET_ALL_USER: "get-all-user",
@@ -88,6 +91,9 @@ export const API_QUERY_KEY = {
 };
 
 export const API_MUTATION_KEY = {
+  ISSUE_CERTIFICATE: "issue-certificate",
+  DUPLICATE_CERTIFICATE: "duplicate-certificate",
+  UPDATE_LETTERHEAD: "update-letterhead",
   UPDATE_EMAIL_NOTIFICATION_SETTINGS: "update-email-notification-settings",
   SIGNIN: "signin",
   FORGOT_PASSWORD: "forgot-password",

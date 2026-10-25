@@ -60,6 +60,7 @@ const StudentsList = () => {
     openExport,
     exportDialog,
     canManage,
+    issueCertificate,
   } = useStudentsListController();
 
   const columns = studentColumns({
@@ -68,6 +69,7 @@ const StudentsList = () => {
     edit: onClickEditStudent,
     resendInvite: handleResendInvite,
     remove: handleDeleteAction,
+    issueCertificate,
   });
 
   return (
@@ -85,7 +87,13 @@ const StudentsList = () => {
           getRowId={(student) => student.id}
           isLoading={isLoadingGetStudentDetails || isFetchingStudentList}
           search={{ placeholder: t("messages.search"), value: searchInput, onChange: handleSearchChange }}
-          pagination={{ page, pageSize, total: studentTotalCount ?? 0, onPageChange: setPage, onPageSizeChange: setPageSize }}
+          pagination={{
+            page,
+            pageSize,
+            total: studentTotalCount ?? 0,
+            onPageChange: setPage,
+            onPageSizeChange: setPageSize,
+          }}
           itemLabel={{ one: "student", other: "students" }}
           toolbar={
             <>
@@ -127,7 +135,8 @@ const StudentsList = () => {
                 }
               : {
                   title: "No students yet",
-                  description: "Add your first student with Add New Student, or bring a whole class in with Bulk Upload (CSV).",
+                  description:
+                    "Add your first student with Add New Student, or bring a whole class in with Bulk Upload (CSV).",
                 }
           }
         />

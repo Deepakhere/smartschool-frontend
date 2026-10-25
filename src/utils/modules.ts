@@ -11,6 +11,7 @@ export const MODULE_LABELS: Record<ModuleKey, string> = {
   notices: "Notices",
   calendar: "Calendar",
   ptm: "PTM",
+  certificates: "Certificates",
 };
 
 export const ALL_MODULES = Object.keys(MODULE_LABELS) as ModuleKey[];

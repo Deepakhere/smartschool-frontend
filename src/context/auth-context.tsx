@@ -58,7 +58,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const updatePreferences = (partial: Partial<IUserPreferences>) => {
     setUser((prev) =>
-      prev ? { ...prev, preferences: { ...prev.preferences, ...partial } as IUserPreferences } : prev,
+      prev ? { ...prev, preferences: { ...prev.preferences, ...partial } as IUserPreferences } : prev
     );
   };
 
@@ -76,17 +76,16 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     setUser(null);
   };
 
-  // Ends the session on the server too. The token is passed explicitly because the cookie is cleared before the
-  // request is actually sent; the redirect waits briefly for the server so the request is not cut off.
+  // Ends the session on the server, then leaves. The page stays as it is until then, so nothing
+  // re-renders empty; the full reload to /login drops every cached query anyway.
   const logout = async () => {
     const token = Cookies.get(USER_ACCESS_KEY.TOKEN);
     const revoke = token
       ? apiClient.post(APIS_ROUTES.LOGOUT, {}, { headers: { accesstoken: `Bearer ${token}` } }).catch(() => {})
       : Promise.resolve();
-    clearSessionCookies();
-    queryClient.clear();
     await Promise.race([revoke, new Promise((resolve) => setTimeout(resolve, 1500))]);
-    window.location.href = "/login";
+    clearSessionCookies();
+    window.location.replace("/login");
   };
 
   useEffect(() => {

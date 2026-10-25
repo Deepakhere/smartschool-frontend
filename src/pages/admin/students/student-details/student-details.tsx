@@ -100,22 +100,24 @@ const StudentDetails = () => {
                   <p className="mt-1 max-w-2xl text-sm text-gray-500">Personal details and information.</p>
                 </div>
               </div>
-              {canManage && <div className="flex space-x-3">
-                <button
-                  onClick={() => setIsEditModalOpen(true)}
-                  className="inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
-                >
-                  <PencilIcon className="h-4 w-4 mr-1" />
-                  Edit
-                </button>
-                <button
-                  onClick={() => setIsDeleteModalOpen(true)}
-                  className="inline-flex items-center px-3 py-2 border border-red-300 shadow-sm text-sm leading-4 font-medium rounded-md text-red-700 bg-white hover:bg-red-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
-                >
-                  <TrashIcon className="h-4 w-4 mr-1" />
-                  Delete
-                </button>
-              </div>}
+              {canManage && (
+                <div className="flex space-x-3">
+                  <button
+                    onClick={() => setIsEditModalOpen(true)}
+                    className="inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
+                  >
+                    <PencilIcon className="h-4 w-4 mr-1" />
+                    Edit
+                  </button>
+                  <button
+                    onClick={() => setIsDeleteModalOpen(true)}
+                    className="inline-flex items-center px-3 py-2 border border-red-300 shadow-sm text-sm leading-4 font-medium rounded-md text-red-700 bg-white hover:bg-red-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
+                  >
+                    <TrashIcon className="h-4 w-4 mr-1" />
+                    Delete
+                  </button>
+                </div>
+              )}
             </div>
 
             {/* Student information */}
@@ -209,24 +211,26 @@ const StudentDetails = () => {
                         )}
                       </div>
                     </div>
-                    {canManage && <div className="flex gap-3">
-                      {!g.isPrimaryGuardian && (
-                        <button
-                          onClick={() => handleSetPrimaryGuardian(g.id)}
-                          className="text-sm text-primary-600 hover:text-primary-800"
-                        >
-                          Set as primary
-                        </button>
-                      )}
-                      {!g.isPrimaryGuardian && (
-                        <button
-                          onClick={() => handleRemoveGuardian(g.id)}
-                          className="text-sm text-red-600 hover:text-red-800"
-                        >
-                          Remove
-                        </button>
-                      )}
-                    </div>}
+                    {canManage && (
+                      <div className="flex gap-3">
+                        {!g.isPrimaryGuardian && (
+                          <button
+                            onClick={() => handleSetPrimaryGuardian(g.id)}
+                            className="text-sm text-primary-600 hover:text-primary-800"
+                          >
+                            Set as primary
+                          </button>
+                        )}
+                        {!g.isPrimaryGuardian && (
+                          <button
+                            onClick={() => handleRemoveGuardian(g.id)}
+                            className="text-sm text-red-600 hover:text-red-800"
+                          >
+                            Remove
+                          </button>
+                        )}
+                      </div>
+                    )}
                   </div>
                 ))
               )}
@@ -234,59 +238,61 @@ const StudentDetails = () => {
           </div>
 
           {/* Enrollment Lifecycle */}
-          {canManage && <div className="bg-white shadow overflow-hidden sm:rounded-lg mb-6">
-            <div className="px-4 py-5 sm:px-6 flex justify-between items-center">
-              <div>
-                <h3 className="text-lg leading-6 font-medium text-gray-900">Enrollment Lifecycle</h3>
-                <p className="mt-1 max-w-2xl text-sm text-gray-500">
-                  Transfer, withdraw, and year-over-year enrollment history.
-                </p>
-              </div>
-              {studentDetails?.status === "active" && (
-                <div className="flex gap-3">
-                  <button
-                    onClick={() => setIsTransferModalOpen(true)}
-                    className="inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
-                  >
-                    Transfer
-                  </button>
-                  <button
-                    onClick={() => setIsWithdrawModalOpen(true)}
-                    className="inline-flex items-center px-3 py-2 border border-red-300 shadow-sm text-sm leading-4 font-medium rounded-md text-red-700 bg-white hover:bg-red-50"
-                  >
-                    Withdraw
-                  </button>
+          {canManage && (
+            <div className="bg-white shadow overflow-hidden sm:rounded-lg mb-6">
+              <div className="px-4 py-5 sm:px-6 flex justify-between items-center">
+                <div>
+                  <h3 className="text-lg leading-6 font-medium text-gray-900">Enrollment Lifecycle</h3>
+                  <p className="mt-1 max-w-2xl text-sm text-gray-500">
+                    Transfer, withdraw, and year-over-year enrollment history.
+                  </p>
                 </div>
-              )}
-            </div>
-            <div className="border-t border-gray-200 divide-y divide-gray-200">
-              {isLoadingEnrollmentHistory ? (
-                <p className="px-4 py-5 text-sm text-gray-500">Loading history...</p>
-              ) : enrollmentHistory.length === 0 ? (
-                <EmptyState compact title="No enrollment history yet" />
-              ) : (
-                enrollmentHistory.map((entry) => (
-                  <div key={entry.id} className="px-4 py-4 sm:px-6 flex justify-between items-center">
-                    <div>
-                      <p className="text-sm font-medium text-gray-900">
-                        {entry.academicYearId?.name || "-"} - {entry.classId?.name || "-"}
-                        {entry.sectionId?.name ? ` - ${entry.sectionId.name}` : ""}
-                        <span
-                          className={`ml-2 inline-block px-2 py-0.5 text-xs rounded-full capitalize ${enrollmentStatusBadgeClass[entry.status]}`}
-                        >
-                          {entry.status.toLowerCase()}
-                        </span>
-                      </p>
-                      <p className="text-sm text-gray-500 mt-1">
-                        Roll No. {entry.rollNumber} · Joined {new Date(entry.joinedOn).toLocaleDateString()}
-                        {entry.leftOn ? ` · Left ${new Date(entry.leftOn).toLocaleDateString()}` : ""}
-                      </p>
-                    </div>
+                {studentDetails?.status === "active" && (
+                  <div className="flex gap-3">
+                    <button
+                      onClick={() => setIsTransferModalOpen(true)}
+                      className="inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
+                    >
+                      Transfer
+                    </button>
+                    <button
+                      onClick={() => setIsWithdrawModalOpen(true)}
+                      className="inline-flex items-center px-3 py-2 border border-red-300 shadow-sm text-sm leading-4 font-medium rounded-md text-red-700 bg-white hover:bg-red-50"
+                    >
+                      Withdraw
+                    </button>
                   </div>
-                ))
-              )}
+                )}
+              </div>
+              <div className="border-t border-gray-200 divide-y divide-gray-200">
+                {isLoadingEnrollmentHistory ? (
+                  <p className="px-4 py-5 text-sm text-gray-500">Loading history...</p>
+                ) : enrollmentHistory.length === 0 ? (
+                  <EmptyState compact title="No enrollment history yet" />
+                ) : (
+                  enrollmentHistory.map((entry) => (
+                    <div key={entry.id} className="px-4 py-4 sm:px-6 flex justify-between items-center">
+                      <div>
+                        <p className="text-sm font-medium text-gray-900">
+                          {entry.academicYearId?.name || "-"} - {entry.classId?.name || "-"}
+                          {entry.sectionId?.name ? ` - ${entry.sectionId.name}` : ""}
+                          <span
+                            className={`ml-2 inline-block px-2 py-0.5 text-xs rounded-full capitalize ${enrollmentStatusBadgeClass[entry.status]}`}
+                          >
+                            {entry.status.toLowerCase()}
+                          </span>
+                        </p>
+                        <p className="text-sm text-gray-500 mt-1">
+                          Roll No. {entry.rollNumber} · Joined {new Date(entry.joinedOn).toLocaleDateString()}
+                          {entry.leftOn ? ` · Left ${new Date(entry.leftOn).toLocaleDateString()}` : ""}
+                        </p>
+                      </div>
+                    </div>
+                  ))
+                )}
+              </div>
             </div>
-          </div>}
+          )}
 
           {/* Academic Records section */}
           <div className="bg-white shadow overflow-hidden sm:rounded-lg">
@@ -411,7 +417,10 @@ const StudentDetails = () => {
             isLoadingUpdateStudent={updateStudent.isPending}
             nextStep={nextStep}
             prevStep={prevStep}
-            onClose={() => setIsEditModalOpen(false)}
+            onClose={() => {
+              setIsEditModalOpen(false);
+              setCurrentStep(1);
+            }}
             onSubmit={onSubmit}
             setCurrentStep={setCurrentStep}
           />

@@ -10,6 +10,7 @@ import {
   ClipboardDocumentListIcon,
   Cog6ToothIcon,
   CurrencyDollarIcon,
+  DocumentCheckIcon,
   HomeIcon,
   TableCellsIcon,
   UserGroupIcon,
@@ -64,6 +65,7 @@ const MODULE_BY_PATH: Record<string, ModuleKey> = {
   notices: "notices",
   calendar: "calendar",
   ptm: "ptm",
+  certificates: "certificates",
 };
 
 const page = (
@@ -112,6 +114,7 @@ export const ADMIN_MENU: SidebarMenu = {
       pages: [
         page("Teachers", "Staff profiles and roles", "teachers", UserIcon),
         page("Promotion", "Move students to the next class", "promotion", ArrowTrendingUpIcon),
+        page("Certificates", "Bonafide and transfer certificates", "certificates", DocumentCheckIcon),
       ],
     },
   ],
