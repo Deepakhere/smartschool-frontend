@@ -8,6 +8,7 @@ import {
   ClipboardDocumentListIcon,
   Cog6ToothIcon,
   CurrencyDollarIcon,
+  DocumentCheckIcon,
   PresentationChartBarIcon,
   UserGroupIcon,
   UserIcon,
@@ -24,6 +25,7 @@ import AdminPTM from "../pages/admin/ptm";
 import AdminFees from "../pages/admin/fees";
 import AdminReports from "../pages/admin/reports";
 import AdminSettings from "../pages/admin/settings";
+import AdminCertificates from "../pages/admin/certificates";
 import { ModuleKey, PermissionKey } from "../types";
 
 export interface SharedPage {
@@ -66,6 +68,13 @@ export const SHARED_PAGES: SharedPage[] = [
     element: <AdminPromotion />,
     anyOf: ["students.manage"],
     nav: { name: "Promotion", hint: "Move students to the next class", icon: ArrowTrendingUpIcon },
+  },
+  {
+    path: "certificates/*",
+    element: <AdminCertificates />,
+    module: "certificates",
+    anyOf: ["certificates.issue"],
+    nav: { name: "Certificates", hint: "Bonafide and transfer certificates", icon: DocumentCheckIcon },
   },
   {
     path: "teachers",

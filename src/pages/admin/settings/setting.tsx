@@ -7,6 +7,7 @@ import Notifications from "./notifications";
 import OnlinePayments from "./online-payments";
 import MemberAccess from "./member-access";
 import RoleDefaults from "./role-defaults";
+import SchoolSettings from "./school";
 import ModuleGate from "@/components/module-gate";
 
 const Settings = () => {
@@ -15,6 +16,7 @@ const Settings = () => {
       <Route path="/" element={<UserManagement />}>
         <Route index element={<Navigate to="profile" replace />} />
         <Route path="profile" element={<AdminProfile />} />
+        <Route path="school" element={<SchoolSettings />} />
         <Route path="add-user" element={<UserDetails />} />
         <Route path="add-user/:userId" element={<MemberAccess />} />
         <Route path="roles" element={<RoleDefaults />} />

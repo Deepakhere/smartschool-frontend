@@ -21,7 +21,8 @@ export type PermissionKey =
   | "fees.reports"
   | "fees.reverse"
   | "fees.concession"
-  | "fees.setup";
+  | "fees.setup"
+  | "certificates.issue";
 
 import { ReactNode } from "react";
 import { UseFormReturn } from "react-hook-form";
@@ -335,6 +336,71 @@ export interface IOrganization {
   myPermissions?: PermissionKey[];
   // modules the school's package includes; unset = every module
   myModules?: ModuleKey[];
+  letterhead?: ILetterhead;
+}
+
+// printed on certificates under the school name; every line optional
+export interface ILetterhead {
+  tagline: string;
+  phone: string;
+  email: string;
+  website: string;
+  board: string;
+  registrationNo: string;
+  affiliationNo: string;
+  udiseCode: string;
+  principalName: string;
+  principalTitle: string;
+}
+
+export type CertificateType = "bonafide" | "transfer";
+export type CertificateGender = "male" | "female" | "other";
+
+export interface ICertificate {
+  id: string;
+  type: CertificateType;
+  number: string;
+  studentId: string;
+  studentName: string;
+  duplicates: number;
+  issuedAt: string;
+  issuedBy?: { id: string; name: string } | string;
+}
+
+export interface ICertificateDraft {
+  student: {
+    id: string;
+    name: string;
+    status: string;
+    admissionNumber: string;
+    dob: string | null;
+    academicYearId: string | null;
+    academicYear: string;
+    className: string;
+    sectionName: string;
+  };
+  answers: Partial<{
+    gender: CertificateGender;
+    parentName: string;
+    fatherName: string;
+    motherName: string;
+    nationality: string;
+    category: string;
+    conduct: string;
+  }>;
+  records: {
+    admissionDate: string | null;
+    admissionClass: string;
+    subjects: string[];
+    workingDays: number;
+    daysPresent: number;
+    lastExam: string;
+    promotion: string;
+    feesStatus: string;
+    duePaise: number;
+  } | null;
+  existingTc: { id: string; number: string; issuedAt: string } | null;
+  letterhead: ILetterhead & { name: string; address: string; logoUrl: string | null };
 }
 
 export interface IAcademicYear {
@@ -742,6 +808,10 @@ export interface SelectDropdownProps {
   disabled?: boolean;
   // shown in the open menu when there is nothing to pick yet
   emptyText?: string;
+  // set by FormControl, so the field label names the select
+  id?: string;
+  "aria-describedby"?: string;
+  "aria-invalid"?: boolean;
 }
 
 export interface IEmailLog {
@@ -857,4 +927,5 @@ export type ModuleKey =
   | "onlinePayments"
   | "notices"
   | "calendar"
-  | "ptm";
+  | "ptm"
+  | "certificates";

@@ -19,6 +19,7 @@ import AdminCalendar from "../pages/admin/calendar";
 import Timetable from "../pages/admin/timetable";
 import AdminLeaveRequests from "../pages/admin/leave-requests";
 import AdminPromotion from "../pages/admin/promotion";
+import AdminCertificates from "../pages/admin/certificates";
 
 // Teacher Pages
 import TeacherDashboard from "../pages/teacher/dashboard";
@@ -169,6 +170,10 @@ const router = createBrowserRouter([
       {
         path: "promotion",
         element: <AdminPromotion />,
+      },
+      {
+        path: "certificates/*",
+        element: gate("certificates", <AdminCertificates />),
       },
       {
         path: "settings/*",

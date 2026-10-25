@@ -20,7 +20,7 @@ import downloadStudentsCsv from "../service/export-students";
 import { useError, useExportRows, usePaging } from "@/hooks";
 import { useGetAcademicYears, useGetClasses } from "@/pages/admin/classes/service/academics-service";
 import { createStudentSchema } from "../student-modal/create-update-student-modal/student-form.schema";
-import { useAreaBase, useCan } from "@/context/tenant-context";
+import { useAreaBase, useCan, useHasModule } from "@/context/tenant-context";
 
 const emptyFormData = {} as IStudentFormData;
 
@@ -93,7 +93,6 @@ const useStudentsListController = () => {
   const classesForFilter = useGetClasses(organizationId || "", currentAcademicYearId, "active");
   const CLASS_OPTIONS = classesForFilter.data?.items || [];
 
-
   const nextStep = () => {
     setCurrentStep((prev) => Math.min(prev + 1, TOTAL_STEPS));
     localStorage.setItem("formData", JSON.stringify(form.getValues()));
@@ -107,13 +106,7 @@ const useStudentsListController = () => {
     setCurrentStep((prev) => Math.max(prev - 1, 1));
   };
 
-  const getStudentDetails = useGetStudentDetails(
-    organizationId || "",
-    classFilter,
-    searchTerm,
-    pageSize,
-    page
-  );
+  const getStudentDetails = useGetStudentDetails(organizationId || "", classFilter, searchTerm, pageSize, page);
 
   const { openExport, exportDialog } = useExportRows({
     total: getStudentDetails.data?.pagination.totalItems ?? 0,
@@ -121,7 +114,13 @@ const useStudentsListController = () => {
     download: (limit) => downloadStudentsCsv(organizationId || "", classFilter, searchTerm, limit),
   });
 
-  const canManage = useCan()("students.manage");
+  const can = useCan();
+  const hasModule = useHasModule();
+  const canManage = can("students.manage");
+  const canIssueCertificates = can("certificates.issue") && hasModule("certificates");
+  const issueCertificate = canIssueCertificates
+    ? (studentId: string) => navigate(`${areaBase}/certificates/issue/${studentId}`)
+    : undefined;
 
   const addStudentProfile = useAddStudent(organizationId || "");
 
@@ -276,6 +275,7 @@ const useStudentsListController = () => {
     openExport,
     exportDialog,
     canManage,
+    issueCertificate,
   };
 };
 

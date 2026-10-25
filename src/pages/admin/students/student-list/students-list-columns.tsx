@@ -18,9 +18,18 @@ interface StudentColumnActions {
   edit: (studentId: string) => void;
   resendInvite: (parentUserId: string) => void;
   remove: (studentId: string) => void;
+  // only when the person may issue and the package includes certificates
+  issueCertificate?: (studentId: string) => void;
 }
 
-export const studentColumns = ({ t, open, edit, resendInvite, remove }: StudentColumnActions): DataTableColumn<StudentListRow>[] => [
+export const studentColumns = ({
+  t,
+  open,
+  edit,
+  resendInvite,
+  remove,
+  issueCertificate,
+}: StudentColumnActions): DataTableColumn<StudentListRow>[] => [
   {
     id: "name",
     header: t("labels.student_name"),
@@ -32,7 +41,11 @@ export const studentColumns = ({ t, open, edit, resendInvite, remove }: StudentC
             <span className="text-primary-600 font-medium">{student.name.charAt(0)}</span>
           </div>
           <div className="ml-4">
-            <Button variant="link" className="font-medium text-gray-900 hover:text-primary-600" onClick={() => open(student.id)}>
+            <Button
+              variant="link"
+              className="font-medium text-gray-900 hover:text-primary-600"
+              onClick={() => open(student.id)}
+            >
               {student.name}
             </Button>
             {pendingParent(student) && (
@@ -78,6 +91,7 @@ export const studentColumns = ({ t, open, edit, resendInvite, remove }: StudentC
           items={[
             { label: t("buttons.edit"), onSelect: () => edit(student.id) },
             ...(parent ? [{ label: t("buttons.resend_invite"), onSelect: () => resendInvite(parent.id) }] : []),
+            ...(issueCertificate ? [{ label: "Issue certificate", onSelect: () => issueCertificate(student.id) }] : []),
             { label: t("buttons.delete"), onSelect: () => remove(student.id), danger: true },
           ]}
         />

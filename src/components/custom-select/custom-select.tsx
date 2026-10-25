@@ -10,6 +10,9 @@ const CustomSelectDropdown = ({
   className = "",
   disabled = false,
   emptyText = "Nothing to choose yet.",
+  id,
+  "aria-describedby": describedBy,
+  "aria-invalid": invalid,
 }: SelectDropdownProps) => {
   return (
     <div className={className}>
@@ -22,7 +25,7 @@ const CustomSelectDropdown = ({
         }}
         disabled={disabled}
       >
-        <SelectTrigger className="mt-1">
+        <SelectTrigger className="mt-1" id={id} aria-describedby={describedBy} aria-invalid={invalid}>
           <span className="flex items-center">
             {value?.icon && <span className="mr-3 flex-shrink-0">{value.icon}</span>}
             <SelectValue placeholder={placeholder}>{value?.name || placeholder}</SelectValue>
