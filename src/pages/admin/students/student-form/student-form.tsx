@@ -50,15 +50,45 @@ const StudentForm = () => {
                 className="h-40 w-32 shrink-0"
               />
               <div className="grid flex-1 grid-cols-1 gap-4 sm:grid-cols-2">
-                <TextField form={form} name="name" label="Full name" className="sm:col-span-2" />
-                <SelectField form={form} name="gender" label="Gender" options={GENDER_OPTIONS} />
-                <DateField form={form} name="dateOfBirth" label="Date of birth" max={today} />
-                <SelectField form={form} name="bloodGroup" label="Blood group" options={BLOOD_GROUP_OPTIONS} />
+                <TextField
+                  form={form}
+                  name="name"
+                  label="Full name"
+                  placeholder="e.g. Aarav Sharma"
+                  className="sm:col-span-2"
+                />
+                <SelectField
+                  form={form}
+                  name="gender"
+                  label="Gender"
+                  options={GENDER_OPTIONS}
+                  placeholder="Select gender"
+                />
+                <DateField
+                  form={form}
+                  name="dateOfBirth"
+                  label="Date of birth"
+                  placeholder="Select date of birth"
+                  max={today}
+                />
+                <SelectField
+                  form={form}
+                  name="bloodGroup"
+                  label="Blood group"
+                  options={BLOOD_GROUP_OPTIONS}
+                  placeholder="Select blood group"
+                />
                 <TextField form={form} name="aadhaarNumber" label="Aadhaar number" placeholder="12 digits" />
-                <SelectField form={form} name="category" label="Category" options={CATEGORY_OPTIONS} />
-                <TextField form={form} name="religion" label="Religion" />
-                <TextField form={form} name="motherTongue" label="Mother tongue" />
-                <TextField form={form} name="nationality" label="Nationality" />
+                <SelectField
+                  form={form}
+                  name="category"
+                  label="Category"
+                  options={CATEGORY_OPTIONS}
+                  placeholder="Select category"
+                />
+                <TextField form={form} name="religion" label="Religion" placeholder="e.g. Hindu" />
+                <TextField form={form} name="motherTongue" label="Mother tongue" placeholder="e.g. Hindi" />
+                <TextField form={form} name="nationality" label="Nationality" placeholder="e.g. Indian" />
               </div>
             </div>
           </FormSection>
@@ -81,6 +111,7 @@ const StudentForm = () => {
                     name="academicYearId"
                     label="Academic year"
                     options={c.yearOptions}
+                    placeholder="Select year"
                     onValueChange={c.onYearChange}
                   />
                   <SelectField
@@ -90,10 +121,16 @@ const StudentForm = () => {
                     options={c.classOptions}
                     onValueChange={c.onClassChange}
                     disabled={!c.hasClasses}
-                    placeholder={c.hasClasses ? "Select" : "No classes in this year"}
+                    placeholder={c.hasClasses ? "Select class" : "No classes in this year"}
                   />
-                  <SelectField form={form} name="sectionId" label="Section" options={c.sectionOptions} />
-                  <TextField form={form} name="rollNumber" label="Roll number" />
+                  <SelectField
+                    form={form}
+                    name="sectionId"
+                    label="Section"
+                    options={c.sectionOptions}
+                    placeholder="Select section"
+                  />
+                  <TextField form={form} name="rollNumber" label="Roll number" placeholder="e.g. 12" />
                 </>
               )}
               <div>
@@ -119,7 +156,7 @@ const StudentForm = () => {
                   </p>
                 )}
               </div>
-              <DateField form={form} name="admissionDate" label="Admission date" />
+              <DateField form={form} name="admissionDate" label="Admission date" placeholder="Select admission date" />
             </div>
           </FormSection>
 
@@ -141,9 +178,20 @@ const StudentForm = () => {
               )}
               {((c.isEdit && c.hasLogin) || (!c.isEdit && c.loginContact === "guardian")) && (
                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-                  <TextField form={form} name="parentName" label={c.isEdit ? "App login: name" : "Guardian's name"} />
-                  <TextField form={form} name="parentEmail" label="Email" type="email" />
-                  <TextField form={form} name="phoneNumber" label="Phone" type="tel" />
+                  <TextField
+                    form={form}
+                    name="parentName"
+                    label={c.isEdit ? "App login: name" : "Guardian's name"}
+                    placeholder="Full name"
+                  />
+                  <TextField form={form} name="parentEmail" label="Email" placeholder="name@example.com" type="email" />
+                  <TextField
+                    form={form}
+                    name="phoneNumber"
+                    label="Phone"
+                    placeholder="10-digit mobile number"
+                    type="tel"
+                  />
                 </div>
               )}
               {c.isEdit && (
@@ -165,10 +213,16 @@ const StudentForm = () => {
 
           <FormSection title="Address">
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-              <TextField form={form} name="address" label="Current address" className="sm:col-span-3" />
-              <TextField form={form} name="city" label="City" />
-              <TextField form={form} name="state" label="State" />
-              <TextField form={form} name="pincode" label="Pincode" />
+              <TextField
+                form={form}
+                name="address"
+                label="Current address"
+                placeholder="House no., street, area"
+                className="sm:col-span-3"
+              />
+              <TextField form={form} name="city" label="City" placeholder="e.g. Pune" />
+              <TextField form={form} name="state" label="State" placeholder="e.g. Maharashtra" />
+              <TextField form={form} name="pincode" label="Pincode" placeholder="6 digits" />
             </div>
             <CheckboxField form={form} name="sameAddress" label="Permanent address is the same" className="mt-4" />
             {!c.sameAddress && (
@@ -176,21 +230,37 @@ const StudentForm = () => {
                 <TextField
                   form={form}
                   name="permanentAddress.address"
+                  placeholder="House no., street, area"
                   label="Permanent address"
                   className="sm:col-span-3"
                 />
-                <TextField form={form} name="permanentAddress.city" label="City" />
-                <TextField form={form} name="permanentAddress.state" label="State" />
-                <TextField form={form} name="permanentAddress.pincode" label="Pincode" />
+                <TextField form={form} name="permanentAddress.city" label="City" placeholder="e.g. Pune" />
+                <TextField form={form} name="permanentAddress.state" label="State" placeholder="e.g. Maharashtra" />
+                <TextField form={form} name="permanentAddress.pincode" label="Pincode" placeholder="6 digits" />
               </div>
             )}
           </FormSection>
 
           <FormSection title="Previous school" description="Leave empty for a first school">
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-              <TextField form={form} name="previousSchool.name" label="School name" />
-              <TextField form={form} name="previousSchool.lastClass" label="Last class attended" />
-              <TextField form={form} name="previousSchool.tcNumber" label="Transfer certificate no." />
+              <TextField
+                form={form}
+                name="previousSchool.name"
+                label="School name"
+                placeholder="e.g. Little Steps School"
+              />
+              <TextField
+                form={form}
+                name="previousSchool.lastClass"
+                label="Last class attended"
+                placeholder="e.g. Class 5"
+              />
+              <TextField
+                form={form}
+                name="previousSchool.tcNumber"
+                label="Transfer certificate no."
+                placeholder="e.g. TC-1023"
+              />
             </div>
           </FormSection>
 

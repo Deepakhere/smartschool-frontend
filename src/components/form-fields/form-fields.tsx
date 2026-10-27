@@ -2,6 +2,7 @@ import { FieldValues, Path, UseFormReturn } from "react-hook-form";
 
 import CustomSelectDropdown from "@/components/custom-select";
 import DatePicker from "@/components/date-picker";
+import DateTimePicker from "@/components/date-time-picker";
 import FileDropzone from "@/components/file-dropzone";
 import { Checkbox } from "@/components/ui/checkbox";
 import { FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
@@ -143,7 +144,8 @@ export const DateField = <T extends FieldValues>({
   className,
   min,
   max,
-}: FieldProps<T> & { min?: string; max?: string }) => (
+  placeholder,
+}: FieldProps<T> & { min?: string; max?: string; placeholder?: string }) => (
   <FormField
     control={form.control}
     name={name}
@@ -158,7 +160,33 @@ export const DateField = <T extends FieldValues>({
             disabled={disabled}
             min={min}
             max={max}
+            placeholder={placeholder}
           />
+        </FormControl>
+        {description && <FormDescription>{description}</FormDescription>}
+        <FormMessage />
+      </FormItem>
+    )}
+  />
+);
+
+// value is "YYYY-MM-DDTHH:mm"
+export const DateTimeField = <T extends FieldValues>({
+  form,
+  name,
+  label,
+  description,
+  disabled,
+  className,
+}: FieldProps<T>) => (
+  <FormField
+    control={form.control}
+    name={name}
+    render={({ field }) => (
+      <FormItem className={className}>
+        <FormLabel>{label}</FormLabel>
+        <FormControl>
+          <DateTimePicker value={field.value ?? ""} onChange={field.onChange} disabled={disabled} />
         </FormControl>
         {description && <FormDescription>{description}</FormDescription>}
         <FormMessage />

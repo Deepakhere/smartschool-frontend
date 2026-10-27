@@ -2,6 +2,7 @@ import { PencilIcon, TrashIcon } from "@heroicons/react/24/outline";
 
 import Avatar from "@/components/avatar";
 import DataTable from "@/components/data-table";
+import DatePicker from "@/components/date-picker";
 import DeleteConfirmationDialog from "@/components/delete-confirmation-dialog";
 import EmptyState from "@/components/empty-state";
 import PageLoader from "@/components/page-loader";
@@ -383,18 +384,19 @@ const StudentDetails = () => {
                 <div className="flex items-center justify-between mb-3">
                   <h4 className="text-md font-medium text-gray-900">Attendance</h4>
                   <div className="flex items-center gap-2 text-sm">
-                    <input
-                      type="date"
+                    <DatePicker
                       value={attendanceFrom}
-                      onChange={(e) => setAttendanceFrom(e.target.value)}
-                      className="rounded-md border border-gray-300 px-2 py-1 text-xs"
+                      onChange={setAttendanceFrom}
+                      placeholder="From"
+                      className="w-40"
                     />
                     <span className="text-gray-400">to</span>
-                    <input
-                      type="date"
+                    <DatePicker
                       value={attendanceTo}
-                      onChange={(e) => setAttendanceTo(e.target.value)}
-                      className="rounded-md border border-gray-300 px-2 py-1 text-xs"
+                      onChange={setAttendanceTo}
+                      min={attendanceFrom || undefined}
+                      placeholder="To"
+                      className="w-40"
                     />
                   </div>
                 </div>

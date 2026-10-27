@@ -22,12 +22,12 @@ const PersonFields = ({ form, who, isLogin }: PersonFieldsProps) => {
           </span>
         )}
       </div>
-      <TextField form={form} name={`${who}.name`} label={`${title}'s name`} />
+      <TextField form={form} name={`${who}.name`} label={`${title}'s name`} placeholder="Full name" />
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-        <TextField form={form} name={`${who}.phone`} label="Phone" type="tel" />
-        <TextField form={form} name={`${who}.email`} label="Email" type="email" />
+        <TextField form={form} name={`${who}.phone`} label="Phone" type="tel" placeholder="10-digit mobile number" />
+        <TextField form={form} name={`${who}.email`} label="Email" type="email" placeholder="name@example.com" />
       </div>
-      <TextField form={form} name={`${who}.occupation`} label="Occupation" />
+      <TextField form={form} name={`${who}.occupation`} label="Occupation" placeholder="e.g. Engineer" />
     </div>
   );
 };

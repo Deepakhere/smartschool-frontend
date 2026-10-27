@@ -6,10 +6,9 @@ import EmptyState from "@/components/empty-state";
 import SectionHeader from "@/components/section-header";
 import CustomSelectDropdown from "@/components/custom-select";
 import DeleteConfirmationDialog from "@/components/delete-confirmation-dialog";
-import { FileField } from "@/components/form-fields";
+import { DateField, FileField } from "@/components/form-fields";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useLeaveRequestsController } from "./leave-requests-controller";
 import { SelectOption } from "@/types";
@@ -68,32 +67,8 @@ const LeaveRequests = () => {
                   </FormItem>
                 )}
               />
-              <FormField
-                control={c.form.control}
-                name="fromDate"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>From Date</FormLabel>
-                    <FormControl>
-                      <Input type="date" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={c.form.control}
-                name="toDate"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>To Date</FormLabel>
-                    <FormControl>
-                      <Input type="date" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+              <DateField form={c.form} name="fromDate" label="From Date" />
+              <DateField form={c.form} name="toDate" label="To Date" />
             </div>
 
             <FormField

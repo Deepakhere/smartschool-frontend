@@ -5,7 +5,7 @@ import DeleteConfirmationDialog from "@/components/delete-confirmation-dialog";
 import EmptyState from "@/components/empty-state";
 import SectionHeader from "@/components/section-header";
 import CustomSelectDropdown from "@/components/custom-select";
-import { FileField } from "@/components/form-fields";
+import { DateField, FileField } from "@/components/form-fields";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -129,32 +129,8 @@ const Homework = () => {
             />
 
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-              <FormField
-                control={c.form.control}
-                name="assignedDate"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Assigned Date</FormLabel>
-                    <FormControl>
-                      <Input type="date" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={c.form.control}
-                name="dueDate"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Due Date</FormLabel>
-                    <FormControl>
-                      <Input type="date" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+              <DateField form={c.form} name="assignedDate" label="Assigned Date" />
+              <DateField form={c.form} name="dueDate" label="Due Date" />
               <FileField
                 form={c.form}
                 name="attachment"

@@ -2,7 +2,7 @@ import { countLabel } from "@/components/data-table";
 import FormDialog from "@/components/form-dialog";
 import { Switch } from "@/components/ui/switch";
 import { IAcademicYear } from "@/types";
-import { SelectField, TextField } from "@/components/form-fields";
+import { SelectField, TextField, DateField } from "@/components/form-fields";
 import useRolloverDialogController from "./rollover-dialog-controller";
 
 interface RolloverDialogProps {
@@ -79,8 +79,8 @@ const RolloverDialog = ({ organizationId, years, sourceYear, onClose }: Rollover
       />
       <TextField form={form} name="name" label="New year name" placeholder="2027-28" />
       <div className="grid grid-cols-2 gap-4">
-        <TextField form={form} name="startDate" label="Starts" type="date" />
-        <TextField form={form} name="endDate" label="Ends" type="date" />
+        <DateField form={form} name="startDate" label="Starts" />
+        <DateField form={form} name="endDate" label="Ends" />
       </div>
 
       <div className="space-y-3 rounded-md border border-gray-200 bg-gray-50 p-4">

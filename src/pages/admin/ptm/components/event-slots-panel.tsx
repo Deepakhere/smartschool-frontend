@@ -1,4 +1,4 @@
-import { SelectField, TextField } from "@/components/form-fields";
+import { SelectField, DateTimeField } from "@/components/form-fields";
 import Spinner from "@/components/spinner";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
@@ -50,8 +50,8 @@ const EventSlotsPanel = ({ organizationId, event, assignments }: EventSlotsPanel
                 options={sectionOptions}
                 disabled={!teacherUserId}
               />
-              <TextField form={form} name="startAt" label="From" type="datetime-local" />
-              <TextField form={form} name="endAt" label="To" type="datetime-local" />
+              <DateTimeField form={form} name="startAt" label="From" />
+              <DateTimeField form={form} name="endAt" label="To" />
             </div>
             <p className="mt-1 text-xs text-gray-500">
               The window is split into {event.slotDurationMins}-minute slots.

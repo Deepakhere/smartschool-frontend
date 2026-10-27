@@ -5,7 +5,7 @@ import { useHeaderActions } from "@/components/section-header";
 import DataTable from "@/components/data-table";
 import DeleteConfirmationDialog from "@/components/delete-confirmation-dialog";
 import FormDialog from "@/components/form-dialog";
-import { TextField } from "@/components/form-fields";
+import { TextField, DateField } from "@/components/form-fields";
 import { Switch } from "@/components/ui/switch";
 import RolloverDialog from "../components/rollover-dialog";
 import { yearColumns } from "./years-tab-columns";
@@ -66,8 +66,8 @@ const YearsTab = ({ organizationId }: { organizationId: string }) => {
       >
         <TextField form={c.form} name="name" label="Name" placeholder="2026-27" autoFocus />
         <div className="grid grid-cols-2 gap-4">
-          <TextField form={c.form} name="startDate" label="Starts" type="date" />
-          <TextField form={c.form} name="endDate" label="Ends" type="date" />
+          <DateField form={c.form} name="startDate" label="Starts" />
+          <DateField form={c.form} name="endDate" label="Ends" />
         </div>
         {!c.dialog?.year && (
           <label className="flex items-center gap-3 text-sm text-gray-700">

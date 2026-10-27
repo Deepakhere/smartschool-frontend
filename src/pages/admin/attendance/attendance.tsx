@@ -3,10 +3,11 @@ import { ClipboardDocumentCheckIcon, DocumentChartBarIcon, TableCellsIcon } from
 
 import CustomSelectDropdown from "@/components/custom-select";
 import DataTable from "@/components/data-table";
+import DatePicker from "@/components/date-picker";
 import EmptyState from "@/components/empty-state";
+import MonthPicker from "@/components/month-picker";
 import PageTabs, { PageTab } from "@/components/page-tabs";
 import SectionHeader from "@/components/section-header";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { SelectOption } from "@/types";
 import { formatDate } from "@/utils";
@@ -34,7 +35,7 @@ const AdminAttendance = () => {
       dateField: () => (
         <div>
           <Label>Date</Label>
-          <Input type="date" value={c.date} max={c.maxDate} onChange={(e) => c.setDate(e.target.value)} />
+          <DatePicker value={c.date} max={c.maxDate} onChange={c.setDate} />
         </div>
       ),
       render: () =>
@@ -81,11 +82,11 @@ const AdminAttendance = () => {
         <div className="flex min-w-0 gap-2">
           <div className="min-w-0 flex-1">
             <Label>From</Label>
-            <Input type="date" max={c.maxDate} value={c.reportFrom} onChange={(e) => c.setReportFrom(e.target.value)} />
+            <DatePicker max={c.maxDate} value={c.reportFrom} onChange={c.setReportFrom} />
           </div>
           <div className="min-w-0 flex-1">
             <Label>To</Label>
-            <Input type="date" max={c.maxDate} value={c.reportTo} onChange={(e) => c.setReportTo(e.target.value)} />
+            <DatePicker min={c.reportFrom} max={c.maxDate} value={c.reportTo} onChange={c.setReportTo} />
           </div>
         </div>
       ),
@@ -121,12 +122,7 @@ const AdminAttendance = () => {
       dateField: () => (
         <div>
           <Label>Month</Label>
-          <Input
-            type="month"
-            value={c.registerMonth}
-            max={c.maxDate.slice(0, 7)}
-            onChange={(e) => c.setRegisterMonth(e.target.value)}
-          />
+          <MonthPicker value={c.registerMonth} max={c.maxDate.slice(0, 7)} onChange={c.setRegisterMonth} />
         </div>
       ),
       render: () =>

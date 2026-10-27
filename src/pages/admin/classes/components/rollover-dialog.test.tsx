@@ -1,6 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import { pickDate } from "@/test/pick-date";
 
 import RolloverDialog from "./rollover-dialog";
 
@@ -54,8 +55,8 @@ describe("RolloverDialog", () => {
     open();
 
     expect(screen.getByLabelText("New year name")).toHaveValue("2027-28");
-    expect(screen.getByLabelText("Starts")).toHaveValue("2027-04-01");
-    expect(screen.getByLabelText("Ends")).toHaveValue("2028-03-31");
+    expect(screen.getByLabelText("Starts")).toHaveTextContent("1 Apr 2027");
+    expect(screen.getByLabelText("Ends")).toHaveTextContent("31 Mar 2028");
   });
 
   it("says exactly what will be copied before anything happens", () => {
@@ -106,8 +107,7 @@ describe("RolloverDialog", () => {
   it("does not send a year that ends before it starts", async () => {
     open();
     const user = userEvent.setup();
-    await user.clear(screen.getByLabelText("Ends"));
-    await user.type(screen.getByLabelText("Ends"), "2027-01-01");
+    await pickDate(user, "Ends", "2027-01-01");
     await user.click(screen.getByRole("button", { name: "Start 2027-28" }));
 
     expect(await screen.findByText("The end date must be after the start date.")).toBeInTheDocument();

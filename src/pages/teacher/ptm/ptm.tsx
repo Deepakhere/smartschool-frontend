@@ -1,7 +1,7 @@
 import DataTable from "@/components/data-table";
 import EmptyState from "@/components/empty-state";
 import ErrorState from "@/components/error-state";
-import { SelectField, TextField } from "@/components/form-fields";
+import { SelectField, DateTimeField } from "@/components/form-fields";
 import SectionHeader from "@/components/section-header";
 import { Button } from "@/components/ui/button";
 import { Card, CardTitle } from "@/components/ui/card";
@@ -50,8 +50,8 @@ const TeacherPTM = () => {
                   onValueChange={onEventChange}
                 />
                 <SelectField form={form} name="sectionId" label="Section" options={sectionOptions} />
-                <TextField form={form} name="startAt" label="From" type="datetime-local" />
-                <TextField form={form} name="endAt" label="To" type="datetime-local" />
+                <DateTimeField form={form} name="startAt" label="From" />
+                <DateTimeField form={form} name="endAt" label="To" />
               </div>
               <Button type="submit" className="mt-4" loading={isGeneratingSlots}>
                 Generate slots

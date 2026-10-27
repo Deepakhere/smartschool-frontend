@@ -1,116 +1,106 @@
-import { useState, useRef, useEffect } from "react";
+import { useState } from "react";
 import { CalendarIcon } from "@heroicons/react/24/outline";
 
+import { Button } from "@/components/ui/button";
+import { Calendar } from "@/components/ui/calendar";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { cn } from "@/lib/utils";
+import { readable, toDate, toValue } from "./date-parts";
+
 interface DatePickerProps {
-  label?: string;
+  // "YYYY-MM-DD", or "" for none
   value: string;
   onChange: (value: string) => void;
+  label?: string;
   placeholder?: string;
   className?: string;
   disabled?: boolean;
   required?: boolean;
   name?: string;
   id?: string;
+  // earliest and latest dates that can be picked, "YYYY-MM-DD"
   min?: string;
   max?: string;
-  dateFormat?: string;
+  "aria-invalid"?: boolean;
+  "aria-describedby"?: string;
 }
 
+// a field that opens a calendar; month and year dropdowns make far-off dates (a birth date) quick to reach
 const DatePicker = ({
-  label,
   value,
   onChange,
+  label,
   placeholder = "Select date",
-  className = "",
-  disabled = false,
-  required = false,
+  className,
+  disabled,
+  required,
   name,
   id,
   min,
   max,
+  "aria-invalid": invalid,
+  "aria-describedby": describedBy,
 }: DatePickerProps) => {
-  const [isOpen, setIsOpen] = useState(false);
-  const datePickerRef = useRef<HTMLDivElement>(null);
-  const inputRef = useRef<HTMLInputElement>(null);
+  const [open, setOpen] = useState(false);
+  const selected = toDate(value);
+  const minDate = toDate(min);
+  const maxDate = toDate(max);
+  const today = new Date();
+  const todayAllowed = (!minDate || today >= minDate) && (!maxDate || today <= maxDate);
 
-  const displayDate = value
-    ? new Intl.DateTimeFormat(undefined, {
-        year: "numeric",
-        month: "long",
-        day: "numeric",
-      }).format(new Date(`${value.slice(0, 10)}T00:00:00`))
-    : "";
-
-  const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    onChange(e.target.value);
+  const pick = (date?: Date) => {
+    onChange(date ? toValue(date) : "");
+    setOpen(false);
   };
-
-  const toggleCalendar = () => {
-    if (!disabled) {
-      setIsOpen(!isOpen);
-      if (!isOpen && inputRef.current) {
-        setTimeout(() => {
-          inputRef.current?.showPicker();
-        }, 0);
-      }
-    }
-  };
-
-  // Close calendar when clicking outside
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (datePickerRef.current && !datePickerRef.current.contains(event.target as Node)) {
-        setIsOpen(false);
-      }
-    };
-
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, []);
 
   return (
-    <div className={`${className}`}>
+    <div className={className}>
       {label && (
-        <label htmlFor={id} className="block text-sm font-medium text-gray-700 mb-1">
+        <label htmlFor={id} className="mb-1 block text-sm font-medium text-gray-700">
           {label} {required && <span className="text-red-500">*</span>}
         </label>
       )}
-      <div className="relative" ref={datePickerRef}>
-        <div
-          className={`relative w-full cursor-pointer rounded-md border ${
-            isOpen ? "border-primary-500 ring-1 ring-primary-500" : "border-gray-300"
-          } bg-white py-2 pl-3 pr-10 text-left shadow-sm focus-within:border-primary-500 focus-within:ring-1 focus-within:ring-primary-500 sm:text-sm`}
-          onClick={toggleCalendar}
-        >
-          <div className="flex items-center">
-            {displayDate ? (
-              <span className="block truncate">{displayDate}</span>
-            ) : (
-              <span className="block truncate text-gray-500">{placeholder}</span>
-            )}
-          </div>
-          <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
-            <CalendarIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />
-          </span>
-
-          <input
-            ref={inputRef}
-            type="date"
+      <Popover open={open} onOpenChange={setOpen}>
+        <PopoverTrigger asChild>
+          <button
+            type="button"
             id={id}
             name={name}
-            value={value}
-            onChange={handleDateChange}
-            min={min}
-            max={max}
-            required={required}
             disabled={disabled}
-            className="sr-only"
-            onBlur={() => setIsOpen(false)}
+            aria-invalid={invalid}
+            aria-describedby={describedBy}
+            className={cn(
+              "flex w-full items-center justify-between gap-2 rounded-md border border-gray-300 bg-white py-2 pl-3 pr-2.5 text-left text-sm shadow-sm",
+              "focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500 disabled:cursor-not-allowed disabled:opacity-60",
+              open && "border-primary-500 ring-1 ring-primary-500",
+              invalid && "border-red-500"
+            )}
+          >
+            <span className={cn("truncate", !value && "text-gray-400")}>{value ? readable(value) : placeholder}</span>
+            <CalendarIcon className="h-4 w-4 shrink-0 text-gray-400" aria-hidden="true" />
+          </button>
+        </PopoverTrigger>
+        <PopoverContent align="start" className="w-auto p-0">
+          <Calendar
+            mode="single"
+            selected={selected}
+            onSelect={pick}
+            captionLayout="dropdown"
+            defaultMonth={selected ?? (maxDate && maxDate < today ? maxDate : today)}
+            startMonth={minDate ?? new Date(today.getFullYear() - 80, 0)}
+            endMonth={maxDate ?? new Date(today.getFullYear() + 10, 11)}
+            disabled={[...(minDate ? [{ before: minDate }] : []), ...(maxDate ? [{ after: maxDate }] : [])]}
           />
-        </div>
-      </div>
+          <div className="flex items-center justify-between border-t border-gray-100 px-3 py-2">
+            <Button variant="ghost" size="sm" onClick={() => pick(undefined)} disabled={!value}>
+              Clear
+            </Button>
+            <Button variant="ghost" size="sm" onClick={() => pick(today)} disabled={!todayAllowed}>
+              Today
+            </Button>
+          </div>
+        </PopoverContent>
+      </Popover>
     </div>
   );
 };
