@@ -46,7 +46,7 @@ export const marksSheetColumns = ({
   },
   {
     id: "theory",
-    header: "Theory",
+    header: examSubject ? `Theory (max ${examSubject.maxMarks})` : "Theory",
     meta: { align: "center" },
     cell: ({ row }) => (
       <Input
@@ -61,7 +61,7 @@ export const marksSheetColumns = ({
   },
   {
     id: "practical",
-    header: "Practical",
+    header: examSubject?.hasPractical ? `Practical (max ${examSubject.practicalMaxMarks})` : "Practical",
     meta: { align: "center" },
     cell: ({ row }) => (
       <Input

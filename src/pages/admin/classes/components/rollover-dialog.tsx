@@ -1,3 +1,4 @@
+import { countLabel } from "@/components/data-table";
 import FormDialog from "@/components/form-dialog";
 import { Switch } from "@/components/ui/switch";
 import { IAcademicYear } from "@/types";
@@ -12,7 +13,7 @@ interface RolloverDialogProps {
   onClose: () => void;
 }
 
-const plural = (count: number, singular: string, many = `${singular}s`) => `${count} ${count === 1 ? singular : many}`;
+const plural = (count: number, one: string, other = `${one}s`) => countLabel(count, { one, other });
 
 const CheckRow = ({
   checked,

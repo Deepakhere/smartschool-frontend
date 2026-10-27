@@ -61,8 +61,8 @@ describe("RolloverDialog", () => {
   it("says exactly what will be copied before anything happens", () => {
     open();
 
-    expect(screen.getByText("3 classes with 6 sections (active ones only)")).toBeInTheDocument();
-    expect(screen.getByText("9 subjects (active ones only)")).toBeInTheDocument();
+    expect(screen.getByText("3 class(es) with 6 section(s) (active ones only)")).toBeInTheDocument();
+    expect(screen.getByText("9 subject(s) (active ones only)")).toBeInTheDocument();
     expect(screen.getByText(/Students are not moved here/)).toBeInTheDocument();
     expect(screen.getByText(/teacher assignments are not copied/)).toBeInTheDocument();
   });

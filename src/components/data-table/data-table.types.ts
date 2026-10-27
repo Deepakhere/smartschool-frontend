@@ -18,8 +18,12 @@ export interface ItemLabel {
   other: string;
 }
 
+// one word for every count, the way the school writes it: "student(s)", "class(es)"
+export const genericLabel = ({ one, other }: ItemLabel) =>
+  other.startsWith(one) && other !== one ? `${one}(${other.slice(one.length)})` : `${one}(s)`;
+
 export const countLabel = (count: number, label: ItemLabel) =>
-  `${count.toLocaleString("en-IN")} ${count === 1 ? label.one : label.other}`;
+  `${count.toLocaleString("en-IN")} ${genericLabel(label)}`;
 
 // the server already paged the rows: show its page and total, ask it for another page
 export interface ServerPagination {

@@ -40,7 +40,6 @@ const MarksSheetCard = ({
           Results for this exam are published, so these marks can no longer be changed.
         </p>
       )}
-      {!examPublished && c.hasUnsavedMarks && <p className="mb-3 text-sm text-amber-700">You have unsaved changes.</p>}
 
       {c.error ? (
         <ErrorState error={c.error} onRetry={c.retry} />
@@ -50,6 +49,14 @@ const MarksSheetCard = ({
           data={c.rows}
           getRowId={(row) => row.id}
           isLoading={c.isLoading}
+          toolbar={
+            !examPublished &&
+            c.hasUnsavedMarks && (
+              <span className="rounded-full bg-amber-100 px-2.5 py-1 text-xs font-medium text-amber-800">
+                {c.unsavedCount} unsaved change(s)
+              </span>
+            )
+          }
           actions={[
             { label: "Export CSV", readOnlySafe: true, onClick: c.onExport },
             { label: "Verify all", onClick: c.onVerify, loading: c.isVerifying, hidden: examPublished || !canVerify },

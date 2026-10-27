@@ -105,7 +105,7 @@ export const SHARED_PAGES: SharedPage[] = [
     nav: { name: "PTM Events", hint: "Schedule parent-teacher meetings", icon: UsersIcon },
   },
   {
-    path: "results",
+    path: "results/*",
     element: <AdminReports />,
     module: "exams",
     anyOf: ["exams.manage"],

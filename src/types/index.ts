@@ -506,6 +506,8 @@ export interface IGradingScheme {
   name: string;
   bands: IGradingBand[];
   passPercent: number;
+  // exams that grade with it
+  examCount?: number;
 }
 
 export interface IExam {
@@ -520,6 +522,32 @@ export interface IExam {
   gradingSchemeId: { id: string; name: string } | string;
   status: string;
   publishedAt?: string;
+  progress?: IExamProgress;
+}
+
+// where an exam stands, worked out by the server from its subjects and marks
+export type ExamStage = "setup" | "marks" | "ready" | "published";
+
+export interface IExamProgress {
+  classes: number;
+  classesWithSubjects: number;
+  subjects: number;
+  // marks a fully entered exam holds: each subject times the students of its class
+  expected: number;
+  entered: number;
+  verified: number;
+  stage: ExamStage;
+}
+
+export interface IExamOverviewSubject extends IExamSubject {
+  expected: number;
+  entered: number;
+  verified: number;
+}
+
+export interface IExamOverview {
+  item: IExam & { progress: IExamProgress };
+  classes: { id: string; name: string; students: number; subjects: IExamOverviewSubject[] }[];
 }
 
 export interface IExamSubject {

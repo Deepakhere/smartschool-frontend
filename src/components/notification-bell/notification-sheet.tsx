@@ -28,14 +28,14 @@ const NotificationSheet = () => {
 
   return (
     <Sheet open={isSheetOpen} onOpenChange={(open) => (open ? openSheet() : closeSheet())}>
-      <SheetContent>
-        <SheetHeader className="flex items-center justify-between">
+      <SheetContent className="max-w-md">
+        <SheetHeader className="flex items-center justify-between pr-14">
           <SheetTitle>{t("labels.notifications")}</SheetTitle>
           {unreadCount > 0 && (
             <button
               type="button"
               onClick={() => markAllAsRead()}
-              className="mr-6 text-xs font-medium text-primary-600 hover:text-primary-700"
+              className="rounded-md px-2 py-1 text-xs font-medium text-primary-600 hover:bg-gray-50 hover:text-primary-700"
             >
               {t("labels.mark_all_as_read")}
             </button>

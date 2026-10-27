@@ -9,7 +9,7 @@ import {
 
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { ItemLabel, ServerPagination } from "./data-table.types";
+import { genericLabel, ItemLabel, ServerPagination } from "./data-table.types";
 
 const PAGE_SIZES = [10, 20, 50, 100];
 
@@ -64,15 +64,10 @@ const DataTableFooter = ({
   };
 
   return (
-    <div className="flex flex-wrap items-center justify-between gap-3 border-t border-gray-200 px-4 py-3 text-sm text-gray-600">
+    <div className="flex shrink-0 flex-wrap items-center justify-between gap-3 border-t border-gray-200 bg-white px-4 py-3 text-sm text-gray-600">
       <p>
         <span className="font-medium text-gray-900">{total.toLocaleString("en-IN")}</span>{" "}
-        {itemLabel
-          ? total === 1
-            ? itemLabel.one
-            : itemLabel.other
-          : t(total === 1 ? "labels.result" : "labels.results")}{" "}
-        {t("labels.found")}
+        {genericLabel(itemLabel ?? { one: t("labels.result"), other: t("labels.results") })} {t("labels.found")}
       </p>
       <div className="flex flex-wrap items-center gap-3">
         {onPageSizeChange && (

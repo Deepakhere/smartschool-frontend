@@ -8,8 +8,7 @@ import MarksEntryTab from "./tabs/marks-entry-tab";
 import useReportsController, { ReportsTabKey } from "./reports-controller";
 
 const AdminReports = () => {
-  const { organizationId, activeTab, setActiveTab, currentYearId, classOptions, subjectOptions } =
-    useReportsController();
+  const { organizationId, activeTab, setActiveTab, currentYearId, classOptions } = useReportsController();
 
   const TABS: PageTab<ReportsTabKey>[] = [
     {
@@ -17,12 +16,7 @@ const AdminReports = () => {
       label: "Exams",
       icon: ClipboardDocumentListIcon,
       render: () => (
-        <ExamsTab
-          organizationId={organizationId}
-          academicYearId={currentYearId}
-          classOptions={classOptions}
-          subjectOptions={subjectOptions}
-        />
+        <ExamsTab organizationId={organizationId} academicYearId={currentYearId} classOptions={classOptions} />
       ),
     },
     {
@@ -43,8 +37,8 @@ const AdminReports = () => {
     <HeaderActionsProvider>
       <div className="mx-auto max-w-7xl">
         <SectionHeader
-          title="Exams & Results"
-          description="Set up grading, define exams, enter marks and publish results"
+          title="Examinations"
+          description="Create exams, enter and verify marks, and publish results to parents"
         />
         <PageTabs tabs={TABS} value={activeTab} onChange={setActiveTab} label="Exams sections" />
       </div>

@@ -83,10 +83,13 @@ export const useSidebarController = () => {
   const attention = useGetAttention(organizationId, role !== "parent").data;
   // a link to a tab ("fees?tab=ledger") is current only on that tab
   const openTab = new URLSearchParams(search).get("tab");
+  // a page inside a tab ("results/exams/123") counts as that tab ("results?tab=exams")
   const isCurrent = (href: string) => {
     const [path, query] = href.split("?");
-    const onPage = pathname === path || pathname.startsWith(`${path}/`);
-    return onPage && (!query || new URLSearchParams(query).get("tab") === openTab);
+    const tab = query && new URLSearchParams(query).get("tab");
+    if (pathname === path) return !tab || tab === openTab;
+    if (!pathname.startsWith(`${path}/`)) return false;
+    return !tab || pathname.slice(path.length + 1).split("/")[0] === tab;
   };
   const toItem = (page: SidebarPage): SidebarItem => {
     const href = `/${organizationId}/${role}/${page.path}`;

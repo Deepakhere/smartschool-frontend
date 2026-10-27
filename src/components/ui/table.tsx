@@ -3,9 +3,9 @@ import * as React from "react";
 import { cn } from "@/lib/utils";
 
 // the shared table primitives; every data table in the app is built from these
-const Table = React.forwardRef<HTMLTableElement, React.HTMLAttributes<HTMLTableElement>>(
-  ({ className, ...props }, ref) => (
-    <div className="overflow-x-auto">
+const Table = React.forwardRef<HTMLTableElement, React.HTMLAttributes<HTMLTableElement> & { scrollClassName?: string }>(
+  ({ className, scrollClassName, ...props }, ref) => (
+    <div className={cn("overflow-x-auto", scrollClassName)}>
       <table ref={ref} className={cn("min-w-full divide-y divide-gray-200", className)} {...props} />
     </div>
   )

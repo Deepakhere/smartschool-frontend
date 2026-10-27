@@ -36,14 +36,15 @@ const useMarksSheetCardController = (organizationId: string, examSubjectId: stri
   const examSubject = marksSheet.data?.examSubject;
   const marksByStudent = Object.fromEntries((marksSheet.data?.items ?? []).map((item) => [item.student.id, item]));
 
-  const hasUnsavedMarks = draftRows.some((row) => {
+  const unsavedCount = draftRows.filter((row) => {
     const item = marksByStudent[row.studentId];
     return (
       row.isAbsent !== (item?.marks?.isAbsent ?? false) ||
       row.theoryMarks !== String(item?.marks?.theoryMarks ?? "") ||
       row.practicalMarks !== String(item?.marks?.practicalMarks ?? "")
     );
-  });
+  }).length;
+  const hasUnsavedMarks = unsavedCount > 0;
 
   // rows with nothing typed are left out rather than saved as 0: a student only gets marks once someone
   // enters them (or ticks absent). Marks above the maximum are caught here, before the server refuses the save.
@@ -109,6 +110,7 @@ const useMarksSheetCardController = (organizationId: string, examSubjectId: stri
     examSubject,
     marksByStudent,
     hasUnsavedMarks,
+    unsavedCount,
     isLoading: marksSheet.isLoading,
     error: marksSheet.isError ? marksSheet.error : null,
     retry: () => marksSheet.refetch(),

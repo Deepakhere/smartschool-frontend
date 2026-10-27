@@ -82,6 +82,7 @@ export const API_QUERY_KEY = {
   GET_GRADING_SCHEMES: "get-grading-schemes",
   GET_EXAMS: "get-exams",
   GET_EXAM_SUBJECTS: "get-exam-subjects",
+  GET_EXAM_OVERVIEW: "get-exam-overview",
   GET_MARKS_SHEET: "get-marks-sheet",
   GET_RESULTS_FOR_STUDENT: "get-results-for-student",
   GET_MY_RESULTS: "get-my-results",

@@ -14,6 +14,7 @@ import {
 } from "@/components/table";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
+import useFitHeight from "./use-fit-height";
 import DataTableFooter from "./data-table-footer";
 import { DataTableProps } from "./data-table.types";
 import useDataTable from "./use-data-table";
@@ -26,13 +27,19 @@ const DataTable = <T,>(props: DataTableProps<T>) => {
   const { empty, isLoading, onRowClick, search, toolbar, actions = [], itemLabel, className } = props;
   const hasActions = actions.some((a) => !a.hidden);
   const { table, pager } = useDataTable(props);
+  const fit = useFitHeight<HTMLDivElement>();
   const columnCount = table.getVisibleLeafColumns().length;
   const rows = table.getRowModel().rows;
 
   return (
-    <div className={cn("overflow-hidden rounded-xl border border-gray-200 bg-white", className)}>
+    // toolbar, column headers and footer stay put; only the rows scroll
+    <div
+      ref={fit.ref}
+      style={{ maxHeight: fit.maxHeight }}
+      className={cn("flex flex-col overflow-hidden rounded-xl border border-gray-200 bg-white", className)}
+    >
       {(search || toolbar || hasActions) && (
-        <div className="flex flex-wrap items-center justify-between gap-3 border-b border-gray-200 p-3">
+        <div className="flex shrink-0 flex-wrap items-center justify-between gap-3 border-b border-gray-200 p-3">
           {search ? (
             <div className="relative w-full sm:w-80">
               <MagnifyingGlassIcon className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
@@ -55,8 +62,8 @@ const DataTable = <T,>(props: DataTableProps<T>) => {
         </div>
       )}
 
-      <Table>
-        <TableHeader>
+      <Table scrollClassName="min-h-0 flex-1 overflow-y-auto">
+        <TableHeader className="sticky top-0 z-10 shadow-[inset_0_-1px_0_rgb(229_231_235)]">
           {table.getHeaderGroups()[0].headers.map((header) => {
             const meta = header.column.columnDef.meta;
             const align = meta?.align ?? "left";

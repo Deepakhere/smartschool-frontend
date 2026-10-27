@@ -68,7 +68,7 @@ const StudentsList = () => {
         action={{ label: "New Admission", icon: PlusIcon, onClick: onClickAddStudent, hidden: !canManage }}
       />
 
-      <div className="py-4">
+      <div>
         <DataTable
           columns={columns}
           data={studentDetail ?? []}

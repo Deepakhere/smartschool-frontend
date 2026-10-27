@@ -130,7 +130,7 @@ const router = createBrowserRouter([
         element: gate("homework", <AdminHomework />),
       },
       {
-        path: "results",
+        path: "results/*",
         element: gate("exams", <AdminReports />),
       },
       {
