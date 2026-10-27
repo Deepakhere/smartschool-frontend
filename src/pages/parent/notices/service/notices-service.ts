@@ -29,7 +29,10 @@ export const useMarkNoticeRead = (organizationId: string) => {
     onSuccess: (_data, noticeId) => {
       queryClient.setQueryData<{ items: INotice[] }>(queryKey, (current) =>
         current
-          ? { ...current, items: current.items.map((notice) => (notice.id === noticeId ? { ...notice, isRead: true } : notice)) }
+          ? {
+              ...current,
+              items: current.items.map((notice) => (notice.id === noticeId ? { ...notice, isRead: true } : notice)),
+            }
           : current
       );
     },

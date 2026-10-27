@@ -12,7 +12,13 @@ interface SectionHeaderProps {
 }
 
 // the top of every page: title and description on the left, its buttons on the right
-const SectionHeader = ({ title, description, action: ownAction, secondaryActions: ownSecondary, className = "" }: SectionHeaderProps) => {
+const SectionHeader = ({
+  title,
+  description,
+  action: ownAction,
+  secondaryActions: ownSecondary,
+  className = "",
+}: SectionHeaderProps) => {
   const registered = useRegisteredHeaderActions();
   const action = ownAction ?? registered?.action;
   const secondaryActions = ownSecondary ?? registered?.secondaryActions ?? [];

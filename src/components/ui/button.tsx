@@ -5,7 +5,8 @@ import { cn } from "@/lib/utils";
 import ButtonSpinner from "@/icons/button-spinner";
 
 const VARIANTS = {
-  primary: "border border-transparent bg-primary-600 text-white shadow-sm hover:bg-primary-700 focus-visible:ring-primary-500",
+  primary:
+    "border border-transparent bg-primary-600 text-white shadow-sm hover:bg-primary-700 focus-visible:ring-primary-500",
   secondary: "border border-gray-300 bg-white text-gray-700 shadow-sm hover:bg-gray-50 focus-visible:ring-primary-500",
   danger: "border border-transparent bg-red-600 text-white shadow-sm hover:bg-red-700 focus-visible:ring-red-500",
   ghost: "border border-transparent text-gray-700 hover:bg-gray-100 focus-visible:ring-primary-500",
@@ -27,7 +28,20 @@ export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElemen
 
 // the one button for the app; variants match the colours every screen already used
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, variant = "primary", size = "md", loading = false, asChild = false, disabled, children, type, ...props }, ref) => {
+  (
+    {
+      className,
+      variant = "primary",
+      size = "md",
+      loading = false,
+      asChild = false,
+      disabled,
+      children,
+      type,
+      ...props
+    },
+    ref
+  ) => {
     const classes = cn(
       "inline-flex items-center justify-center gap-2 rounded-md font-medium transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50",
       VARIANTS[variant],
@@ -35,7 +49,12 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       variant === "link" && "text-sm",
       className
     );
-    if (asChild) return <Slot ref={ref} className={classes} {...props}>{children}</Slot>;
+    if (asChild)
+      return (
+        <Slot ref={ref} className={classes} {...props}>
+          {children}
+        </Slot>
+      );
     return (
       <button ref={ref} type={type ?? "button"} className={classes} disabled={disabled || loading} {...props}>
         {loading && <ButtonSpinner />}

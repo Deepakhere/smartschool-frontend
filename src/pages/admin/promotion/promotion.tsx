@@ -74,9 +74,7 @@ const Promotion = () => {
           </div>
         </div>
 
-        <h3 className="text-sm font-semibold text-gray-900 pt-2">
-          Target (for students being promoted or detained)
-        </h3>
+        <h3 className="text-sm font-semibold text-gray-900 pt-2">Target (for students being promoted or detained)</h3>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <div>
             <Label>Academic Year</Label>
@@ -140,7 +138,9 @@ const Promotion = () => {
                 <span className="text-gray-900">
                   {row.name} <span className="text-gray-500">({row.action})</span>
                 </span>
-                <span className={row.success ? "text-green-700" : "text-red-600"}>{row.success ? "Done" : row.message}</span>
+                <span className={row.success ? "text-green-700" : "text-red-600"}>
+                  {row.success ? "Done" : row.message}
+                </span>
               </li>
             ))}
           </ul>
@@ -172,7 +172,10 @@ const Promotion = () => {
           {c.isLoadingCandidates ? (
             <Spinner />
           ) : c.candidates.length === 0 ? (
-            <EmptyState title="No students in this section" description="There are no active students here to promote." />
+            <EmptyState
+              title="No students in this section"
+              description="There are no active students here to promote."
+            />
           ) : (
             <div className="divide-y divide-gray-100">
               {c.candidates.map((candidate) => {
@@ -184,7 +187,9 @@ const Promotion = () => {
                       <p className="text-sm font-medium text-gray-900">
                         {candidate.student.name}
                         {candidate.student.admissionNumber && (
-                          <span className="ml-1 text-xs font-normal text-gray-500">({candidate.student.admissionNumber})</span>
+                          <span className="ml-1 text-xs font-normal text-gray-500">
+                            ({candidate.student.admissionNumber})
+                          </span>
                         )}
                       </p>
                       <p className="text-xs text-gray-500 mt-0.5">

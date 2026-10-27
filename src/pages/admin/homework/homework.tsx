@@ -5,6 +5,7 @@ import DeleteConfirmationDialog from "@/components/delete-confirmation-dialog";
 import EmptyState from "@/components/empty-state";
 import SectionHeader from "@/components/section-header";
 import CustomSelectDropdown from "@/components/custom-select";
+import { FileField } from "@/components/form-fields";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -154,10 +155,15 @@ const Homework = () => {
                   </FormItem>
                 )}
               />
-              <div>
-                <Label>{t("labels.attachment")}</Label>
-                <Input type="file" accept=".pdf" onChange={c.handleFileChange} />
-              </div>
+              <FileField
+                form={c.form}
+                name="attachment"
+                label={t("labels.attachment")}
+                accept=".pdf,application/pdf"
+                maxBytes={10 * 1024 * 1024}
+                hint="PDF, up to 10 MB"
+                className="sm:col-span-3"
+              />
             </div>
 
             <div className="flex justify-end gap-3">

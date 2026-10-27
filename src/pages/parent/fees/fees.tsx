@@ -10,7 +10,11 @@ import useParentFeesController from "./fees-controller";
 
 const ParentFees = () => {
   const c = useParentFeesController();
-  const receiptColumns = paymentColumns({ isEmailing: c.isEmailing, download: c.downloadReceipt, email: c.emailReceipt });
+  const receiptColumns = paymentColumns({
+    isEmailing: c.isEmailing,
+    download: c.downloadReceipt,
+    email: c.emailReceipt,
+  });
 
   return (
     <div className="max-w-7xl mx-auto">
@@ -40,7 +44,12 @@ const ParentFees = () => {
                       {fee.totalBalance > 0 ? `Due: ${formatMoney(fee.totalBalance)}` : "Fully paid"}
                     </span>
                     {c.canPayOnline && fee.totalBalance > 0 && (
-                      <Button size="sm" loading={c.isPaying(fee.studentFeeId)} disabled={!!c.paying} onClick={() => c.payOnline(fee.studentFeeId)}>
+                      <Button
+                        size="sm"
+                        loading={c.isPaying(fee.studentFeeId)}
+                        disabled={!!c.paying}
+                        onClick={() => c.payOnline(fee.studentFeeId)}
+                      >
                         Pay {formatMoney(fee.totalBalance)} now
                       </Button>
                     )}
@@ -64,7 +73,12 @@ const ParentFees = () => {
                 {payments.length > 0 && (
                   <div>
                     <p className="text-sm font-medium text-gray-700 mb-2">Payment history</p>
-                    <DataTable columns={receiptColumns} data={payments} getRowId={(p) => p.id} empty={{ title: "No payments yet" }} />
+                    <DataTable
+                      columns={receiptColumns}
+                      data={payments}
+                      getRowId={(p) => p.id}
+                      empty={{ title: "No payments yet" }}
+                    />
                   </div>
                 )}
               </div>

@@ -35,7 +35,10 @@ const useCalendarController = () => {
       return { year: next.getFullYear(), month: next.getMonth() + 1 };
     });
 
-  const label = new Date(cursor.year, cursor.month - 1, 1).toLocaleDateString(undefined, { month: "long", year: "numeric" });
+  const label = new Date(cursor.year, cursor.month - 1, 1).toLocaleDateString(undefined, {
+    month: "long",
+    year: "numeric",
+  });
   const editEntry = (entry: ICalendarEntry) => setDialog({ entry, date: entry.date });
 
   const confirmDelete = () =>

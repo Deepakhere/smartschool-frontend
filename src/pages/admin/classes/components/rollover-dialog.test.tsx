@@ -91,7 +91,7 @@ describe("RolloverDialog", () => {
     await user.click(screen.getByRole("button", { name: "Start 2027-2028" }));
 
     expect(mutate).toHaveBeenCalledWith(
-      expect.objectContaining({ name: "2027-2028", copyClasses: true, copySubjects: false }),
+      expect.objectContaining({ name: "2027-2028", copyClasses: true, copySubjects: false })
     );
   });
 

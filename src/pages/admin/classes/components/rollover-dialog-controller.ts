@@ -66,7 +66,7 @@ const useRolloverDialogController = ({ organizationId, years, sourceYear, onClos
       ...values,
       copyClasses: values.copyClasses && !!counts?.classes,
       copySubjects: values.copySubjects && !!counts?.subjects,
-    }),
+    })
   );
 
   return {

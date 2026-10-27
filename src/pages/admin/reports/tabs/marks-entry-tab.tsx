@@ -46,7 +46,11 @@ const MarksEntryTab = ({ organizationId }: { organizationId: string }) => {
         <Card>
           <EmptyState
             title={c.examOptions.length ? "Pick an exam, class, section and subject" : "No exams yet"}
-            description={c.examOptions.length ? "The marks sheet for that paper opens here." : "Create an exam in the Exams tab, add its subjects, then enter marks here."}
+            description={
+              c.examOptions.length
+                ? "The marks sheet for that paper opens here."
+                : "Create an exam in the Exams tab, add its subjects, then enter marks here."
+            }
           />
         </Card>
       )}

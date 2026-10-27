@@ -39,7 +39,7 @@ export const usePasswordTokenForm = (mutation: PasswordMutation, successMessage:
           navigate("/login");
         },
         onError: (err) => setError(err?.response?.Error?.message || "Something went wrong. Please try again."),
-      },
+      }
     );
   });
 

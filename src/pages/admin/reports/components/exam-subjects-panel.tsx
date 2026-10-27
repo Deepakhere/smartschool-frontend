@@ -19,7 +19,9 @@ const columns: DataTableColumn<IExamSubject>[] = [
     id: "subject",
     header: "Subject",
     cell: ({ row }) => (
-      <span className="font-medium text-gray-900">{typeof row.original.subjectId === "object" ? row.original.subjectId.name : ""}</span>
+      <span className="font-medium text-gray-900">
+        {typeof row.original.subjectId === "object" ? row.original.subjectId.name : ""}
+      </span>
     ),
   },
   { id: "maxMarks", header: "Max Marks", meta: { align: "center" }, cell: ({ row }) => row.original.maxMarks },
@@ -33,7 +35,10 @@ const columns: DataTableColumn<IExamSubject>[] = [
 ];
 
 const ExamSubjectsPanel = ({ organizationId, exam, subjectOptions }: ExamSubjectsPanelProps) => {
-  const { form, rows, classOptions, existingSubjects, isSaving, onSubmit } = useExamSubjectsPanelController(organizationId, exam);
+  const { form, rows, classOptions, existingSubjects, isSaving, onSubmit } = useExamSubjectsPanelController(
+    organizationId,
+    exam
+  );
 
   return (
     <div className="mt-4 rounded-md bg-gray-50 p-4">
@@ -58,7 +63,13 @@ const ExamSubjectsPanel = ({ organizationId, exam, subjectOptions }: ExamSubject
                 <div className="flex items-end gap-2 pb-1">
                   <CheckboxField form={form} name={`rows.${index}.hasPractical`} label="Practical" />
                   {form.watch(`rows.${index}.hasPractical`) && (
-                    <TextField form={form} name={`rows.${index}.practicalMaxMarks`} label="Practical max" type="number" min={1} />
+                    <TextField
+                      form={form}
+                      name={`rows.${index}.practicalMaxMarks`}
+                      label="Practical max"
+                      type="number"
+                      min={1}
+                    />
                   )}
                 </div>
                 <Button
@@ -82,7 +93,12 @@ const ExamSubjectsPanel = ({ organizationId, exam, subjectOptions }: ExamSubject
 
       {existingSubjects.length > 0 && (
         <div className="mt-4">
-          <DataTable columns={columns} data={existingSubjects} getRowId={(subject) => subject.id} empty={{ title: "No subjects yet" }} />
+          <DataTable
+            columns={columns}
+            data={existingSubjects}
+            getRowId={(subject) => subject.id}
+            empty={{ title: "No subjects yet" }}
+          />
         </div>
       )}
     </div>

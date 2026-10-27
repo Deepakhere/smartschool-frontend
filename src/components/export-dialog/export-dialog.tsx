@@ -28,7 +28,9 @@ const ExportDialog = ({ open, onClose, total, itemLabel, isExporting, onExport }
       onClose={onClose}
       title="Export to CSV"
       description={`${countLabel(total, itemLabel)} ${total === 1 ? "matches" : "match"} the current filters.${
-        total > EXPORT_CAP ? ` Up to ${EXPORT_CAP.toLocaleString("en-IN")} can be exported at a time, in the order shown.` : ""
+        total > EXPORT_CAP
+          ? ` Up to ${EXPORT_CAP.toLocaleString("en-IN")} can be exported at a time, in the order shown.`
+          : ""
       }`}
       submitLabel="Export"
       isSubmitting={isExporting}

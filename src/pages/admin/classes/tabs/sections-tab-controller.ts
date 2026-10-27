@@ -50,7 +50,7 @@ const useSectionsTabController = (organizationId: string, yearId: string, classI
         name: `${teacher.name} (${teacher.email})`,
       })),
     ],
-    [teachers.data],
+    [teachers.data]
   );
 
   useEffect(() => {
@@ -64,7 +64,7 @@ const useSectionsTabController = (organizationId: string, yearId: string, classI
             roomNumber: section.roomNumber ?? "",
             classTeacherId: section.classTeacherId?.id ?? NO_TEACHER,
           }
-        : { ...defaultSectionFormValues, classTeacherId: NO_TEACHER },
+        : { ...defaultSectionFormValues, classTeacherId: NO_TEACHER }
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dialog]);

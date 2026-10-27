@@ -69,7 +69,11 @@ const AdminCalendar = () => {
         open={!!c.toDelete}
         onClose={c.closeDelete}
         title="Delete entry?"
-        description={c.toDelete?.recurring ? `"${c.toDelete.title}" repeats every week; all of its dates will be removed.` : `"${c.toDelete?.title}" will be removed from the calendar.`}
+        description={
+          c.toDelete?.recurring
+            ? `"${c.toDelete.title}" repeats every week; all of its dates will be removed.`
+            : `"${c.toDelete?.title}" will be removed from the calendar.`
+        }
         isLoading={c.isDeleting}
         onConfirm={c.confirmDelete}
       />

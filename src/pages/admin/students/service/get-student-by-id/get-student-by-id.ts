@@ -1,9 +1,9 @@
 import { useQuery } from "@tanstack/react-query";
 import apiClient from "@/config";
-import { IAPIError, IAxiosResponse, IStudentEnrollment, IGuardian } from "@/types";
+import { IAPIError, IAxiosResponse, IStudentAdmissionDetails, IStudentEnrollment, IGuardian } from "@/types";
 import { APIS_ROUTES, API_QUERY_KEY } from "@/utils";
 
-interface IStudentDetailResponse {
+export interface IStudentDetailResponse extends IStudentAdmissionDetails {
   id: string;
   name: string;
   admissionNumber: string;
@@ -13,11 +13,14 @@ interface IStudentDetailResponse {
   address: string;
   city: string;
   state: string;
+  pincode?: string;
   parentName: string;
   parentEmail: string;
   phoneNumber: string;
   parentId: string;
   guardians: IGuardian[];
+  // a short-lived signed link, or null
+  photoUrl: string | null;
   status: "active" | "inactive" | "suspended";
 }
 

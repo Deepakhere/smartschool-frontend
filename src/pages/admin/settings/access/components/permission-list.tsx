@@ -30,7 +30,12 @@ const PermissionList = ({ permissions, value, defaults, disabled, onToggle }: Pe
                       <span className="text-sm text-gray-900">{p.label}</span>
                       {changed && <Badge tone={on ? "blue" : "yellow"}>{on ? "Added" : "Removed"}</Badge>}
                     </div>
-                    <Switch checked={on} disabled={disabled} onCheckedChange={(next) => onToggle(p.key, next)} aria-label={p.label} />
+                    <Switch
+                      checked={on}
+                      disabled={disabled}
+                      onCheckedChange={(next) => onToggle(p.key, next)}
+                      aria-label={p.label}
+                    />
                   </div>
                 );
               })}

@@ -26,7 +26,7 @@ export interface MemberAccess {
   defaults: PermissionKey[];
 }
 
-const getItem = async <T,>(url: string) => (await apiClient.get<null, IAxiosResponse<{ item: T }>>(url)).data.Data.item;
+const getItem = async <T>(url: string) => (await apiClient.get<null, IAxiosResponse<{ item: T }>>(url)).data.Data.item;
 
 export const useAccessCatalog = (organizationId: string) =>
   useQuery<AccessCatalog, IAPIError>({
@@ -42,7 +42,7 @@ export const useMemberAccess = (organizationId: string, userId: string) =>
     enabled: !!organizationId && !!userId,
   });
 
-const useMemberMutation = <V,>(organizationId: string, userId: string, send: (value: V) => Promise<MemberAccess>) => {
+const useMemberMutation = <V>(organizationId: string, userId: string, send: (value: V) => Promise<MemberAccess>) => {
   const queryClient = useQueryClient();
   return useMutation<MemberAccess, IAPIError, V>({
     mutationFn: send,
@@ -54,22 +54,40 @@ const useMemberMutation = <V,>(organizationId: string, userId: string, send: (va
 };
 
 export const useUpdateMemberAccess = (organizationId: string, userId: string) =>
-  useMemberMutation<{ role?: AccountRole; permissions?: PermissionKey[] }>(organizationId, userId, async (value) =>
-    (await apiClient.put<null, IAxiosResponse<{ item: MemberAccess }>>(`${base(organizationId)}/members/${userId}`, value)).data.Data.item
+  useMemberMutation<{ role?: AccountRole; permissions?: PermissionKey[] }>(
+    organizationId,
+    userId,
+    async (value) =>
+      (
+        await apiClient.put<null, IAxiosResponse<{ item: MemberAccess }>>(
+          `${base(organizationId)}/members/${userId}`,
+          value
+        )
+      ).data.Data.item
   );
 
 export const useSetMemberStatus = (organizationId: string, userId: string) =>
-  useMemberMutation<"active" | "suspended">(organizationId, userId, async (status) =>
-    (await apiClient.patch<null, IAxiosResponse<{ item: MemberAccess }>>(`${base(organizationId)}/members/${userId}/status`, { status })).data
-      .Data.item
+  useMemberMutation<"active" | "suspended">(
+    organizationId,
+    userId,
+    async (status) =>
+      (
+        await apiClient.patch<null, IAxiosResponse<{ item: MemberAccess }>>(
+          `${base(organizationId)}/members/${userId}/status`,
+          { status }
+        )
+      ).data.Data.item
   );
 
 export const useSetRoleDefaults = (organizationId: string) => {
   const queryClient = useQueryClient();
   return useMutation<AccessCatalog, IAPIError, { role: StaffRole; permissions: PermissionKey[] }>({
     mutationFn: async ({ role, permissions }) =>
-      (await apiClient.put<null, IAxiosResponse<{ item: AccessCatalog }>>(`${base(organizationId)}/roles/${role}`, { permissions })).data.Data
-        .item,
+      (
+        await apiClient.put<null, IAxiosResponse<{ item: AccessCatalog }>>(`${base(organizationId)}/roles/${role}`, {
+          permissions,
+        })
+      ).data.Data.item,
     onSuccess: (item) => {
       queryClient.setQueryData([CATALOG_KEY, organizationId], item);
       queryClient.invalidateQueries({ queryKey: [MEMBER_KEY, organizationId] });

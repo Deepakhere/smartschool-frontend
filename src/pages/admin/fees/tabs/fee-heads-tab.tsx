@@ -53,7 +53,10 @@ const FeeHeadsTab = ({ organizationId }: { organizationId: string }) => {
             isLoading={c.isLoading}
             itemLabel={{ one: "fee head", other: "fee heads" }}
             pagination={{ pageSize: 20 }}
-            empty={{ title: "No fee heads yet", description: "Add one above, such as Tuition or Transport, to build fee structures from." }}
+            empty={{
+              title: "No fee heads yet",
+              description: "Add one above, such as Tuition or Transport, to build fee structures from.",
+            }}
           />
         )}
       </div>

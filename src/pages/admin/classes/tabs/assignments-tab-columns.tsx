@@ -8,7 +8,9 @@ export const ROLE_OPTIONS = [
 ];
 const ROLE_LABELS: Record<string, string> = Object.fromEntries(ROLE_OPTIONS.map((role) => [role.id, role.name]));
 
-export const assignmentColumns = (remove: (item: ITeacherAssignment) => void): DataTableColumn<ITeacherAssignment>[] => [
+export const assignmentColumns = (
+  remove: (item: ITeacherAssignment) => void
+): DataTableColumn<ITeacherAssignment>[] => [
   {
     id: "teacher",
     header: "Teacher",
@@ -16,7 +18,12 @@ export const assignmentColumns = (remove: (item: ITeacherAssignment) => void): D
   },
   { id: "class", header: "Class", meta: { align: "center" }, cell: ({ row }) => row.original.classId?.name },
   { id: "section", header: "Section", meta: { align: "center" }, cell: ({ row }) => row.original.sectionId?.name },
-  { id: "subject", header: "Subject", meta: { align: "center" }, cell: ({ row }) => row.original.subjectId?.name || "-" },
+  {
+    id: "subject",
+    header: "Subject",
+    meta: { align: "center" },
+    cell: ({ row }) => row.original.subjectId?.name || "-",
+  },
   {
     id: "role",
     header: "Role",

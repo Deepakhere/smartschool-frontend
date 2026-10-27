@@ -8,10 +8,9 @@ export const useGetTeacherDirectory = (organizationId: string) =>
   useQuery<{ items: ITeacherDirectoryEntry[] }, IAPIError>({
     queryKey: [API_QUERY_KEY.GET_TEACHER_DIRECTORY, organizationId],
     queryFn: async () => {
-      const result = await apiClient.get<
-        null,
-        IAxiosResponse<{ items: ITeacherDirectoryEntry[] }>
-      >(`${APIS_ROUTES.STAFF_SERVICE}/${organizationId}/teacher`);
+      const result = await apiClient.get<null, IAxiosResponse<{ items: ITeacherDirectoryEntry[] }>>(
+        `${APIS_ROUTES.STAFF_SERVICE}/${organizationId}/teacher`
+      );
       return result.data.Data;
     },
     enabled: !!organizationId,

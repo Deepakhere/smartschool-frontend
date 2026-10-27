@@ -2,21 +2,24 @@ import { ReactNode } from "react";
 
 import EmptyState from "@/components/empty-state";
 import { Skeleton } from "@/components/ui/skeleton";
-import {
-  Table,
-  TableHeader as UiTableHeader,
-  TableBody,
-  TableRow,
-  TableHead,
-  TableCell,
-} from "@/components/ui/table";
+import { Table, TableHeader as UiTableHeader, TableBody, TableRow, TableHead, TableCell } from "@/components/ui/table";
 
 // TableHeader here takes bare <TableHead> children and wraps them in the one header
 // row every table in the app uses - callers don't write <tr> themselves
 const TableHeader = UiTableHeader;
 
 // an empty table body, drawn with the app's one empty state
-const TableEmpty = ({ colSpan, title, description, action }: { colSpan: number; title: string; description?: ReactNode; action?: ReactNode }) => (
+const TableEmpty = ({
+  colSpan,
+  title,
+  description,
+  action,
+}: {
+  colSpan: number;
+  title: string;
+  description?: ReactNode;
+  action?: ReactNode;
+}) => (
   <TableRow>
     <TableCell colSpan={colSpan} className="p-0">
       <EmptyState title={title} description={description} action={action} />

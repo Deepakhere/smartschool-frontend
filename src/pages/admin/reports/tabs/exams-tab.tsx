@@ -51,7 +51,10 @@ const ExamsTab = ({ organizationId, academicYearId, classOptions, subjectOptions
                     className="rounded text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500"
                   >
                     <p className="font-medium text-gray-900">
-                      {exam.name} <Badge tone={STATUS_TONE[exam.status] ?? "gray"} className="ml-1 capitalize">{exam.status.replace("_", " ")}</Badge>
+                      {exam.name}{" "}
+                      <Badge tone={STATUS_TONE[exam.status] ?? "gray"} className="ml-1 capitalize">
+                        {exam.status.replace("_", " ")}
+                      </Badge>
                     </p>
                     <p className="text-sm text-gray-500">
                       {new Date(exam.startDate).toLocaleDateString()} - {new Date(exam.endDate).toLocaleDateString()} ·{" "}

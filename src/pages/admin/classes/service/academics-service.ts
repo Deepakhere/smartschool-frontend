@@ -19,7 +19,7 @@ const useRefreshingMutation = <TVariables, TResult = void>(
   organizationId: string,
   mutationKey: string,
   mutationFn: (variables: TVariables) => Promise<TResult>,
-  refresh: string[],
+  refresh: string[]
 ) => {
   const queryClient = useQueryClient();
   return useMutation<TResult, IAPIError, TVariables>({
@@ -44,7 +44,7 @@ export const useCreateAcademicYear = (organizationId: string) =>
     organizationId,
     API_MUTATION_KEY.CREATE_ACADEMIC_YEAR,
     (value) => apiClient.post(`${base(organizationId)}/academic-year`, value),
-    [API_QUERY_KEY.GET_ACADEMIC_YEARS],
+    [API_QUERY_KEY.GET_ACADEMIC_YEARS]
   );
 
 export const useUpdateAcademicYear = (organizationId: string) =>
@@ -52,7 +52,7 @@ export const useUpdateAcademicYear = (organizationId: string) =>
     organizationId,
     API_MUTATION_KEY.UPDATE_ACADEMIC_YEAR,
     ({ id, ...value }) => apiClient.put(`${base(organizationId)}/academic-year/${id}`, value),
-    [API_QUERY_KEY.GET_ACADEMIC_YEARS],
+    [API_QUERY_KEY.GET_ACADEMIC_YEARS]
   );
 
 export interface IRolloverPreview {
@@ -83,7 +83,7 @@ export const useGetRolloverPreview = (organizationId: string, academicYearId?: s
     queryKey: [API_QUERY_KEY.GET_ROLLOVER_PREVIEW, organizationId, academicYearId],
     queryFn: async () => {
       const result = await apiClient.get<null, IAxiosResponse<IRolloverPreview>>(
-        `${base(organizationId)}/academic-year/${academicYearId}/rollover-preview`,
+        `${base(organizationId)}/academic-year/${academicYearId}/rollover-preview`
       );
       return result.data.Data;
     },
@@ -99,7 +99,7 @@ export const useRolloverAcademicYear = (organizationId: string) =>
     async ({ sourceYearId, ...body }) => {
       const result = await apiClient.post<null, IAxiosResponse<IRolloverResult>>(
         `${base(organizationId)}/academic-year/${sourceYearId}/rollover`,
-        body,
+        body
       );
       return result.data.Data;
     },
@@ -108,7 +108,7 @@ export const useRolloverAcademicYear = (organizationId: string) =>
       API_QUERY_KEY.GET_CLASSES,
       API_QUERY_KEY.GET_SECTIONS,
       API_QUERY_KEY.GET_SUBJECTS,
-    ],
+    ]
   );
 
 // ── classes ──
@@ -130,7 +130,7 @@ export const useCreateClass = (organizationId: string) =>
     organizationId,
     API_MUTATION_KEY.CREATE_CLASS,
     (value) => apiClient.post(`${base(organizationId)}/class`, value),
-    CLASS_LISTS,
+    CLASS_LISTS
   );
 
 export const useUpdateClass = (organizationId: string) =>
@@ -138,7 +138,7 @@ export const useUpdateClass = (organizationId: string) =>
     organizationId,
     API_MUTATION_KEY.UPDATE_CLASS,
     ({ id, ...value }) => apiClient.put(`${base(organizationId)}/class/${id}`, value),
-    CLASS_LISTS,
+    CLASS_LISTS
   );
 
 export const useDeactivateClass = (organizationId: string) =>
@@ -146,7 +146,7 @@ export const useDeactivateClass = (organizationId: string) =>
     organizationId,
     API_MUTATION_KEY.DEACTIVATE_CLASS,
     (id) => apiClient.delete(`${base(organizationId)}/class/${id}`),
-    CLASS_LISTS,
+    CLASS_LISTS
   );
 
 // ── sections ──
@@ -179,7 +179,7 @@ export const useCreateSection = (organizationId: string) =>
     organizationId,
     API_MUTATION_KEY.CREATE_SECTION,
     (value) => apiClient.post(`${base(organizationId)}/section`, value),
-    SECTION_LISTS,
+    SECTION_LISTS
   );
 
 export const useUpdateSection = (organizationId: string) =>
@@ -187,7 +187,7 @@ export const useUpdateSection = (organizationId: string) =>
     organizationId,
     API_MUTATION_KEY.UPDATE_SECTION,
     ({ id, ...value }) => apiClient.put(`${base(organizationId)}/section/${id}`, value),
-    SECTION_LISTS,
+    SECTION_LISTS
   );
 
 export const useDeactivateSection = (organizationId: string) =>
@@ -195,7 +195,7 @@ export const useDeactivateSection = (organizationId: string) =>
     organizationId,
     API_MUTATION_KEY.DEACTIVATE_SECTION,
     (id) => apiClient.delete(`${base(organizationId)}/section/${id}`),
-    SECTION_LISTS,
+    SECTION_LISTS
   );
 
 // ── subjects ──
@@ -212,7 +212,7 @@ export const useCreateSubject = (organizationId: string) =>
     organizationId,
     API_MUTATION_KEY.CREATE_SUBJECT,
     (value) => apiClient.post(`${base(organizationId)}/subject`, value),
-    [API_QUERY_KEY.GET_SUBJECTS],
+    [API_QUERY_KEY.GET_SUBJECTS]
   );
 
 export const useUpdateSubject = (organizationId: string) =>
@@ -220,7 +220,7 @@ export const useUpdateSubject = (organizationId: string) =>
     organizationId,
     API_MUTATION_KEY.UPDATE_SUBJECT,
     ({ id, ...value }) => apiClient.put(`${base(organizationId)}/subject/${id}`, value),
-    [API_QUERY_KEY.GET_SUBJECTS],
+    [API_QUERY_KEY.GET_SUBJECTS]
   );
 
 export const useDeactivateSubject = (organizationId: string) =>
@@ -228,7 +228,7 @@ export const useDeactivateSubject = (organizationId: string) =>
     organizationId,
     API_MUTATION_KEY.DEACTIVATE_SUBJECT,
     (id) => apiClient.delete(`${base(organizationId)}/subject/${id}`),
-    [API_QUERY_KEY.GET_SUBJECTS],
+    [API_QUERY_KEY.GET_SUBJECTS]
   );
 
 // ── teacher assignments ──
@@ -267,7 +267,7 @@ export const useAssignTeacher = (organizationId: string) =>
     organizationId,
     API_MUTATION_KEY.ASSIGN_TEACHER,
     (value) => apiClient.post(`${base(organizationId)}/teacher-assignment`, value),
-    ASSIGNMENT_LISTS,
+    ASSIGNMENT_LISTS
   );
 
 export const useRemoveTeacherAssignment = (organizationId: string) =>
@@ -275,5 +275,5 @@ export const useRemoveTeacherAssignment = (organizationId: string) =>
     organizationId,
     API_MUTATION_KEY.REMOVE_TEACHER_ASSIGNMENT,
     (id) => apiClient.delete(`${base(organizationId)}/teacher-assignment/${id}`),
-    ASSIGNMENT_LISTS,
+    ASSIGNMENT_LISTS
   );

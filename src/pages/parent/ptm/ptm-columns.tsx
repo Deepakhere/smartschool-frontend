@@ -9,7 +9,9 @@ export const bookingColumns = (cancel: (bookingId: string) => void): DataTableCo
     id: "student",
     header: "Student",
     cell: ({ row }) => (
-      <span className="font-medium text-gray-900">{typeof row.original.studentId === "object" ? row.original.studentId.name : ""}</span>
+      <span className="font-medium text-gray-900">
+        {typeof row.original.studentId === "object" ? row.original.studentId.name : ""}
+      </span>
     ),
   },
   {

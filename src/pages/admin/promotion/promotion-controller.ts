@@ -29,7 +29,9 @@ export const usePromotionController = () => {
   const [detainSectionId, setDetainSectionId] = useState("");
   const [confirmOpen, setConfirmOpen] = useState(false);
   // kept apart from the list: promoted students leave the section, and their outcome must still show
-  const [lastRun, setLastRun] = useState<{ name: string; action: PromotionAction; success: boolean; message?: string }[]>([]);
+  const [lastRun, setLastRun] = useState<
+    { name: string; action: PromotionAction; success: boolean; message?: string }[]
+  >([]);
 
   const [rowsState, setRowsState] = useState<Record<string, RowState>>({});
   const [resultsByStudent, setResultsByStudent] = useState<Record<string, { success: boolean; message?: string }>>({});

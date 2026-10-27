@@ -10,10 +10,11 @@ import {
   UsersIcon,
 } from "@heroicons/react/24/outline";
 
-import type { SidebarMenu } from "../sidebar-pages";
+import { DIVIDER, type SidebarMenu } from "../sidebar-pages";
 
 export const PARENT_MENU: SidebarMenu = [
   { name: "Dashboard", hint: "Your child's day at a glance", path: "dashboard", icon: HomeIcon },
+  DIVIDER,
   { name: "Attendance", hint: "Present and absent days", path: "attendance", icon: ClipboardDocumentCheckIcon },
   { name: "Homework", hint: "What's due and when", path: "homework", icon: BookOpenIcon },
   { name: "Notices", hint: "School announcements", path: "notices", icon: ClipboardDocumentListIcon },

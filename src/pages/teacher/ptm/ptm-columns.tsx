@@ -8,7 +8,9 @@ export const agendaColumns: DataTableColumn<AgendaItem>[] = [
   {
     id: "time",
     header: "Time",
-    cell: ({ row }) => <span className="font-medium text-gray-900">{new Date(row.original.slot.startAt).toLocaleString()}</span>,
+    cell: ({ row }) => (
+      <span className="font-medium text-gray-900">{new Date(row.original.slot.startAt).toLocaleString()}</span>
+    ),
   },
   {
     id: "student",
@@ -23,6 +25,8 @@ export const agendaColumns: DataTableColumn<AgendaItem>[] = [
     id: "status",
     header: "Status",
     meta: { align: "center" },
-    cell: ({ row }) => <Badge tone={row.original.booking ? "green" : "gray"}>{row.original.booking ? "Booked" : "Open"}</Badge>,
+    cell: ({ row }) => (
+      <Badge tone={row.original.booking ? "green" : "gray"}>{row.original.booking ? "Booked" : "Open"}</Badge>
+    ),
   },
 ];

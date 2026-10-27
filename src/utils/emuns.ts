@@ -44,6 +44,7 @@ export const API_QUERY_KEY = {
   GET_ALL_ORGANIZATIONS: "get-all-organizations",
   GET_PARENT_DETAILS: "get-parent-details",
   GET_STUDENT_BY_ID: "get-student-by-id",
+  GET_NEXT_ADMISSION_NUMBER: "get-next-admission-number",
   GET_NOTICE_LIST: "get-notice-list",
   AI_CONTENT: "get-ai-content",
   GET_ACADEMIC_YEARS: "get-academic-years",
@@ -176,5 +177,3 @@ export const USER_ACCESS_KEY = {
   ORGANIZATION_ID: "kidSightOrganizationId",
   ORGANIZATION_NAME: "kidSightOrganizationName",
 };
-
-export const TOTAL_STEPS = 2;

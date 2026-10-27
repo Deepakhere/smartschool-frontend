@@ -49,7 +49,10 @@ const SubjectsTab = ({ organizationId, years, yearId, onYearChange }: SubjectsTa
                 description:
                   "Add the subjects you teach, such as Mathematics (MATH). Homework, marks and teacher assignments use them.",
               }
-            : { title: "Choose an academic year", description: "Subjects are set up per academic year. Pick one from the year menu, or add a year first." }
+            : {
+                title: "Choose an academic year",
+                description: "Subjects are set up per academic year. Pick one from the year menu, or add a year first.",
+              }
         }
       />
 

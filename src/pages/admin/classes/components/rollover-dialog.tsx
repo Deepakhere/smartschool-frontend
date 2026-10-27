@@ -44,8 +44,18 @@ const CheckRow = ({
 
 // "Start next year": pick the year to copy from, name the new one, and see exactly what will be copied before it is
 const RolloverDialog = ({ organizationId, years, sourceYear, onClose }: RolloverDialogProps) => {
-  const { form, source, counts, countsDetail, onSourceChange, submit, isSubmitting, yearOptions, copyClasses, copySubjects } =
-    useRolloverDialogController({ organizationId, years, sourceYear, onClose });
+  const {
+    form,
+    source,
+    counts,
+    countsDetail,
+    onSourceChange,
+    submit,
+    isSubmitting,
+    yearOptions,
+    copyClasses,
+    copySubjects,
+  } = useRolloverDialogController({ organizationId, years, sourceYear, onClose });
 
   return (
     <FormDialog
@@ -79,7 +89,7 @@ const RolloverDialog = ({ organizationId, years, sourceYear, onClose }: Rollover
         <CheckRow
           label="Classes and sections"
           detail={countsDetail(
-            (c) => `${plural(c.classes, "class", "classes")} with ${plural(c.sections, "section")} (active ones only)`,
+            (c) => `${plural(c.classes, "class", "classes")} with ${plural(c.sections, "section")} (active ones only)`
           )}
           checked={copyClasses}
           disabled={!counts?.classes}

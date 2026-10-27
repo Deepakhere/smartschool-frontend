@@ -78,11 +78,7 @@ const AdminNotices = () => {
       />
 
       {previewNotice && (
-        <NoticePreviewModal
-          isOpen={!!previewNotice}
-          onClose={closePreviewNotice}
-          notice={previewNotice}
-        />
+        <NoticePreviewModal isOpen={!!previewNotice} onClose={closePreviewNotice} notice={previewNotice} />
       )}
 
       <AttachmentPreviewModal

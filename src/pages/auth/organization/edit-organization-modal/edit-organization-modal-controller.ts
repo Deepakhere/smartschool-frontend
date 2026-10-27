@@ -9,7 +9,12 @@ import { useError } from "@/hooks";
 import { IOrganization } from "@/types";
 import { organizationFormSchema, OrganizationFormValues } from "./edit-organization-modal.schema";
 
-const useEditOrganizationModalController = (isOpen: boolean, onClose: () => void, onSaved: () => void, organization: IOrganization | null) => {
+const useEditOrganizationModalController = (
+  isOpen: boolean,
+  onClose: () => void,
+  onSaved: () => void,
+  organization: IOrganization | null
+) => {
   const { t } = useTranslation();
   const updateOrganization = useUpdateOrganization();
   const uploadLogo = useUploadOrganizationLogo();
@@ -62,7 +67,12 @@ const useEditOrganizationModalController = (isOpen: boolean, onClose: () => void
             // the organization itself is already saved at this point - a logo failure
             // shouldn't block the modal from closing, but the user still needs to know
             await uploadLogo.mutateAsync({ organizationId: organization.id, file: logoFile }).catch(() => {
-              toast.error(t("messages.organization_logo_upload_failed", "Logo upload failed. You can try again from the school settings."));
+              toast.error(
+                t(
+                  "messages.organization_logo_upload_failed",
+                  "Logo upload failed. You can try again from the school settings."
+                )
+              );
             });
           }
           onSaved();

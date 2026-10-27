@@ -47,14 +47,17 @@ const toFormData = (fields: Record<string, string | File | null | undefined>) =>
 export const useSupportRequests = (organizationId: string) =>
   useQuery<SupportRequest[], IAPIError>({
     queryKey: [LIST_KEY, organizationId],
-    queryFn: async () => (await apiClient.get<null, IAxiosResponse<{ items: SupportRequest[] }>>(base(organizationId))).data.Data.items,
+    queryFn: async () =>
+      (await apiClient.get<null, IAxiosResponse<{ items: SupportRequest[] }>>(base(organizationId))).data.Data.items,
     enabled: !!organizationId,
   });
 
 export const useSupportThread = (organizationId: string, requestId: string) =>
   useQuery<SupportThread, IAPIError>({
     queryKey: [THREAD_KEY, organizationId, requestId],
-    queryFn: async () => (await apiClient.get<null, IAxiosResponse<{ item: SupportThread }>>(`${base(organizationId)}/${requestId}`)).data.Data.item,
+    queryFn: async () =>
+      (await apiClient.get<null, IAxiosResponse<{ item: SupportThread }>>(`${base(organizationId)}/${requestId}`)).data
+        .Data.item,
     enabled: !!organizationId && !!requestId,
     refetchInterval: LIVE_MS,
   });
@@ -71,8 +74,12 @@ export const useCreateSupportRequest = (organizationId: string) => {
   const queryClient = useQueryClient();
   return useMutation<SupportRequest, IAPIError, NewSupportRequest>({
     mutationFn: async (value) =>
-      (await apiClient.post<null, IAxiosResponse<{ item: SupportRequest }>>(base(organizationId), toFormData({ ...value, platform: "web" })))
-        .data.Data.item,
+      (
+        await apiClient.post<null, IAxiosResponse<{ item: SupportRequest }>>(
+          base(organizationId),
+          toFormData({ ...value, platform: "web" })
+        )
+      ).data.Data.item,
     onSuccess: () => queryClient.invalidateQueries({ queryKey: [LIST_KEY, organizationId] }),
   });
 };
@@ -81,8 +88,12 @@ export const useReplyToSupportRequest = (organizationId: string, requestId: stri
   const queryClient = useQueryClient();
   return useMutation<SupportThread, IAPIError, { body: string; screenshot: File | null }>({
     mutationFn: async (value) =>
-      (await apiClient.post<null, IAxiosResponse<{ item: SupportThread }>>(`${base(organizationId)}/${requestId}/messages`, toFormData(value)))
-        .data.Data.item,
+      (
+        await apiClient.post<null, IAxiosResponse<{ item: SupportThread }>>(
+          `${base(organizationId)}/${requestId}/messages`,
+          toFormData(value)
+        )
+      ).data.Data.item,
     onSuccess: (item) => {
       queryClient.setQueryData([THREAD_KEY, organizationId, requestId], item);
       queryClient.invalidateQueries({ queryKey: [LIST_KEY, organizationId] });

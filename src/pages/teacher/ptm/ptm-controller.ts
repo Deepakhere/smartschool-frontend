@@ -51,7 +51,13 @@ const useTeacherPTMController = () => {
   const handleGenerateSlots = form.handleSubmit((values) => {
     if (!user?.id) return;
     generateSlots.mutate(
-      { ptmEventId: values.eventId, teacherUserId: user.id, sectionId: values.sectionId, startAt: values.startAt, endAt: values.endAt },
+      {
+        ptmEventId: values.eventId,
+        teacherUserId: user.id,
+        sectionId: values.sectionId,
+        startAt: values.startAt,
+        endAt: values.endAt,
+      },
       {
         onSuccess: () => {
           toast.success("Slots generated.");

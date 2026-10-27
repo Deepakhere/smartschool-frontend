@@ -29,7 +29,7 @@ const useSubjectsTabController = (organizationId: string, yearId: string) => {
     form.reset(
       subject
         ? { name: subject.name, code: subject.code, type: (subject.type as SubjectFormValues["type"]) ?? "core" }
-        : defaultSubjectFormValues,
+        : defaultSubjectFormValues
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dialog]);

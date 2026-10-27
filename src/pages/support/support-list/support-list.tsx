@@ -12,9 +12,21 @@ import useSupportListController from "./support-list-controller";
 const topicName = (topic: string) => TOPIC_OPTIONS.find((option) => option.id === topic)?.name ?? topic;
 
 const columns: DataTableColumn<SupportRequest>[] = [
-  { id: "request", header: "Request", cell: ({ row }) => <span className="font-medium text-gray-900">#{row.original.number} {row.original.subject}</span> },
+  {
+    id: "request",
+    header: "Request",
+    cell: ({ row }) => (
+      <span className="font-medium text-gray-900">
+        #{row.original.number} {row.original.subject}
+      </span>
+    ),
+  },
   { id: "topic", header: "Topic", cell: ({ row }) => topicName(row.original.topic) },
-  { id: "requester", header: "Asked by", cell: ({ row }) => row.original.requesterId?.name ?? row.original.requesterId?.email },
+  {
+    id: "requester",
+    header: "Asked by",
+    cell: ({ row }) => row.original.requesterId?.name ?? row.original.requesterId?.email,
+  },
   {
     id: "status",
     header: "Status",
@@ -51,7 +63,10 @@ const SupportList = () => {
           onRowClick={(request) => c.open(request._id)}
           itemLabel={{ one: "request", other: "requests" }}
           pagination={{ pageSize: 20 }}
-          empty={{ title: "No requests yet", description: "If something isn't working or you have a question, contact support." }}
+          empty={{
+            title: "No requests yet",
+            description: "If something isn't working or you have a question, contact support.",
+          }}
         />
       )}
 

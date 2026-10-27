@@ -11,7 +11,9 @@ const columns: DataTableColumn<IResultSubjectRow>[] = [
     id: "subject",
     header: "Subject",
     cell: ({ row }) => (
-      <span className="font-medium text-gray-900">{typeof row.original.subjectId === "object" ? row.original.subjectId.name : ""}</span>
+      <span className="font-medium text-gray-900">
+        {typeof row.original.subjectId === "object" ? row.original.subjectId.name : ""}
+      </span>
     ),
   },
   {
@@ -89,7 +91,11 @@ const ParentReports = () => {
                         </div>
                       </div>
 
-                      <DataTable columns={columns} data={result.subjects} empty={{ title: "No subjects in this result" }} />
+                      <DataTable
+                        columns={columns}
+                        data={result.subjects}
+                        empty={{ title: "No subjects in this result" }}
+                      />
 
                       <div className="mt-3 flex gap-6 text-sm text-gray-500">
                         {result.rankInSection && <span>Rank in section: {result.rankInSection}</span>}

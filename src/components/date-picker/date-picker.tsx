@@ -59,10 +59,7 @@ const DatePicker = ({
   // Close calendar when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (
-        datePickerRef.current &&
-        !datePickerRef.current.contains(event.target as Node)
-      ) {
+      if (datePickerRef.current && !datePickerRef.current.contains(event.target as Node)) {
         setIsOpen(false);
       }
     };
@@ -76,19 +73,14 @@ const DatePicker = ({
   return (
     <div className={`${className}`}>
       {label && (
-        <label
-          htmlFor={id}
-          className="block text-sm font-medium text-gray-700 mb-1"
-        >
+        <label htmlFor={id} className="block text-sm font-medium text-gray-700 mb-1">
           {label} {required && <span className="text-red-500">*</span>}
         </label>
       )}
       <div className="relative" ref={datePickerRef}>
         <div
           className={`relative w-full cursor-pointer rounded-md border ${
-            isOpen
-              ? "border-primary-500 ring-1 ring-primary-500"
-              : "border-gray-300"
+            isOpen ? "border-primary-500 ring-1 ring-primary-500" : "border-gray-300"
           } bg-white py-2 pl-3 pr-10 text-left shadow-sm focus-within:border-primary-500 focus-within:ring-1 focus-within:ring-primary-500 sm:text-sm`}
           onClick={toggleCalendar}
         >
@@ -96,16 +88,11 @@ const DatePicker = ({
             {displayDate ? (
               <span className="block truncate">{displayDate}</span>
             ) : (
-              <span className="block truncate text-gray-500">
-                {placeholder}
-              </span>
+              <span className="block truncate text-gray-500">{placeholder}</span>
             )}
           </div>
           <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
-            <CalendarIcon
-              className="h-5 w-5 text-gray-400"
-              aria-hidden="true"
-            />
+            <CalendarIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />
           </span>
 
           <input

@@ -32,7 +32,7 @@ const useYearsTabController = (organizationId: string) => {
             endDate: year.endDate.slice(0, 10),
             isCurrent: year.isCurrent,
           }
-        : defaultYearFormValues,
+        : defaultYearFormValues
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dialog]);
@@ -64,7 +64,7 @@ const useYearsTabController = (organizationId: string) => {
     updateYear.mutate(
       action === "current"
         ? { id: year.id, isCurrent: true }
-        : { id: year.id, status: action === "close" ? "closed" : "active" },
+        : { id: year.id, status: action === "close" ? "closed" : "active" }
     );
   };
 

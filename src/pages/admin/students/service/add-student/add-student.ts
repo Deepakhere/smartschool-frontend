@@ -4,12 +4,9 @@ import { IAPIError, IAxiosResponse, IStudentFormData } from "@/types";
 import { API_MUTATION_KEY, API_QUERY_KEY, APIS_ROUTES } from "@/utils";
 
 interface IAddStudentResponse {
-  id: string;
-  name: string;
-  classId: string;
-  rollNumber: string;
-  parentId: string;
-  dateOfBirth: string;
+  item: { id: string; admissionNumber: string };
+  invited: boolean;
+  message: string;
 }
 
 const addStudent = async (organizationId: string, data: IStudentFormData) => {

@@ -80,7 +80,12 @@ const YearsTab = ({ organizationId }: { organizationId: string }) => {
         )}
       </FormDialog>
 
-      <RolloverDialog organizationId={organizationId} years={c.items} sourceYear={c.rolloverFrom} onClose={c.closeRollover} />
+      <RolloverDialog
+        organizationId={organizationId}
+        years={c.items}
+        sourceYear={c.rolloverFrom}
+        onClose={c.closeRollover}
+      />
 
       <DeleteConfirmationDialog
         open={!!c.pending}

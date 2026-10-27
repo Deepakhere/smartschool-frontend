@@ -657,7 +657,37 @@ export interface IStudentDetails {
   dateOfBirth: string;
 }
 
-export interface IStudentFormData {
+export interface IAdmissionPerson {
+  name?: string;
+  phone?: string;
+  email?: string;
+  occupation?: string;
+}
+
+export interface IPostalAddress {
+  address?: string;
+  city?: string;
+  state?: string;
+  pincode?: string;
+}
+
+// the admission form's details beyond the basics; all optional on the server
+export interface IStudentAdmissionDetails {
+  gender?: "male" | "female" | "other" | "";
+  bloodGroup?: string;
+  aadhaarNumber?: string;
+  category?: string;
+  religion?: string;
+  motherTongue?: string;
+  nationality?: string;
+  permanentAddress?: IPostalAddress;
+  father?: IAdmissionPerson;
+  mother?: IAdmissionPerson;
+  previousSchool?: { name?: string; lastClass?: string; tcNumber?: string };
+}
+
+// what the add and edit endpoints take
+export interface IStudentFormData extends IStudentAdmissionDetails {
   id?: string;
   admissionNumber: string;
   admissionDate: string;
@@ -667,12 +697,15 @@ export interface IStudentFormData {
   sectionId: string;
   rollNumber: string;
   dateOfBirth: string;
-  parentEmail: string;
   city: string;
   state: string;
   address: string;
-  parentName: string;
-  phoneNumber: string;
+  pincode?: string;
+  // the parent who signs in; left out on an edit of a student nobody signs in for
+  parentEmail?: string;
+  parentName?: string;
+  phoneNumber?: string;
+  relationshipType?: "FATHER" | "MOTHER" | "GUARDIAN";
 }
 
 export interface IStudentEnrollment {
@@ -772,23 +805,6 @@ export interface IAddGuardianValue {
   isPrimaryGuardian: boolean;
   isEmergencyContact: boolean;
   canPickup: boolean;
-}
-
-export interface ICreateUpdateStudentModalProps {
-  t: (key: string) => string;
-  isOpen: boolean;
-  organizationId: string;
-  form: UseFormReturn<IStudentFormData>;
-  isEditStudent: boolean;
-  currentStep: number;
-  isParentExist: boolean;
-  isLoadingAddStudent: boolean;
-  isLoadingUpdateStudent: boolean;
-  onClose: () => void;
-  nextStep: () => void;
-  prevStep: () => void;
-  onSubmit: (e: React.FormEvent) => void;
-  setCurrentStep: React.Dispatch<React.SetStateAction<number>>;
 }
 
 export interface SelectOption {

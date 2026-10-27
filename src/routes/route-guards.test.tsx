@@ -33,7 +33,7 @@ const renderAt = (path: string, element: React.ReactNode) =>
         <Route path="/org1/teacher/dashboard" element={<p>teacher home</p>} />
         <Route path="*" element={<FallbackRoute />} />
       </Routes>
-    </MemoryRouter>,
+    </MemoryRouter>
   );
 
 beforeEach(() => {

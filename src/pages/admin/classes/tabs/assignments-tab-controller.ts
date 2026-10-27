@@ -61,13 +61,16 @@ const useAssignmentsTabController = (organizationId: string, yearId: string) => 
   // removed assignments are kept by the server as history; the list shows only the ones in force
   const items = useMemo(
     () => (assignments.data?.items ?? []).filter((item) => item.status === "active"),
-    [assignments.data],
+    [assignments.data]
   );
 
   const teacherOptions = useMemo(
     () =>
-      (teachers.data?.items ?? []).map((teacher) => ({ id: teacher.userId, name: `${teacher.name} (${teacher.email})` })),
-    [teachers.data],
+      (teachers.data?.items ?? []).map((teacher) => ({
+        id: teacher.userId,
+        name: `${teacher.name} (${teacher.email})`,
+      })),
+    [teachers.data]
   );
 
   return {

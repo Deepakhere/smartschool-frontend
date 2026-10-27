@@ -22,7 +22,9 @@ const useTimetableController = () => {
   const remove = useDeleteTimetableSlot(organizationId);
   useError({ mutation: remove });
 
-  const sectionAssignments = (assignments.data?.items ?? []).filter((a) => a.sectionId?.id === sectionId && a.status !== "inactive");
+  const sectionAssignments = (assignments.data?.items ?? []).filter(
+    (a) => a.sectionId?.id === sectionId && a.status !== "inactive"
+  );
 
   const confirmRemove = () =>
     toRemove &&

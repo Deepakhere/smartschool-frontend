@@ -18,12 +18,17 @@ const useEventSlotsPanelController = ({ organizationId, event, assignments }: Ev
   const generateSlots = useGenerateSlots(organizationId);
   useError({ mutation: generateSlots });
 
-  const form = useForm<SlotWindowFormValues>({ resolver: zodResolver(slotWindowSchema), defaultValues: defaultSlotWindowValues });
+  const form = useForm<SlotWindowFormValues>({
+    resolver: zodResolver(slotWindowSchema),
+    defaultValues: defaultSlotWindowValues,
+  });
   const teacherUserId = useWatch({ control: form.control, name: "teacherUserId" });
 
   const eventAssignments = assignments.filter((a) => a.sectionId && event.sectionIds.includes(a.sectionId.id));
   const teacherOptions: SelectOption[] = [
-    ...new Map(eventAssignments.map((a) => [a.teacherUserId.id, { id: a.teacherUserId.id, name: a.teacherUserId.name }])).values(),
+    ...new Map(
+      eventAssignments.map((a) => [a.teacherUserId.id, { id: a.teacherUserId.id, name: a.teacherUserId.name }])
+    ).values(),
   ];
   // only the event's sections this teacher teaches
   const sectionOptions: SelectOption[] = [

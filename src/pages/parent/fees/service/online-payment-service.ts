@@ -24,10 +24,13 @@ export const usePayFeesOnline = (organizationId: string) => {
   const queryClient = useQueryClient();
   return useMutation<PayOnlineOutcome, IAPIError | Error, { studentFeeId: string; installmentLabels?: string[] }>({
     mutationFn: async ({ studentFeeId, installmentLabels }) => {
-      const started = await apiClient.post<null, IAxiosResponse<{ item: Checkout }>>(`${base(organizationId)}/checkout`, {
-        studentFeeId,
-        installmentLabels,
-      });
+      const started = await apiClient.post<null, IAxiosResponse<{ item: Checkout }>>(
+        `${base(organizationId)}/checkout`,
+        {
+          studentFeeId,
+          installmentLabels,
+        }
+      );
       const checkout = started.data.Data.item;
       const result = await openRazorpayCheckout({
         key: checkout.keyId,
@@ -43,11 +46,14 @@ export const usePayFeesOnline = (organizationId: string) => {
       // the money is taken by now, so a confirm that fails or is still processing is pending, never an error:
       // Razorpay's webhook records it, and an error here would invite paying twice
       try {
-        const confirmed = await apiClient.post<null, IAxiosResponse<{ item: { status: string } }>>(`${base(organizationId)}/confirm`, {
-          orderId: result.razorpay_order_id,
-          paymentId: result.razorpay_payment_id,
-          signature: result.razorpay_signature,
-        });
+        const confirmed = await apiClient.post<null, IAxiosResponse<{ item: { status: string } }>>(
+          `${base(organizationId)}/confirm`,
+          {
+            orderId: result.razorpay_order_id,
+            paymentId: result.razorpay_payment_id,
+            signature: result.razorpay_signature,
+          }
+        );
         const status = confirmed.data.Data.item.status;
         return status === "paid" || status === "needs_review" ? status : "pending";
       } catch {

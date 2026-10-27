@@ -11,7 +11,19 @@ import { DAY_NAMES, formatTime } from "./timetable.utils";
 import useTimetableController from "./timetable-controller";
 import EmptyState from "@/components/empty-state";
 
-const Picker = ({ label, options, value, disabled, onChange }: { label: string; options: SelectOption[]; value: string; disabled?: boolean; onChange: (id: string) => void }) => (
+const Picker = ({
+  label,
+  options,
+  value,
+  disabled,
+  onChange,
+}: {
+  label: string;
+  options: SelectOption[];
+  value: string;
+  disabled?: boolean;
+  onChange: (id: string) => void;
+}) => (
   <div>
     <label className="mb-1 block text-sm font-medium text-gray-700">{label}</label>
     <CustomSelectDropdown
@@ -33,8 +45,19 @@ const Timetable = () => {
     <div className="mx-auto max-w-7xl space-y-6">
       <SectionHeader
         title={isTeacher ? "My Timetable" : "Timetable"}
-        description={isTeacher ? "Your periods for the week, across every class you teach" : "Set up each section's periods for the week"}
-        action={{ label: "Add period", icon: PlusIcon, onClick: c.openAdd, disabled: !sectionId, title: !sectionId ? "Pick a class and section first" : undefined, hidden: isTeacher }}
+        description={
+          isTeacher
+            ? "Your periods for the week, across every class you teach"
+            : "Set up each section's periods for the week"
+        }
+        action={{
+          label: "Add period",
+          icon: PlusIcon,
+          onClick: c.openAdd,
+          disabled: !sectionId,
+          title: !sectionId ? "Pick a class and section first" : undefined,
+          hidden: isTeacher,
+        }}
       />
 
       {!isTeacher && (
@@ -68,7 +91,11 @@ const Timetable = () => {
         <div className="rounded-lg bg-white shadow">
           <EmptyState
             title={picker.classes.length ? "Pick a class and section" : "No classes yet"}
-            description={picker.classes.length ? "Choose a class and section above to see and build its week." : "Add an academic year, classes and sections on the Classes page first."}
+            description={
+              picker.classes.length
+                ? "Choose a class and section above to see and build its week."
+                : "Add an academic year, classes and sections on the Classes page first."
+            }
           />
         </div>
       ) : c.timetable.isError ? (
@@ -77,7 +104,11 @@ const Timetable = () => {
         <WeekGrid
           slots={c.slots}
           isLoading={c.timetable.isLoading}
-          emptyDescription={isTeacher ? "Your school admin sets up your week on the Timetable page." : "Use Add period to build this section's week."}
+          emptyDescription={
+            isTeacher
+              ? "Your school admin sets up your week on the Timetable page."
+              : "Use Add period to build this section's week."
+          }
           showSection={isTeacher}
           onDelete={c.askRemove}
         />

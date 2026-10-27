@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslation } from "react-i18next";
@@ -9,11 +9,7 @@ import { useParams } from "react-router-dom";
 import useGetAiGeneratedContent from "./service";
 import { ICreateNoticeRequest, NoticeAudienceScope, SelectOption } from "@/types";
 import { useError } from "@/hooks";
-import {
-  useGetClasses,
-  useGetSections,
-  useGetAcademicYears,
-} from "@/pages/admin/classes/service/academics-service";
+import { useGetClasses, useGetSections, useGetAcademicYears } from "@/pages/admin/classes/service/academics-service";
 import { noticeFormSchema, defaultNoticeAudience, defaultNoticeFormValues } from "./notice-modal.schema";
 
 const useNoticeModalWrapperController = (
@@ -23,7 +19,6 @@ const useNoticeModalWrapperController = (
 ) => {
   const { t } = useTranslation();
   const { organizationId } = useParams();
-  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [isNoticeModalOpen, setIsNoticeModalOpen] = useState(false);
   const [isAIModalOpen, setIsAIModalOpen] = useState(false);
@@ -97,19 +92,9 @@ const useNoticeModalWrapperController = (
     form.setValue("type", option.id as "announcement" | "holiday");
   };
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      form.setValue("attachment", e.target.files[0]);
-    }
-  };
-
   const resetForm = () => {
     form.reset(defaultNoticeFormValues);
     setSectionPickerClassId("");
-
-    if (fileInputRef.current) {
-      fileInputRef.current.value = "";
-    }
   };
 
   const handleSubmit = form.handleSubmit((values) => {
@@ -178,10 +163,8 @@ const useNoticeModalWrapperController = (
 
   return {
     t,
-    file: formData.attachment,
     form,
     formData,
-    fileInputRef,
     isAIModalOpen,
     isNoticeModalOpen,
     noticeTypeOptions,
@@ -198,7 +181,6 @@ const useNoticeModalWrapperController = (
     handleAudienceClassToggle,
     handleAudienceSectionToggle,
     handleNoticeTypeChange,
-    handleFileChange,
     handleSubmit,
     generateContentWithAI,
     handleSelectAI,

@@ -40,10 +40,15 @@ const SupportThread = () => {
           return (
             <div
               key={message._id}
-              className={cn("rounded-lg p-4 shadow", fromSupport ? "border border-primary-200 bg-primary-50" : "bg-white")}
+              className={cn(
+                "rounded-lg p-4 shadow",
+                fromSupport ? "border border-primary-200 bg-primary-50" : "bg-white"
+              )}
             >
               <div className="mb-1 flex items-center justify-between gap-3 text-xs text-gray-500">
-                <span className="font-medium text-gray-700">{fromSupport ? "Opscul support" : message.authorId?.name}</span>
+                <span className="font-medium text-gray-700">
+                  {fromSupport ? "Opscul support" : message.authorId?.name}
+                </span>
                 <span>{new Date(message.createdAt).toLocaleString()}</span>
               </div>
               <p className="whitespace-pre-wrap text-sm text-gray-900">{message.body}</p>
@@ -60,8 +65,20 @@ const SupportThread = () => {
       <div className="rounded-lg bg-white p-6 shadow">
         <Form {...c.form}>
           <form onSubmit={c.send} noValidate className="space-y-4">
-            <TextareaField form={c.form} name="body" label="Reply" placeholder="Add more detail or answer Opscul's question" />
-            <FileField form={c.form} name="screenshot" label="Screenshot (optional)" accept="image/png,image/jpeg" />
+            <TextareaField
+              form={c.form}
+              name="body"
+              label="Reply"
+              placeholder="Add more detail or answer Opscul's question"
+            />
+            <FileField
+              form={c.form}
+              name="screenshot"
+              label="Screenshot (optional)"
+              accept="image/png,image/jpeg"
+              maxBytes={10 * 1024 * 1024}
+              hint="PNG or JPG, up to 10 MB"
+            />
             <div className="flex justify-end">
               <Button type="submit" loading={c.isSending}>
                 Send reply

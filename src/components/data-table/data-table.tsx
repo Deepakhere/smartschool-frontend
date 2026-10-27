@@ -2,7 +2,16 @@ import { flexRender } from "@tanstack/react-table";
 import { ChevronDownIcon, ChevronUpDownIcon, ChevronUpIcon, MagnifyingGlassIcon } from "@heroicons/react/20/solid";
 
 import ActionButtons from "@/components/action-buttons";
-import { Table, TableBody, TableCell, TableEmpty, TableHead, TableHeader, TableRow, TableSkeletonRows } from "@/components/table";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableEmpty,
+  TableHead,
+  TableHeader,
+  TableRow,
+  TableSkeletonRows,
+} from "@/components/table";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import DataTableFooter from "./data-table-footer";
@@ -27,7 +36,12 @@ const DataTable = <T,>(props: DataTableProps<T>) => {
           {search ? (
             <div className="relative w-full sm:w-80">
               <MagnifyingGlassIcon className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
-              <Input value={search.value} onChange={(e) => search.onChange(e.target.value)} placeholder={search.placeholder ?? "Search"} className="pl-9" />
+              <Input
+                value={search.value}
+                onChange={(e) => search.onChange(e.target.value)}
+                placeholder={search.placeholder ?? "Search"}
+                className="pl-9"
+              />
             </div>
           ) : (
             <span />
@@ -55,7 +69,11 @@ const DataTable = <T,>(props: DataTableProps<T>) => {
                   <button
                     type="button"
                     onClick={header.column.getToggleSortingHandler()}
-                    className={cn("inline-flex w-full items-center gap-1 hover:text-gray-900", JUSTIFY[align], sorted && "text-gray-900")}
+                    className={cn(
+                      "inline-flex w-full items-center gap-1 hover:text-gray-900",
+                      JUSTIFY[align],
+                      sorted && "text-gray-900"
+                    )}
                   >
                     {flexRender(header.column.columnDef.header, header.getContext())}
                     <SortIcon className={cn("h-4 w-4", sorted ? "text-gray-700" : "text-gray-400")} />
@@ -71,10 +89,19 @@ const DataTable = <T,>(props: DataTableProps<T>) => {
           {isLoading ? (
             <TableSkeletonRows columns={columnCount} />
           ) : rows.length === 0 ? (
-            <TableEmpty colSpan={columnCount} title={empty.title} description={empty.description} action={empty.action} />
+            <TableEmpty
+              colSpan={columnCount}
+              title={empty.title}
+              description={empty.description}
+              action={empty.action}
+            />
           ) : (
             rows.map((row) => (
-              <TableRow key={row.id} onClick={onRowClick ? () => onRowClick(row.original) : undefined} className={cn(onRowClick && "cursor-pointer")}>
+              <TableRow
+                key={row.id}
+                onClick={onRowClick ? () => onRowClick(row.original) : undefined}
+                className={cn(onRowClick && "cursor-pointer")}
+              >
                 {row.getVisibleCells().map((cell) => {
                   const meta = cell.column.columnDef.meta;
                   return (

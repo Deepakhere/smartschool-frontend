@@ -47,7 +47,10 @@ const ClassesTab = ({ organizationId, years, yearId, onYearChange, onViewSection
                 description:
                   "Add the classes your school runs, such as Grade 1 or Grade 2. Sections and students are organised under them.",
               }
-            : { title: "Choose an academic year", description: "Classes belong to an academic year. Pick one from the year menu, or add a year first." }
+            : {
+                title: "Choose an academic year",
+                description: "Classes belong to an academic year. Pick one from the year menu, or add a year first.",
+              }
         }
       />
 

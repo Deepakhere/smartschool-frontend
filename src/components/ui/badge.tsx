@@ -12,7 +12,11 @@ const TONES = {
 
 export type BadgeTone = keyof typeof TONES;
 
-const Badge = ({ tone = "gray", className, ...props }: React.HTMLAttributes<HTMLSpanElement> & { tone?: BadgeTone }) => (
+const Badge = ({
+  tone = "gray",
+  className,
+  ...props
+}: React.HTMLAttributes<HTMLSpanElement> & { tone?: BadgeTone }) => (
   <span
     className={cn("inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium", TONES[tone], className)}
     {...props}

@@ -1,9 +1,9 @@
-import { Fragment, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/20/solid";
 
 import { cn } from "@/lib/utils";
 import SidebarUserMenu from "../sidebar-user-menu";
-import { SidebarEntryModel, SidebarSection, useSidebarController } from "./sidebar-controller";
+import { SidebarSection, useSidebarController } from "./sidebar-controller";
 import SidebarEntry from "./sidebar-entry";
 import { revealMotion } from "./sidebar-motion";
 
@@ -23,23 +23,6 @@ const Sidebar = ({ isCollapsed, isMobileOpen }: SidebarProps) => {
   const lastSection = useRef<SidebarSection | null>(null);
   if (c.openSection) lastSection.current = c.openSection;
   const panel = c.openSection ?? lastSection.current;
-
-  const renderEntry = (item: SidebarEntryModel, inactive: boolean) =>
-    item.kind === "page" ? (
-      <SidebarEntry {...entry} {...item.item} inactive={inactive} />
-    ) : (
-      <SidebarEntry
-        {...entry}
-        name={item.section.label}
-        hint={item.section.hint}
-        icon={item.section.icon}
-        onClick={() => c.open(item.section)}
-        active={item.section.current}
-        dot={item.section.needsAttention}
-        trailing={<ChevronRightIcon className="h-4 w-4" />}
-        inactive={inactive}
-      />
-    );
 
   return (
     <div
@@ -63,15 +46,26 @@ const Sidebar = ({ isCollapsed, isMobileOpen }: SidebarProps) => {
             aria-hidden={isOpen}
             className="h-full w-1/2 space-y-1 overflow-y-auto overflow-x-hidden px-2 pb-4 pt-3"
           >
-            {c.main.map((item, index) => (
-              <Fragment key={item.kind === "page" ? item.item.href : item.section.label}>
-                {/* a divider where plain pages give way to sections */}
-                {item.kind === "section" && c.main[index - 1]?.kind === "page" && (
-                  <div className="!my-3 border-t border-gray-100" aria-hidden="true" />
-                )}
-                {renderEntry(item, isOpen)}
-              </Fragment>
-            ))}
+            {c.main.map((item) =>
+              item.kind === "divider" ? (
+                <div key={item.key} className="!my-3 border-t border-gray-100" aria-hidden="true" />
+              ) : item.kind === "page" ? (
+                <SidebarEntry key={item.item.href} {...entry} {...item.item} inactive={isOpen} />
+              ) : (
+                <SidebarEntry
+                  key={item.section.label}
+                  {...entry}
+                  name={item.section.label}
+                  hint={item.section.hint}
+                  icon={item.section.icon}
+                  onClick={() => c.open(item.section)}
+                  active={item.section.current}
+                  dot={item.section.needsAttention}
+                  trailing={<ChevronRightIcon className="h-4 w-4" />}
+                  inactive={isOpen}
+                />
+              )
+            )}
           </nav>
 
           <nav

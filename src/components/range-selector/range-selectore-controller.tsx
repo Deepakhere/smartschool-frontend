@@ -79,10 +79,8 @@ const useRangeSelectorController = () => {
     },
   ];
 
-  const daysInMonth = (year: number, month: number) =>
-    new Date(year, month + 1, 0).getDate();
-  const firstDayOfMonth = (year: number, month: number) =>
-    new Date(year, month, 1).getDay();
+  const daysInMonth = (year: number, month: number) => new Date(year, month + 1, 0).getDate();
+  const firstDayOfMonth = (year: number, month: number) => new Date(year, month, 1).getDay();
 
   const formatDate = (date: Date) => {
     const day = date.getDate().toString().padStart(2, "0");
@@ -111,14 +109,9 @@ const useRangeSelectorController = () => {
     // Add days of the month
     for (let day = 1; day <= totalDays; day++) {
       const currentDate = new Date(year, month, day);
-      const isSelected =
-        date?.from &&
-        date?.to &&
-        currentDate >= date.from &&
-        currentDate <= date.to;
+      const isSelected = date?.from && date?.to && currentDate >= date.from && currentDate <= date.to;
       const isRangeEnd =
-        (date?.from && isSameDay(currentDate, date.from)) ||
-        (date?.to && isSameDay(currentDate, date.to));
+        (date?.from && isSameDay(currentDate, date.from)) || (date?.to && isSameDay(currentDate, date.to));
 
       days.push(
         <button

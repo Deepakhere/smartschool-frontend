@@ -19,8 +19,18 @@ const useCollectionsController = (organizationId: string) => {
     if (!data) return;
     exportToCsv(`fee-collections-${from}-to-${to}`, [
       ...data.byDay.map((d) => ({ breakdown: "Day", item: d.date, amount_rupees: d.amount / 100, entries: d.count })),
-      ...data.byMethod.map((m) => ({ breakdown: "Method", item: paymentMethodLabel(m.method), amount_rupees: m.amount / 100, entries: m.count })),
-      ...data.byClass.map((c) => ({ breakdown: "Class", item: c.className, amount_rupees: c.amount / 100, entries: c.students })),
+      ...data.byMethod.map((m) => ({
+        breakdown: "Method",
+        item: paymentMethodLabel(m.method),
+        amount_rupees: m.amount / 100,
+        entries: m.count,
+      })),
+      ...data.byClass.map((c) => ({
+        breakdown: "Class",
+        item: c.className,
+        amount_rupees: c.amount / 100,
+        entries: c.students,
+      })),
     ]);
   };
 

@@ -27,7 +27,7 @@ const renderLogin = () => {
       <MemoryRouter>
         <Login />
       </MemoryRouter>
-    </QueryClientProvider>,
+    </QueryClientProvider>
   );
 };
 

@@ -21,9 +21,7 @@ const NoticeModalWrapper = ({
 }: NoticeModalWrapperProps) => {
   const {
     t,
-    file,
     form,
-    fileInputRef,
     isAIModalOpen,
     isNoticeModalOpen,
     noticeTypeOptions,
@@ -43,7 +41,6 @@ const NoticeModalWrapper = ({
     handleSelectCustom,
     closeNoticeModal,
     handleNoticeTypeChange,
-    handleFileChange,
     handleSubmit,
     generateContentWithAI,
     onClickAIPreviewButton,
@@ -61,10 +58,8 @@ const NoticeModalWrapper = ({
 
       <NoticeModal
         t={t}
-        file={file}
         form={form}
         isLoading={isLoading}
-        fileInputRef={fileInputRef}
         isOpen={isNoticeModalOpen}
         noticeTypeOptions={noticeTypeOptions}
         selectedNoticeType={selectedNoticeType}
@@ -85,7 +80,6 @@ const NoticeModalWrapper = ({
         onClose={closeNoticeModal}
         onSubmit={handleSubmit}
         handleNoticeTypeChange={handleNoticeTypeChange}
-        handleFileChange={handleFileChange}
         generateContentWithAI={generateContentWithAI}
       />
     </>

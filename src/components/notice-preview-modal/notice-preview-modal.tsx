@@ -11,18 +11,19 @@ interface NoticePreviewModalProps {
   onDownload?: (url: string, fileName: string) => void;
 }
 
-const NoticePreviewModal = ({
-  isOpen,
-  onClose,
-  notice,
-}: NoticePreviewModalProps) => {
+const NoticePreviewModal = ({ isOpen, onClose, notice }: NoticePreviewModalProps) => {
   const { organization } = useTenant();
   if (!notice) return null;
 
   // the school's own letterhead: its uploaded logo, or its initials when it has none
   const organizationName = organization?.name ?? "";
   const organizationLogo = organization?.logo?.url;
-  const initials = organizationName.split(/\s+/).filter(Boolean).slice(0, 2).map((word) => word[0].toUpperCase()).join("");
+  const initials = organizationName
+    .split(/\s+/)
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((word) => word[0].toUpperCase())
+    .join("");
 
   const handlePrint = () => {
     const printContent = document.getElementById("notice-print-content");
@@ -99,7 +100,11 @@ const NoticePreviewModal = ({
             {/* Organization Logo and Name */}
             <div className="mb-8 flex items-center border-b border-gray-200 pb-4">
               {organizationLogo ? (
-                <img src={organizationLogo} alt={organizationName} className="mr-4 h-12 w-auto max-w-[8rem] object-contain" />
+                <img
+                  src={organizationLogo}
+                  alt={organizationName}
+                  className="mr-4 h-12 w-auto max-w-[8rem] object-contain"
+                />
               ) : (
                 <div className="mr-4 flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-primary-600 text-base font-semibold text-white">
                   {initials}

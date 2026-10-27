@@ -14,6 +14,8 @@ interface IStudentResponse {
   city?: string;
   state?: string;
   pincode?: string;
+  admissionNumber?: string;
+  photoUrl?: string | null;
 }
 
 const getStudentDetails = async (

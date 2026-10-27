@@ -21,7 +21,10 @@ const useEntryDialogController = ({ organizationId, entry, defaultDate, open, on
   const save = useSaveCalendarEntry(organizationId);
   useError({ mutation: save });
 
-  const form = useForm<CalendarEntryFormValues>({ resolver: zodResolver(calendarEntrySchema), defaultValues: defaultCalendarEntryValues });
+  const form = useForm<CalendarEntryFormValues>({
+    resolver: zodResolver(calendarEntrySchema),
+    defaultValues: defaultCalendarEntryValues,
+  });
   const date = useWatch({ control: form.control, name: "date" });
 
   useEffect(() => {

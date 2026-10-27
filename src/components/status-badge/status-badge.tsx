@@ -22,7 +22,7 @@ const StatusBadge = ({ status, className }: { status: string; className?: string
     className={cn(
       "inline-block rounded-full px-2.5 py-0.5 text-xs font-medium",
       STYLES[status] ?? "bg-gray-100 text-gray-700",
-      className,
+      className
     )}
   >
     {LABELS[status] ?? status}

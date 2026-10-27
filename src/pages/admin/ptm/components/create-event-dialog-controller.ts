@@ -14,11 +14,19 @@ interface CreateEventDialogControllerProps {
   onClose: () => void;
 }
 
-const useCreateEventDialogController = ({ organizationId, academicYearId, open, onClose }: CreateEventDialogControllerProps) => {
+const useCreateEventDialogController = ({
+  organizationId,
+  academicYearId,
+  open,
+  onClose,
+}: CreateEventDialogControllerProps) => {
   const createEvent = useCreatePTMEvent(organizationId);
   useError({ mutation: createEvent });
 
-  const form = useForm<PTMEventFormValues>({ resolver: zodResolver(ptmEventSchema), defaultValues: defaultPTMEventValues });
+  const form = useForm<PTMEventFormValues>({
+    resolver: zodResolver(ptmEventSchema),
+    defaultValues: defaultPTMEventValues,
+  });
   const mode = useWatch({ control: form.control, name: "mode" });
 
   useEffect(() => {

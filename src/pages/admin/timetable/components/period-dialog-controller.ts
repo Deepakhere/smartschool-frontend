@@ -20,7 +20,16 @@ interface PeriodDialogControllerArgs {
 }
 
 // one period, added to every chosen day at once; a clash on one day doesn't stop the others
-const usePeriodDialogController = ({ organizationId, academicYearId, classId, sectionId, assignments, subjects, open, onClose }: PeriodDialogControllerArgs) => {
+const usePeriodDialogController = ({
+  organizationId,
+  academicYearId,
+  classId,
+  sectionId,
+  assignments,
+  subjects,
+  open,
+  onClose,
+}: PeriodDialogControllerArgs) => {
   const create = useCreateTimetableSlot(organizationId);
   const [isSaving, setIsSaving] = useState(false);
   const form = useForm<PeriodFormValues>({ resolver: zodResolver(periodSchema), defaultValues: defaultPeriodValues });
@@ -29,9 +38,9 @@ const usePeriodDialogController = ({ organizationId, academicYearId, classId, se
     if (open) form.reset(defaultPeriodValues);
   }, [open, form]);
 
-  const teacherOptions: SelectOption[] = [...new Map(assignments.map((a) => [a.teacherUserId.id, a.teacherUserId.name])).entries()].map(
-    ([id, name]) => ({ id, name })
-  );
+  const teacherOptions: SelectOption[] = [
+    ...new Map(assignments.map((a) => [a.teacherUserId.id, a.teacherUserId.name])).entries(),
+  ].map(([id, name]) => ({ id, name }));
   const subjectOptions: SelectOption[] = subjects.map((subject) => ({ id: subject.id, name: subject.name }));
 
   // a subject teacher's own subject is the likely choice
@@ -57,7 +66,8 @@ const usePeriodDialogController = ({ organizationId, academicYearId, classId, se
           room: values.room || undefined,
         });
       } catch (error) {
-        const message = (error as { response?: { Error?: { message?: string } } }).response?.Error?.message ?? "Could not be added.";
+        const message =
+          (error as { response?: { Error?: { message?: string } } }).response?.Error?.message ?? "Could not be added.";
         problems.push(`${DAY_NAMES[Number(day)]}: ${message}`);
       }
     }
@@ -67,7 +77,10 @@ const usePeriodDialogController = ({ organizationId, academicYearId, classId, se
     if (added) toast.success(`Added on ${added} day${added > 1 ? "s" : ""}.`);
     if (problems.length) {
       toast.error(problems.join("\n"), { duration: 8000 });
-      form.setValue("days", values.days.filter((day) => problems.some((p) => p.startsWith(DAY_NAMES[Number(day)]))));
+      form.setValue(
+        "days",
+        values.days.filter((day) => problems.some((p) => p.startsWith(DAY_NAMES[Number(day)])))
+      );
       return;
     }
     onClose();

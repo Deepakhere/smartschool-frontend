@@ -11,9 +11,9 @@ import {
 
 import { DataTableProps, ServerPagination } from "./data-table.types";
 
-const isServerPaged = <T,>(p: DataTableProps<T>["pagination"]): p is ServerPagination => !!p && "onPageChange" in p;
+const isServerPaged = <T>(p: DataTableProps<T>["pagination"]): p is ServerPagination => !!p && "onPageChange" in p;
 
-const useDataTable = <T,>({ columns, data, getRowId, pagination, sorting }: DataTableProps<T>) => {
+const useDataTable = <T>({ columns, data, getRowId, pagination, sorting }: DataTableProps<T>) => {
   const serverPaged = isServerPaged(pagination);
   const [localSorting, setLocalSorting] = useState<SortingState>([]);
   const sortingState = sorting?.state ?? localSorting;

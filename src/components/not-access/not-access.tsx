@@ -12,12 +12,9 @@ const NotAccess: React.FC = () => {
     <div className="min-h-screen flex items-center justify-center bg-gray-100">
       <div className="max-w-md w-full space-y-8 p-10 bg-white rounded-xl shadow-lg text-center">
         <div>
-          <h2 className="mt-6 text-3xl font-extrabold text-gray-900">
-            Access Denied
-          </h2>
+          <h2 className="mt-6 text-3xl font-extrabold text-gray-900">Access Denied</h2>
           <p className="mt-2 text-sm text-gray-600">
-            Sorry, you don't have permission to access this page or the page
-            doesn't exist.
+            Sorry, you don't have permission to access this page or the page doesn't exist.
           </p>
         </div>
         <div className="flex flex-col space-y-4">

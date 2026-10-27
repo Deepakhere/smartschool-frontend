@@ -23,10 +23,6 @@ export const useHomeworkController = () => {
   const createHomework = useCreateHomework(organizationId, sectionId);
   const deleteHomework = useDeleteHomework(organizationId, sectionId);
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    form.setValue("attachment", e.target.files?.[0] || null, { shouldValidate: true });
-  };
-
   const onSubmit = form.handleSubmit((values) => {
     if (!academicYearId || !classId || !sectionId) {
       toast.error("Please select academic year, class and section");
@@ -90,7 +86,6 @@ export const useHomeworkController = () => {
     setShowForm,
     toggleForm: () => setShowForm((open) => !open),
     form,
-    handleFileChange,
     onSubmit,
     handleDelete: setHomeworkIdPendingDelete,
     homeworkIdPendingDelete,

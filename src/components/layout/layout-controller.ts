@@ -1,13 +1,13 @@
-import { useEffect, useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
 
-const COLLAPSE_STORAGE_KEY = 'sidebar_collapsed';
+const COLLAPSE_STORAGE_KEY = "sidebar_collapsed";
 
 export const useLayoutController = () => {
   // mobile-drawer open/closed state only - on lg+ the sidebar is always visible
   // via CSS regardless of this flag (see Sidebar's lg: classes)
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const [isCollapsed, setIsCollapsed] = useState(() => localStorage.getItem(COLLAPSE_STORAGE_KEY) === 'true');
+  const [isCollapsed, setIsCollapsed] = useState(() => localStorage.getItem(COLLAPSE_STORAGE_KEY) === "true");
   const { pathname } = useLocation();
 
   const toggleSidebar = () => {

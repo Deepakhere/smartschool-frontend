@@ -44,7 +44,11 @@ const MonthGrid = ({ year, month, today, itemsByDate, onPickDay, onPickEntry }: 
                 <span
                   className={cn(
                     "flex h-6 w-6 items-center justify-center rounded-full text-sm",
-                    date === today ? "bg-primary-600 font-semibold text-white" : inMonth ? "text-gray-700" : "text-gray-300 dark:text-gray-600"
+                    date === today
+                      ? "bg-primary-600 font-semibold text-white"
+                      : inMonth
+                        ? "text-gray-700"
+                        : "text-gray-300 dark:text-gray-600"
                   )}
                 >
                   {Number(date.slice(8))}
@@ -69,7 +73,9 @@ const MonthGrid = ({ year, month, today, itemsByDate, onPickDay, onPickEntry }: 
                     {item.title}
                   </button>
                 ))}
-                {items.length > MAX_CHIPS && <p className="px-1 text-[11px] text-gray-500">+{items.length - MAX_CHIPS} more</p>}
+                {items.length > MAX_CHIPS && (
+                  <p className="px-1 text-[11px] text-gray-500">+{items.length - MAX_CHIPS} more</p>
+                )}
               </div>
             </div>
           );

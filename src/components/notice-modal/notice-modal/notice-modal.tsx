@@ -2,6 +2,7 @@ import { UseFormReturn } from "react-hook-form";
 import { SparklesIcon, EyeIcon } from "@heroicons/react/24/solid";
 
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
+import { FileField } from "@/components/form-fields";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -18,9 +19,7 @@ interface NoticeModalProps {
   isLoading: boolean;
   onClose: () => void;
   onSubmit: (e: React.FormEvent) => void;
-  file: File | null | undefined;
   form: UseFormReturn<NoticeFormValues>;
-  fileInputRef: React.RefObject<HTMLInputElement>;
   noticeTypeOptions: SelectOption[];
   selectedNoticeType: SelectOption;
   isGeneratingContent: boolean;
@@ -36,7 +35,6 @@ interface NoticeModalProps {
   handleAudienceClassToggle: (classId: string) => void;
   handleAudienceSectionToggle: (sectionId: string) => void;
   handleNoticeTypeChange: (option: SelectOption) => void;
-  handleFileChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   generateContentWithAI: () => void;
   onClickAIPreviewButton: () => void;
   onCloseAIPreviewModal: () => void;
@@ -55,9 +53,7 @@ const NoticeModal = ({
   isLoading,
   onClose,
   onSubmit,
-  file,
   form,
-  fileInputRef,
   noticeTypeOptions,
   selectedNoticeType,
   isGeneratingContent,
@@ -73,7 +69,6 @@ const NoticeModal = ({
   handleAudienceClassToggle,
   handleAudienceSectionToggle,
   handleNoticeTypeChange,
-  handleFileChange,
   generateContentWithAI,
   onClickAIPreviewButton,
   onCloseAIPreviewModal,
@@ -283,25 +278,14 @@ const NoticeModal = ({
                       )}
 
                       {isAIModalOpen ? null : (
-                        <div>
-                          <label htmlFor="attachment" className="block text-sm font-medium text-gray-700 mb-1">
-                            {t("labels.attachment")}
-                          </label>
-                          <input
-                            type="file"
-                            id="attachment"
-                            name="attachment"
-                            ref={fileInputRef}
-                            accept=".pdf"
-                            onChange={handleFileChange}
-                            className="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-primary-50 file:text-primary-700 hover:file:bg-primary-100 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-                          />
-                          {file && (
-                            <p className="mt-2 text-sm text-gray-500">
-                              {t("labels.selected_file")}: {file.name}
-                            </p>
-                          )}
-                        </div>
+                        <FileField
+                          form={form}
+                          name="attachment"
+                          label={t("labels.attachment")}
+                          accept=".pdf,application/pdf"
+                          maxBytes={10 * 1024 * 1024}
+                          hint="PDF, up to 10 MB"
+                        />
                       )}
 
                       <div className="mt-5 sm:mt-4 sm:flex sm:flex-row-reverse">

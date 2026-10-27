@@ -12,7 +12,10 @@ export const useAddGuardian = (organizationId: string, studentId: string) => {
   const queryClient = useQueryClient();
   return useMutation<{ invited: boolean }, IAPIError, IAddGuardianValue>({
     mutationFn: async (value) => {
-      const result = await apiClient.post<null, IAxiosResponse<{ invited: boolean }>>(base(organizationId, studentId), value);
+      const result = await apiClient.post<null, IAxiosResponse<{ invited: boolean }>>(
+        base(organizationId, studentId),
+        value
+      );
       return result.data.Data;
     },
     onSuccess: () => queryClient.invalidateQueries({ queryKey: [API_QUERY_KEY.GET_STUDENT_BY_ID, studentId] }),

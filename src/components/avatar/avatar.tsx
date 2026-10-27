@@ -27,17 +27,8 @@ const Avatar = ({ name, src, size = 40 }: AvatarProps) => {
         backgroundColor: `hsl(${(name.length * 10) % 360}, 70%, 50%)`,
       }}
     >
-      {src && (
-        <AvatarPrimitive.Image
-          src={src}
-          alt={name}
-          className="w-full h-full object-cover"
-        />
-      )}
-      <AvatarPrimitive.Fallback
-        className="flex items-center justify-center w-full h-full"
-        delayMs={src ? 300 : 0}
-      >
+      {src && <AvatarPrimitive.Image src={src} alt={name} className="w-full h-full object-cover" />}
+      <AvatarPrimitive.Fallback className="flex items-center justify-center w-full h-full" delayMs={src ? 300 : 0}>
         <span style={{ fontSize: `${size / 2}px`, lineHeight: 1 }}>{initials}</span>
       </AvatarPrimitive.Fallback>
     </AvatarPrimitive.Root>

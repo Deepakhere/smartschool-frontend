@@ -7,7 +7,12 @@ import { Input } from "@/components/ui/input";
 import { IExamSubject, IMarksSheetItem } from "@/types";
 import { MarksSheetFormValues } from "../reports.schema";
 
-const STATUS_TONE: Record<string, BadgeTone> = { published: "green", verified: "gray", marks_entry: "yellow", scheduled: "yellow" };
+const STATUS_TONE: Record<string, BadgeTone> = {
+  published: "green",
+  verified: "gray",
+  marks_entry: "yellow",
+  scheduled: "yellow",
+};
 
 export type MarksRow = FieldArrayWithId<MarksSheetFormValues, "rows", "id">;
 
@@ -20,7 +25,13 @@ interface MarksColumnOptions {
 }
 
 // each cell registers its input by row index, so the grid stays bound to the react-hook-form field array
-export const marksSheetColumns = ({ form, draftRows, examSubject, marksByStudent, examPublished }: MarksColumnOptions): DataTableColumn<MarksRow>[] => [
+export const marksSheetColumns = ({
+  form,
+  draftRows,
+  examSubject,
+  marksByStudent,
+  examPublished,
+}: MarksColumnOptions): DataTableColumn<MarksRow>[] => [
   {
     id: "student",
     header: "Student",

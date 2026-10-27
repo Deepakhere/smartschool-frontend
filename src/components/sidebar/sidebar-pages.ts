@@ -24,9 +24,17 @@ export interface SidebarGroup {
   pages: SidebarPage[];
 }
 
-export type SidebarMenuEntry = SidebarPage | SidebarGroup;
+// a line between parts of the menu
+export interface SidebarDivider {
+  divider: true;
+}
+
+export const DIVIDER: SidebarDivider = { divider: true };
+
+export type SidebarMenuEntry = SidebarPage | SidebarGroup | SidebarDivider;
 
 export const isGroup = (entry: SidebarMenuEntry): entry is SidebarGroup => "pages" in entry;
+export const isDivider = (entry: SidebarMenuEntry): entry is SidebarDivider => "divider" in entry;
 
 // pages and sections, in the order they show
 export type SidebarMenu = SidebarMenuEntry[];

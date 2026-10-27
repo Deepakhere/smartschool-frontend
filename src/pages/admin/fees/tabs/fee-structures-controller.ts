@@ -16,7 +16,8 @@ import {
   useUpdateFeeStructure,
 } from "../service/fees-service";
 
-const sumPaise = (rows: { amount: string }[] = []) => rows.reduce((sum, row) => sum + (toPaise(row.amount || 0) || 0), 0);
+const sumPaise = (rows: { amount: string }[] = []) =>
+  rows.reduce((sum, row) => sum + (toPaise(row.amount || 0) || 0), 0);
 
 // a structure being edited may use a removed head or another year's classes; keep those in the lists so they still show
 const withEditing = (options: SelectOption[], extra: SelectOption[] = []) => [
@@ -74,7 +75,9 @@ const useFeeStructuresController = (organizationId: string) => {
   // unticking a class also drops any of its sections that were picked
   const onClassesChange = (nextClassIds: string[]) => {
     const allowed = new Set(
-      (sections.data?.items ?? []).filter((section) => nextClassIds.includes(section.classId)).map((section) => section.id)
+      (sections.data?.items ?? [])
+        .filter((section) => nextClassIds.includes(section.classId))
+        .map((section) => section.id)
     );
     form.setValue(
       "sectionIds",
@@ -87,8 +90,15 @@ const useFeeStructuresController = (organizationId: string) => {
       name: structure.name,
       classIds: structure.classIds.map((klass) => klass.id),
       sectionIds: structure.sectionIds.map((section) => section.id),
-      items: structure.items.map((item) => ({ feeHeadId: item.feeHeadId?.id ?? "", amount: String(item.amount / 100) })),
-      installments: structure.installments.map((row) => ({ label: row.label, dueDate: row.dueDate.slice(0, 10), amount: String(row.amount / 100) })),
+      items: structure.items.map((item) => ({
+        feeHeadId: item.feeHeadId?.id ?? "",
+        amount: String(item.amount / 100),
+      })),
+      installments: structure.installments.map((row) => ({
+        label: row.label,
+        dueDate: row.dueDate.slice(0, 10),
+        amount: String(row.amount / 100),
+      })),
       lateFeeAmount: structure.lateFee?.amount ? String(structure.lateFee.amount / 100) : "",
       lateFeeGraceDays: String(structure.lateFee?.graceDays ?? 7),
     });
@@ -108,8 +118,15 @@ const useFeeStructuresController = (organizationId: string) => {
       classIds: values.classIds,
       sectionIds: values.sectionIds,
       items: values.items.map((item) => ({ feeHeadId: item.feeHeadId, amount: toPaise(item.amount) })),
-      installments: values.installments.map((row) => ({ label: row.label, dueDate: row.dueDate, amount: toPaise(row.amount) })),
-      lateFee: { amount: values.lateFeeAmount ? toPaise(values.lateFeeAmount) : 0, graceDays: Number(values.lateFeeGraceDays || 0) },
+      installments: values.installments.map((row) => ({
+        label: row.label,
+        dueDate: row.dueDate,
+        amount: toPaise(row.amount),
+      })),
+      lateFee: {
+        amount: values.lateFeeAmount ? toPaise(values.lateFeeAmount) : 0,
+        graceDays: Number(values.lateFeeGraceDays || 0),
+      },
     };
     if (editing) {
       updateStructure.mutate(

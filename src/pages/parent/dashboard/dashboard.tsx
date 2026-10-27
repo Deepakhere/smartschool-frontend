@@ -27,10 +27,7 @@ const ParentDashboard = () => {
           {cards.map((card, index) => {
             const Icon = card.icon;
             return (
-              <div
-                key={index}
-                className="bg-white rounded-xl shadow p-6 flex items-center space-x-4"
-              >
+              <div key={index} className="bg-white rounded-xl shadow p-6 flex items-center space-x-4">
                 <div className="p-3 bg-primary-50 rounded-lg">
                   <Icon className="h-6 w-6 text-primary-600" />
                 </div>

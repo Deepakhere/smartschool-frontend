@@ -1,13 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
 import apiClient from "@/config";
-import {
-  IAPIError,
-  IAxiosResponse,
-  IPromotionCandidate,
-  IPromotionDecisionResult,
-  PromotionAction,
-} from "@/types";
+import { IAPIError, IAxiosResponse, IPromotionCandidate, IPromotionDecisionResult, PromotionAction } from "@/types";
 import { APIS_ROUTES, API_QUERY_KEY } from "@/utils";
 
 const base = (organizationId: string) => `${APIS_ROUTES.STUDENT_PROFILE}/${organizationId}`;

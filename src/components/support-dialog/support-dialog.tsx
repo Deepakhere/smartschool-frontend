@@ -34,7 +34,14 @@ const SupportDialog = ({ open, onClose, prefill }: SupportDialogProps) => {
         rows={5}
         placeholder="What you were doing, what you expected, and what happened instead"
       />
-      <FileField form={form} name="screenshot" label="Screenshot (optional)" accept="image/png,image/jpeg" />
+      <FileField
+        form={form}
+        name="screenshot"
+        label="Screenshot (optional)"
+        accept="image/png,image/jpeg"
+        maxBytes={10 * 1024 * 1024}
+        hint="PNG or JPG, up to 10 MB"
+      />
     </FormDialog>
   );
 };

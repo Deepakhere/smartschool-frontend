@@ -20,11 +20,7 @@ const Layout = () => {
             {/* mobile-only backdrop - tapping it closes the drawer; irrelevant on
                 lg+ where the sidebar is a normal in-flow column, not an overlay */}
             {isSidebarOpen && (
-              <div
-                className="fixed inset-0 bg-black/50 z-40 lg:hidden"
-                onClick={closeSidebar}
-                aria-hidden="true"
-              />
+              <div className="fixed inset-0 bg-black/50 z-40 lg:hidden" onClick={closeSidebar} aria-hidden="true" />
             )}
             <Sidebar isCollapsed={isCollapsed} isMobileOpen={isSidebarOpen} />
             <main className="app-main-surface relative flex-1 overflow-y-auto bg-gray-50">

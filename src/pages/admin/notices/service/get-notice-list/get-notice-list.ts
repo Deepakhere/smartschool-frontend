@@ -23,7 +23,17 @@ const getNoticeList = async (
   page: number
 ): Promise<Paged<INoticeResponse>> => {
   if (!organizationId) {
-    return { rows: [], pagination: { currentPage: 1, totalItems: 0, itemsPerPage: limit, totalPages: 1, hasNextPage: false, hasPreviousPage: false } };
+    return {
+      rows: [],
+      pagination: {
+        currentPage: 1,
+        totalItems: 0,
+        itemsPerPage: limit,
+        totalPages: 1,
+        hasNextPage: false,
+        hasPreviousPage: false,
+      },
+    };
   }
 
   const result = await apiClient.get<null, IAxiosResponse<Paged<INoticeResponse>>>(

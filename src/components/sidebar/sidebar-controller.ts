@@ -13,6 +13,7 @@ import {
   SidebarMenu,
   SidebarMenuEntry,
   SidebarPage,
+  isDivider,
   isGroup,
   moduleFor,
   morePages,
@@ -40,7 +41,8 @@ export interface SidebarSection {
   needsAttention: boolean;
 }
 
-export type SidebarEntryModel = { kind: "page"; item: SidebarItem } | { kind: "section"; section: SidebarSection };
+export type SidebarEntryModel =
+  { kind: "page"; item: SidebarItem } | { kind: "section"; section: SidebarSection } | { kind: "divider"; key: string };
 
 // granted-page menus (accountant, staff) split by count
 const splitPages = (pages: SidebarPage[]): SidebarMenu =>
@@ -100,7 +102,8 @@ export const useSidebarController = () => {
   };
 
   // a section with one or two pages shows them as plain links; an empty one disappears
-  const toEntries = (entry: SidebarMenuEntry): SidebarEntryModel[] => {
+  const toEntries = (entry: SidebarMenuEntry, index: number): SidebarEntryModel[] => {
+    if (isDivider(entry)) return [{ kind: "divider", key: `divider-${index}` }];
     if (!isGroup(entry)) return visible([entry]).map((page) => ({ kind: "page", item: toItem(page) }));
     const items = visible(entry.pages).map(toItem);
     if (items.length <= 2) return items.map((item) => ({ kind: "page", item }));
@@ -118,7 +121,13 @@ export const useSidebarController = () => {
       },
     ];
   };
-  const main = chosen.flatMap(toEntries);
+  // a line only between two visible parts: never first, last or doubled once hidden pages are gone
+  const main = chosen
+    .flatMap(toEntries)
+    .filter(
+      (entry, index, all) =>
+        entry.kind !== "divider" || (index > 0 && index < all.length - 1 && all[index - 1].kind !== "divider")
+    );
   const sections = main.flatMap((entry) => (entry.kind === "section" ? [entry.section] : []));
   const currentSection = sections.find((section) => section.current)?.label ?? null;
 

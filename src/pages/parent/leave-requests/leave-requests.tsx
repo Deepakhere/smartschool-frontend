@@ -6,10 +6,10 @@ import EmptyState from "@/components/empty-state";
 import SectionHeader from "@/components/section-header";
 import CustomSelectDropdown from "@/components/custom-select";
 import DeleteConfirmationDialog from "@/components/delete-confirmation-dialog";
+import { FileField } from "@/components/form-fields";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useLeaveRequestsController } from "./leave-requests-controller";
 import { SelectOption } from "@/types";
@@ -110,10 +110,14 @@ const LeaveRequests = () => {
               )}
             />
 
-            <div>
-              <Label>{t("labels.attachment")}</Label>
-              <Input type="file" accept=".pdf,.png,.jpg,.jpeg" onChange={c.handleFileChange} />
-            </div>
+            <FileField
+              form={c.form}
+              name="attachment"
+              label={t("labels.attachment")}
+              accept=".pdf,.png,.jpg,.jpeg"
+              maxBytes={10 * 1024 * 1024}
+              hint="PDF, PNG or JPG, up to 10 MB"
+            />
 
             <div className="flex justify-end gap-3">
               <Button variant="secondary" onClick={() => c.setShowForm(false)}>

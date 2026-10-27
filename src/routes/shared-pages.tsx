@@ -12,12 +12,14 @@ import {
   PresentationChartBarIcon,
   UserGroupIcon,
   UserIcon,
+  UserPlusIcon,
   UsersIcon,
 } from "@heroicons/react/24/outline";
 
 import AdminDashboard from "../pages/admin/dashboard";
 import AdminClasses from "../pages/admin/classes";
 import AdminStudents from "../pages/admin/students";
+import StudentForm from "../pages/admin/students/student-form";
 import AdminPromotion from "../pages/admin/promotion";
 import AdminTeachers from "../pages/admin/teachers";
 import AdminNotices from "../pages/admin/notices";
@@ -62,6 +64,12 @@ export const SHARED_PAGES: SharedPage[] = [
     element: <AdminStudents />,
     anyOf: ["students.view", "students.manage"],
     nav: { name: "Students", hint: "Admissions, profiles and records", icon: UserGroupIcon },
+  },
+  {
+    path: "admissions",
+    element: <StudentForm />,
+    anyOf: ["students.manage"],
+    nav: { name: "Admissions", hint: "Admit a new student", icon: UserPlusIcon },
   },
   {
     path: "promotion",

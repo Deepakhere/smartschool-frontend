@@ -14,7 +14,13 @@ interface EmptyStateProps {
 
 // the one empty state for every list in the app: what goes here, and the first step to fill it
 const EmptyState = ({ title, description, action, compact = false, className }: EmptyStateProps) => (
-  <div className={cn("flex flex-col items-center justify-center text-center", compact ? "min-h-[10rem] px-4 py-8" : "min-h-[22rem] px-4 py-14", className)}>
+  <div
+    className={cn(
+      "flex flex-col items-center justify-center text-center",
+      compact ? "min-h-[10rem] px-4 py-8" : "min-h-[22rem] px-4 py-14",
+      className
+    )}
+  >
     {!compact && (
       <div className="mb-4">
         <NoRecordIcon />

@@ -25,10 +25,6 @@ export const useLeaveRequestsController = () => {
   const cancelLeaveRequest = useCancelLeaveRequest(organizationId);
   useError({ mutation: cancelLeaveRequest });
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    form.setValue("attachment", e.target.files?.[0] || null);
-  };
-
   const onSubmit = form.handleSubmit((values) => {
     const formData = new FormData();
     formData.append("studentId", values.studentId);
@@ -69,7 +65,6 @@ export const useLeaveRequestsController = () => {
     setShowForm,
     toggleForm: () => setShowForm((open) => !open),
     form,
-    handleFileChange,
     onSubmit,
     isCreating: createLeaveRequest.isPending,
     handleCancel,

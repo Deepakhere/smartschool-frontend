@@ -22,10 +22,7 @@ const LeaveRequests = () => {
 
   return (
     <div className="max-w-7xl mx-auto space-y-6">
-      <SectionHeader
-        title="Leave Requests"
-        description="Review and decide on student leave requests"
-      />
+      <SectionHeader title="Leave Requests" description="Review and decide on student leave requests" />
 
       <div className="bg-white shadow rounded-lg">
         <div className="flex justify-end border-b border-gray-200 px-4 py-3">

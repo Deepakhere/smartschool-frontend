@@ -42,7 +42,13 @@ const TeacherPTM = () => {
           <Form {...form}>
             <form onSubmit={handleGenerateSlots} noValidate>
               <div className="grid grid-cols-1 items-start gap-3 sm:grid-cols-4">
-                <SelectField form={form} name="eventId" label="PTM event" options={eventOptions} onValueChange={onEventChange} />
+                <SelectField
+                  form={form}
+                  name="eventId"
+                  label="PTM event"
+                  options={eventOptions}
+                  onValueChange={onEventChange}
+                />
                 <SelectField form={form} name="sectionId" label="Section" options={sectionOptions} />
                 <TextField form={form} name="startAt" label="From" type="datetime-local" />
                 <TextField form={form} name="endAt" label="To" type="datetime-local" />

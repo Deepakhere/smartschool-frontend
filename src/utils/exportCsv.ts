@@ -12,5 +12,9 @@ export const exportToCsv = (filename: string, rows: Record<string, string | numb
 
   const lines = [headers.join(","), ...rows.map((row) => headers.map((h) => escapeCell(row[h])).join(","))];
   // the byte-order mark makes Excel read the file as UTF-8, so the rupee sign and Indian names show correctly
-  saveFile("\uFEFF" + lines.join("\n"), filename.endsWith(".csv") ? filename : `${filename}.csv`, "text/csv;charset=utf-8;");
+  saveFile(
+    "\uFEFF" + lines.join("\n"),
+    filename.endsWith(".csv") ? filename : `${filename}.csv`,
+    "text/csv;charset=utf-8;"
+  );
 };

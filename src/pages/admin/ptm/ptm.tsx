@@ -30,7 +30,10 @@ const AdminPTM = () => {
           {c.isLoading ? (
             <Spinner />
           ) : c.items.length === 0 ? (
-            <EmptyState title="No PTM events yet" description="Use Schedule PTM to create the first parent-teacher meeting." />
+            <EmptyState
+              title="No PTM events yet"
+              description="Use Schedule PTM to create the first parent-teacher meeting."
+            />
           ) : (
             <div className="divide-y divide-gray-200">
               {c.items.map((event) => {
@@ -46,7 +49,8 @@ const AdminPTM = () => {
                       <div>
                         <p className="font-medium text-gray-900">{event.title}</p>
                         <p className="text-sm capitalize text-gray-500">
-                          {new Date(event.date).toLocaleDateString()} · {event.mode} · {event.slotDurationMins} min slots
+                          {new Date(event.date).toLocaleDateString()} · {event.mode} · {event.slotDurationMins} min
+                          slots
                         </p>
                       </div>
                       <span className="flex items-center gap-1 text-sm text-primary-600">
@@ -54,7 +58,9 @@ const AdminPTM = () => {
                         <ChevronDownIcon className={cn("h-4 w-4 transition-transform", isOpen && "rotate-180")} />
                       </span>
                     </button>
-                    {isOpen && <EventSlotsPanel organizationId={c.organizationId} event={event} assignments={c.assignments} />}
+                    {isOpen && (
+                      <EventSlotsPanel organizationId={c.organizationId} event={event} assignments={c.assignments} />
+                    )}
                   </div>
                 );
               })}

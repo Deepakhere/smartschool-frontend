@@ -30,14 +30,17 @@ import {
   TagIcon,
   UserGroupIcon,
   UserIcon,
+  UserPlusIcon,
   UsersIcon,
 } from "@heroicons/react/24/outline";
 
-import type { SidebarMenu } from "../sidebar-pages";
+import { DIVIDER, type SidebarMenu } from "../sidebar-pages";
 
 // modules in the order a school works; every page opens a real page or tab
 export const ADMIN_MENU: SidebarMenu = [
   { name: "Dashboard", hint: "Your school at a glance", path: "dashboard", icon: HomeIcon },
+  DIVIDER,
+  { name: "Admissions", hint: "Admit a new student", path: "admissions", icon: UserPlusIcon },
   {
     label: "Students",
     hint: "Manage students",
@@ -164,6 +167,7 @@ export const ADMIN_MENU: SidebarMenu = [
     ],
   },
   { name: "Teachers & Staff", hint: "Staff profiles and roles", path: "teachers", icon: UsersIcon },
+  DIVIDER,
   {
     label: "Settings",
     hint: "Configure your school",

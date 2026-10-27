@@ -2,6 +2,7 @@ import { FieldValues, Path, UseFormReturn } from "react-hook-form";
 
 import CustomSelectDropdown from "@/components/custom-select";
 import DatePicker from "@/components/date-picker";
+import FileDropzone from "@/components/file-dropzone";
 import { Checkbox } from "@/components/ui/checkbox";
 import { FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
@@ -150,7 +151,14 @@ export const DateField = <T extends FieldValues>({
       <FormItem className={className}>
         <FormLabel>{label}</FormLabel>
         <FormControl>
-          <DatePicker name={field.name} value={field.value ?? ""} onChange={field.onChange} disabled={disabled} min={min} max={max} />
+          <DatePicker
+            name={field.name}
+            value={field.value ?? ""}
+            onChange={field.onChange}
+            disabled={disabled}
+            min={min}
+            max={max}
+          />
         </FormControl>
         {description && <FormDescription>{description}</FormDescription>}
         <FormMessage />
@@ -192,7 +200,7 @@ export const CheckboxField = <T extends FieldValues>({
   />
 );
 
-// holds the chosen File; the input remounts when the value is cleared so the browser forgets the old file
+// holds the chosen File (or null) in a drag and drop area
 export const FileField = <T extends FieldValues>({
   form,
   name,
@@ -201,7 +209,9 @@ export const FileField = <T extends FieldValues>({
   disabled,
   className,
   accept,
-}: FieldProps<T> & { accept?: string }) => (
+  maxBytes,
+  hint,
+}: FieldProps<T> & { accept?: string; maxBytes?: number; hint?: string }) => (
   <FormField
     control={form.control}
     name={name}
@@ -209,15 +219,13 @@ export const FileField = <T extends FieldValues>({
       <FormItem className={className}>
         <FormLabel>{label}</FormLabel>
         <FormControl>
-          <Input
-            key={field.value ? "chosen" : "empty"}
-            type="file"
+          <FileDropzone
+            value={field.value ?? null}
+            onChange={field.onChange}
             accept={accept}
+            maxBytes={maxBytes}
+            hint={hint}
             disabled={disabled}
-            name={field.name}
-            ref={field.ref}
-            onBlur={field.onBlur}
-            onChange={(e) => field.onChange(e.target.files?.[0] ?? null)}
           />
         </FormControl>
         {description && <FormDescription>{description}</FormDescription>}
@@ -270,7 +278,9 @@ export const ChipsField = <T extends FieldValues>({
                   }}
                   className={cn(
                     "rounded-full border px-3 py-1 text-xs focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 disabled:opacity-50",
-                    isOn ? "border-primary-300 bg-primary-100 text-primary-800" : "border-gray-300 bg-white text-gray-600 hover:bg-gray-50"
+                    isOn
+                      ? "border-primary-300 bg-primary-100 text-primary-800"
+                      : "border-gray-300 bg-white text-gray-600 hover:bg-gray-50"
                   )}
                 >
                   {option.name}

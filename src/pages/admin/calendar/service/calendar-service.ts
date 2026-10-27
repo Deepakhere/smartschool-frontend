@@ -10,7 +10,9 @@ export const useGetCalendarMonth = (organizationId: string, year: number, month:
   useQuery<ICalendarMonth, IAPIError>({
     queryKey: [API_QUERY_KEY.GET_CALENDAR_MONTH, organizationId, year, month],
     queryFn: async () => {
-      const result = await apiClient.get<null, IAxiosResponse<ICalendarMonth>>(`${base(organizationId)}/month`, { params: { year, month } });
+      const result = await apiClient.get<null, IAxiosResponse<ICalendarMonth>>(`${base(organizationId)}/month`, {
+        params: { year, month },
+      });
       return result.data.Data;
     },
     enabled: !!organizationId && year > 0 && month > 0,

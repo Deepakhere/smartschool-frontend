@@ -67,7 +67,11 @@ const ParentPTM = () => {
         {isLoadingEvents ? (
           <Spinner />
         ) : events.length === 0 ? (
-          <EmptyState compact title="No meetings open for booking" description="When the school opens parent-teacher meeting slots, you can book one here." />
+          <EmptyState
+            compact
+            title="No meetings open for booking"
+            description="When the school opens parent-teacher meeting slots, you can book one here."
+          />
         ) : (
           <>
             <CustomSelectDropdown
@@ -82,7 +86,11 @@ const ParentPTM = () => {
                 {isLoadingSlots ? (
                   <Spinner />
                 ) : slotItems.length === 0 ? (
-                  <EmptyState compact title="No open slots yet" description="Teachers haven't opened time for your child's section." />
+                  <EmptyState
+                    compact
+                    title="No open slots yet"
+                    description="Teachers haven't opened time for your child's section."
+                  />
                 ) : (
                   <div className="flex flex-wrap gap-2">
                     {slotItems.map((slot) => (

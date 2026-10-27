@@ -11,7 +11,11 @@ import { IGradingScheme } from "@/types";
 import useGradingSchemesTabController from "./grading-schemes-tab-controller";
 
 const columns: DataTableColumn<IGradingScheme>[] = [
-  { id: "name", header: "Name", cell: ({ row }) => <span className="font-medium text-gray-900">{row.original.name}</span> },
+  {
+    id: "name",
+    header: "Name",
+    cell: ({ row }) => <span className="font-medium text-gray-900">{row.original.name}</span>,
+  },
   { id: "passPercent", header: "Pass %", meta: { align: "center" }, cell: ({ row }) => `${row.original.passPercent}%` },
   {
     id: "bands",
@@ -39,7 +43,10 @@ const GradingSchemesTab = ({ organizationId }: { organizationId: string }) => {
             <div>
               <div className="mb-2 flex items-center justify-between">
                 <Label className="mb-0">Grade Bands</Label>
-                <Button variant="link" onClick={() => bands.append({ grade: "", minPercent: "", maxPercent: "", gradePoint: "" })}>
+                <Button
+                  variant="link"
+                  onClick={() => bands.append({ grade: "", minPercent: "", maxPercent: "", gradePoint: "" })}
+                >
                   + Add band
                 </Button>
               </div>
@@ -84,7 +91,10 @@ const GradingSchemesTab = ({ organizationId }: { organizationId: string }) => {
             isLoading={c.isLoading}
             itemLabel={{ one: "scheme", other: "schemes" }}
             pagination={{ pageSize: 20 }}
-            empty={{ title: "No grading schemes yet", description: "Create one above; every exam needs a grading scheme." }}
+            empty={{
+              title: "No grading schemes yet",
+              description: "Create one above; every exam needs a grading scheme.",
+            }}
           />
         )}
       </div>

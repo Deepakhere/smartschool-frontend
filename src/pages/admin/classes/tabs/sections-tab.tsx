@@ -65,7 +65,9 @@ const SectionsTab = ({ organizationId, yearId, classId, onClassChange }: Section
         form={c.form}
         open={!!c.dialog}
         onClose={c.closeDialog}
-        title={c.dialog?.section ? "Edit section" : `Add section${c.selectedClass ? ` to ${c.selectedClass.name}` : ""}`}
+        title={
+          c.dialog?.section ? "Edit section" : `Add section${c.selectedClass ? ` to ${c.selectedClass.name}` : ""}`
+        }
         submitLabel={c.dialog?.section ? "Save changes" : "Add section"}
         isSubmitting={c.isSubmitting}
         onSubmit={c.submit}

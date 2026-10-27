@@ -9,7 +9,6 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { SelectOption } from "@/types";
 import BulkUploadModal from "../student-modal/bulk-upload-modal";
-import CreateUpdateStudentModal from "../student-modal/create-update-student-modal";
 import { studentColumns } from "./students-list-columns";
 import useStudentsListController from "./students-list-controller";
 
@@ -17,15 +16,11 @@ const StudentsList = () => {
   const {
     t,
     organizationId,
-    form,
     studentDetail,
-    isAddModalOpen,
     isBulkModalOpen,
     onClickBulkUpload,
     onCloseBulkModal,
     onBulkImported,
-    currentStep,
-    isParentExist,
     studentTotalCount,
     handleSearchChange,
     searchInput,
@@ -39,16 +34,9 @@ const StudentsList = () => {
     classFilter,
     isDeleteModalOpen,
     deleteStudentId,
-    isLoadingAddStudent,
     isLoadingGetStudentDetails,
-    isLoadingUpdateStudent,
     isDeletingStudent,
     isFetchingStudentList,
-    onSubmit,
-    onCloseModal,
-    nextStep,
-    prevStep,
-    setCurrentStep,
     onClickAddStudent,
     handleClassFilterChange,
     handleDeleteAction,
@@ -77,7 +65,7 @@ const StudentsList = () => {
       <SectionHeader
         title="Students"
         description="View, search and manage every enrolled student"
-        action={{ label: t("labels.add_new_student"), icon: PlusIcon, onClick: onClickAddStudent, hidden: !canManage }}
+        action={{ label: "New Admission", icon: PlusIcon, onClick: onClickAddStudent, hidden: !canManage }}
       />
 
       <div className="py-4">
@@ -136,29 +124,11 @@ const StudentsList = () => {
               : {
                   title: "No students yet",
                   description:
-                    "Add your first student with Add New Student, or bring a whole class in with Bulk Upload (CSV).",
+                    "Admit your first student with New Admission, or bring a whole class in with Bulk Upload (CSV).",
                 }
           }
         />
       </div>
-
-      {/* Add Student Modal */}
-      <CreateUpdateStudentModal
-        t={t}
-        isOpen={isAddModalOpen}
-        organizationId={organizationId}
-        form={form}
-        isEditStudent={false}
-        currentStep={currentStep}
-        isParentExist={isParentExist}
-        isLoadingAddStudent={isLoadingAddStudent}
-        isLoadingUpdateStudent={isLoadingUpdateStudent}
-        nextStep={nextStep}
-        prevStep={prevStep}
-        onClose={onCloseModal}
-        onSubmit={onSubmit}
-        setCurrentStep={setCurrentStep}
-      />
 
       <BulkUploadModal
         isOpen={isBulkModalOpen}

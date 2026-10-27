@@ -16,7 +16,9 @@ const useParentReportsController = () => {
     try {
       await downloadReportCard(organizationId || "", examIdOf(result), studentId);
     } catch (error) {
-      toast.error((error as IAPIError)?.response?.Error?.message || "Could not download the report card. Please try again.");
+      toast.error(
+        (error as IAPIError)?.response?.Error?.message || "Could not download the report card. Please try again."
+      );
     }
   };
 
@@ -26,7 +28,8 @@ const useParentReportsController = () => {
       {
         onSuccess: () => toast.success("Report card emailed to your registered email address."),
         // for example "No registered email address found" says what to fix
-        onError: (error) => toast.error(error?.response?.Error?.message || "Could not email the report card. Please try again."),
+        onError: (error) =>
+          toast.error(error?.response?.Error?.message || "Could not email the report card. Please try again."),
       }
     );
   };

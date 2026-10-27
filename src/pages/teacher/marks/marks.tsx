@@ -18,7 +18,10 @@ const TeacherMarks = () => {
       <Card className="mb-6">
         <CardTitle className="mb-4 font-medium">Select exam, class, section &amp; subject</CardTitle>
         {!c.isLoading && c.examOptions.length === 0 ? (
-          <EmptyState title="No exams to enter marks for" description="Marks entry opens here once the school schedules an exam for a class you teach." />
+          <EmptyState
+            title="No exams to enter marks for"
+            description="Marks entry opens here once the school schedules an exam for a class you teach."
+          />
         ) : (
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-4">
             <CustomSelectDropdown

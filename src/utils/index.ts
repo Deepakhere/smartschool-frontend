@@ -16,3 +16,4 @@ export { localDateString, todayInIndia } from "./local-date";
 export { paymentMethodLabel } from "./payment-method";
 export { saveFile } from "./save-file";
 export { MODULE_LABELS, ALL_MODULES } from "./modules";
+export { resizeImage } from "./resize-image";

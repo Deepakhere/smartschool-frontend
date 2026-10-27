@@ -1,4 +1,3 @@
-
 import DataTable from "@/components/data-table";
 import ErrorState from "@/components/error-state";
 import FormDialog from "@/components/form-dialog";
@@ -25,7 +24,10 @@ const AdminTeachers = () => {
           isLoading={c.isLoading}
           itemLabel={{ one: "teacher", other: "teachers" }}
           pagination={{ pageSize: 20 }}
-          empty={{ title: "No teachers yet", description: "Invite teachers from Settings, User Management. They appear here once they join." }}
+          empty={{
+            title: "No teachers yet",
+            description: "Invite teachers from Settings, User Management. They appear here once they join.",
+          }}
         />
       )}
 
@@ -48,7 +50,12 @@ const AdminTeachers = () => {
           />
           <DateField form={c.form} name="dateOfJoining" label="Date of Joining" />
         </div>
-        <DateField form={c.form} name="dateOfBirth" label="Date of Birth" description="Shown as a birthday on the school calendar, to staff only." />
+        <DateField
+          form={c.form}
+          name="dateOfBirth"
+          label="Date of Birth"
+          description="Shown as a birthday on the school calendar, to staff only."
+        />
         <TextField form={c.form} name="designation" label="Designation" />
         <TextField form={c.form} name="department" label="Department" />
         <TextField form={c.form} name="qualification" label="Qualification" />

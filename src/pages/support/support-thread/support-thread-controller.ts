@@ -15,7 +15,10 @@ const useSupportThreadController = () => {
   const reply = useReplyToSupportRequest(organizationId, requestId);
   useError({ mutation: reply });
 
-  const form = useForm<SupportReplyValues>({ resolver: zodResolver(supportReplySchema), defaultValues: defaultSupportReply });
+  const form = useForm<SupportReplyValues>({
+    resolver: zodResolver(supportReplySchema),
+    defaultValues: defaultSupportReply,
+  });
   const send = form.handleSubmit((values) =>
     reply.mutate(values, {
       onSuccess: () => {
@@ -26,7 +29,9 @@ const useSupportThreadController = () => {
   );
 
   const openAttachment = (messageId: string) =>
-    openSupportAttachment(organizationId, requestId, messageId).catch(() => toast.error("The screenshot couldn't be opened."));
+    openSupportAttachment(organizationId, requestId, messageId).catch(() =>
+      toast.error("The screenshot couldn't be opened.")
+    );
 
   return {
     backTo: `${areaBase}/support`,

@@ -28,7 +28,7 @@ const useClassesTabController = (organizationId: string, yearId: string, onViewS
     form.reset(
       dialog.klass
         ? { name: dialog.klass.name, numericLevel: dialog.klass.numericLevel?.toString() ?? "" }
-        : defaultClassFormValues,
+        : defaultClassFormValues
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dialog]);

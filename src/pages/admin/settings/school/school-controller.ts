@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQueryClient } from "@tanstack/react-query";
@@ -17,7 +17,6 @@ const useSchoolSettingsController = () => {
   const uploadLogo = useUploadOrganizationLogo();
   useError({ mutation: updateSchool });
   useError({ mutation: uploadLogo });
-  const logoInput = useRef<HTMLInputElement>(null);
   const refreshSchool = () => queryClient.invalidateQueries({ queryKey: [API_QUERY_KEY.GET_ALL_ORGANIZATIONS] });
 
   const details = (): SchoolDetailsFormValues => ({
@@ -49,8 +48,7 @@ const useSchoolSettingsController = () => {
     )
   );
 
-  const onLogoChosen = (file?: File) => {
-    if (!file) return;
+  const onLogoChosen = (file: File) =>
     uploadLogo.mutate(
       { organizationId, file },
       {
@@ -60,8 +58,6 @@ const useSchoolSettingsController = () => {
         },
       }
     );
-    if (logoInput.current) logoInput.current.value = "";
-  };
 
   return {
     organizationId,
@@ -70,8 +66,6 @@ const useSchoolSettingsController = () => {
     onSubmit,
     isSaving: updateSchool.isPending,
     isDirty: form.formState.isDirty,
-    logoInput,
-    pickLogo: () => logoInput.current?.click(),
     onLogoChosen,
     isUploadingLogo: uploadLogo.isPending,
   };

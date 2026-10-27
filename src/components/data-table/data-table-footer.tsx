@@ -1,6 +1,11 @@
 import { ReactNode } from "react";
 import { useTranslation } from "react-i18next";
-import { ChevronDoubleLeftIcon, ChevronDoubleRightIcon, ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/20/solid";
+import {
+  ChevronDoubleLeftIcon,
+  ChevronDoubleRightIcon,
+  ChevronLeftIcon,
+  ChevronRightIcon,
+} from "@heroicons/react/20/solid";
 
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -12,14 +17,38 @@ interface DataTableFooterProps extends ServerPagination {
   itemLabel?: ItemLabel;
 }
 
-const PageButton = ({ label, disabled, onClick, children }: { label: string; disabled: boolean; onClick: () => void; children: ReactNode }) => (
-  <Button variant="secondary" size="icon" aria-label={label} disabled={disabled} onClick={onClick} className="h-9 w-9 p-0">
+const PageButton = ({
+  label,
+  disabled,
+  onClick,
+  children,
+}: {
+  label: string;
+  disabled: boolean;
+  onClick: () => void;
+  children: ReactNode;
+}) => (
+  <Button
+    variant="secondary"
+    size="icon"
+    aria-label={label}
+    disabled={disabled}
+    onClick={onClick}
+    className="h-9 w-9 p-0"
+  >
     {children}
   </Button>
 );
 
 // the count on the left; rows per page and first / previous / page box / next / last on the right
-const DataTableFooter = ({ page, pageSize, total, onPageChange, onPageSizeChange, itemLabel }: DataTableFooterProps) => {
+const DataTableFooter = ({
+  page,
+  pageSize,
+  total,
+  onPageChange,
+  onPageSizeChange,
+  itemLabel,
+}: DataTableFooterProps) => {
   const { t } = useTranslation();
   const lastPage = Math.max(1, Math.ceil(total / pageSize));
   const sizes = PAGE_SIZES.includes(pageSize) ? PAGE_SIZES : [...PAGE_SIZES, pageSize].sort((a, b) => a - b);
@@ -37,7 +66,13 @@ const DataTableFooter = ({ page, pageSize, total, onPageChange, onPageSizeChange
   return (
     <div className="flex flex-wrap items-center justify-between gap-3 border-t border-gray-200 px-4 py-3 text-sm text-gray-600">
       <p>
-        <span className="font-medium text-gray-900">{total.toLocaleString("en-IN")}</span> {itemLabel ? (total === 1 ? itemLabel.one : itemLabel.other) : t(total === 1 ? "labels.result" : "labels.results")} {t("labels.found")}
+        <span className="font-medium text-gray-900">{total.toLocaleString("en-IN")}</span>{" "}
+        {itemLabel
+          ? total === 1
+            ? itemLabel.one
+            : itemLabel.other
+          : t(total === 1 ? "labels.result" : "labels.results")}{" "}
+        {t("labels.found")}
       </p>
       <div className="flex flex-wrap items-center gap-3">
         {onPageSizeChange && (

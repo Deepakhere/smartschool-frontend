@@ -56,7 +56,10 @@ const UserMenuBody = ({
       </Link>
 
       {supportPath && (
-        <Link to={supportPath} className="flex items-center gap-2 rounded-md px-2 py-2 text-sm text-gray-700 hover:bg-gray-50">
+        <Link
+          to={supportPath}
+          className="flex items-center gap-2 rounded-md px-2 py-2 text-sm text-gray-700 hover:bg-gray-50"
+        >
           <QuestionMarkCircleIcon className="h-4 w-4 text-gray-400" />
           Help and support
         </Link>

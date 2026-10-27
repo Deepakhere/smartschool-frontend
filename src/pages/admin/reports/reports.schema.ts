@@ -67,7 +67,13 @@ export const examSubjectsSchema = z.object({
     .min(1, "Add at least one subject."),
 });
 export type ExamSubjectsFormValues = z.infer<typeof examSubjectsSchema>;
-export const defaultExamSubjectRow = { subjectId: "", maxMarks: "100", passMarks: "33", hasPractical: false, practicalMaxMarks: "0" };
+export const defaultExamSubjectRow = {
+  subjectId: "",
+  maxMarks: "100",
+  passMarks: "33",
+  hasPractical: false,
+  practicalMaxMarks: "0",
+};
 export const defaultExamSubjectsValues = (classId = ""): ExamSubjectsFormValues => ({
   classId,
   rows: [{ ...defaultExamSubjectRow }],

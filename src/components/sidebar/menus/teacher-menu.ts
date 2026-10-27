@@ -9,10 +9,11 @@ import {
   UsersIcon,
 } from "@heroicons/react/24/outline";
 
-import type { SidebarMenu } from "../sidebar-pages";
+import { DIVIDER, type SidebarMenu } from "../sidebar-pages";
 
 export const TEACHER_MENU: SidebarMenu = [
   { name: "Dashboard", hint: "Your classes at a glance", path: "dashboard", icon: HomeIcon },
+  DIVIDER,
   {
     name: "Attendance",
     hint: "Mark your section's attendance",

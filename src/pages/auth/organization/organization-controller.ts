@@ -18,7 +18,9 @@ const useOrganizationController = () => {
 
   const navigateHome = (organizationId: string) => {
     // each school opens in the person's own role there
-    const school = organization.find((w) => w.id === organizationId) ?? getAllOrganization.data?.items.find((w) => w.id === organizationId);
+    const school =
+      organization.find((w) => w.id === organizationId) ??
+      getAllOrganization.data?.items.find((w) => w.id === organizationId);
     navigate(`/${organizationId}/${school?.myRole}`);
     Cookies.set(USER_ACCESS_KEY.ORGANIZATION_ID, organizationId, authCookieOptions(30));
     const workspaceName = organization.find((w) => w.id === organizationId)?.name || "";
@@ -27,10 +29,7 @@ const useOrganizationController = () => {
 
   useEffect(() => {
     if (getAllOrganization.isSuccess && getAllOrganization.data) {
-      if (
-        getAllOrganization.data.items.length === 1 &&
-        !user?.isPlatformAdmin
-      ) {
+      if (getAllOrganization.data.items.length === 1 && !user?.isPlatformAdmin) {
         navigateHome(getAllOrganization.data.items[0].id);
       } else {
         setOrganization(getAllOrganization.data.items);

@@ -13,7 +13,12 @@ export const newSupportRequestSchema = z.object({
   screenshot,
 });
 export type NewSupportRequestValues = z.infer<typeof newSupportRequestSchema>;
-export const defaultNewSupportRequest: NewSupportRequestValues = { topic: "bug", subject: "", body: "", screenshot: null };
+export const defaultNewSupportRequest: NewSupportRequestValues = {
+  topic: "bug",
+  subject: "",
+  body: "",
+  screenshot: null,
+};
 
 export const supportReplySchema = z.object({ body, screenshot });
 export type SupportReplyValues = z.infer<typeof supportReplySchema>;

@@ -27,7 +27,9 @@ export const useGetOnlinePaymentSettings = (organizationId: string) =>
   useQuery<OnlinePaymentSettings, IAPIError>({
     queryKey: [SETTINGS_KEY, organizationId],
     queryFn: async () => {
-      const result = await apiClient.get<null, IAxiosResponse<{ item: OnlinePaymentSettings }>>(`${base(organizationId)}/settings`);
+      const result = await apiClient.get<null, IAxiosResponse<{ item: OnlinePaymentSettings }>>(
+        `${base(organizationId)}/settings`
+      );
       return result.data.Data.item;
     },
     enabled: !!organizationId,
@@ -37,7 +39,10 @@ export const useSaveOnlinePaymentSettings = (organizationId: string) => {
   const queryClient = useQueryClient();
   return useMutation<OnlinePaymentSettings, IAPIError, OnlinePaymentSettingsInput>({
     mutationFn: async (value) => {
-      const result = await apiClient.put<null, IAxiosResponse<{ item: OnlinePaymentSettings }>>(`${base(organizationId)}/settings`, value);
+      const result = await apiClient.put<null, IAxiosResponse<{ item: OnlinePaymentSettings }>>(
+        `${base(organizationId)}/settings`,
+        value
+      );
       return result.data.Data.item;
     },
     onSuccess: (item) => queryClient.setQueryData([SETTINGS_KEY, organizationId], item),

@@ -46,26 +46,45 @@ const StudentFeesTab = ({ organizationId }: { organizationId: string }) => {
           {c.students.length || c.debouncedSearch ? (
             <EmptyState
               title={c.students.length ? "Pick a student" : "No matching students"}
-              description={c.students.length ? "Search above and choose a student to see their fees and record payments." : `No student matches "${c.debouncedSearch}".`}
+              description={
+                c.students.length
+                  ? "Search above and choose a student to see their fees and record payments."
+                  : `No student matches "${c.debouncedSearch}".`
+              }
             />
           ) : (
-            <EmptyState title="No students yet" description="Add students first; their fees and payments are managed here." />
+            <EmptyState
+              title="No students yet"
+              description="Add students first; their fees and payments are managed here."
+            />
           )}
         </Card>
       )}
 
       {c.studentId &&
         (c.summaryError ? (
-          <ErrorState error={c.summaryError} title="This student's fees could not be loaded." onRetry={c.retrySummary} />
+          <ErrorState
+            error={c.summaryError}
+            title="This student's fees could not be loaded."
+            onRetry={c.retrySummary}
+          />
         ) : c.isLoadingSummary ? (
           <Spinner />
         ) : c.summaries.length === 0 ? (
           <Card>
-            <EmptyState title="No fees assigned yet" description="Assign a fee structure to this student's class from the Fee Structures tab." />
+            <EmptyState
+              title="No fees assigned yet"
+              description="Assign a fee structure to this student's class from the Fee Structures tab."
+            />
           </Card>
         ) : (
           c.summaries.map((summary) => (
-            <StudentFeeCard key={summary.studentFeeId} organizationId={organizationId} summary={summary} onReverse={c.setPaymentToReverse} />
+            <StudentFeeCard
+              key={summary.studentFeeId}
+              organizationId={organizationId}
+              summary={summary}
+              onReverse={c.setPaymentToReverse}
+            />
           ))
         ))}
 

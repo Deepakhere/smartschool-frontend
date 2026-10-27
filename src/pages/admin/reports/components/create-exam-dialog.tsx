@@ -19,7 +19,14 @@ interface CreateExamDialogProps {
   onClose: () => void;
 }
 
-const CreateExamDialog = ({ organizationId, academicYearId, classOptions, gradingSchemes, open, onClose }: CreateExamDialogProps) => {
+const CreateExamDialog = ({
+  organizationId,
+  academicYearId,
+  classOptions,
+  gradingSchemes,
+  open,
+  onClose,
+}: CreateExamDialogProps) => {
   const { form, onSubmit, isSubmitting, gradingSchemeOptions } = useCreateExamDialogController({
     organizationId,
     academicYearId,
@@ -45,7 +52,13 @@ const CreateExamDialog = ({ organizationId, academicYearId, classOptions, gradin
         <SelectField form={form} name="type" label="Type" options={typeOptions} />
         <DateField form={form} name="startDate" label="Start Date" />
         <DateField form={form} name="endDate" label="End Date" />
-        <SelectField form={form} name="gradingSchemeId" label="Grading Scheme" options={gradingSchemeOptions} placeholder="Select scheme" />
+        <SelectField
+          form={form}
+          name="gradingSchemeId"
+          label="Grading Scheme"
+          options={gradingSchemeOptions}
+          placeholder="Select scheme"
+        />
       </div>
       <ChipsField form={form} name="classIds" label="Classes" options={classOptions} />
     </FormDialog>

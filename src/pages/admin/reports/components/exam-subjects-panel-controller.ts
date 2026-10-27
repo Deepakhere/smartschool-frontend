@@ -5,7 +5,12 @@ import toast from "react-hot-toast";
 
 import { useError } from "@/hooks";
 import { IExam, SelectOption } from "@/types";
-import { defaultExamSubjectRow, defaultExamSubjectsValues, examSubjectsSchema, ExamSubjectsFormValues } from "../reports.schema";
+import {
+  defaultExamSubjectRow,
+  defaultExamSubjectsValues,
+  examSubjectsSchema,
+  ExamSubjectsFormValues,
+} from "../reports.schema";
 import { useAddExamSubjects, useGetExamSubjects } from "../service/exams-service";
 
 const useExamSubjectsPanelController = (organizationId: string, exam: IExam) => {

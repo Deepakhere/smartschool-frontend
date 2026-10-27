@@ -17,11 +17,16 @@ export const useHeaderActions = ({ action, secondaryActions = [] }: HeaderAction
   const set = useContext(SetActionsContext);
   const latest = useRef<Action[]>([]);
   latest.current = [...(action ? [action] : []), ...secondaryActions];
-  const signature = JSON.stringify(latest.current.map((a) => [a.label, a.variant, a.title, a.loading, a.disabled, a.hidden]));
+  const signature = JSON.stringify(
+    latest.current.map((a) => [a.label, a.variant, a.title, a.loading, a.disabled, a.hidden])
+  );
 
   useEffect(() => {
     if (!set) return;
-    const bind = (a: Action): Action => ({ ...a, onClick: () => latest.current.find((x) => x.label === a.label)?.onClick() });
+    const bind = (a: Action): Action => ({
+      ...a,
+      onClick: () => latest.current.find((x) => x.label === a.label)?.onClick(),
+    });
     set({ action: action && bind(action), secondaryActions: secondaryActions.map(bind) });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [signature, set]);

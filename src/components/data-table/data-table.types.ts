@@ -18,7 +18,8 @@ export interface ItemLabel {
   other: string;
 }
 
-export const countLabel = (count: number, label: ItemLabel) => `${count.toLocaleString("en-IN")} ${count === 1 ? label.one : label.other}`;
+export const countLabel = (count: number, label: ItemLabel) =>
+  `${count.toLocaleString("en-IN")} ${count === 1 ? label.one : label.other}`;
 
 // the server already paged the rows: show its page and total, ask it for another page
 export interface ServerPagination {

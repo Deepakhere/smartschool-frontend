@@ -10,6 +10,8 @@ import AdminHomework from "../pages/admin/homework";
 import AdminReports from "../pages/admin/reports";
 import AdminFees from "../pages/admin/fees";
 import AdminStudents from "../pages/admin/students";
+import StudentForm from "../pages/admin/students/student-form";
+import PermissionGate from "./permission-gate";
 import AdminClasses from "../pages/admin/classes";
 import AdminTeachers from "../pages/admin/teachers";
 import AdminAttendance from "../pages/admin/attendance";
@@ -138,6 +140,14 @@ const router = createBrowserRouter([
       {
         path: "students/*",
         element: <AdminStudents />,
+      },
+      {
+        path: "admissions",
+        element: (
+          <PermissionGate anyOf={["students.manage"]}>
+            <StudentForm />
+          </PermissionGate>
+        ),
       },
       {
         path: "classes",

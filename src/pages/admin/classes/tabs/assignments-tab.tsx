@@ -40,7 +40,13 @@ const AssignmentsTab = ({ organizationId, yearId }: { organizationId: string; ye
         isSubmitting={c.isAssigning}
         onSubmit={c.submit}
       >
-        <SelectField form={c.form} name="teacherId" label="Teacher" placeholder="Select teacher" options={c.teacherOptions} />
+        <SelectField
+          form={c.form}
+          name="teacherId"
+          label="Teacher"
+          placeholder="Select teacher"
+          options={c.teacherOptions}
+        />
         <div className="grid grid-cols-2 gap-4">
           <SelectField form={c.form} name="classId" label="Class" placeholder="Select class" options={c.classOptions} />
           <SelectField
@@ -54,7 +60,13 @@ const AssignmentsTab = ({ organizationId, yearId }: { organizationId: string; ye
         </div>
         <SelectField form={c.form} name="role" label="Role" options={ROLE_OPTIONS} />
         {c.role === "SUBJECT_TEACHER" && (
-          <SelectField form={c.form} name="subjectId" label="Subject" placeholder="Select subject" options={c.subjectOptions} />
+          <SelectField
+            form={c.form}
+            name="subjectId"
+            label="Subject"
+            placeholder="Select subject"
+            options={c.subjectOptions}
+          />
         )}
       </FormDialog>
 

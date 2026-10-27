@@ -24,7 +24,7 @@ const renderAt = (path: string) =>
         <Route path="/set-password" element={<SetPassword />} />
         <Route path="/login" element={<p>login page</p>} />
       </Routes>
-    </MemoryRouter>,
+    </MemoryRouter>
   );
 
 const fill = async (password: string, confirm = password) => {
@@ -70,7 +70,7 @@ describe("reset password page", () => {
     await fill("Sunrise#2026");
 
     await waitFor(() =>
-      expect(mutate).toHaveBeenCalledWith({ token: "emailed-token", password: "Sunrise#2026" }, expect.any(Object)),
+      expect(mutate).toHaveBeenCalledWith({ token: "emailed-token", password: "Sunrise#2026" }, expect.any(Object))
     );
     expect(toast.success).toHaveBeenCalledWith("Password reset successfully. You can now sign in.");
     // an old session on this device is dropped, so sign-in shows instead of bouncing into that account
@@ -80,7 +80,7 @@ describe("reset password page", () => {
 
   it("shows the server's reason, for example an expired link, and stays on the page", async () => {
     mutate.mockImplementation((_vars, options) =>
-      options.onError({ response: { Error: { message: "Password reset token is invalid or has expired." } } }),
+      options.onError({ response: { Error: { message: "Password reset token is invalid or has expired." } } })
     );
     renderAt("/reset-password?token=old");
     await fill("Sunrise#2026");
