@@ -35,7 +35,7 @@ const AdminAttendance = () => {
       dateField: () => (
         <div>
           <Label>Date</Label>
-          <DatePicker value={c.date} max={c.maxDate} onChange={c.setDate} />
+          <DatePicker clearable={false} value={c.date} max={c.maxDate} onChange={c.setDate} />
         </div>
       ),
       render: () =>
@@ -82,11 +82,17 @@ const AdminAttendance = () => {
         <div className="flex min-w-0 gap-2">
           <div className="min-w-0 flex-1">
             <Label>From</Label>
-            <DatePicker max={c.maxDate} value={c.reportFrom} onChange={c.setReportFrom} />
+            <DatePicker clearable={false} max={c.maxDate} value={c.reportFrom} onChange={c.setReportFrom} />
           </div>
           <div className="min-w-0 flex-1">
             <Label>To</Label>
-            <DatePicker min={c.reportFrom} max={c.maxDate} value={c.reportTo} onChange={c.setReportTo} />
+            <DatePicker
+              clearable={false}
+              min={c.reportFrom}
+              max={c.maxDate}
+              value={c.reportTo}
+              onChange={c.setReportTo}
+            />
           </div>
         </div>
       ),

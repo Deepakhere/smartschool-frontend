@@ -98,7 +98,7 @@ const DefaultersTab = ({ organizationId }: { organizationId: string }) => {
         <CardTitle className="mb-4 font-medium">Fee Defaulters</CardTitle>
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-4">
           <AcademicFilter organizationId={organizationId} value={c.scope} onChange={c.onScopeChange} />
-          <DatePicker label="Overdue as of" value={c.asOf} onChange={c.onAsOfChange} />
+          <DatePicker clearable={false} label="Overdue as of" value={c.asOf} onChange={c.onAsOfChange} />
         </div>
       </Card>
 

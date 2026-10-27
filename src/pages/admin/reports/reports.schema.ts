@@ -84,15 +84,20 @@ export const toSchemeBands = (bands: GradingSchemeFormValues["bands"]) =>
       maxPercent: index === 0 ? 100 : Math.round((sorted[index - 1].minPercent - 0.01) * 100) / 100,
     }));
 
-export const examSchema = z.object({
-  name: z.string().trim().min(1, "Enter a name."),
-  term: z.string().trim(),
-  type: z.string().min(1),
-  startDate: z.string().min(1, "Pick a start date."),
-  endDate: z.string().min(1, "Pick an end date."),
-  classIds: z.array(z.string()).min(1, "Pick at least one class."),
-  gradingSchemeId: z.string().min(1, "Pick a grading scheme."),
-});
+export const examSchema = z
+  .object({
+    name: z.string().trim().min(1, "Enter a name."),
+    term: z.string().trim(),
+    type: z.string().min(1),
+    startDate: z.string().min(1, "Pick a start date."),
+    endDate: z.string().min(1, "Pick an end date."),
+    classIds: z.array(z.string()).min(1, "Pick at least one class."),
+    gradingSchemeId: z.string().min(1, "Pick a grading scheme."),
+  })
+  .refine((value) => !value.startDate || !value.endDate || value.endDate >= value.startDate, {
+    path: ["endDate"],
+    message: "The exam can't end before it starts.",
+  });
 export type ExamFormValues = z.infer<typeof examSchema>;
 export const defaultExamValues: ExamFormValues = {
   name: "",

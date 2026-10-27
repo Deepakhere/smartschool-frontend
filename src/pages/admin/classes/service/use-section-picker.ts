@@ -37,6 +37,16 @@ export const useSectionPicker = (organizationId: string, { includeInactive = fal
     setYear((yearOptions.find((y) => y.isCurrent) ?? yearOptions[0]).id);
   }, [academicYearId, yearOptions]);
 
+  // a pick that is no longer offered (switched off, or carried over from a report of past classes) is cleared
+  const optionsReady = !isTeacher || mine.isSuccess;
+  const classGone = !!classId && classes.isSuccess && optionsReady && !classOptions.some((c) => c.id === classId);
+  const sectionGone =
+    !!sectionId && sections.isSuccess && optionsReady && !sectionOptions.some((s) => s.id === sectionId);
+  useEffect(() => {
+    if (classGone) setClass("");
+    if (classGone || sectionGone) setSectionId("");
+  }, [classGone, sectionGone]);
+
   const setAcademicYearId = (id: string) => {
     setYear(id);
     setClass("");

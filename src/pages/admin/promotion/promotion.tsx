@@ -10,10 +10,12 @@ import {
   useSensors,
 } from "@dnd-kit/core";
 import { ArrowRightIcon } from "@heroicons/react/20/solid";
+import { ArrowTrendingUpIcon, Squares2X2Icon } from "@heroicons/react/24/outline";
 
 import SectionHeader from "@/components/section-header";
 import Spinner from "@/components/spinner";
 import EmptyState from "@/components/empty-state";
+import ErrorState from "@/components/error-state";
 import CustomSelectDropdown from "@/components/custom-select";
 import DeleteConfirmationDialog from "@/components/delete-confirmation-dialog";
 import { Button } from "@/components/ui/button";
@@ -24,6 +26,9 @@ import BoardLane from "./components/board-lane";
 import StudentCard, { CardBody } from "./components/student-card";
 import DestinationPicker from "./components/destination-picker";
 import { LANE_TONE } from "./components/lane-tone";
+import SchoolMap from "./components/school-map";
+import MapSummary from "./components/map-summary";
+import SchoolRunDialog from "./components/school-run-dialog";
 
 const LEAVE_OPTIONS: { key: LeaveAction; title: string }[] = [
   { key: "transfer", title: "Transfer" },
@@ -94,13 +99,41 @@ const Promotion = () => {
       const what = key === "leave" ? (c.leaveAction === "transfer" ? "Transfer" : "Withdraw") : titleOf(key);
       return `${what}: ${c.lanes[key].length}${where}`;
     });
+  // why the whole-school run is unavailable, if it is
+  const runBlocker = !c.targetYear
+    ? "Add next academic year first"
+    : c.isLoadingMap || c.mapError
+      ? "Promotion progress is not loaded yet"
+      : !c.plan.length
+        ? "No section has results yet"
+        : undefined;
   const failed = c.lastRun.filter((outcome) => !outcome.success);
 
   return (
     <div className="mx-auto max-w-7xl space-y-5 pb-24">
       <SectionHeader
         title="Student Promotion"
-        description="Drag students into lanes to decide where each one goes next year"
+        description={
+          c.sourceSectionId
+            ? "Drag students into lanes to decide where each one goes next year"
+            : "See every class at a glance, open a section to decide, or promote the whole school at once"
+        }
+        action={{
+          label: "Promote whole school",
+          icon: ArrowTrendingUpIcon,
+          onClick: () => c.schoolRun.setOpen(true),
+          hidden: !!c.sourceSectionId,
+          disabled: !!runBlocker,
+          title: runBlocker,
+        }}
+        secondaryActions={[
+          {
+            label: "School map",
+            icon: Squares2X2Icon,
+            onClick: () => c.pickSourceSection(""),
+            hidden: !c.sourceSectionId,
+          },
+        ]}
       />
 
       <div className="flex flex-col gap-4 rounded-xl bg-white p-4 shadow lg:flex-row lg:items-end">
@@ -163,22 +196,16 @@ const Promotion = () => {
 
       {!c.sourceSectionId ? (
         c.sourceOptions.length ? (
-          <div className="rounded-xl bg-white p-4 shadow">
-            <h2 className="text-sm font-semibold text-gray-900">Pick a section to promote</h2>
-            <div className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
-              {c.sourceOptions.map((section) => (
-                <button
-                  key={section.id}
-                  type="button"
-                  onClick={() => c.pickSourceSection(section.id)}
-                  className="rounded-lg border border-gray-200 p-3 text-left hover:border-primary-300 hover:bg-gray-50"
-                >
-                  <p className="truncate text-sm font-medium text-gray-900">{section.name}</p>
-                  <p className="text-xs text-gray-500">{section.description}</p>
-                </button>
-              ))}
-            </div>
-          </div>
+          <>
+            <MapSummary rows={c.mapRows} />
+            {c.isLoadingMap ? (
+              <Spinner />
+            ) : c.mapError ? (
+              <ErrorState title="Could not load promotion progress" onRetry={() => c.retryMap()} />
+            ) : (
+              <SchoolMap rows={c.mapRows} onOpen={c.pickSourceSection} />
+            )}
+          </>
         ) : (
           <div className="rounded-xl bg-white shadow">
             <EmptyState
@@ -263,6 +290,19 @@ const Promotion = () => {
           </Button>
         </div>
       )}
+
+      <SchoolRunDialog
+        open={c.schoolRun.open}
+        onClose={c.schoolRun.close}
+        onRun={c.schoolRun.run}
+        running={c.schoolRun.running}
+        finished={c.schoolRun.finished}
+        plan={c.schoolRun.plan}
+        progress={c.schoolRun.progress}
+        sourceYearName={c.years.find((year) => year.id === c.sourceYearId)?.name ?? ""}
+        targetYearName={c.targetYear?.name ?? ""}
+        classNameOf={c.classNameOf}
+      />
 
       <DeleteConfirmationDialog
         open={c.confirmOpen}

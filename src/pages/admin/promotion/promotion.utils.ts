@@ -63,3 +63,82 @@ export const rollNumbersFor = (names: { id: string; name: string }[], alreadyThe
       .sort((a, b) => a.name.localeCompare(b.name))
       .map((student, index) => [student.id, String(alreadyThere + index + 1)])
   );
+
+export interface RunPlanRow {
+  section: ISection;
+  label: string;
+  isFinal: boolean;
+  pass: number;
+  fail: number;
+  noResult: number;
+  promoteTo?: ISection;
+  repeatIn?: ISection;
+  // students whose destination is missing stay where they are; this says why
+  note?: string;
+}
+
+interface PlanInput {
+  sourceClasses: IClass[];
+  sourceSections: ISection[];
+  targetClasses: IClass[];
+  targetSections: ISection[];
+  stats: Map<string, { waiting: number; pass: number; fail: number; noResult: number }>;
+}
+
+// what a whole-school run does, section by section, from each section's results
+export const planSchoolRun = ({ sourceClasses, sourceSections, targetClasses, targetSections, stats }: PlanInput) => {
+  const ordered = inSchoolOrder(sourceClasses);
+  // seats already promised to earlier sections in this run, per destination
+  const planned = new Map<string, number>();
+  const nameOf = (target: ISection) =>
+    `${targetClasses.find((klass) => klass.id === target.classId)?.name ?? ""} · ${target.name}`;
+  const hasRoom = (target: ISection, count: number) =>
+    !target.capacity || (target.studentCount ?? 0) + (planned.get(target.id) ?? 0) + count <= target.capacity;
+  const reserve = (target: ISection, count: number) => planned.set(target.id, (planned.get(target.id) ?? 0) + count);
+
+  return ordered.flatMap((klass, index) => {
+    const isFinal = index === ordered.length - 1;
+    const promoteClass = isFinal ? undefined : classAfter(sourceClasses, targetClasses, klass, 1);
+    const repeatClass = classAfter(sourceClasses, targetClasses, klass, 0);
+    return sourceSections
+      .filter((section) => section.classId === klass.id)
+      .sort((a, b) => a.name.localeCompare(b.name))
+      .flatMap((section): RunPlanRow[] => {
+        const row = stats.get(section.id);
+        if (!row?.waiting || !(row.pass + row.fail)) return [];
+        const notes: string[] = [];
+        // a lane lands only where its section exists and has room for all of it; otherwise it stays for the board
+        const place = (target: ISection | undefined, count: number, missingName: string) => {
+          if (!count) return target;
+          if (!target) notes.push(`No ${missingName} section next year`);
+          else if (!hasRoom(target, count)) notes.push(`${nameOf(target)} has no room for ${count} more`);
+          else {
+            reserve(target, count);
+            return target;
+          }
+          return undefined;
+        };
+        const promoteTo = isFinal
+          ? undefined
+          : place(
+              sectionIn(targetSections, promoteClass?.id, section.name),
+              row.pass,
+              ordered[index + 1]?.name ?? "next class"
+            );
+        const repeatIn = place(sectionIn(targetSections, repeatClass?.id, section.name), row.fail, klass.name);
+        return [
+          {
+            section,
+            label: `${klass.name} · ${section.name}`,
+            isFinal,
+            pass: row.pass,
+            fail: row.fail,
+            noResult: row.noResult,
+            promoteTo,
+            repeatIn,
+            note: notes.length ? notes.join("; ") : undefined,
+          },
+        ];
+      });
+  });
+};

@@ -21,6 +21,8 @@ interface DatePickerProps {
   // earliest and latest dates that can be picked, "YYYY-MM-DD"
   min?: string;
   max?: string;
+  // filters that always need a date hide the Clear button
+  clearable?: boolean;
   "aria-invalid"?: boolean;
   "aria-describedby"?: string;
 }
@@ -38,6 +40,7 @@ const DatePicker = ({
   id,
   min,
   max,
+  clearable = true,
   "aria-invalid": invalid,
   "aria-describedby": describedBy,
 }: DatePickerProps) => {
@@ -45,7 +48,8 @@ const DatePicker = ({
   const selected = toDate(value);
   const minDate = toDate(min);
   const maxDate = toDate(max);
-  const today = new Date();
+  // midnight, so a `max` of today still allows today
+  const today = toDate(toValue(new Date()))!;
   const todayAllowed = (!minDate || today >= minDate) && (!maxDate || today <= maxDate);
 
   const pick = (date?: Date) => {
@@ -92,9 +96,13 @@ const DatePicker = ({
             disabled={[...(minDate ? [{ before: minDate }] : []), ...(maxDate ? [{ after: maxDate }] : [])]}
           />
           <div className="flex items-center justify-between border-t border-gray-100 px-3 py-2">
-            <Button variant="ghost" size="sm" onClick={() => pick(undefined)} disabled={!value}>
-              Clear
-            </Button>
+            {clearable ? (
+              <Button variant="ghost" size="sm" onClick={() => pick(undefined)} disabled={!value}>
+                Clear
+              </Button>
+            ) : (
+              <span />
+            )}
             <Button variant="ghost" size="sm" onClick={() => pick(today)} disabled={!todayAllowed}>
               Today
             </Button>

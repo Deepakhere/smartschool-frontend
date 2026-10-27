@@ -48,7 +48,7 @@ const ExamFormDialog = ({ classOptions, ...props }: ExamFormDialogProps) => {
         <SelectField form={form} name="type" label="Type" options={EXAM_TYPE_OPTIONS} />
         <TextField form={form} name="term" label="Term (optional)" placeholder="Term 1" />
         <DateField form={form} name="startDate" label="Starts on" />
-        <DateField form={form} name="endDate" label="Ends on" />
+        <DateField form={form} name="endDate" label="Ends on" min={form.watch("startDate") || undefined} />
         <SelectField
           form={form}
           name="gradingSchemeId"

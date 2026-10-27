@@ -1,22 +1,46 @@
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient, QueryClient } from "@tanstack/react-query";
 
 import apiClient from "@/config";
-import { IAPIError, IAxiosResponse, IPromotionCandidate, IPromotionDecisionResult, PromotionAction } from "@/types";
+import {
+  IAPIError,
+  IAxiosResponse,
+  IPromotionCandidate,
+  IPromotionDecisionResult,
+  IPromotionSectionStats,
+  PromotionAction,
+} from "@/types";
 import { APIS_ROUTES, API_QUERY_KEY } from "@/utils";
 
 const base = (organizationId: string) => `${APIS_ROUTES.STUDENT_PROFILE}/${organizationId}`;
 
+export const candidatesQuery = (organizationId: string, academicYearId: string, sectionId: string) => ({
+  queryKey: [API_QUERY_KEY.GET_PROMOTION_CANDIDATES, organizationId, academicYearId, sectionId],
+  queryFn: async () => {
+    const result = await apiClient.get<null, IAxiosResponse<{ items: IPromotionCandidate[] }>>(
+      `${base(organizationId)}/promotion/candidates`,
+      { params: { academicYearId, sectionId } }
+    );
+    return result.data.Data;
+  },
+});
+
 export const useGetPromotionCandidates = (organizationId: string, academicYearId: string, sectionId: string) =>
   useQuery<{ items: IPromotionCandidate[] }, IAPIError>({
-    queryKey: [API_QUERY_KEY.GET_PROMOTION_CANDIDATES, organizationId, academicYearId, sectionId],
+    ...candidatesQuery(organizationId, academicYearId, sectionId),
+    enabled: !!organizationId && !!academicYearId && !!sectionId,
+  });
+
+export const useGetPromotionOverview = (organizationId: string, academicYearId: string) =>
+  useQuery<{ items: IPromotionSectionStats[] }, IAPIError>({
+    queryKey: [API_QUERY_KEY.GET_PROMOTION_OVERVIEW, organizationId, academicYearId],
     queryFn: async () => {
-      const result = await apiClient.get<null, IAxiosResponse<{ items: IPromotionCandidate[] }>>(
-        `${base(organizationId)}/promotion/candidates`,
-        { params: { academicYearId, sectionId } }
+      const result = await apiClient.get<null, IAxiosResponse<{ items: IPromotionSectionStats[] }>>(
+        `${base(organizationId)}/promotion/overview`,
+        { params: { academicYearId } }
       );
       return result.data.Data;
     },
-    enabled: !!organizationId && !!academicYearId && !!sectionId,
+    enabled: !!organizationId && !!academicYearId,
   });
 
 export interface IPromotionDecisionInput {
@@ -28,22 +52,28 @@ export interface IPromotionDecisionInput {
   rollNumber?: string;
 }
 
+export const processDecisions = async (organizationId: string, decisions: IPromotionDecisionInput[]) => {
+  const result = await apiClient.post<
+    { decisions: IPromotionDecisionInput[] },
+    IAxiosResponse<{ items: IPromotionDecisionResult[] }>
+  >(`${base(organizationId)}/promotion/process`, { decisions });
+  return result.data.Data;
+};
+
+// students moved: the candidates, progress, student lists and the sections' head counts all change
+export const refreshAfterPromotion = (queryClient: QueryClient, organizationId: string) =>
+  [
+    API_QUERY_KEY.GET_PROMOTION_CANDIDATES,
+    API_QUERY_KEY.GET_PROMOTION_OVERVIEW,
+    API_QUERY_KEY.GET_STUDENT_PROFILE,
+    API_QUERY_KEY.GET_SECTIONS,
+    API_QUERY_KEY.GET_CLASSES,
+  ].forEach((key) => queryClient.invalidateQueries({ queryKey: [key, organizationId] }));
+
 export const useProcessPromotions = (organizationId: string) => {
   const queryClient = useQueryClient();
   return useMutation<{ items: IPromotionDecisionResult[] }, IAPIError, IPromotionDecisionInput[]>({
-    mutationFn: async (decisions) => {
-      const result = await apiClient.post<
-        { decisions: IPromotionDecisionInput[] },
-        IAxiosResponse<{ items: IPromotionDecisionResult[] }>
-      >(`${base(organizationId)}/promotion/process`, { decisions });
-      return result.data.Data;
-    },
-    // students moved: the candidates, the student lists and the sections' head counts all change
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: [API_QUERY_KEY.GET_PROMOTION_CANDIDATES, organizationId] });
-      queryClient.invalidateQueries({ queryKey: [API_QUERY_KEY.GET_STUDENT_PROFILE, organizationId] });
-      queryClient.invalidateQueries({ queryKey: [API_QUERY_KEY.GET_SECTIONS, organizationId] });
-      queryClient.invalidateQueries({ queryKey: [API_QUERY_KEY.GET_CLASSES, organizationId] });
-    },
+    mutationFn: (decisions) => processDecisions(organizationId, decisions),
+    onSuccess: () => refreshAfterPromotion(queryClient, organizationId),
   });
 };

@@ -68,17 +68,6 @@ const useAttendanceController = () => {
     setReasons(nextReasons);
   }, [existing.data]);
 
-  // attendance can only be marked in active classes, so an inactive pick from the report is cleared
-  const changeTab = (tab: AttendanceTabKey) => {
-    if (tab === "mark") {
-      const klass = picker.classes.find((item) => item.id === classId);
-      const section = picker.sections.find((item) => item.id === sectionId);
-      if (klass?.status === "inactive") picker.setClassId("");
-      else if (section?.status === "inactive") setSectionId("");
-    }
-    setActiveTab(tab);
-  };
-
   const setStatus = (studentId: string, status: AttendanceStatus) => {
     setStatuses((prev) => ({ ...prev, [studentId]: status }));
     setIsDirty(true);
@@ -163,7 +152,7 @@ const useAttendanceController = () => {
 
   return {
     activeTab,
-    setActiveTab: changeTab,
+    setActiveTab,
     reportFrom,
     setReportFrom,
     reportTo,

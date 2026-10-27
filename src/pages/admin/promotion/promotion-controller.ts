@@ -3,7 +3,8 @@ import { useParams } from "react-router-dom";
 import toast from "react-hot-toast";
 
 import { useGetAcademicYears, useGetClasses, useGetYearSections } from "../classes/service/academics-service";
-import { useGetPromotionCandidates, useProcessPromotions } from "./service/promotion-service";
+import { useGetPromotionCandidates, useGetPromotionOverview, useProcessPromotions } from "./service/promotion-service";
+import { useSchoolRun } from "./school-run-controller";
 import { IPromotionCandidate, ISection } from "@/types";
 import {
   LANES,
@@ -11,6 +12,7 @@ import {
   classAfter,
   inSchoolOrder,
   nextYearOf,
+  planSchoolRun,
   rollNumbersFor,
   sectionIn,
   startLane,
@@ -55,6 +57,8 @@ export const usePromotionController = () => {
   const candidatesQuery = useGetPromotionCandidates(organizationId, sourceYearId, sourceSectionId);
   const processPromotions = useProcessPromotions(organizationId);
   const candidates = candidatesQuery.data?.items || [];
+  const overview = useGetPromotionOverview(organizationId, sourceYearId);
+  const stats = new Map((overview.data?.items || []).map((row) => [row.sectionId, row]));
 
   const classById = (id?: string) => [...sourceClasses, ...targetClasses].find((klass) => klass.id === id);
   const sourceSection = sourceSections.find((section) => section.id === sourceSectionId);
@@ -63,6 +67,17 @@ export const usePromotionController = () => {
   const ordered = inSchoolOrder(sourceClasses);
   const isFinalClass = !!sourceClass && ordered.at(-1)?.id === sourceClass.id;
   const placeOf = (classId: string) => ordered.findIndex((klass) => klass.id === classId);
+
+  // the school map: every class in order, its sections with their progress
+  const mapRows = ordered.map((klass) => ({
+    klass,
+    sections: sourceSections
+      .filter((section) => section.classId === klass.id)
+      .sort((a, b) => a.name.localeCompare(b.name))
+      .map((section) => ({ section, stats: stats.get(section.id) })),
+  }));
+  const plan = planSchoolRun({ sourceClasses, sourceSections, targetClasses, targetSections, stats });
+  const schoolRun = useSchoolRun({ organizationId, sourceYearId, targetYearId, plan });
 
   const sourceOptions = [...sourceSections]
     .sort((a, b) => placeOf(a.classId) - placeOf(b.classId) || a.name.localeCompare(b.name))
@@ -200,6 +215,13 @@ export const usePromotionController = () => {
   };
 
   return {
+    mapRows,
+    isLoadingMap: overview.isLoading,
+    mapError: overview.isError,
+    retryMap: overview.refetch,
+    plan,
+    schoolRun,
+    classNameOf: (id: string) => classById(id)?.name ?? "",
     years,
     sourceYearId,
     pickSourceYear,

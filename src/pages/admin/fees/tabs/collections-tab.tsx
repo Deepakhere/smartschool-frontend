@@ -65,8 +65,8 @@ const CollectionsTab = ({ organizationId }: { organizationId: string }) => {
           />
         </div>
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-4">
-          <DatePicker label="From" value={c.from} max={c.to} onChange={c.setFrom} />
-          <DatePicker label="To" value={c.to} min={c.from} max={todayInIndia()} onChange={c.setTo} />
+          <DatePicker clearable={false} label="From" value={c.from} max={c.to} onChange={c.setFrom} />
+          <DatePicker clearable={false} label="To" value={c.to} min={c.from} max={todayInIndia()} onChange={c.setTo} />
         </div>
       </Card>
 
