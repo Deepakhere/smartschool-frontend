@@ -744,7 +744,7 @@ export interface IStudentEnrollment {
 }
 
 export interface IPromotionCandidate {
-  student: { id: string; name: string; admissionNumber: string };
+  student: { id: string; name: string; admissionNumber: string; photoUrl?: string | null };
   rollNumber: string;
   result: {
     examName: string;
@@ -755,7 +755,8 @@ export interface IPromotionCandidate {
   } | null;
 }
 
-export type PromotionAction = "promote" | "detain" | "transfer" | "withdraw";
+// pass_out: finished the final class and leaves the school, records kept
+export type PromotionAction = "promote" | "detain" | "transfer" | "withdraw" | "pass_out";
 
 export interface IPromotionDecisionResult {
   studentId: string;
@@ -769,7 +770,7 @@ export interface IEnrollmentHistoryEntry {
   classId: { id: string; name: string } | null;
   sectionId: { id: string; name: string } | null;
   rollNumber: string;
-  status: "ACTIVE" | "PROMOTED" | "DETAINED" | "TRANSFERRED" | "WITHDRAWN";
+  status: "ACTIVE" | "PROMOTED" | "DETAINED" | "TRANSFERRED" | "WITHDRAWN" | "PASSED_OUT";
   joinedOn: string;
   leftOn?: string;
 }

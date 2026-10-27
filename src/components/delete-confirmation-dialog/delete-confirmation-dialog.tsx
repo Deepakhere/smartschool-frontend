@@ -3,7 +3,6 @@ import { ExclamationTriangleIcon, InformationCircleIcon } from "@heroicons/react
 
 import {
   AlertDialog,
-  AlertDialogAction,
   AlertDialogCancel,
   AlertDialogContent,
   AlertDialogDescription,
@@ -61,20 +60,16 @@ const DeleteConfirmationDialog = ({
               {cancelLabel}
             </Button>
           </AlertDialogCancel>
-          <AlertDialogAction asChild>
-            <Button
-              variant={tone === "danger" ? "danger" : "primary"}
-              loading={isLoading}
-              className="sm:w-32"
-              onClick={(e) => {
-                // the confirm handler decides when to close (only after the mutation succeeds)
-                e.preventDefault();
-                onConfirm();
-              }}
-            >
-              {!isLoading && confirmLabel}
-            </Button>
-          </AlertDialogAction>
+          {/* a plain button: the dialog's own action styles would override the tone */}
+          <Button
+            variant={tone === "danger" ? "danger" : "primary"}
+            loading={isLoading}
+            className="sm:w-32"
+            // the confirm handler closes the dialog, only after its work succeeds
+            onClick={onConfirm}
+          >
+            {!isLoading && confirmLabel}
+          </Button>
         </div>
       </div>
     </AlertDialogContent>

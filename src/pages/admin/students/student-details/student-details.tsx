@@ -22,6 +22,7 @@ const enrollmentStatusBadgeClass: Record<string, string> = {
   DETAINED: "bg-amber-100 text-amber-800",
   TRANSFERRED: "bg-gray-100 text-gray-600",
   WITHDRAWN: "bg-red-100 text-red-800",
+  PASSED_OUT: "bg-primary-100 text-primary-800",
 };
 
 const labelOf = (options: SelectOption[], id?: string) => options.find((option) => option.id === id)?.name;
