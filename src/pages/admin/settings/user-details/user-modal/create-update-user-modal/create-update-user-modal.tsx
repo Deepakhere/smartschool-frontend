@@ -31,7 +31,12 @@ const CreateUpdateUserModal = ({
       onSubmit={onSubmit}
       className="max-w-2xl"
     >
-      <TextField form={form} name="fullname" label={t("labels.fullname")} placeholder={t("messages.enter_your_full_name")} />
+      <TextField
+        form={form}
+        name="fullname"
+        label={t("labels.fullname")}
+        placeholder={t("messages.enter_your_full_name")}
+      />
       <TextField
         form={form}
         name="email"
@@ -57,7 +62,9 @@ const CreateUpdateUserModal = ({
                   onClick={() => form.setValue("role", roleOption.value, { shouldDirty: true })}
                   className={cn(
                     "relative rounded-lg border p-4 text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500",
-                    role === roleOption.value ? "border-primary-500 bg-primary-50" : "border-gray-300 hover:border-primary-300"
+                    role === roleOption.value
+                      ? "border-primary-500 bg-primary-50"
+                      : "border-gray-300 hover:border-primary-300"
                   )}
                 >
                   <div className="flex items-center">

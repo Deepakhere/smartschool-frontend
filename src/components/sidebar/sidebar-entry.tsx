@@ -1,5 +1,5 @@
 import { ComponentType, ReactNode, SVGProps } from "react";
-import { NavLink } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 import { LockClosedIcon } from "@heroicons/react/20/solid";
 
 import { cn } from "@/lib/utils";
@@ -16,8 +16,10 @@ interface SidebarEntryProps {
   onClick?: () => void;
   // a button's own active state; links work theirs out from the route
   active?: boolean;
+  // set for links that point at a tab, where the route alone can't tell
+  current?: boolean;
   count?: number;
-  // a small dot on the icon, e.g. More when a page behind it needs attention
+  // a small dot on the icon, e.g. a section when a page in it needs attention
   dot?: boolean;
   trailing?: ReactNode;
   // its module isn't in the school's package
@@ -28,11 +30,12 @@ interface SidebarEntryProps {
   setOpenHint: (name: string | null) => void;
 }
 
+// collapsed rows are a 36px square around the icon, the same size as the logo tile above
 const rowClass = (isCollapsed: boolean, active: boolean) =>
   cn(
-    "group flex w-full items-center rounded-md py-2 pr-3 text-sm font-medium transition-[padding]",
+    "group flex items-center rounded-md text-sm font-medium transition-[padding]",
     panelMotion(isCollapsed),
-    isCollapsed ? "pl-[13.5px]" : "pl-3",
+    isCollapsed ? "mx-auto h-9 w-9 justify-center p-0" : "w-full py-2 pl-3 pr-3",
     active ? "bg-gray-100 text-primary-600" : "text-gray-600 hover:bg-gray-50 hover:text-primary-600"
   );
 
@@ -44,6 +47,7 @@ const SidebarEntry = ({
   href,
   onClick,
   active = false,
+  current,
   count = 0,
   dot = false,
   trailing,
@@ -68,12 +72,12 @@ const SidebarEntry = ({
       </span>
       <span
         className={cn(
-          "overflow-hidden whitespace-nowrap text-left",
+          "min-w-0 overflow-hidden whitespace-nowrap text-left",
           revealMotion(isCollapsed),
-          isCollapsed ? "ml-0 max-w-0" : "ml-3 max-w-[10rem]"
+          isCollapsed ? "ml-0 hidden max-w-0" : "ml-3 max-w-[10rem]"
         )}
       >
-        {name}
+        <span className="block truncate">{name}</span>
       </span>
       {!isCollapsed && count > 0 && (
         <span
@@ -86,7 +90,9 @@ const SidebarEntry = ({
       {!isCollapsed && locked && (
         <LockClosedIcon className="ml-auto h-3.5 w-3.5 text-gray-400" aria-label="Not in your package" />
       )}
-      {!isCollapsed && !count && !locked && trailing && <span className="ml-auto text-gray-400">{trailing}</span>}
+      {!isCollapsed && !count && !locked && trailing && (
+        <span className="ml-auto opacity-60 transition-transform group-hover:translate-x-0.5">{trailing}</span>
+      )}
     </>
   );
 
@@ -98,7 +104,17 @@ const SidebarEntry = ({
       {/* plain wrapper: Slot breaks NavLink's className function */}
       <TooltipTrigger asChild>
         <div>
-          {href ? (
+          {href && current !== undefined ? (
+            // the caller knows if it's current (tab links too); NavLink would mark every tab of a page
+            <Link
+              to={href}
+              tabIndex={inactive ? -1 : undefined}
+              aria-current={current ? "page" : undefined}
+              className={rowClass(isCollapsed, current)}
+            >
+              {body(current)}
+            </Link>
+          ) : href ? (
             <NavLink
               to={href}
               tabIndex={inactive ? -1 : undefined}

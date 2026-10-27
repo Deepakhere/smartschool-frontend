@@ -10,6 +10,7 @@ import { SelectOption } from "@/types";
 
 const ParentHomework = () => {
   const { children, studentId, setStudentId, homeworkList, isLoading, loadError, retryLoad } = useHomeworkController();
+  const childOptions = children.map((child): SelectOption => ({ id: child.studentId.id, name: child.studentId.name }));
 
   return (
     <div className="max-w-7xl mx-auto space-y-6">
@@ -21,11 +22,8 @@ const ParentHomework = () => {
           <div className="w-64">
             <CustomSelectDropdown
               placeholder="Select child"
-              options={children.map((child): SelectOption => ({ id: child.studentId.id, name: child.studentId.name }))}
-              value={(() => {
-                const child = children.find((child) => child.studentId.id === studentId);
-                return child ? { id: child.studentId.id, name: child.studentId.name } : null;
-              })()}
+              options={childOptions}
+              value={childOptions.find((option) => option.id === studentId) ?? null}
               onChange={(o) => setStudentId(String(o.id))}
             />
           </div>

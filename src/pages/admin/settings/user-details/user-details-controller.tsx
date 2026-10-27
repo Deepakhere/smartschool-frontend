@@ -16,8 +16,18 @@ import { useAreaBase } from "@/context/tenant-context";
 import { userFormSchema, defaultUserFormValues, UserFormValues } from "./user-details.schema";
 
 const FILTER_OPTIONS: IRoleOptionDropDown[] = [
-  { value: "all", label: "All Users", description: "Everyone in the school", icon: <UsersIcon className="h-5 w-5 text-gray-400" /> },
-  ...ROLE_OPTIONS.map((option) => ({ value: option.value, label: `${option.label}s`, description: `${option.label}s only`, icon: option.icon })),
+  {
+    value: "all",
+    label: "All Users",
+    description: "Everyone in the school",
+    icon: <UsersIcon className="h-5 w-5 text-gray-400" />,
+  },
+  ...ROLE_OPTIONS.map((option) => ({
+    value: option.value,
+    label: `${option.label}s`,
+    description: `${option.label}s only`,
+    icon: option.icon,
+  })),
 ];
 
 const useUserDetailsController = () => {
@@ -38,7 +48,13 @@ const useUserDetailsController = () => {
   const form = useForm<UserFormValues>({ resolver: zodResolver(userFormSchema), defaultValues: defaultUserFormValues });
 
   const addUserDetail = useAddUserDetail(organizationId);
-  const getAllUserDetails = useGetAllUserDetails(organizationId, searchTerm, sortBy === "all" ? "" : sortBy, page, pageSize);
+  const getAllUserDetails = useGetAllUserDetails(
+    organizationId,
+    searchTerm,
+    sortBy === "all" ? "" : sortBy,
+    page,
+    pageSize
+  );
   const users: IAllUserDetails[] = getAllUserDetails.data?.rows ?? [];
   const deleteUser = useDeleteUser(organizationId);
   const updateUserDetails = useUpdateUserDetail(organizationId);

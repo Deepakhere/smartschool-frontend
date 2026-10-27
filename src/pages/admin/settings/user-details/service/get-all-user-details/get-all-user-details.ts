@@ -26,7 +26,13 @@ const getAllUserDetails = async (
   return result.data.Data;
 };
 
-const useGetAllUserDetails = (organizationId: string, searchTerm: string, filterRole: string, page: number, pageSize: number) =>
+const useGetAllUserDetails = (
+  organizationId: string,
+  searchTerm: string,
+  filterRole: string,
+  page: number,
+  pageSize: number
+) =>
   useQuery<Paged<IAllUserDetails>, IAPIError>({
     // organizationId + the filters are part of the key so a tenant switch or a filter change is a
     // genuinely different cache entry, not a stale one - and no manual refetch effect is needed

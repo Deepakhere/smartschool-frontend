@@ -10,10 +10,9 @@ export const useGetHomeworkList = (organizationId: string, sectionId: string) =>
   useQuery<Paged<IHomework>, IAPIError>({
     queryKey: [API_QUERY_KEY.GET_HOMEWORK_LIST, organizationId, sectionId],
     queryFn: async () => {
-      const result = await apiClient.get<null, IAxiosResponse<Paged<IHomework>>>(
-        `${base(organizationId)}/list`,
-        { params: { sectionId } }
-      );
+      const result = await apiClient.get<null, IAxiosResponse<Paged<IHomework>>>(`${base(organizationId)}/list`, {
+        params: { sectionId },
+      });
       return result.data.Data;
     },
     enabled: !!organizationId && !!sectionId,

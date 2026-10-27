@@ -6,5 +6,16 @@ import useIdempotencyKey from "./idempotency-key";
 import useDebouncedValue from "./debounced-value";
 import usePaging from "./paging";
 import useExportRows from "./export-rows";
+import useTabParam from "./tab-param";
 
-export { useError, usePageHeader, useIsMobile, useMutationFeedback, useIdempotencyKey, useDebouncedValue, usePaging, useExportRows };
+export {
+  useError,
+  usePageHeader,
+  useIsMobile,
+  useMutationFeedback,
+  useIdempotencyKey,
+  useDebouncedValue,
+  usePaging,
+  useExportRows,
+  useTabParam,
+};

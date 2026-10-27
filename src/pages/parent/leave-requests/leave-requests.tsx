@@ -24,6 +24,10 @@ const statusBadgeClass: Record<string, string> = {
 const LeaveRequests = () => {
   const { t } = useTranslation();
   const c = useLeaveRequestsController();
+  const childOptions = c.children.map((child): SelectOption => ({
+    id: child.studentId.id,
+    name: child.studentId.name,
+  }));
 
   return (
     <div className="max-w-7xl mx-auto space-y-6">
@@ -35,7 +39,10 @@ const LeaveRequests = () => {
           icon: PlusIcon,
           onClick: c.toggleForm,
           disabled: c.children.length === 0,
-          title: c.children.length === 0 ? "Leave can be requested once the school links your child to this account" : undefined,
+          title:
+            c.children.length === 0
+              ? "Leave can be requested once the school links your child to this account"
+              : undefined,
         }}
       />
 
@@ -52,14 +59,8 @@ const LeaveRequests = () => {
                     <FormControl>
                       <CustomSelectDropdown
                         placeholder="Select child"
-                        options={c.children.map((child): SelectOption => ({
-                          id: child.studentId.id,
-                          name: child.studentId.name,
-                        }))}
-                        value={(() => {
-                          const child = c.children.find((child) => child.studentId.id === field.value);
-                          return child ? { id: child.studentId.id, name: child.studentId.name } : null;
-                        })()}
+                        options={childOptions}
+                        value={childOptions.find((option) => option.id === field.value) ?? null}
                         onChange={(o) => field.onChange(String(o.id))}
                       />
                     </FormControl>
@@ -135,7 +136,11 @@ const LeaveRequests = () => {
         ) : c.leaveRequests.length === 0 ? (
           <EmptyState
             title="No leave requests yet"
-            description={c.children.length ? "Use New Leave Request to ask for leave for your child." : "Leave can be requested once the school links your child to this account."}
+            description={
+              c.children.length
+                ? "Use New Leave Request to ask for leave for your child."
+                : "Leave can be requested once the school links your child to this account."
+            }
           />
         ) : (
           <div className="divide-y divide-gray-100">

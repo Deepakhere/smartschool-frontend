@@ -15,8 +15,18 @@ interface UserColumnActions {
   remove: (userId: string) => void;
 }
 
-export const userColumns = ({ t, isSelf, manageAccess, edit, remove }: UserColumnActions): DataTableColumn<IAllUserDetails>[] => [
-  { id: "name", header: t("labels.username"), cell: ({ row }) => <span className="text-gray-900">{row.original.name}</span> },
+export const userColumns = ({
+  t,
+  isSelf,
+  manageAccess,
+  edit,
+  remove,
+}: UserColumnActions): DataTableColumn<IAllUserDetails>[] => [
+  {
+    id: "name",
+    header: t("labels.username"),
+    cell: ({ row }) => <span className="text-gray-900">{row.original.name}</span>,
+  },
   { id: "email", header: t("labels.email"), meta: { align: "center" }, cell: ({ row }) => row.original.email },
   {
     id: "role",

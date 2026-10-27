@@ -18,11 +18,16 @@ export const useGetSectionRoster = (organizationId: string, sectionId: string) =
   useQuery<{ items: ISectionRosterStudent[] }, IAPIError>({
     queryKey: ["get-section-roster", organizationId, sectionId],
     queryFn: async () => {
-      const result = await apiClient.get<null, IAxiosResponse<{ items: { id: string; name: string; rollNumber: string }[] }>>(
-        `${base(organizationId)}/section-roster`,
-        { params: { sectionId } }
-      );
-      return { items: result.data.Data.items.map(({ rollNumber, ...student }) => ({ ...student, currentEnrollment: { rollNumber } })) };
+      const result = await apiClient.get<
+        null,
+        IAxiosResponse<{ items: { id: string; name: string; rollNumber: string }[] }>
+      >(`${base(organizationId)}/section-roster`, { params: { sectionId } });
+      return {
+        items: result.data.Data.items.map(({ rollNumber, ...student }) => ({
+          ...student,
+          currentEnrollment: { rollNumber },
+        })),
+      };
     },
     enabled: !!organizationId && !!sectionId,
   });
@@ -69,7 +74,15 @@ export interface IMonthRegisterRow {
   studentName: string;
   rollNumber: string;
   cells: Record<string, AttendanceStatus>;
-  summary: { present: number; late: number; absent: number; excused: number; holiday: number; missing: number; percent: number };
+  summary: {
+    present: number;
+    late: number;
+    absent: number;
+    excused: number;
+    holiday: number;
+    missing: number;
+    percent: number;
+  };
 }
 
 export interface IMonthRegister {
@@ -83,9 +96,12 @@ export const useGetMonthRegister = (organizationId: string, sectionId: string, m
   useQuery<IMonthRegister, IAPIError>({
     queryKey: [API_QUERY_KEY.GET_SECTION_ATTENDANCE_REPORT, organizationId, sectionId, "month", month],
     queryFn: async () => {
-      const result = await apiClient.get<null, IAxiosResponse<IMonthRegister>>(`${base(organizationId)}/section-month`, {
-        params: { sectionId, year: Number(month.slice(0, 4)), month: Number(month.slice(5, 7)) },
-      });
+      const result = await apiClient.get<null, IAxiosResponse<IMonthRegister>>(
+        `${base(organizationId)}/section-month`,
+        {
+          params: { sectionId, year: Number(month.slice(0, 4)), month: Number(month.slice(5, 7)) },
+        }
+      );
       return result.data.Data;
     },
     enabled: !!organizationId && !!sectionId && /^\d{4}-\d{2}$/.test(month),

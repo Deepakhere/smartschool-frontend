@@ -1,13 +1,14 @@
-import { useState } from "react";
 import { useParams } from "react-router-dom";
 
+import { useTabParam } from "@/hooks";
 import { useGetAcademicYears, useGetClasses, useGetSubjects } from "../classes/service/academics-service";
 
-export type ReportsTabKey = "exams" | "marks" | "schemes";
+const REPORTS_TABS = ["exams", "marks", "schemes"] as const;
+export type ReportsTabKey = (typeof REPORTS_TABS)[number];
 
 const useReportsController = () => {
   const { organizationId = "" } = useParams();
-  const [activeTab, setActiveTab] = useState<ReportsTabKey>("exams");
+  const [activeTab, setActiveTab] = useTabParam(REPORTS_TABS, "exams");
 
   const years = useGetAcademicYears(organizationId);
   const currentYearId = years.data?.items.find((year) => year.isCurrent)?.id;

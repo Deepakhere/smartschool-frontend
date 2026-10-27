@@ -23,13 +23,14 @@ const Header = ({ onToggleSidebar, isCollapsed, onToggleCollapse }: HeaderProps)
         {/* App brand segment - width matches the sidebar so the divider lines up with it */}
         <div
           className={`flex items-center ${isCollapsed ? "justify-center" : "justify-between"} shrink-0 px-3 border-r border-gray-200 ${PANEL_MOTION} ${panelMotion(isCollapsed)} ${
-            isCollapsed ? "lg:w-16" : "lg:w-56"
+            isCollapsed ? "lg:w-16" : "lg:w-60"
           } w-auto`}
         >
           <button
             type="button"
             className="lg:hidden p-2 -ml-1 rounded-md text-gray-500 hover:text-gray-600 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary-500"
             onClick={onToggleSidebar}
+            aria-label="Open menu"
           >
             <Bars3Icon className="h-6 w-6" aria-hidden="true" />
           </button>
@@ -48,8 +49,13 @@ const Header = ({ onToggleSidebar, isCollapsed, onToggleCollapse }: HeaderProps)
               onClick={onToggleCollapse}
               className="group hidden lg:flex h-9 w-9 items-center justify-center rounded-lg text-gray-500 hover:bg-gray-100 hover:text-gray-700"
               title="Expand sidebar"
+              aria-label="Expand sidebar"
             >
-              <img src="/opscul-tile.png" alt="Opscul" className="h-8 w-8 rounded-lg animate-in fade-in zoom-in-90 duration-300 delay-200 fill-mode-both dark:ring-1 dark:ring-white/15 group-hover:hidden group-focus-visible:hidden" />
+              <img
+                src="/opscul-tile.png"
+                alt="Opscul"
+                className="h-9 w-9 rounded-lg animate-in fade-in zoom-in-90 duration-300 delay-200 fill-mode-both dark:ring-1 dark:ring-white/15 group-hover:hidden group-focus-visible:hidden"
+              />
               <PanelLeftIcon className="hidden h-4 w-4 group-hover:block group-focus-visible:block" />
             </button>
           ) : (
@@ -77,9 +83,7 @@ const Header = ({ onToggleSidebar, isCollapsed, onToggleCollapse }: HeaderProps)
                 <ArrowLeftIcon className="h-4 w-4" aria-hidden="true" />
               </button>
             )}
-            <h1 className="text-base font-semibold text-gray-900 truncate">
-              {pageHeaderConfig?.title || ""}
-            </h1>
+            <h1 className="text-base font-semibold text-gray-900 truncate">{pageHeaderConfig?.title || ""}</h1>
           </div>
 
           <div className="flex items-center gap-3 shrink-0">

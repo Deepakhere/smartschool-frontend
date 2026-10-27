@@ -5,16 +5,17 @@ import type { ComponentType, SVGProps } from "react";
 import { useCan, useCurrentRole, useHasModule } from "@/context/tenant-context";
 import { SHARED_PAGES } from "@/routes/shared-pages";
 import { useGetAttention } from "./service/attention-service";
+import { ADMIN_MENU, PARENT_MENU, TEACHER_MENU } from "./menus";
 import {
-  ADMIN_MENU,
   CALENDAR_PAGE,
   FLAT_MENU_LIMIT,
   MAIN_LIMIT,
-  PARENT_MENU,
-  SidebarGroup,
   SidebarMenu,
+  SidebarMenuEntry,
   SidebarPage,
-  TEACHER_MENU,
+  isGroup,
+  moduleFor,
+  morePages,
 } from "./sidebar-pages";
 
 export interface SidebarItem {
@@ -28,21 +29,26 @@ export interface SidebarItem {
   locked: boolean;
 }
 
-type View = "main" | "more";
+export interface SidebarSection {
+  label: string;
+  hint: string;
+  icon: ComponentType<SVGProps<SVGSVGElement>>;
+  items: SidebarItem[];
+  // one of its pages is open
+  current: boolean;
+  // one of its pages needs the user
+  needsAttention: boolean;
+}
+
+export type SidebarEntryModel = { kind: "page"; item: SidebarItem } | { kind: "section"; section: SidebarSection };
 
 // granted-page menus (accountant, staff) split by count
 const splitPages = (pages: SidebarPage[]): SidebarMenu =>
-  pages.length <= FLAT_MENU_LIMIT
-    ? { main: pages, more: [], bottom: [] }
-    : {
-        main: pages.slice(0, MAIN_LIMIT),
-        more: [{ label: "More pages", pages: pages.slice(MAIN_LIMIT) }],
-        bottom: [],
-      };
+  pages.length <= FLAT_MENU_LIMIT ? pages : [...pages.slice(0, MAIN_LIMIT), morePages(pages.slice(MAIN_LIMIT))];
 
 export const useSidebarController = () => {
   const { organizationId = "" } = useParams();
-  const { pathname } = useLocation();
+  const { pathname, search } = useLocation();
   const navigate = useNavigate();
   // the role decides the menu; permissions add granted pages
   const role = useCurrentRole() ?? "admin";
@@ -57,26 +63,29 @@ export const useSidebarController = () => {
   const menuByRole: Record<typeof role, () => SidebarMenu> = {
     admin: () => ADMIN_MENU,
     parent: () => PARENT_MENU,
-    teacher: () => ({
+    teacher: () => [
       ...TEACHER_MENU,
-      more: [...TEACHER_MENU.more, ...(granted.length ? [{ label: "School", pages: granted }] : [])],
-    }),
+      ...(granted.length ? [{ ...morePages(granted), label: "School", hint: "Pages the school opened for you" }] : []),
+    ],
     accountant: () => splitPages([...granted, CALENDAR_PAGE]),
     staff: () => splitPages([...granted, CALENDAR_PAGE]),
   };
   // parents never see a locked module; staff see it with a lock
-  const isLocked = (page: SidebarPage) => !!page.module && !hasModule(page.module);
+  const isLocked = (page: SidebarPage) => {
+    const module = moduleFor(page);
+    return !!module && !hasModule(module);
+  };
   const visible = (pages: SidebarPage[]) => (role === "parent" ? pages.filter((p) => !isLocked(p)) : pages);
   const chosen = menuByRole[role]();
-  // role menus keep their More groups, however short
-  const menu: SidebarMenu = {
-    main: visible(chosen.main),
-    more: chosen.more.map((g) => ({ ...g, pages: visible(g.pages) })).filter((g) => g.pages.length),
-    bottom: visible(chosen.bottom),
-  };
 
   const attention = useGetAttention(organizationId, role !== "parent").data;
-  const isCurrent = (href: string) => pathname === href || pathname.startsWith(`${href}/`);
+  // a link to a tab ("fees?tab=ledger") is current only on that tab
+  const openTab = new URLSearchParams(search).get("tab");
+  const isCurrent = (href: string) => {
+    const [path, query] = href.split("?");
+    const onPage = pathname === path || pathname.startsWith(`${path}/`);
+    return onPage && (!query || new URLSearchParams(query).get("tab") === openTab);
+  };
   const toItem = (page: SidebarPage): SidebarItem => {
     const href = `/${organizationId}/${role}/${page.path}`;
     return {
@@ -90,39 +99,51 @@ export const useSidebarController = () => {
     };
   };
 
-  const main = menu.main.map(toItem);
-  const more: (Omit<SidebarGroup, "pages"> & { items: SidebarItem[] })[] = menu.more.map((group) => ({
-    label: group.label,
-    items: group.pages.map(toItem),
-  }));
-  const bottom = menu.bottom.map(toItem);
-  const moreItems = more.flatMap((group) => group.items);
-  const onMorePage = moreItems.some((item) => item.current);
+  // a section with one or two pages shows them as plain links; an empty one disappears
+  const toEntries = (entry: SidebarMenuEntry): SidebarEntryModel[] => {
+    if (!isGroup(entry)) return visible([entry]).map((page) => ({ kind: "page", item: toItem(page) }));
+    const items = visible(entry.pages).map(toItem);
+    if (items.length <= 2) return items.map((item) => ({ kind: "page", item }));
+    return [
+      {
+        kind: "section",
+        section: {
+          label: entry.label,
+          hint: entry.hint,
+          icon: entry.icon,
+          items,
+          current: items.some((item) => item.current),
+          needsAttention: items.some((item) => item.count > 0),
+        },
+      },
+    ];
+  };
+  const main = chosen.flatMap(toEntries);
+  const sections = main.flatMap((entry) => (entry.kind === "section" ? [entry.section] : []));
+  const currentSection = sections.find((section) => section.current)?.label ?? null;
 
   // the open panel follows the current page
-  const [view, setView] = useState<View>(onMorePage ? "more" : "main");
-  const [viewFor, setViewFor] = useState(pathname);
-  if (viewFor !== pathname) {
-    setViewFor(pathname);
-    setView(onMorePage ? "more" : "main");
+  const [openLabel, setOpenLabel] = useState<string | null>(currentSection);
+  // a new page or tab may belong to another section
+  const location = `${pathname}?${openTab ?? ""}`;
+  const [openFor, setOpenFor] = useState(location);
+  if (openFor !== location) {
+    setOpenFor(location);
+    setOpenLabel(currentSection);
   }
+  const openSection = sections.find((section) => section.label === openLabel) ?? null;
 
-  // desktop jumps to the first More page; the drawer only opens (navigating closes it)
-  const openMore = () => {
-    setView("more");
+  // desktop jumps to the section's first page; the drawer only opens (navigating closes it)
+  const open = (section: SidebarSection) => {
+    setOpenLabel(section.label);
     const isDesktop = window.matchMedia("(min-width: 1024px)").matches;
-    if (isDesktop && !onMorePage && moreItems[0]) navigate(moreItems[0].href);
+    if (isDesktop && !section.current && section.items[0]) navigate(section.items[0].href);
   };
 
   return {
-    view,
     main,
-    more,
-    bottom,
-    hasMore: moreItems.length > 0,
-    moreIsActive: onMorePage,
-    moreNeedsAttention: moreItems.some((item) => item.count > 0),
-    openMore,
-    back: () => setView("main"),
+    openSection,
+    open,
+    back: () => setOpenLabel(null),
   };
 };

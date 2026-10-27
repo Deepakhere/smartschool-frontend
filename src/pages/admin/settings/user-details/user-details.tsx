@@ -46,6 +46,12 @@ const UserDetails = () => {
     onClickDeleteUser,
     onCancelDeleteModal,
   } = useUserDetailsController();
+  const roleFilterOptions = roleOptionsDropDown.map((option) => ({
+    id: option.value,
+    name: option.label,
+    description: option.description,
+    icon: option.icon,
+  }));
   useHeaderActions({ action: { label: t("labels.add_user"), icon: PlusIcon, onClick: openAddUser } });
 
   const columns = userColumns({ t, isSelf, manageAccess, edit: handleEditUserDetails, remove: onClickDeleteUser });
@@ -63,11 +69,8 @@ const UserDetails = () => {
         toolbar={
           <div className="w-56">
             <CustomSelectDropdown
-              options={roleOptionsDropDown.map((option) => ({ id: option.value, name: option.label, description: option.description, icon: option.icon }))}
-              value={(() => {
-                const match = roleOptionsDropDown.find((option) => option.value === sortBy);
-                return match ? { id: match.value, name: match.label, description: match.description, icon: match.icon } : null;
-              })()}
+              options={roleFilterOptions}
+              value={roleFilterOptions.find((option) => option.id === sortBy) ?? null}
               onChange={(o) => onRoleChange(String(o.id))}
             />
           </div>

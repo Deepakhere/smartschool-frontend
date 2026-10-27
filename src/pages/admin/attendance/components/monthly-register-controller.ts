@@ -4,7 +4,12 @@ import { exportToCsv } from "@/utils";
 import { useGetMonthRegister } from "../service/attendance-service";
 import { MARKS, SUMMARY_COLUMNS } from "./monthly-register-columns";
 
-const useMonthlyRegisterController = (organizationId: string, sectionId: string, month: string, sectionLabel: string) => {
+const useMonthlyRegisterController = (
+  organizationId: string,
+  sectionId: string,
+  month: string,
+  sectionLabel: string
+) => {
   const register = useGetMonthRegister(organizationId, sectionId, month);
   const [search, setSearch] = useState("");
   const [showHolidays, setShowHolidays] = useState(true);
@@ -24,7 +29,12 @@ const useMonthlyRegisterController = (organizationId: string, sectionId: string,
       rows.map((row) => ({
         roll_number: row.rollNumber,
         student: row.studentName,
-        ...Object.fromEntries(allDays.map((day) => [day.date, row.cells[day.date] ? MARKS[row.cells[day.date]].letter : day.isHoliday ? "H" : ""])),
+        ...Object.fromEntries(
+          allDays.map((day) => [
+            day.date,
+            row.cells[day.date] ? MARKS[row.cells[day.date]].letter : day.isHoliday ? "H" : "",
+          ])
+        ),
         ...Object.fromEntries(SUMMARY_COLUMNS.map((column) => [column.key, row.summary[column.key]])),
         attendance_percent: row.summary.percent,
       }))

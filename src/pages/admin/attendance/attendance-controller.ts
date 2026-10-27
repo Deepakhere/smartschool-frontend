@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
+import { useTabParam } from "@/hooks";
 import toast from "react-hot-toast";
 
 import { useSectionPicker } from "../classes/service/use-section-picker";
@@ -17,14 +18,16 @@ import { exportToCsv, localDateString } from "@/utils";
 const today = () => localDateString();
 const firstOfMonth = () => `${today().slice(0, 7)}-01`;
 
-type Tab = "mark" | "report" | "register";
+const ATTENDANCE_TABS = ["mark", "report", "register"] as const;
+export type AttendanceTabKey = (typeof ATTENDANCE_TABS)[number];
 
-export const percent = (row: ISectionAttendanceReportRow) => (row.total ? ((row.present / row.total) * 100).toFixed(1) : "0");
+export const percent = (row: ISectionAttendanceReportRow) =>
+  row.total ? ((row.present / row.total) * 100).toFixed(1) : "0";
 
 const useAttendanceController = () => {
   const { organizationId = "" } = useParams();
 
-  const [activeTab, setActiveTab] = useState<Tab>("mark");
+  const [activeTab, setActiveTab] = useTabParam(ATTENDANCE_TABS, "mark");
   const [date, setDate] = useState(today());
   const [reportFrom, setReportFrom] = useState(firstOfMonth());
   const [reportTo, setReportTo] = useState(today());
@@ -66,7 +69,7 @@ const useAttendanceController = () => {
   }, [existing.data]);
 
   // attendance can only be marked in active classes, so an inactive pick from the report is cleared
-  const changeTab = (tab: Tab) => {
+  const changeTab = (tab: AttendanceTabKey) => {
     if (tab === "mark") {
       const klass = picker.classes.find((item) => item.id === classId);
       const section = picker.sections.find((item) => item.id === sectionId);
@@ -103,7 +106,9 @@ const useAttendanceController = () => {
 
   const visibleStudents = useMemo(() => {
     const term = rosterSearch.trim().toLowerCase();
-    return term ? students.filter((s) => `${s.name} ${s.currentEnrollment?.rollNumber ?? ""}`.toLowerCase().includes(term)) : students;
+    return term
+      ? students.filter((s) => `${s.name} ${s.currentEnrollment?.rollNumber ?? ""}`.toLowerCase().includes(term))
+      : students;
   }, [students, rosterSearch]);
 
   const exportRoster = () =>
