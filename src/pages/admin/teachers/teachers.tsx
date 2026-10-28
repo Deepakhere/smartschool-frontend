@@ -1,8 +1,8 @@
-import DataTable from "@/components/data-table";
-import ErrorState from "@/components/error-state";
-import FormDialog from "@/components/form-dialog";
-import { DateField, TextField } from "@/components/form-fields";
-import SectionHeader from "@/components/section-header";
+import DataTable from "@/shared/ui/data-table";
+import ErrorState from "@/shared/ui/error-state";
+import FormDialog from "@/shared/ui/form-dialog";
+import { DateField, TextField } from "@/shared/ui/form-fields";
+import SectionHeader from "@/shared/ui/section-header";
 import { teacherColumns } from "./teachers-columns";
 import useTeachersController from "./teachers-controller";
 

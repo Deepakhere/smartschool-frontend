@@ -4,9 +4,9 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 
-import { useAuth } from "@/context/auth-context";
-import { useSingIn } from "../service";
-import { useError } from "@/hooks";
+import { useAuth } from "@/entities/session/model/auth-context";
+import { useSignIn } from "@/entities/session/api/auth-service";
+import { useError } from "@/shared/hooks";
 import { loginSchema, LoginFormValues } from "./login.schema";
 
 const useLoginController = () => {
@@ -19,7 +19,7 @@ const useLoginController = () => {
     defaultValues: { email: "", password: "" },
   });
 
-  const signIn = useSingIn();
+  const signIn = useSignIn();
 
   useError({
     mutation: signIn,

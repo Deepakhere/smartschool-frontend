@@ -10,11 +10,11 @@ const state = vi.hoisted(() => ({
   preview: { data: undefined as unknown, isLoading: false, isFetching: false, isError: false },
 }));
 
-vi.mock("../service/academics-service", () => ({
+vi.mock("@/entities/academics/api/academics-service", () => ({
   useGetRolloverPreview: () => state.preview,
   useRolloverAcademicYear: () => ({ mutate, isPending: false }),
 }));
-vi.mock("@/hooks", () => ({ useMutationFeedback: vi.fn() }));
+vi.mock("@/shared/hooks", () => ({ useMutationFeedback: vi.fn() }));
 
 const years = [
   {

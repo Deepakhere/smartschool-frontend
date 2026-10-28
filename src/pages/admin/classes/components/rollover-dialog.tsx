@@ -1,8 +1,8 @@
-import { countLabel } from "@/components/data-table";
-import FormDialog from "@/components/form-dialog";
-import { Switch } from "@/components/ui/switch";
-import { IAcademicYear } from "@/types";
-import { SelectField, TextField, DateField } from "@/components/form-fields";
+import { countLabel } from "@/shared/ui/data-table";
+import FormDialog from "@/shared/ui/form-dialog";
+import { Switch } from "@/shared/ui/kit/switch";
+import { IAcademicYear } from "@/entities/academics/model/types";
+import { SelectField, TextField, DateField } from "@/shared/ui/form-fields";
 import useRolloverDialogController from "./rollover-dialog-controller";
 
 interface RolloverDialogProps {
@@ -43,7 +43,7 @@ const CheckRow = ({
   </label>
 );
 
-// "Start next year": pick the year to copy from, name the new one, and see exactly what will be copied before it is
+// "Start next year": pick the year to copy from, name the new one, and preview what will be copied
 const RolloverDialog = ({ organizationId, years, sourceYear, onClose }: RolloverDialogProps) => {
   const {
     form,

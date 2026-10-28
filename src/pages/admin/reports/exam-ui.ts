@@ -1,5 +1,6 @@
-import { BadgeTone } from "@/components/ui/badge";
-import { ExamStage, SelectOption } from "@/types";
+import { BadgeTone } from "@/shared/ui/kit/badge";
+import { ExamStage } from "@/entities/exam/model/types";
+import { SelectOption } from "@/shared/types";
 
 export const EXAM_TYPE_OPTIONS: SelectOption[] = [
   { id: "unit_test", name: "Unit test" },

@@ -2,10 +2,15 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
-import { RowMenuItem } from "@/components/row-menu";
-import { useMutationFeedback } from "@/hooks";
-import { ISubject } from "@/types";
-import { useCreateSubject, useDeactivateSubject, useGetSubjects, useUpdateSubject } from "../service/academics-service";
+import { RowMenuItem } from "@/shared/ui/row-menu";
+import { useMutationFeedback } from "@/shared/hooks";
+import { ISubject } from "@/entities/academics/model/types";
+import {
+  useCreateSubject,
+  useDeactivateSubject,
+  useGetSubjects,
+  useUpdateSubject,
+} from "@/entities/academics/api/academics-service";
 import { defaultSubjectFormValues, subjectFormSchema, SubjectFormValues } from "../classes.schema";
 
 const useSubjectsTabController = (organizationId: string, yearId: string) => {

@@ -3,10 +3,11 @@ import { useFieldArray, useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import toast from "react-hot-toast";
 
-import { useError } from "@/hooks";
-import { IFeeStructure, SelectOption } from "@/types";
-import { toPaise } from "@/utils";
-import { useGetAcademicYears, useGetClasses, useGetYearSections } from "../../classes/service/academics-service";
+import { useError } from "@/shared/hooks";
+import { IFeeStructure } from "@/entities/fee/model/types";
+import { SelectOption } from "@/shared/types";
+import { toPaise } from "@/shared/lib";
+import { useGetAcademicYears, useGetClasses, useGetYearSections } from "@/entities/academics/api/academics-service";
 import { defaultFeeStructureValues, feeStructureSchema, FeeStructureFormValues } from "../fees.schema";
 import {
   useAssignFeeStructure,
@@ -14,12 +15,12 @@ import {
   useGetFeeHeads,
   useGetFeeStructures,
   useUpdateFeeStructure,
-} from "../service/fees-service";
+} from "@/entities/fee/api/fees-service";
 
 const sumPaise = (rows: { amount: string }[] = []) =>
   rows.reduce((sum, row) => sum + (toPaise(row.amount || 0) || 0), 0);
 
-// a structure being edited may use a removed head or another year's classes; keep those in the lists so they still show
+// an edited structure may use a removed head or another year's classes; keep those listed so they show
 const withEditing = (options: SelectOption[], extra: SelectOption[] = []) => [
   ...options,
   ...extra.filter((option) => !options.some((known) => known.id === option.id)),

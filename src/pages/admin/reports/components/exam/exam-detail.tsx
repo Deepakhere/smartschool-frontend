@@ -1,15 +1,15 @@
 import { PencilSquareIcon, PlusIcon } from "@heroicons/react/20/solid";
 
-import DataTable from "@/components/data-table";
-import DeleteConfirmationDialog from "@/components/delete-confirmation-dialog";
-import ErrorState from "@/components/error-state";
-import RowMenu from "@/components/row-menu";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import { Skeleton } from "@/components/ui/skeleton";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { IExamOverviewSubject } from "@/types";
+import DataTable from "@/shared/ui/data-table";
+import DeleteConfirmationDialog from "@/shared/ui/delete-confirmation-dialog";
+import ErrorState from "@/shared/ui/error-state";
+import RowMenu from "@/shared/ui/row-menu";
+import { Badge } from "@/shared/ui/kit/badge";
+import { Button } from "@/shared/ui/kit/button";
+import { Card } from "@/shared/ui/kit/card";
+import { Skeleton } from "@/shared/ui/kit/skeleton";
+import { Tabs, TabsList, TabsTrigger } from "@/shared/ui/kit/tabs";
+import { IExamOverviewSubject } from "@/entities/exam/model/types";
 import { dateRange, examTypeLabel, stageOf } from "../../exam-ui";
 import AddSubjectsDialog from "./add-subjects-dialog";
 import EditSubjectDialog from "./edit-subject-dialog";

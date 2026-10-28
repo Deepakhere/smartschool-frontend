@@ -39,5 +39,21 @@ export default tseslint.config(
         },
       ],
     },
-  }
+  },
+  // Feature-Sliced Design: a layer imports only from the layers below it (app > pages > widgets > features > entities > shared)
+  ...[
+    ["shared", ["entities", "features", "widgets", "pages", "app"]],
+    ["entities", ["features", "widgets", "pages", "app"]],
+    ["features", ["widgets", "pages", "app"]],
+    ["widgets", ["pages", "app"]],
+    ["pages", ["app"]],
+  ].map(([layer, above]) => ({
+    files: [`src/${layer}/**/*.{ts,tsx}`],
+    rules: {
+      "no-restricted-imports": [
+        "error",
+        { patterns: above.map((name) => ({ group: [`@/${name}/*`], message: `${layer} can't import from ${name}.` })) },
+      ],
+    },
+  }))
 );

@@ -1,16 +1,16 @@
 import type { ReactNode } from "react";
 import { ClipboardDocumentCheckIcon, DocumentChartBarIcon, TableCellsIcon } from "@heroicons/react/24/outline";
 
-import CustomSelectDropdown from "@/components/custom-select";
-import DataTable from "@/components/data-table";
-import DatePicker from "@/components/date-picker";
-import EmptyState from "@/components/empty-state";
-import MonthPicker from "@/components/month-picker";
-import PageTabs, { PageTab } from "@/components/page-tabs";
-import SectionHeader from "@/components/section-header";
-import { Label } from "@/components/ui/label";
-import { SelectOption } from "@/types";
-import { formatDate } from "@/utils";
+import CustomSelectDropdown from "@/shared/ui/custom-select";
+import DataTable from "@/shared/ui/data-table";
+import DatePicker from "@/shared/ui/date-picker";
+import EmptyState from "@/shared/ui/empty-state";
+import MonthPicker from "@/shared/ui/month-picker";
+import PageTabs, { PageTab } from "@/shared/ui/page-tabs";
+import SectionHeader from "@/shared/ui/section-header";
+import { Label } from "@/shared/ui/kit/label";
+import { SelectOption } from "@/shared/types";
+import { formatDate } from "@/shared/lib";
 import { reportColumns, rosterColumns } from "./attendance-columns";
 import RegisterStatus from "./components/register-status";
 import useAttendanceController, { AttendanceTabKey } from "./attendance-controller";

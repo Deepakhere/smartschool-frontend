@@ -1,9 +1,9 @@
 import { TrashIcon } from "@heroicons/react/24/outline";
 
-import { countLabel } from "@/components/data-table";
-import FormDialog from "@/components/form-dialog";
-import { CheckboxField, SelectField, TextField } from "@/components/form-fields";
-import { Button } from "@/components/ui/button";
+import { countLabel } from "@/shared/ui/data-table";
+import FormDialog from "@/shared/ui/form-dialog";
+import { CheckboxField, SelectField, TextField } from "@/shared/ui/form-fields";
+import { Button } from "@/shared/ui/kit/button";
 import useAddSubjectsDialogController from "./add-subjects-dialog-controller";
 
 interface AddSubjectsDialogProps {

@@ -1,9 +1,9 @@
-import ErrorState from "@/components/error-state";
+import ErrorState from "@/shared/ui/error-state";
 import { BellIcon, CalendarDaysIcon } from "@heroicons/react/24/outline";
 
-import Spinner from "@/components/spinner";
-import EmptyState from "@/components/empty-state";
-import SectionHeader from "@/components/section-header";
+import Spinner from "@/shared/ui/spinner";
+import EmptyState from "@/shared/ui/empty-state";
+import SectionHeader from "@/shared/ui/section-header";
 import useNoticesController from "./notices-controller";
 
 const ParentNotices = () => {

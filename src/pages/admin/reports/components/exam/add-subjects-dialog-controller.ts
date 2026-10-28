@@ -3,12 +3,12 @@ import { useFieldArray, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import toast from "react-hot-toast";
 
-import { countLabel } from "@/components/data-table";
-import { useError } from "@/hooks";
-import { useGetSubjects } from "@/pages/admin/classes/service/academics-service";
-import { SelectOption } from "@/types";
+import { countLabel } from "@/shared/ui/data-table";
+import { useError } from "@/shared/hooks";
+import { useGetSubjects } from "@/entities/academics/api/academics-service";
+import { SelectOption } from "@/shared/types";
 import { defaultExamSubjectRow, examSubjectsSchema, ExamSubjectsFormValues } from "../../reports.schema";
-import { useAddExamSubjects } from "../../service/exams-service";
+import { useAddExamSubjects } from "@/entities/exam/api/exams-service";
 
 interface AddSubjectsDialogControllerArgs {
   organizationId: string;

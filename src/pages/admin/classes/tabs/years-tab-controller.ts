@@ -2,10 +2,14 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
-import { RowMenuItem } from "@/components/row-menu";
-import { useMutationFeedback } from "@/hooks";
-import { IAcademicYear } from "@/types";
-import { useCreateAcademicYear, useGetAcademicYears, useUpdateAcademicYear } from "../service/academics-service";
+import { RowMenuItem } from "@/shared/ui/row-menu";
+import { useMutationFeedback } from "@/shared/hooks";
+import { IAcademicYear } from "@/entities/academics/model/types";
+import {
+  useCreateAcademicYear,
+  useGetAcademicYears,
+  useUpdateAcademicYear,
+} from "@/entities/academics/api/academics-service";
 import { defaultYearFormValues, yearFormSchema, YearFormValues } from "../classes.schema";
 
 export type YearAction = "current" | "close" | "reopen";

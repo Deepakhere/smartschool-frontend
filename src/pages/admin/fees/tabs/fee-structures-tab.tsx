@@ -1,14 +1,14 @@
 import { TrashIcon } from "@heroicons/react/24/outline";
 
-import DataTable from "@/components/data-table";
-import ErrorState from "@/components/error-state";
-import { ChipsField, DateField, SelectField, TextField } from "@/components/form-fields";
-import { Button } from "@/components/ui/button";
-import { Card, CardTitle } from "@/components/ui/card";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Form } from "@/components/ui/form";
-import { Label } from "@/components/ui/label";
-import { formatMoney } from "@/utils";
+import DataTable from "@/shared/ui/data-table";
+import ErrorState from "@/shared/ui/error-state";
+import { ChipsField, DateField, SelectField, TextField } from "@/shared/ui/form-fields";
+import { Button } from "@/shared/ui/kit/button";
+import { Card, CardTitle } from "@/shared/ui/kit/card";
+import { Checkbox } from "@/shared/ui/kit/checkbox";
+import { Form } from "@/shared/ui/kit/form";
+import { Label } from "@/shared/ui/kit/label";
+import { formatMoney } from "@/shared/lib";
 import { feeStructureColumns } from "./fee-structures-columns";
 import useFeeStructuresController from "./fee-structures-controller";
 

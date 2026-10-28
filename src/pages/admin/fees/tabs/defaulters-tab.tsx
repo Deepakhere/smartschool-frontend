@@ -1,12 +1,12 @@
-import AcademicFilter from "@/components/academic-filter";
-import DataTable, { DataTableColumn } from "@/components/data-table";
-import DatePicker from "@/components/date-picker";
-import ErrorState from "@/components/error-state";
-import ExportDialog from "@/components/export-dialog";
-import { Badge } from "@/components/ui/badge";
-import { Card, CardTitle } from "@/components/ui/card";
-import { IFeeDefaulter } from "@/types";
-import { formatMoney } from "@/utils";
+import AcademicFilter from "@/features/academic-filter";
+import DataTable, { DataTableColumn } from "@/shared/ui/data-table";
+import DatePicker from "@/shared/ui/date-picker";
+import ErrorState from "@/shared/ui/error-state";
+import ExportDialog from "@/features/export-dialog";
+import { Badge } from "@/shared/ui/kit/badge";
+import { Card, CardTitle } from "@/shared/ui/kit/card";
+import { IFeeDefaulter } from "@/entities/fee/model/types";
+import { formatMoney } from "@/shared/lib";
 import useDefaultersController from "./defaulters-controller";
 
 const formatDay = (iso: string) =>

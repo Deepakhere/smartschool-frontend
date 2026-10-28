@@ -3,11 +3,12 @@ import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import toast from "react-hot-toast";
 
-import { useError } from "@/hooks";
-import { ICalendarEntry, SelectOption } from "@/types";
+import { useError } from "@/shared/hooks";
+import { ICalendarEntry } from "@/entities/calendar/model/types";
+import { SelectOption } from "@/shared/types";
 import { calendarEntrySchema, CalendarEntryFormValues, defaultCalendarEntryValues } from "../calendar.schema";
 import { WEEKDAYS, weekdayOf } from "../calendar.utils";
-import { useSaveCalendarEntry } from "../service/calendar-service";
+import { useSaveCalendarEntry } from "@/entities/calendar/api/calendar-service";
 
 interface EntryDialogControllerArgs {
   organizationId: string;

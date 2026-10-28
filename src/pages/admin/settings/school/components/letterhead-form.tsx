@@ -1,8 +1,8 @@
-import { TextField } from "@/components/form-fields";
-import { Button } from "@/components/ui/button";
-import { Card, CardTitle } from "@/components/ui/card";
-import { Form } from "@/components/ui/form";
-import { ILetterhead } from "@/types";
+import { TextField } from "@/shared/ui/form-fields";
+import { Button } from "@/shared/ui/kit/button";
+import { Card, CardTitle } from "@/shared/ui/kit/card";
+import { Form } from "@/shared/ui/kit/form";
+import { ILetterhead } from "@/entities/organization/model/types";
 import useLetterheadFormController from "./letterhead-form-controller";
 
 interface LetterheadFormProps {

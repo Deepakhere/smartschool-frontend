@@ -2,10 +2,15 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
-import { RowMenuItem } from "@/components/row-menu";
-import { useMutationFeedback } from "@/hooks";
-import { IClass } from "@/types";
-import { useCreateClass, useDeactivateClass, useGetClasses, useUpdateClass } from "../service/academics-service";
+import { RowMenuItem } from "@/shared/ui/row-menu";
+import { useMutationFeedback } from "@/shared/hooks";
+import { IClass } from "@/entities/academics/model/types";
+import {
+  useCreateClass,
+  useDeactivateClass,
+  useGetClasses,
+  useUpdateClass,
+} from "@/entities/academics/api/academics-service";
 import { classFormSchema, ClassFormValues, defaultClassFormValues } from "../classes.schema";
 
 const useClassesTabController = (organizationId: string, yearId: string, onViewSections: (classId: string) => void) => {

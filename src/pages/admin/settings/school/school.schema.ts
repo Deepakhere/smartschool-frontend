@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-import { ILetterhead } from "@/types";
+import { ILetterhead } from "@/entities/organization/model/types";
 
 const optional = (max: number) => z.string().trim().max(max, `Keep it under ${max} characters.`);
 

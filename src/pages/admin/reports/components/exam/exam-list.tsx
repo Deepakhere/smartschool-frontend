@@ -1,8 +1,8 @@
-import DataTable from "@/components/data-table";
-import DeleteConfirmationDialog from "@/components/delete-confirmation-dialog";
-import ErrorState from "@/components/error-state";
-import { Button } from "@/components/ui/button";
-import { SelectOption } from "@/types";
+import DataTable from "@/shared/ui/data-table";
+import DeleteConfirmationDialog from "@/shared/ui/delete-confirmation-dialog";
+import ErrorState from "@/shared/ui/error-state";
+import { Button } from "@/shared/ui/kit/button";
+import { SelectOption } from "@/shared/types";
 import ExamFormDialog from "./exam-form-dialog";
 import { examListColumns } from "./exam-list-columns";
 import useExamListController from "./exam-list-controller";

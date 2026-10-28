@@ -3,8 +3,8 @@ import { useFieldArray, useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import toast from "react-hot-toast";
 
-import { useError } from "@/hooks";
-import { IGradingScheme } from "@/types";
+import { useError } from "@/shared/hooks";
+import { IGradingScheme } from "@/entities/exam/model/types";
 import {
   CBSE_SCALE,
   defaultGradingSchemeValues,
@@ -12,7 +12,7 @@ import {
   GradingSchemeFormValues,
   toSchemeBands,
 } from "../../reports.schema";
-import { useCreateGradingScheme, useUpdateGradingScheme } from "../../service/exams-service";
+import { useCreateGradingScheme, useUpdateGradingScheme } from "@/entities/exam/api/exams-service";
 
 interface SchemeFormDialogControllerArgs {
   organizationId: string;

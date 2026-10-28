@@ -1,7 +1,7 @@
 import { useNavigate, useSearchParams } from "react-router-dom";
 
-import { useAreaBase } from "@/context/tenant-context";
-import { SelectOption } from "@/types";
+import { useAreaBase } from "@/entities/session/model/tenant-context";
+import { SelectOption } from "@/shared/types";
 import ExamList from "../components/exam/exam-list";
 
 interface ExamsTabProps {

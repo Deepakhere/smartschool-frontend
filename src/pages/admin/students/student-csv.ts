@@ -1,4 +1,4 @@
-import { exportToCsv } from "@/utils";
+import { exportToCsv } from "@/shared/lib";
 
 export const STUDENT_CSV_REQUIRED = [
   "name",

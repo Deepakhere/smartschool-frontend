@@ -1,12 +1,12 @@
 import { ChevronDownIcon } from "@heroicons/react/24/outline";
 import { PlusIcon } from "@heroicons/react/20/solid";
 
-import type { Action } from "@/components/action-buttons";
-import ErrorState from "@/components/error-state";
-import EmptyState from "@/components/empty-state";
-import SectionHeader from "@/components/section-header";
-import Spinner from "@/components/spinner";
-import { cn } from "@/lib/utils";
+import type { Action } from "@/shared/ui/action-buttons";
+import ErrorState from "@/shared/ui/error-state";
+import EmptyState from "@/shared/ui/empty-state";
+import SectionHeader from "@/shared/ui/section-header";
+import Spinner from "@/shared/ui/spinner";
+import { cn } from "@/shared/lib/utils";
 import CreateEventDialog from "./components/create-event-dialog";
 import EventSlotsPanel from "./components/event-slots-panel";
 import useAdminPTMController from "./ptm-controller";

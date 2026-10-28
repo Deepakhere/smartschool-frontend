@@ -4,10 +4,10 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 
-import { useTenant } from "@/context/tenant-context";
-import { useError } from "@/hooks";
-import { useUpdateOrganization, useUploadOrganizationLogo } from "@/pages/auth/organization/service";
-import { API_QUERY_KEY } from "@/utils";
+import { useTenant } from "@/entities/session/model/tenant-context";
+import { useError } from "@/shared/hooks";
+import { useUpdateOrganization, useUploadOrganizationLogo } from "@/entities/organization/api/organization-service";
+import { API_QUERY_KEY } from "@/shared/lib";
 import { schoolDetailsSchema, SchoolDetailsFormValues } from "./school.schema";
 
 const useSchoolSettingsController = () => {

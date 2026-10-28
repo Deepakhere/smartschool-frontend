@@ -4,10 +4,10 @@ import { useParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
-import { useAuth } from "@/context/auth-context";
-import { useAreaBase, useCurrentRole } from "@/context/tenant-context";
-import { useError } from "@/hooks";
-import { AccountRole, PermissionKey } from "@/types";
+import { useAuth } from "@/entities/session/model/auth-context";
+import { useAreaBase, useCurrentRole } from "@/entities/session/model/tenant-context";
+import { useError } from "@/shared/hooks";
+import { AccountRole, PermissionKey } from "@/shared/types";
 import {
   MemberAccessValues,
   ROLE_OPTIONS,

@@ -1,6 +1,6 @@
 import { UseFormReturn } from "react-hook-form";
 
-import { TextField } from "@/components/form-fields";
+import { TextField } from "@/shared/ui/form-fields";
 import { StudentFormValues } from "../student-form.schema";
 
 interface PersonFieldsProps {

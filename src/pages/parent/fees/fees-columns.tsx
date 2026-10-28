@@ -1,7 +1,7 @@
-import { DataTableColumn } from "@/components/data-table";
-import { Button } from "@/components/ui/button";
-import { IFeeInstallmentBalance, IPayment } from "@/types";
-import { formatMoney, paymentMethodLabel } from "@/utils";
+import { DataTableColumn } from "@/shared/ui/data-table";
+import { Button } from "@/shared/ui/kit/button";
+import { IFeeInstallmentBalance, IPayment } from "@/entities/fee/model/types";
+import { formatMoney, paymentMethodLabel } from "@/shared/lib";
 
 interface InstallmentColumnActions {
   canPayOnline: boolean;

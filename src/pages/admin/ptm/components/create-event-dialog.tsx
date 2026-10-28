@@ -1,7 +1,7 @@
-import FormDialog from "@/components/form-dialog";
-import { ChipsField, DateField, SelectField, TextField } from "@/components/form-fields";
-import { SelectOption } from "@/types";
-import { localDateString } from "@/utils";
+import FormDialog from "@/shared/ui/form-dialog";
+import { ChipsField, DateField, SelectField, TextField } from "@/shared/ui/form-fields";
+import { SelectOption } from "@/shared/types";
+import { localDateString } from "@/shared/lib";
 import useCreateEventDialogController from "./create-event-dialog-controller";
 
 const modeOptions: SelectOption[] = [

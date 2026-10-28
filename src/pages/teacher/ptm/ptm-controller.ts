@@ -3,11 +3,11 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useParams } from "react-router-dom";
 import toast from "react-hot-toast";
 
-import { useGetPTMEvents, useGenerateSlots, useGetMyPTMAgenda } from "@/pages/admin/ptm/service/ptm-service";
-import { useGetMyTeacherAssignments } from "@/pages/admin/classes/service/academics-service";
-import { useAuth } from "@/context/auth-context";
-import { useError } from "@/hooks";
-import { SelectOption } from "@/types";
+import { useGetPTMEvents, useGenerateSlots, useGetMyPTMAgenda } from "@/entities/ptm/api/ptm-service";
+import { useGetMyTeacherAssignments } from "@/entities/academics/api/academics-service";
+import { useAuth } from "@/entities/session/model/auth-context";
+import { useError } from "@/shared/hooks";
+import { SelectOption } from "@/shared/types";
 import { defaultOpenAvailabilityValues, openAvailabilitySchema, OpenAvailabilityFormValues } from "./ptm.schema";
 
 const useTeacherPTMController = () => {

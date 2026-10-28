@@ -1,11 +1,12 @@
-import DataTable from "@/components/data-table";
-import { SelectField, TextField } from "@/components/form-fields";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import { Form } from "@/components/ui/form";
-import { IStudentFeeSummary, SelectOption } from "@/types";
-import { formatMoney } from "@/utils";
+import DataTable from "@/shared/ui/data-table";
+import { SelectField, TextField } from "@/shared/ui/form-fields";
+import { Badge } from "@/shared/ui/kit/badge";
+import { Button } from "@/shared/ui/kit/button";
+import { Card } from "@/shared/ui/kit/card";
+import { Form } from "@/shared/ui/kit/form";
+import { IStudentFeeSummary } from "@/entities/fee/model/types";
+import { SelectOption } from "@/shared/types";
+import { formatMoney } from "@/shared/lib";
 import { concessionColumns, installmentColumns, paymentColumns } from "./student-fee-card-columns";
 import useStudentFeeCardController from "./student-fee-card-controller";
 

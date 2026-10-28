@@ -6,7 +6,7 @@ const percent = z
   .min(1, "Required.")
   .refine((value) => Number.isFinite(Number(value)) && Number(value) >= 0 && Number(value) <= 100, "Enter 0 to 100.");
 
-// a band is a grade, the percentage it starts at and its grade point; where it ends follows from the next band up
+// a band is a grade, its starting percentage and grade point; its end follows from the next band up
 export const gradingSchemeSchema = z
   .object({
     name: z.string().trim().min(1, "Enter a name."),
@@ -148,12 +148,3 @@ export const defaultExamSubjectRow = {
   hasPractical: false,
   practicalMaxMarks: "",
 };
-
-export const marksRowSchema = z.object({
-  studentId: z.string(),
-  theoryMarks: z.string(),
-  practicalMarks: z.string(),
-  isAbsent: z.boolean(),
-});
-export const marksSheetSchema = z.object({ rows: z.array(marksRowSchema) });
-export type MarksSheetFormValues = z.infer<typeof marksSheetSchema>;

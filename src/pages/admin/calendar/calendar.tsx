@@ -1,10 +1,10 @@
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/outline";
 import { PlusIcon } from "@heroicons/react/20/solid";
 
-import DeleteConfirmationDialog from "@/components/delete-confirmation-dialog";
-import ErrorState from "@/components/error-state";
-import SectionHeader from "@/components/section-header";
-import { Button } from "@/components/ui/button";
+import DeleteConfirmationDialog from "@/shared/ui/delete-confirmation-dialog";
+import ErrorState from "@/shared/ui/error-state";
+import SectionHeader from "@/shared/ui/section-header";
+import { Button } from "@/shared/ui/kit/button";
 import EntryDialog from "./components/entry-dialog";
 import EventsSidebar from "./components/events-sidebar";
 import MonthGrid from "./components/month-grid";

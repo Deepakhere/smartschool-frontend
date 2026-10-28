@@ -1,14 +1,14 @@
 import { useState } from "react";
 import { useParams } from "react-router-dom";
 
-import { SelectOption } from "@/types";
+import { SelectOption } from "@/shared/types";
 import {
   useGetAcademicYears,
   useGetClasses,
   useGetTeacherAssignments,
   useGetYearSections,
-} from "../classes/service/academics-service";
-import { useGetPTMEvents } from "./service/ptm-service";
+} from "@/entities/academics/api/academics-service";
+import { useGetPTMEvents } from "@/entities/ptm/api/ptm-service";
 
 const useAdminPTMController = () => {
   const { organizationId = "" } = useParams();

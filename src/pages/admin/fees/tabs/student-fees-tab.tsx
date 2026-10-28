@@ -1,10 +1,10 @@
-import DeleteConfirmationDialog from "@/components/delete-confirmation-dialog";
-import EmptyState from "@/components/empty-state";
-import ErrorState from "@/components/error-state";
-import Spinner from "@/components/spinner";
-import { Card, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { cn } from "@/lib/utils";
+import DeleteConfirmationDialog from "@/shared/ui/delete-confirmation-dialog";
+import EmptyState from "@/shared/ui/empty-state";
+import ErrorState from "@/shared/ui/error-state";
+import Spinner from "@/shared/ui/spinner";
+import { Card, CardTitle } from "@/shared/ui/kit/card";
+import { Input } from "@/shared/ui/kit/input";
+import { cn } from "@/shared/lib/utils";
 import StudentFeeCard from "../components/student-fee-card";
 import useStudentFeesController from "./student-fees-controller";
 

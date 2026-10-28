@@ -1,7 +1,7 @@
-import DataTable from "@/components/data-table";
-import DeleteConfirmationDialog from "@/components/delete-confirmation-dialog";
-import ErrorState from "@/components/error-state";
-import { Button } from "@/components/ui/button";
+import DataTable from "@/shared/ui/data-table";
+import DeleteConfirmationDialog from "@/shared/ui/delete-confirmation-dialog";
+import ErrorState from "@/shared/ui/error-state";
+import { Button } from "@/shared/ui/kit/button";
 import SchemeFormDialog from "../components/scheme/scheme-form-dialog";
 import { schemeColumns } from "../components/scheme/scheme-columns";
 import useGradingSchemesTabController from "./grading-schemes-tab-controller";

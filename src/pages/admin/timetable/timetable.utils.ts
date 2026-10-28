@@ -1,4 +1,4 @@
-import { ITimetableSlot } from "@/types";
+import { ITimetableSlot } from "@/entities/timetable/model/types";
 
 export const DAY_NAMES = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 

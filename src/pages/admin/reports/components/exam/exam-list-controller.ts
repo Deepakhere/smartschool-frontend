@@ -2,10 +2,10 @@ import { useState } from "react";
 import { PlusIcon } from "@heroicons/react/20/solid";
 import toast from "react-hot-toast";
 
-import { useHeaderActions } from "@/components/section-header";
-import { useError } from "@/hooks";
-import { IExam } from "@/types";
-import { useDeleteExam, useGetExams, useGetGradingSchemes } from "../../service/exams-service";
+import { useHeaderActions } from "@/shared/ui/section-header";
+import { useError } from "@/shared/hooks";
+import { IExam } from "@/entities/exam/model/types";
+import { useDeleteExam, useGetExams, useGetGradingSchemes } from "@/entities/exam/api/exams-service";
 
 const useExamListController = (organizationId: string) => {
   const exams = useGetExams(organizationId);

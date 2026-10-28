@@ -1,7 +1,7 @@
-import ErrorState from "@/components/error-state";
-import SectionHeader from "@/components/section-header";
-import Spinner from "@/components/spinner";
-import EmptyState from "@/components/empty-state";
+import ErrorState from "@/shared/ui/error-state";
+import SectionHeader from "@/shared/ui/section-header";
+import Spinner from "@/shared/ui/spinner";
+import EmptyState from "@/shared/ui/empty-state";
 import useParentDashboardController from "./dashboard-controller";
 
 const ParentDashboard = () => {

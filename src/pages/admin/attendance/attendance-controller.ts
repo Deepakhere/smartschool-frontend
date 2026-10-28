@@ -1,19 +1,19 @@
 import { useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
-import { useTabParam } from "@/hooks";
+import { useTabParam } from "@/shared/hooks";
 import toast from "react-hot-toast";
 
-import { useSectionPicker } from "../classes/service/use-section-picker";
+import { useSectionPicker } from "@/features/section-picker/use-section-picker";
 import {
   useGetSectionRoster,
   useGetSectionAttendance,
   useMarkAttendance,
   useGetSectionAttendanceReport,
   ISectionAttendanceReportRow,
-} from "./service/attendance-service";
-import { useGetCalendarMonth } from "../calendar/service/calendar-service";
-import { AttendanceStatus } from "@/types";
-import { exportToCsv, localDateString } from "@/utils";
+} from "@/entities/attendance/api/attendance-service";
+import { useGetCalendarMonth } from "@/entities/calendar/api/calendar-service";
+import { AttendanceStatus } from "@/entities/attendance/model/types";
+import { exportToCsv, localDateString } from "@/shared/lib";
 
 const today = () => localDateString();
 const firstOfMonth = () => `${today().slice(0, 7)}-01`;
@@ -33,8 +33,7 @@ const useAttendanceController = () => {
   const [reportTo, setReportTo] = useState(today());
   const [registerMonth, setRegisterMonth] = useState(today().slice(0, 7));
 
-  // admins pick from the whole school, teachers from their own sections; the reports cover past records, so they also
-  // list classes and sections that have since been switched off
+  // admins pick from the whole school, teachers their own sections; reports also list since-disabled ones
   const picker = useSectionPicker(organizationId, { includeInactive: activeTab !== "mark" });
   const { academicYearId, classId, sectionId, setSectionId } = picker;
   const roster = useGetSectionRoster(organizationId, sectionId);

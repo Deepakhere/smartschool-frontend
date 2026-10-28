@@ -1,9 +1,9 @@
 import { ArrowDownTrayIcon } from "@heroicons/react/24/outline";
 
-import { FileField, SelectField } from "@/components/form-fields";
-import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogDescription, DialogTitle } from "@/components/ui/dialog";
-import { Form } from "@/components/ui/form";
+import { FileField, SelectField } from "@/shared/ui/form-fields";
+import { Button } from "@/shared/ui/kit/button";
+import { Dialog, DialogContent, DialogDescription, DialogTitle } from "@/shared/ui/kit/dialog";
+import { Form } from "@/shared/ui/kit/form";
 import useBulkUploadModalController from "./bulk-upload-modal-controller";
 import { downloadStudentSampleCsv, STUDENT_CSV_OPTIONAL, STUDENT_CSV_REQUIRED } from "../../student-csv";
 

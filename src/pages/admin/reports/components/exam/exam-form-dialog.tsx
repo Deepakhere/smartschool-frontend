@@ -1,6 +1,7 @@
-import FormDialog from "@/components/form-dialog";
-import { ChipsField, DateField, SelectField, TextField } from "@/components/form-fields";
-import { IExam, IGradingScheme, SelectOption } from "@/types";
+import FormDialog from "@/shared/ui/form-dialog";
+import { ChipsField, DateField, SelectField, TextField } from "@/shared/ui/form-fields";
+import { IExam, IGradingScheme } from "@/entities/exam/model/types";
+import { SelectOption } from "@/shared/types";
 import { EXAM_TYPE_OPTIONS } from "../../exam-ui";
 import useExamFormDialogController from "./exam-form-dialog-controller";
 

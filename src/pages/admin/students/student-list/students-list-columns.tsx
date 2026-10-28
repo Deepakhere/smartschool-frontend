@@ -1,10 +1,10 @@
 import { TFunction } from "i18next";
 
-import Avatar from "@/components/avatar";
-import { DataTableColumn } from "@/components/data-table";
-import RowMenu from "@/components/row-menu";
-import { Button } from "@/components/ui/button";
-import { formatDate } from "@/utils";
+import Avatar from "@/shared/ui/avatar";
+import { DataTableColumn } from "@/shared/ui/data-table";
+import RowMenu from "@/shared/ui/row-menu";
+import { Button } from "@/shared/ui/kit/button";
+import { formatDate } from "@/shared/lib";
 import { StudentListRow } from "./students-list-controller";
 
 // the parent of this student, when they were invited but have not set a password yet

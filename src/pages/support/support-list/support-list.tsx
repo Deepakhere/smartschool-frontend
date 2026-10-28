@@ -1,12 +1,12 @@
 import { PlusIcon } from "@heroicons/react/20/solid";
 
-import DataTable, { DataTableColumn } from "@/components/data-table";
-import ErrorState from "@/components/error-state";
-import SectionHeader from "@/components/section-header";
-import SupportDialog from "@/components/support-dialog";
-import { Badge } from "@/components/ui/badge";
-import { SupportRequest } from "../service";
-import { STATUS, TOPIC_OPTIONS } from "../support-labels";
+import DataTable, { DataTableColumn } from "@/shared/ui/data-table";
+import ErrorState from "@/shared/ui/error-state";
+import SectionHeader from "@/shared/ui/section-header";
+import SupportDialog from "@/features/support-dialog";
+import { Badge } from "@/shared/ui/kit/badge";
+import { SupportRequest } from "@/entities/support/api/support-service";
+import { STATUS, TOPIC_OPTIONS } from "@/entities/support/model/support-labels";
 import useSupportListController from "./support-list-controller";
 
 const topicName = (topic: string) => TOPIC_OPTIONS.find((option) => option.id === topic)?.name ?? topic;

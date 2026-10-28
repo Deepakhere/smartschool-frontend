@@ -1,16 +1,16 @@
 import { useState } from "react";
 import toast from "react-hot-toast";
 
-import { useError } from "@/hooks";
-import { useGetClasses } from "@/pages/admin/classes/service/academics-service";
-import { IExamOverviewSubject } from "@/types";
+import { useError } from "@/shared/hooks";
+import { useGetClasses } from "@/entities/academics/api/academics-service";
+import { IExamOverviewSubject } from "@/entities/exam/model/types";
 import {
   useDeleteExam,
   useDeleteExamSubject,
   useGetExamOverview,
   useGetGradingSchemes,
   usePublishExam,
-} from "../../service/exams-service";
+} from "@/entities/exam/api/exams-service";
 
 // what still stands between this exam and publishing, in the admin's words
 const readinessOf = (

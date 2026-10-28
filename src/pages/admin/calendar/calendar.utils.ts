@@ -1,5 +1,5 @@
-import { ICalendarAutoItem, ICalendarEntry } from "@/types";
-import { localDateString } from "@/utils";
+import { ICalendarAutoItem, ICalendarEntry } from "@/entities/calendar/model/types";
+import { localDateString } from "@/shared/lib";
 
 export type CalendarItemKind = "holiday" | "half_day" | "event" | "exam" | "birthday";
 

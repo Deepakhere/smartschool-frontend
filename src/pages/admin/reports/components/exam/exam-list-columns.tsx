@@ -1,7 +1,7 @@
-import { DataTableColumn } from "@/components/data-table";
-import RowMenu from "@/components/row-menu";
-import { Badge } from "@/components/ui/badge";
-import { IExam } from "@/types";
+import { DataTableColumn } from "@/shared/ui/data-table";
+import RowMenu from "@/shared/ui/row-menu";
+import { Badge } from "@/shared/ui/kit/badge";
+import { IExam } from "@/entities/exam/model/types";
 import { dateRange, examTypeLabel, stageOf } from "../../exam-ui";
 import MarksProgress from "./marks-progress";
 

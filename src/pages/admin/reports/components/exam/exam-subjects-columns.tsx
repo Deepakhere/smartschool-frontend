@@ -1,7 +1,7 @@
-import { DataTableColumn } from "@/components/data-table";
-import RowMenu from "@/components/row-menu";
-import { Button } from "@/components/ui/button";
-import { IExamOverviewSubject } from "@/types";
+import { DataTableColumn } from "@/shared/ui/data-table";
+import RowMenu from "@/shared/ui/row-menu";
+import { Button } from "@/shared/ui/kit/button";
+import { IExamOverviewSubject } from "@/entities/exam/model/types";
 import MarksProgress from "./marks-progress";
 
 interface ExamSubjectActions {

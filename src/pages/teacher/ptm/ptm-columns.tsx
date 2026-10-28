@@ -1,6 +1,6 @@
-import { DataTableColumn } from "@/components/data-table";
-import { Badge } from "@/components/ui/badge";
-import { IPTMBooking, IPTMSlot } from "@/types";
+import { DataTableColumn } from "@/shared/ui/data-table";
+import { Badge } from "@/shared/ui/kit/badge";
+import { IPTMBooking, IPTMSlot } from "@/entities/ptm/model/types";
 
 export type AgendaItem = { slot: IPTMSlot; booking: IPTMBooking | null };
 

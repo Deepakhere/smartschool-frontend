@@ -1,12 +1,12 @@
 import { PlusIcon } from "@heroicons/react/20/solid";
 
-import type { Action } from "@/components/action-buttons";
-import { useHeaderActions } from "@/components/section-header";
-import DataTable from "@/components/data-table";
-import DeleteConfirmationDialog from "@/components/delete-confirmation-dialog";
-import FormDialog from "@/components/form-dialog";
-import { TextField, DateField } from "@/components/form-fields";
-import { Switch } from "@/components/ui/switch";
+import type { Action } from "@/shared/ui/action-buttons";
+import { useHeaderActions } from "@/shared/ui/section-header";
+import DataTable from "@/shared/ui/data-table";
+import DeleteConfirmationDialog from "@/shared/ui/delete-confirmation-dialog";
+import FormDialog from "@/shared/ui/form-dialog";
+import { TextField, DateField } from "@/shared/ui/form-fields";
+import { Switch } from "@/shared/ui/kit/switch";
 import RolloverDialog from "../components/rollover-dialog";
 import { yearColumns } from "./years-tab-columns";
 import useYearsTabController, { YearAction } from "./years-tab-controller";

@@ -4,8 +4,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useParams } from "react-router-dom";
 import toast from "react-hot-toast";
 
-import { useGetTeacherDirectory, useUpsertStaffProfile } from "./service/teacher-directory-service";
-import { ITeacherDirectoryEntry } from "@/types";
+import { useGetTeacherDirectory, useUpsertStaffProfile } from "@/entities/staff/api/teacher-directory-service";
+import { ITeacherDirectoryEntry } from "@/entities/staff/model/types";
 import { staffProfileSchema, defaultStaffProfileValues } from "./teachers.schema";
 
 const useTeachersController = () => {

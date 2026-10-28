@@ -1,19 +1,19 @@
 import { PlusIcon } from "@heroicons/react/20/solid";
 
-import Spinner from "@/components/spinner";
-import DeleteConfirmationDialog from "@/components/delete-confirmation-dialog";
-import EmptyState from "@/components/empty-state";
-import SectionHeader from "@/components/section-header";
-import CustomSelectDropdown from "@/components/custom-select";
-import { DateField, FileField } from "@/components/form-fields";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
+import Spinner from "@/shared/ui/spinner";
+import DeleteConfirmationDialog from "@/shared/ui/delete-confirmation-dialog";
+import EmptyState from "@/shared/ui/empty-state";
+import SectionHeader from "@/shared/ui/section-header";
+import CustomSelectDropdown from "@/shared/ui/custom-select";
+import { DateField, FileField } from "@/shared/ui/form-fields";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/shared/ui/kit/form";
+import { Button } from "@/shared/ui/kit/button";
+import { Input } from "@/shared/ui/kit/input";
+import { Label } from "@/shared/ui/kit/label";
+import { Textarea } from "@/shared/ui/kit/textarea";
 import { useTranslation } from "react-i18next";
 import { useHomeworkController } from "./homework-controller";
-import { SelectOption } from "@/types";
+import { SelectOption } from "@/shared/types";
 
 const Homework = () => {
   const { t } = useTranslation();

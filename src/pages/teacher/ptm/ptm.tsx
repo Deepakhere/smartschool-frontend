@@ -1,11 +1,11 @@
-import DataTable from "@/components/data-table";
-import EmptyState from "@/components/empty-state";
-import ErrorState from "@/components/error-state";
-import { SelectField, DateTimeField } from "@/components/form-fields";
-import SectionHeader from "@/components/section-header";
-import { Button } from "@/components/ui/button";
-import { Card, CardTitle } from "@/components/ui/card";
-import { Form } from "@/components/ui/form";
+import DataTable from "@/shared/ui/data-table";
+import EmptyState from "@/shared/ui/empty-state";
+import ErrorState from "@/shared/ui/error-state";
+import { SelectField, DateTimeField } from "@/shared/ui/form-fields";
+import SectionHeader from "@/shared/ui/section-header";
+import { Button } from "@/shared/ui/kit/button";
+import { Card, CardTitle } from "@/shared/ui/kit/card";
+import { Form } from "@/shared/ui/kit/form";
 import { agendaColumns } from "./ptm-columns";
 import useTeacherPTMController from "./ptm-controller";
 

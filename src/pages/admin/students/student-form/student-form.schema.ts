@@ -1,8 +1,9 @@
 import { z } from "zod";
 
-import { IPostalAddress, IStudentFormData, SelectOption } from "@/types";
-import { IStudentDetailResponse } from "../service/get-student-by-id/get-student-by-id";
-import { localDateString } from "@/utils";
+import { IPostalAddress, IStudentFormData } from "@/entities/student/model/types";
+import { SelectOption } from "@/shared/types";
+import { IStudentDetailResponse } from "@/entities/student/api/student-service";
+import { localDateString } from "@/shared/lib";
 
 export const GENDER_OPTIONS: SelectOption[] = [
   { id: "male", name: "Male" },
@@ -74,8 +75,7 @@ const baseSchema = z.object({
 
 export type StudentFormValues = z.infer<typeof baseSchema>;
 
-// a new admission picks a class and who signs in; an edit changes neither (Promotion and Guardians do that) and
-// only shows the app login when the student has one
+// an edit changes neither class nor login (Promotion and Guardians do) and shows the login only if one exists
 export const studentFormSchema = (isEdit: boolean, hasLogin = true) =>
   baseSchema.superRefine((values, ctx) => {
     const required = (value: string, path: string[], message: string) => {

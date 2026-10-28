@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-import { toPaise } from "@/utils";
+import { toPaise } from "@/shared/lib";
 
 // rupees as typed, positive with at most two decimals
 const rupees = z

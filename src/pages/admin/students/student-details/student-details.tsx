@@ -1,15 +1,16 @@
 import { PencilIcon, TrashIcon } from "@heroicons/react/24/outline";
 
-import Avatar from "@/components/avatar";
-import DataTable from "@/components/data-table";
-import DatePicker from "@/components/date-picker";
-import DeleteConfirmationDialog from "@/components/delete-confirmation-dialog";
-import EmptyState from "@/components/empty-state";
-import PageLoader from "@/components/page-loader";
-import { Button } from "@/components/ui/button";
-import { usePageHeader } from "@/hooks";
-import { formatDate } from "@/utils";
-import { IAdmissionPerson, IPostalAddress, SelectOption } from "@/types";
+import Avatar from "@/shared/ui/avatar";
+import DataTable from "@/shared/ui/data-table";
+import DatePicker from "@/shared/ui/date-picker";
+import DeleteConfirmationDialog from "@/shared/ui/delete-confirmation-dialog";
+import EmptyState from "@/shared/ui/empty-state";
+import PageLoader from "@/shared/ui/page-loader";
+import { Button } from "@/shared/ui/kit/button";
+import { usePageHeader } from "@/shared/hooks";
+import { formatDate } from "@/shared/lib";
+import { IAdmissionPerson, IPostalAddress } from "@/entities/student/model/types";
+import { SelectOption } from "@/shared/types";
 import { CATEGORY_OPTIONS, GENDER_OPTIONS } from "../student-form/student-form.schema";
 import DetailCard from "./components/detail-card";
 import GuardianModal from "./guardian-modal";
@@ -201,7 +202,6 @@ const StudentDetails = () => {
             />
           </div>
 
-          {/* Guardians */}
           <div className="bg-white shadow overflow-hidden sm:rounded-lg mb-6">
             <div className="px-4 py-5 sm:px-6 flex justify-between items-center">
               <div>
@@ -274,7 +274,6 @@ const StudentDetails = () => {
             </div>
           </div>
 
-          {/* Enrollment Lifecycle */}
           {canManage && (
             <div className="bg-white shadow overflow-hidden sm:rounded-lg mb-6">
               <div className="px-4 py-5 sm:px-6 flex justify-between items-center">
@@ -331,7 +330,6 @@ const StudentDetails = () => {
             </div>
           )}
 
-          {/* Academic Records section */}
           <div className="bg-white shadow overflow-hidden sm:rounded-lg">
             <div className="px-4 py-5 sm:px-6">
               <h3 className="text-lg leading-6 font-medium text-gray-900">Academic Records</h3>
@@ -340,7 +338,6 @@ const StudentDetails = () => {
               </p>
             </div>
             <div className="border-t border-gray-200 px-4 py-5">
-              {/* Current Enrollment Overview */}
               <div className="mb-6">
                 <h4 className="text-md font-medium text-gray-900 mb-3">Current Enrollment</h4>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -368,7 +365,6 @@ const StudentDetails = () => {
                 </div>
               </div>
 
-              {/* Exam Results */}
               <div className="mb-6">
                 <h4 className="text-md font-medium text-gray-900 mb-3">Exam Results</h4>
                 <DataTable
@@ -380,7 +376,6 @@ const StudentDetails = () => {
                 />
               </div>
 
-              {/* Attendance Summary */}
               <div>
                 <div className="flex items-center justify-between mb-3">
                   <h4 className="text-md font-medium text-gray-900">Attendance</h4>

@@ -1,8 +1,8 @@
 import { useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
 
-import { useTabParam } from "@/hooks";
-import { useGetAcademicYears, useGetClasses } from "./service/academics-service";
+import { useTabParam } from "@/shared/hooks";
+import { useGetAcademicYears, useGetClasses } from "@/entities/academics/api/academics-service";
 
 const CLASSES_TABS = ["years", "classes", "sections", "subjects", "teachers"] as const;
 export type ClassesTabKey = (typeof CLASSES_TABS)[number];

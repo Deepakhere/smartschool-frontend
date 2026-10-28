@@ -4,9 +4,12 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import toast from "react-hot-toast";
 
-import { useError } from "@/hooks";
+import { useError } from "@/shared/hooks";
 import { defaultOnlinePaymentsValues, onlinePaymentsSchema, OnlinePaymentsFormValues } from "./online-payments.schema";
-import { useGetOnlinePaymentSettings, useSaveOnlinePaymentSettings } from "./service/online-payments-service";
+import {
+  useGetOnlinePaymentSettings,
+  useSaveOnlinePaymentSettings,
+} from "@/entities/online-payment/api/online-payments-service";
 
 // the school connects its own Razorpay account, so parents' fees go straight to the school's bank
 const useOnlinePaymentsController = () => {

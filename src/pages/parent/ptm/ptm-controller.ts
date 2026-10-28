@@ -10,10 +10,11 @@ import {
   useBookPTMSlot,
   useCancelPTMBooking,
   useGetMyPTMBookings,
-} from "@/pages/admin/ptm/service/ptm-service";
-import { useGetMyChildren } from "./service/my-children-service";
-import { useError } from "@/hooks";
-import { IPTMSlot, SelectOption } from "@/types";
+} from "@/entities/ptm/api/ptm-service";
+import { useGetMyChildren } from "@/entities/student/api/my-children-service";
+import { useError } from "@/shared/hooks";
+import { IPTMSlot } from "@/entities/ptm/model/types";
+import { SelectOption } from "@/shared/types";
 import { bookingSchema, BookingFormValues, defaultBookingValues } from "./ptm.schema";
 
 const teacherNameOf = (slot: IPTMSlot) => (typeof slot.teacherUserId === "object" ? slot.teacherUserId.name : "");

@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useGetAllOrganizations } from "../service";
+import { useGetAllOrganizations } from "@/entities/session/api/auth-service";
 import Cookies from "js-cookie";
-import { useAuth } from "@/context/auth-context";
-import { USER_ACCESS_KEY, authCookieOptions } from "@/utils";
-import { IOrganization } from "@/types";
+import { useAuth } from "@/entities/session/model/auth-context";
+import { USER_ACCESS_KEY, authCookieOptions } from "@/shared/lib";
+import { IOrganization } from "@/entities/organization/model/types";
 
 const useOrganizationController = () => {
   const { logout, user } = useAuth();

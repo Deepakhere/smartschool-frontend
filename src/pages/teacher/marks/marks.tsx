@@ -1,11 +1,11 @@
 import { useParams } from "react-router-dom";
 
-import CustomSelectDropdown from "@/components/custom-select";
-import SectionHeader from "@/components/section-header";
-import MarksSheetCard from "@/pages/admin/reports/components/marks-sheet-card";
-import { Card, CardTitle } from "@/components/ui/card";
+import CustomSelectDropdown from "@/shared/ui/custom-select";
+import SectionHeader from "@/shared/ui/section-header";
+import MarksSheetCard from "@/features/marks-entry/marks-sheet-card";
+import { Card, CardTitle } from "@/shared/ui/kit/card";
 import useTeacherMarksController from "./marks-controller";
-import EmptyState from "@/components/empty-state";
+import EmptyState from "@/shared/ui/empty-state";
 
 const TeacherMarks = () => {
   const { organizationId = "" } = useParams();

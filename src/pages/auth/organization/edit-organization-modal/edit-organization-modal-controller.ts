@@ -4,9 +4,9 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import toast from "react-hot-toast";
 import { useTranslation } from "react-i18next";
 
-import { useUpdateOrganization, useUploadOrganizationLogo } from "../service";
-import { useError } from "@/hooks";
-import { IOrganization } from "@/types";
+import { useUpdateOrganization, useUploadOrganizationLogo } from "@/entities/organization/api/organization-service";
+import { useError } from "@/shared/hooks";
+import { IOrganization } from "@/entities/organization/model/types";
 import { organizationFormSchema, OrganizationFormValues } from "./edit-organization-modal.schema";
 
 const useEditOrganizationModalController = (
@@ -64,8 +64,7 @@ const useEditOrganizationModalController = (
         onSuccess: async () => {
           toast.success("Organization updated successfully.");
           if (logoFile) {
-            // the organization itself is already saved at this point - a logo failure
-            // shouldn't block the modal from closing, but the user still needs to know
+            // the organization is already saved, so a logo failure shouldn't block closing, but the user must know
             await uploadLogo.mutateAsync({ organizationId: organization.id, file: logoFile }).catch(() => {
               toast.error(
                 t(

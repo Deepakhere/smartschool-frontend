@@ -1,10 +1,10 @@
 import { PlusIcon } from "@heroicons/react/20/solid";
 
-import CustomSelectDropdown from "@/components/custom-select";
-import DataTable from "@/components/data-table";
-import { useHeaderActions } from "@/components/section-header";
-import DeleteConfirmationDialog from "@/components/delete-confirmation-dialog";
-import { Button } from "@/components/ui/button";
+import CustomSelectDropdown from "@/shared/ui/custom-select";
+import DataTable from "@/shared/ui/data-table";
+import { useHeaderActions } from "@/shared/ui/section-header";
+import DeleteConfirmationDialog from "@/shared/ui/delete-confirmation-dialog";
+import { Button } from "@/shared/ui/kit/button";
 import { CreateUpdateUserModal } from "./user-modal";
 import { userColumns } from "./user-details-columns";
 import useUserDetailsController from "./user-details-controller";

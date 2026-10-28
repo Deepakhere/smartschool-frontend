@@ -2,17 +2,17 @@ import { useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
-import { RowMenuItem } from "@/components/row-menu";
-import { useMutationFeedback } from "@/hooks";
-import { ISection } from "@/types";
+import { RowMenuItem } from "@/shared/ui/row-menu";
+import { useMutationFeedback } from "@/shared/hooks";
+import { ISection } from "@/entities/academics/model/types";
 import {
   useCreateSection,
   useDeactivateSection,
   useGetClasses,
   useGetSections,
   useUpdateSection,
-} from "../service/academics-service";
-import { useGetAllTeachers } from "../service/teachers-service";
+} from "@/entities/academics/api/academics-service";
+import { useGetAllTeachers } from "@/entities/academics/api/teachers-service";
 import { defaultSectionFormValues, sectionFormSchema, SectionFormValues } from "../classes.schema";
 
 const NO_TEACHER = "none";

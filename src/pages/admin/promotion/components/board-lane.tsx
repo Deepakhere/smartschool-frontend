@@ -1,8 +1,8 @@
 import { ReactNode } from "react";
 import { useDroppable } from "@dnd-kit/core";
 
-import RowMenu, { RowMenuItem } from "@/components/row-menu";
-import { cn } from "@/lib/utils";
+import RowMenu, { RowMenuItem } from "@/shared/ui/row-menu";
+import { cn } from "@/shared/lib/utils";
 import { Lane } from "../promotion.utils";
 import { LANE_TONE } from "./lane-tone";
 

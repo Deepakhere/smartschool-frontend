@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
-import { useAreaBase, useCurrentRole } from "@/context/tenant-context";
-import { useSupportRequests } from "../service";
+import { useAreaBase, useCurrentRole } from "@/entities/session/model/tenant-context";
+import { useSupportRequests } from "@/entities/support/api/support-service";
 
 const useSupportListController = () => {
   const { organizationId = "" } = useParams();

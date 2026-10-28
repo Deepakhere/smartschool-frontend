@@ -12,14 +12,14 @@ import {
 import { ArrowRightIcon } from "@heroicons/react/20/solid";
 import { ArrowTrendingUpIcon, Squares2X2Icon } from "@heroicons/react/24/outline";
 
-import SectionHeader from "@/components/section-header";
-import Spinner from "@/components/spinner";
-import EmptyState from "@/components/empty-state";
-import ErrorState from "@/components/error-state";
-import CustomSelectDropdown from "@/components/custom-select";
-import DeleteConfirmationDialog from "@/components/delete-confirmation-dialog";
-import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
+import SectionHeader from "@/shared/ui/section-header";
+import Spinner from "@/shared/ui/spinner";
+import EmptyState from "@/shared/ui/empty-state";
+import ErrorState from "@/shared/ui/error-state";
+import CustomSelectDropdown from "@/shared/ui/custom-select";
+import DeleteConfirmationDialog from "@/shared/ui/delete-confirmation-dialog";
+import { Button } from "@/shared/ui/kit/button";
+import { cn } from "@/shared/lib/utils";
 import { usePromotionController, LeaveAction, Placed } from "./promotion-controller";
 import { LANES, Lane } from "./promotion.utils";
 import BoardLane from "./components/board-lane";

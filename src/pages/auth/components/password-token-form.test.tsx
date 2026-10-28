@@ -11,9 +11,12 @@ const mutate = vi.fn();
 const endSession = vi.fn();
 const hook = () => ({ mutate, isPending: false });
 
-vi.mock("../service", () => ({ useSetUserPassword: () => hook(), useResetUserPassword: () => hook() }));
-vi.mock("@/context/theme-context", () => ({ useTheme: () => ({ theme: "light" }) }));
-vi.mock("@/context/auth-context", () => ({ useAuth: () => ({ endSession }) }));
+vi.mock("@/entities/session/api/auth-service", () => ({
+  useSetUserPassword: () => hook(),
+  useResetUserPassword: () => hook(),
+}));
+vi.mock("@/features/theme/theme-context", () => ({ useTheme: () => ({ theme: "light" }) }));
+vi.mock("@/entities/session/model/auth-context", () => ({ useAuth: () => ({ endSession }) }));
 vi.mock("react-hot-toast", () => ({ default: { success: vi.fn(), error: vi.fn() } }));
 
 const renderAt = (path: string) =>

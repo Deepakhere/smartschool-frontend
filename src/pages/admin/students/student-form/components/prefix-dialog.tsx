@@ -3,8 +3,8 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 
-import FormDialog from "@/components/form-dialog";
-import { TextField } from "@/components/form-fields";
+import FormDialog from "@/shared/ui/form-dialog";
+import { TextField } from "@/shared/ui/form-fields";
 
 const prefixSchema = z.object({
   prefix: z

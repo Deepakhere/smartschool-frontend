@@ -2,10 +2,12 @@ import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import toast from "react-hot-toast";
 
-import { useError } from "@/hooks";
-import { IPTMEvent, ITeacherAssignment, SelectOption } from "@/types";
+import { useError } from "@/shared/hooks";
+import { IPTMEvent } from "@/entities/ptm/model/types";
+import { ITeacherAssignment } from "@/entities/academics/model/types";
+import { SelectOption } from "@/shared/types";
 import { defaultSlotWindowValues, slotWindowSchema, SlotWindowFormValues } from "../ptm.schema";
-import { useGenerateSlots, useGetSlotsForEvent } from "../service/ptm-service";
+import { useGenerateSlots, useGetSlotsForEvent } from "@/entities/ptm/api/ptm-service";
 
 interface EventSlotsPanelControllerProps {
   organizationId: string;

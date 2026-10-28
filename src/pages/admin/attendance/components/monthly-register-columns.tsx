@@ -1,7 +1,7 @@
-import { DataTableColumn } from "@/components/data-table";
-import { cn } from "@/lib/utils";
-import { AttendanceStatus } from "@/types";
-import { IMonthRegister, IMonthRegisterRow } from "../service/attendance-service";
+import { DataTableColumn } from "@/shared/ui/data-table";
+import { cn } from "@/shared/lib/utils";
+import { AttendanceStatus } from "@/entities/attendance/model/types";
+import { IMonthRegister, IMonthRegisterRow } from "@/entities/attendance/api/attendance-service";
 
 const WEEKDAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 

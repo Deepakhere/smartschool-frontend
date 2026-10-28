@@ -1,4 +1,5 @@
-import { IAcademicYear, IClass, IPromotionCandidate, ISection } from "@/types";
+import { IAcademicYear, IClass, ISection } from "@/entities/academics/model/types";
+import { IPromotionCandidate } from "@/entities/promotion/model/types";
 
 // the lanes of the board, in the order they show
 export type Lane = "decide" | "promote" | "detain" | "pass_out" | "leave";

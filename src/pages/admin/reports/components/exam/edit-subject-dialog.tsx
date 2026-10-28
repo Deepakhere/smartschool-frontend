@@ -3,12 +3,12 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import toast from "react-hot-toast";
 
-import FormDialog from "@/components/form-dialog";
-import { CheckboxField, TextField } from "@/components/form-fields";
-import { useError } from "@/hooks";
-import { IExamOverviewSubject } from "@/types";
+import FormDialog from "@/shared/ui/form-dialog";
+import { CheckboxField, TextField } from "@/shared/ui/form-fields";
+import { useError } from "@/shared/hooks";
+import { IExamOverviewSubject } from "@/entities/exam/model/types";
 import { subjectMarksSchema, SubjectMarksFormValues } from "../../reports.schema";
-import { useUpdateExamSubject } from "../../service/exams-service";
+import { useUpdateExamSubject } from "@/entities/exam/api/exams-service";
 
 interface EditSubjectDialogProps {
   organizationId: string;

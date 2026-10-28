@@ -1,4 +1,4 @@
-import ErrorState from "@/components/error-state";
+import ErrorState from "@/shared/ui/error-state";
 import {
   ArrowRightOnRectangleIcon,
   MagnifyingGlassIcon,
@@ -8,9 +8,9 @@ import {
   PencilIcon,
 } from "@heroicons/react/24/outline";
 
-import Avatar from "@/components/avatar";
-import LogoSpinner from "@/components/logo-spinner";
-import { IOrganization } from "@/types";
+import Avatar from "@/shared/ui/avatar";
+import LogoSpinner from "@/shared/ui/logo-spinner";
+import { IOrganization } from "@/entities/organization/model/types";
 import useOrganizationController from "./organization-controller";
 import EditOrganizationModal from "./edit-organization-modal";
 

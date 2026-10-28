@@ -1,11 +1,11 @@
 import { PlusIcon } from "@heroicons/react/20/solid";
 
-import type { Action } from "@/components/action-buttons";
-import { useHeaderActions } from "@/components/section-header";
-import DataTable from "@/components/data-table";
-import DeleteConfirmationDialog from "@/components/delete-confirmation-dialog";
-import FormDialog from "@/components/form-dialog";
-import { SelectField } from "@/components/form-fields";
+import type { Action } from "@/shared/ui/action-buttons";
+import { useHeaderActions } from "@/shared/ui/section-header";
+import DataTable from "@/shared/ui/data-table";
+import DeleteConfirmationDialog from "@/shared/ui/delete-confirmation-dialog";
+import FormDialog from "@/shared/ui/form-dialog";
+import { SelectField } from "@/shared/ui/form-fields";
 import { assignmentColumns, ROLE_OPTIONS } from "./assignments-tab-columns";
 import useAssignmentsTabController from "./assignments-tab-controller";
 

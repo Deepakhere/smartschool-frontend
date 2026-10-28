@@ -1,5 +1,5 @@
 import PasswordTokenForm from "../components/password-token-form";
-import { useResetUserPassword } from "../service";
+import { useResetUserPassword } from "@/entities/session/api/auth-service";
 
 const ResetPassword = () => (
   <PasswordTokenForm

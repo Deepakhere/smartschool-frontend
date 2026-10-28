@@ -1,9 +1,9 @@
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import RowMenu from "@/components/row-menu";
-import { cn } from "@/lib/utils";
-import { ICalendarEntry } from "@/types";
+import { Tabs, TabsList, TabsTrigger } from "@/shared/ui/kit/tabs";
+import RowMenu from "@/shared/ui/row-menu";
+import { cn } from "@/shared/lib/utils";
+import { ICalendarEntry } from "@/entities/calendar/model/types";
 import { formatDay, KIND_STYLES, WEEKDAYS } from "../calendar.utils";
-import EmptyState from "@/components/empty-state";
+import EmptyState from "@/shared/ui/empty-state";
 
 export type EntryFilter = "all" | "holiday" | "event";
 

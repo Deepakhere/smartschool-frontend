@@ -1,8 +1,8 @@
-import CustomSelectDropdown from "@/components/custom-select";
-import { Card } from "@/components/ui/card";
-import { Label } from "@/components/ui/label";
-import MarksSheetCard from "../components/marks-sheet-card";
-import EmptyState from "@/components/empty-state";
+import CustomSelectDropdown from "@/shared/ui/custom-select";
+import { Card } from "@/shared/ui/kit/card";
+import { Label } from "@/shared/ui/kit/label";
+import MarksSheetCard from "@/features/marks-entry/marks-sheet-card";
+import EmptyState from "@/shared/ui/empty-state";
 import useMarksEntryTabController from "./marks-entry-tab-controller";
 
 const MarksEntryTab = ({ organizationId }: { organizationId: string }) => {

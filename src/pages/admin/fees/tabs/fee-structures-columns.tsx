@@ -1,8 +1,8 @@
-import { DataTableColumn } from "@/components/data-table";
-import RowMenu from "@/components/row-menu";
-import { Button } from "@/components/ui/button";
-import { IFeeStructure } from "@/types";
-import { formatMoney } from "@/utils";
+import { DataTableColumn } from "@/shared/ui/data-table";
+import RowMenu from "@/shared/ui/row-menu";
+import { Button } from "@/shared/ui/kit/button";
+import { IFeeStructure } from "@/entities/fee/model/types";
+import { formatMoney } from "@/shared/lib";
 
 interface FeeStructureColumnActions {
   assigningId: string | null | undefined;

@@ -1,9 +1,9 @@
-import { DataTableColumn } from "@/components/data-table";
-import { Input } from "@/components/ui/input";
-import { cn } from "@/lib/utils";
-import { AttendanceStatus } from "@/types";
+import { DataTableColumn } from "@/shared/ui/data-table";
+import { Input } from "@/shared/ui/kit/input";
+import { cn } from "@/shared/lib/utils";
+import { AttendanceStatus } from "@/entities/attendance/model/types";
 import { percent } from "./attendance-controller";
-import { ISectionAttendanceReportRow, ISectionRosterStudent } from "./service/attendance-service";
+import { ISectionAttendanceReportRow, ISectionRosterStudent } from "@/entities/attendance/api/attendance-service";
 
 const STATUSES: AttendanceStatus[] = ["present", "absent", "late", "excused"];
 

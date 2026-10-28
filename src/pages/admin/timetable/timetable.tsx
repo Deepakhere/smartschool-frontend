@@ -1,15 +1,15 @@
 import { PlusIcon } from "@heroicons/react/20/solid";
 
-import CustomSelectDropdown from "@/components/custom-select";
-import DeleteConfirmationDialog from "@/components/delete-confirmation-dialog";
-import ErrorState from "@/components/error-state";
-import SectionHeader from "@/components/section-header";
-import { SelectOption } from "@/types";
+import CustomSelectDropdown from "@/shared/ui/custom-select";
+import DeleteConfirmationDialog from "@/shared/ui/delete-confirmation-dialog";
+import ErrorState from "@/shared/ui/error-state";
+import SectionHeader from "@/shared/ui/section-header";
+import { SelectOption } from "@/shared/types";
 import PeriodDialog from "./components/period-dialog";
 import WeekGrid from "./components/week-grid";
 import { DAY_NAMES, formatTime } from "./timetable.utils";
 import useTimetableController from "./timetable-controller";
-import EmptyState from "@/components/empty-state";
+import EmptyState from "@/shared/ui/empty-state";
 
 const Picker = ({
   label,

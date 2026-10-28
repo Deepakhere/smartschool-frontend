@@ -1,13 +1,11 @@
 import { useState } from "react";
 import { useParams } from "react-router-dom";
 
-import { useGetExams, useGetExamSubjects } from "@/pages/admin/reports/service/exams-service";
-import { useGetMyTeacherAssignments } from "@/pages/admin/classes/service/academics-service";
-import { SelectOption } from "@/types";
+import { useGetExams, useGetExamSubjects } from "@/entities/exam/api/exams-service";
+import { useGetMyTeacherAssignments } from "@/entities/academics/api/academics-service";
+import { SelectOption } from "@/shared/types";
 
-// what the teacher may enter marks for, mirroring the backend rule in exams.service.js's
-// assertCanEnterMarks: the class teacher of a section may enter any subject there; a subject
-// teacher only their own subject
+// mirrors backend assertCanEnterMarks: a class teacher may enter any subject, a subject teacher only theirs
 const useTeacherMarksController = () => {
   const { organizationId = "" } = useParams();
 

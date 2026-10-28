@@ -1,13 +1,13 @@
 import { PlusIcon } from "@heroicons/react/20/solid";
 
-import CustomSelectDropdown from "@/components/custom-select";
-import DataTable from "@/components/data-table";
-import DeleteConfirmationDialog from "@/components/delete-confirmation-dialog";
-import ExportDialog from "@/components/export-dialog";
-import SectionHeader from "@/components/section-header";
-import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
-import { SelectOption } from "@/types";
+import CustomSelectDropdown from "@/shared/ui/custom-select";
+import DataTable from "@/shared/ui/data-table";
+import DeleteConfirmationDialog from "@/shared/ui/delete-confirmation-dialog";
+import ExportDialog from "@/features/export-dialog";
+import SectionHeader from "@/shared/ui/section-header";
+import { Button } from "@/shared/ui/kit/button";
+import { Label } from "@/shared/ui/kit/label";
+import { SelectOption } from "@/shared/types";
 import BulkUploadModal from "../student-modal/bulk-upload-modal";
 import { studentColumns } from "./students-list-columns";
 import useStudentsListController from "./students-list-controller";

@@ -1,12 +1,12 @@
-import CustomSelectDropdown from "@/components/custom-select";
-import DataTable from "@/components/data-table";
-import DeleteConfirmationDialog from "@/components/delete-confirmation-dialog";
-import EmptyState from "@/components/empty-state";
-import ErrorState from "@/components/error-state";
-import FormDialog from "@/components/form-dialog";
-import { SelectField } from "@/components/form-fields";
-import SectionHeader from "@/components/section-header";
-import Spinner from "@/components/spinner";
+import CustomSelectDropdown from "@/shared/ui/custom-select";
+import DataTable from "@/shared/ui/data-table";
+import DeleteConfirmationDialog from "@/shared/ui/delete-confirmation-dialog";
+import EmptyState from "@/shared/ui/empty-state";
+import ErrorState from "@/shared/ui/error-state";
+import FormDialog from "@/shared/ui/form-dialog";
+import { SelectField } from "@/shared/ui/form-fields";
+import SectionHeader from "@/shared/ui/section-header";
+import Spinner from "@/shared/ui/spinner";
 import { bookingColumns } from "./ptm-columns";
 import useParentPTMController from "./ptm-controller";
 

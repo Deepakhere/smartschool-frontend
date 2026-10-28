@@ -1,10 +1,10 @@
 import { CheckCircleIcon, ExclamationTriangleIcon } from "@heroicons/react/20/solid";
 
-import FormDialog from "@/components/form-dialog";
-import { TextField } from "@/components/form-fields";
-import { Label } from "@/components/ui/label";
-import { cn } from "@/lib/utils";
-import { ICreateUpdateUserModalProps } from "@/types";
+import FormDialog from "@/shared/ui/form-dialog";
+import { TextField } from "@/shared/ui/form-fields";
+import { Label } from "@/shared/ui/kit/label";
+import { cn } from "@/shared/lib/utils";
+import { ICreateUpdateUserModalProps } from "@/entities/user/model/types";
 
 const CreateUpdateUserModal = ({
   t,

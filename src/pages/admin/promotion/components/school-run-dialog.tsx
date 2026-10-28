@@ -10,7 +10,7 @@ import {
 } from "@heroicons/react/20/solid";
 import { ArrowTrendingUpIcon } from "@heroicons/react/24/outline";
 
-import { Button } from "@/components/ui/button";
+import { Button } from "@/shared/ui/kit/button";
 import {
   Dialog,
   DialogBody,
@@ -19,8 +19,8 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog";
-import { cn } from "@/lib/utils";
+} from "@/shared/ui/kit/dialog";
+import { cn } from "@/shared/lib/utils";
 import { RunPlanRow } from "../promotion.utils";
 import { RunProgress } from "../school-run-controller";
 

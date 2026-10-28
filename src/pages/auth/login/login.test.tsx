@@ -8,15 +8,15 @@ import Login from "./login";
 
 const mutate = vi.fn();
 
-vi.mock("../service", () => ({
-  useSingIn: () => ({ mutate, isPending: false, isSuccess: false, isError: false, data: undefined }),
+vi.mock("@/entities/session/api/auth-service", () => ({
+  useSignIn: () => ({ mutate, isPending: false, isSuccess: false, isError: false, data: undefined }),
 }));
 
-vi.mock("../../../context/auth-context", () => ({
+vi.mock("@/entities/session/model/auth-context", () => ({
   useAuth: () => ({ login: vi.fn() }),
 }));
 
-vi.mock("@/context/theme-context", () => ({
+vi.mock("@/features/theme/theme-context", () => ({
   useTheme: () => ({ theme: "light" }),
 }));
 

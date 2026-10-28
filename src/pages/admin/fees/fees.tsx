@@ -8,11 +8,11 @@ import {
   TagIcon,
 } from "@heroicons/react/24/outline";
 
-import PageTabs, { PageTab } from "@/components/page-tabs";
-import SectionHeader from "@/components/section-header";
-import { useCan } from "@/context/tenant-context";
-import { useTabParam } from "@/hooks";
-import { PermissionKey } from "@/types";
+import PageTabs, { PageTab } from "@/shared/ui/page-tabs";
+import SectionHeader from "@/shared/ui/section-header";
+import { useCan } from "@/entities/session/model/tenant-context";
+import { useTabParam } from "@/shared/hooks";
+import { PermissionKey } from "@/shared/types";
 import FeeHeadsTab from "./tabs/fee-heads-tab";
 import FeeStructuresTab from "./tabs/fee-structures-tab";
 import LedgerTab from "./tabs/ledger-tab";

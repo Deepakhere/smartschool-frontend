@@ -3,10 +3,11 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import toast from "react-hot-toast";
 
-import { ISubject, ITeacherAssignment, SelectOption } from "@/types";
+import { ISubject, ITeacherAssignment } from "@/entities/academics/model/types";
+import { SelectOption } from "@/shared/types";
 import { defaultPeriodValues, periodSchema, PeriodFormValues } from "../timetable.schema";
 import { DAY_NAMES } from "../timetable.utils";
-import { useCreateTimetableSlot } from "../service/timetable-service";
+import { useCreateTimetableSlot } from "@/entities/timetable/api/timetable-service";
 
 interface PeriodDialogControllerArgs {
   organizationId: string;

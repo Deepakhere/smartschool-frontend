@@ -1,6 +1,6 @@
-import ErrorState from "@/components/error-state";
-import PageLoader from "@/components/page-loader";
-import { Button } from "@/components/ui/button";
+import ErrorState from "@/shared/ui/error-state";
+import PageLoader from "@/shared/ui/page-loader";
+import { Button } from "@/shared/ui/kit/button";
 import { AccessCatalog, PermissionList } from "../access";
 import useRoleDefaultsController, { useRoleCardController } from "./role-defaults-controller";
 

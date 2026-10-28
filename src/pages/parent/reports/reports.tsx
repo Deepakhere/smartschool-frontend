@@ -1,9 +1,9 @@
-import DataTable, { DataTableColumn } from "@/components/data-table";
-import EmptyState from "@/components/empty-state";
-import ErrorState from "@/components/error-state";
-import SectionHeader from "@/components/section-header";
-import Spinner from "@/components/spinner";
-import { IResultSubjectRow } from "@/types";
+import DataTable, { DataTableColumn } from "@/shared/ui/data-table";
+import EmptyState from "@/shared/ui/empty-state";
+import ErrorState from "@/shared/ui/error-state";
+import SectionHeader from "@/shared/ui/section-header";
+import Spinner from "@/shared/ui/spinner";
+import { IResultSubjectRow } from "@/entities/exam/model/types";
 import useParentReportsController from "./reports-controller";
 
 const columns: DataTableColumn<IResultSubjectRow>[] = [

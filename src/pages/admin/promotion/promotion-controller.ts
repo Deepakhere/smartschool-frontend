@@ -2,10 +2,15 @@ import { useState } from "react";
 import { useParams } from "react-router-dom";
 import toast from "react-hot-toast";
 
-import { useGetAcademicYears, useGetClasses, useGetYearSections } from "../classes/service/academics-service";
-import { useGetPromotionCandidates, useGetPromotionOverview, useProcessPromotions } from "./service/promotion-service";
+import { useGetAcademicYears, useGetClasses, useGetYearSections } from "@/entities/academics/api/academics-service";
+import {
+  useGetPromotionCandidates,
+  useGetPromotionOverview,
+  useProcessPromotions,
+} from "@/entities/promotion/api/promotion-service";
 import { useSchoolRun } from "./school-run-controller";
-import { IPromotionCandidate, ISection } from "@/types";
+import { IPromotionCandidate } from "@/entities/promotion/model/types";
+import { ISection } from "@/entities/academics/model/types";
 import {
   LANES,
   Lane,

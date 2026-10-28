@@ -1,12 +1,12 @@
 import { PlusIcon } from "@heroicons/react/20/solid";
 
-import type { Action } from "@/components/action-buttons";
-import { useHeaderActions } from "@/components/section-header";
-import DataTable from "@/components/data-table";
-import DeleteConfirmationDialog from "@/components/delete-confirmation-dialog";
-import FormDialog from "@/components/form-dialog";
-import { TextField } from "@/components/form-fields";
-import { IAcademicYear } from "@/types";
+import type { Action } from "@/shared/ui/action-buttons";
+import { useHeaderActions } from "@/shared/ui/section-header";
+import DataTable from "@/shared/ui/data-table";
+import DeleteConfirmationDialog from "@/shared/ui/delete-confirmation-dialog";
+import FormDialog from "@/shared/ui/form-dialog";
+import { TextField } from "@/shared/ui/form-fields";
+import { IAcademicYear } from "@/entities/academics/model/types";
 import ShowInactiveToggle from "../components/show-inactive-toggle";
 import YearPicker from "../components/year-picker";
 import { classColumns } from "./classes-tab-columns";

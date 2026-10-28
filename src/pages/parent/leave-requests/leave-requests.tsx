@@ -1,17 +1,17 @@
 import { useTranslation } from "react-i18next";
 import { PlusIcon } from "@heroicons/react/20/solid";
 
-import Spinner from "@/components/spinner";
-import EmptyState from "@/components/empty-state";
-import SectionHeader from "@/components/section-header";
-import CustomSelectDropdown from "@/components/custom-select";
-import DeleteConfirmationDialog from "@/components/delete-confirmation-dialog";
-import { DateField, FileField } from "@/components/form-fields";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
+import Spinner from "@/shared/ui/spinner";
+import EmptyState from "@/shared/ui/empty-state";
+import SectionHeader from "@/shared/ui/section-header";
+import CustomSelectDropdown from "@/shared/ui/custom-select";
+import DeleteConfirmationDialog from "@/shared/ui/delete-confirmation-dialog";
+import { DateField, FileField } from "@/shared/ui/form-fields";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/shared/ui/kit/form";
+import { Button } from "@/shared/ui/kit/button";
+import { Textarea } from "@/shared/ui/kit/textarea";
 import { useLeaveRequestsController } from "./leave-requests-controller";
-import { SelectOption } from "@/types";
+import { SelectOption } from "@/shared/types";
 
 const statusBadgeClass: Record<string, string> = {
   pending: "bg-yellow-100 text-yellow-800",

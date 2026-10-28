@@ -2,13 +2,13 @@ import { useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
 import toast from "react-hot-toast";
 
-import { useCan } from "@/context/tenant-context";
-import { useError } from "@/hooks";
-import { ICalendarEntry } from "@/types";
-import { localDateString } from "@/utils";
+import { useCan } from "@/entities/session/model/tenant-context";
+import { useError } from "@/shared/hooks";
+import { ICalendarEntry } from "@/entities/calendar/model/types";
+import { localDateString } from "@/shared/lib";
 import { EntryFilter } from "./components/events-sidebar";
 import { toGridItems } from "./calendar.utils";
-import { useDeleteCalendarEntry, useGetCalendarMonth } from "./service/calendar-service";
+import { useDeleteCalendarEntry, useGetCalendarMonth } from "@/entities/calendar/api/calendar-service";
 
 const useCalendarController = () => {
   const { organizationId = "" } = useParams();

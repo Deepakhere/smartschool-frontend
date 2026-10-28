@@ -1,8 +1,9 @@
 import { useParams } from "react-router-dom";
 import toast from "react-hot-toast";
 
-import { downloadReportCard, useEmailReportCard, useGetMyResults } from "@/pages/admin/reports/service/exams-service";
-import { IAPIError, IResult } from "@/types";
+import { downloadReportCard, useEmailReportCard, useGetMyResults } from "@/entities/exam/api/exams-service";
+import { IAPIError } from "@/shared/types";
+import { IResult } from "@/entities/exam/model/types";
 
 const examIdOf = (result: IResult) => (typeof result.examId === "object" ? result.examId.id : result.examId);
 

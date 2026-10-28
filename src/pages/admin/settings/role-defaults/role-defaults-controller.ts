@@ -4,8 +4,8 @@ import { useParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
-import { useError } from "@/hooks";
-import { PermissionKey } from "@/types";
+import { useError } from "@/shared/hooks";
+import { PermissionKey } from "@/shared/types";
 import {
   AccessCatalog,
   RoleDefaultsValues,

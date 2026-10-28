@@ -1,10 +1,10 @@
-import ErrorState from "@/components/error-state";
-import PageLoader from "@/components/page-loader";
-import { TextField } from "@/components/form-fields";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Form } from "@/components/ui/form";
-import { Switch } from "@/components/ui/switch";
+import ErrorState from "@/shared/ui/error-state";
+import PageLoader from "@/shared/ui/page-loader";
+import { TextField } from "@/shared/ui/form-fields";
+import { Badge } from "@/shared/ui/kit/badge";
+import { Button } from "@/shared/ui/kit/button";
+import { Form } from "@/shared/ui/kit/form";
+import { Switch } from "@/shared/ui/kit/switch";
 import useOnlinePaymentsController from "./online-payments-controller";
 
 const OnlinePayments = () => {

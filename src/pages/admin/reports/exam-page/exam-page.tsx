@@ -1,10 +1,10 @@
 import { useNavigate, useParams } from "react-router-dom";
 
-import { useAreaBase } from "@/context/tenant-context";
-import { usePageHeader } from "@/hooks";
-import { IExamOverviewSubject } from "@/types";
+import { useAreaBase } from "@/entities/session/model/tenant-context";
+import { usePageHeader } from "@/shared/hooks";
+import { IExamOverviewSubject } from "@/entities/exam/model/types";
 import ExamDetail from "../components/exam/exam-detail";
-import { useGetExamOverview } from "../service/exams-service";
+import { useGetExamOverview } from "@/entities/exam/api/exams-service";
 
 // one exam on its own page; the header's back arrow returns to the exam list
 const ExamPage = () => {

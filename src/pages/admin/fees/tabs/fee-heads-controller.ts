@@ -3,8 +3,8 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import toast from "react-hot-toast";
 
-import { useError } from "@/hooks";
-import { IFeeHead } from "@/types";
+import { useError } from "@/shared/hooks";
+import { IFeeHead } from "@/entities/fee/model/types";
 import {
   defaultFeeHeadValues,
   feeHeadEditSchema,
@@ -12,7 +12,12 @@ import {
   feeHeadSchema,
   FeeHeadFormValues,
 } from "../fees.schema";
-import { useCreateFeeHead, useDeactivateFeeHead, useGetFeeHeads, useUpdateFeeHead } from "../service/fees-service";
+import {
+  useCreateFeeHead,
+  useDeactivateFeeHead,
+  useGetFeeHeads,
+  useUpdateFeeHead,
+} from "@/entities/fee/api/fees-service";
 
 const useFeeHeadsController = (organizationId: string) => {
   const feeHeads = useGetFeeHeads(organizationId);

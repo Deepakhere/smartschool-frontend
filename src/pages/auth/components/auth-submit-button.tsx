@@ -1,12 +1,12 @@
 import * as React from "react";
 
-import { cn } from "@/lib/utils";
+import { cn } from "@/shared/lib/utils";
 
 interface AuthSubmitButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   dimmed?: boolean;
 }
 
-// full-width primary action shared by the auth pages; `dimmed` looks disabled but stays clickable so validation messages can show
+// full-width primary action; `dimmed` looks disabled but stays clickable so validation messages can show
 const AuthSubmitButton = ({ dimmed, className, type = "submit", ...props }: AuthSubmitButtonProps) => (
   <button
     type={type}

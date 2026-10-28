@@ -1,10 +1,10 @@
-import DataTable from "@/components/data-table";
-import EmptyState from "@/components/empty-state";
-import ErrorState from "@/components/error-state";
-import PageLoader from "@/components/page-loader";
-import SectionHeader from "@/components/section-header";
-import { Button } from "@/components/ui/button";
-import { formatMoney } from "@/utils";
+import DataTable from "@/shared/ui/data-table";
+import EmptyState from "@/shared/ui/empty-state";
+import ErrorState from "@/shared/ui/error-state";
+import PageLoader from "@/shared/ui/page-loader";
+import SectionHeader from "@/shared/ui/section-header";
+import { Button } from "@/shared/ui/kit/button";
+import { formatMoney } from "@/shared/lib";
 import { installmentColumns, paymentColumns } from "./fees-columns";
 import useParentFeesController from "./fees-controller";
 

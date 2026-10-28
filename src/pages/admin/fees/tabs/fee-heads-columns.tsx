@@ -1,6 +1,6 @@
-import { DataTableColumn } from "@/components/data-table";
-import RowMenu from "@/components/row-menu";
-import { IFeeHead } from "@/types";
+import { DataTableColumn } from "@/shared/ui/data-table";
+import RowMenu from "@/shared/ui/row-menu";
+import { IFeeHead } from "@/entities/fee/model/types";
 
 interface FeeHeadColumnActions {
   edit: (head: IFeeHead) => void;
