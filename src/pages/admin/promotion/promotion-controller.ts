@@ -65,7 +65,9 @@ export const usePromotionController = () => {
   const sourceClass = classById(sourceSection?.classId);
   // nothing above this class in the school: passing students leave instead of moving up
   const ordered = inSchoolOrder(sourceClasses);
-  const isFinalClass = !!sourceClass && ordered.at(-1)?.id === sourceClass.id;
+  // a switched-off class never counts as the next or final one
+  const activeSourceClasses = sourceClasses.filter((klass) => klass.status !== "inactive");
+  const isFinalClass = !!sourceClass && inSchoolOrder(activeSourceClasses).at(-1)?.id === sourceClass.id;
   const placeOf = (classId: string) => ordered.findIndex((klass) => klass.id === classId);
 
   // the school map: every class in order, its sections with their progress
@@ -76,7 +78,13 @@ export const usePromotionController = () => {
       .sort((a, b) => a.name.localeCompare(b.name))
       .map((section) => ({ section, stats: stats.get(section.id) })),
   }));
-  const plan = planSchoolRun({ sourceClasses, sourceSections, targetClasses, targetSections, stats });
+  const plan = planSchoolRun({
+    sourceClasses: activeSourceClasses,
+    sourceSections,
+    targetClasses,
+    targetSections,
+    stats,
+  });
   const schoolRun = useSchoolRun({ organizationId, sourceYearId, targetYearId, plan });
 
   const sourceOptions = [...sourceSections]
@@ -88,7 +96,7 @@ export const usePromotionController = () => {
     }));
 
   const defaultDestination = (lane: Placed): Destination => {
-    const klass = classAfter(sourceClasses, targetClasses, sourceClass, lane === "promote" ? 1 : 0);
+    const klass = classAfter(activeSourceClasses, targetClasses, sourceClass, lane === "promote" ? 1 : 0);
     return { classId: klass?.id, sectionId: sectionIn(targetSections, klass?.id, sourceSection?.name)?.id };
   };
   const destinationOf = (lane: Placed) => pickedDestination[lane] ?? defaultDestination(lane);

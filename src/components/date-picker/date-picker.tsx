@@ -52,8 +52,9 @@ const DatePicker = ({
   const today = toDate(toValue(new Date()))!;
   const todayAllowed = (!minDate || today >= minDate) && (!maxDate || today <= maxDate);
 
+  // clicking the selected day again would clear it, which a date that is always needed must not allow
   const pick = (date?: Date) => {
-    onChange(date ? toValue(date) : "");
+    if (date || clearable) onChange(date ? toValue(date) : "");
     setOpen(false);
   };
 
