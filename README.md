@@ -7,11 +7,11 @@ Vite + React 18 + TypeScript, `@tanstack/react-query` v5, `react-hook-form` +
 ## Getting started
 
 ```bash
-npm install
-npm run dev      # vite dev server on http://localhost:3003 (see vite.config.ts)
-npm run build    # tsc -b && vite build — uses .env.production automatically
-npm test         # vitest + React Testing Library
-npm run lint
+pnpm install
+pnpm dev      # vite dev server on http://localhost:3003 (see vite.config.ts)
+pnpm build    # tsc -b && vite build — uses .env.production automatically
+pnpm test     # vitest + React Testing Library
+pnpm lint
 ```
 
 The `x.tsx` view + `x-controller.ts` hook + `index.ts` barrel triad is the
@@ -21,7 +21,7 @@ stay presentational.
 ## Environment
 
 - `.env` — local dev default (`VITE_API_URL`, points at the backend).
-- `.env.production` — used automatically by `npm run build` (Vite's
+- `.env.production` — used automatically by `pnpm build` (Vite's
   production mode); this is baked into the built JS at build time, so it must
   point at the real deployed backend URL before a real build/deploy.
 - `.env.example` — documents the key for a fresh clone.
