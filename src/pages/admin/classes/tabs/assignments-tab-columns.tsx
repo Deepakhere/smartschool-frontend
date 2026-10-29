@@ -1,6 +1,6 @@
 import { DataTableColumn } from "@/shared/ui/data-table";
 import RowMenu from "@/shared/ui/row-menu";
-import { ITeacherAssignment } from "@/entities/academics/model/types";
+import { ITeacherAssignment } from "@/entities/academics";
 
 export const ROLE_OPTIONS = [
   { id: "SUBJECT_TEACHER", name: "Subject teacher" },

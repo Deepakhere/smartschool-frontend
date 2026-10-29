@@ -3,9 +3,9 @@ import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import toast from "react-hot-toast";
 
-import { useError } from "@/shared/hooks";
+import { useError } from "@/shared/lib/hooks";
 import { defaultPTMEventValues, ptmEventSchema, PTMEventFormValues } from "../ptm.schema";
-import { useCreatePTMEvent } from "@/entities/ptm/api/ptm-service";
+import { useCreatePTMEvent } from "@/entities/ptm";
 
 interface CreateEventDialogControllerProps {
   organizationId: string;

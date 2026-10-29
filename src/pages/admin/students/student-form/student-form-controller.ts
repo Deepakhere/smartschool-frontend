@@ -5,19 +5,19 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 
-import { useAreaBase, useCan } from "@/entities/session/model/tenant-context";
-import { useDebouncedValue } from "@/shared/hooks";
-import { useGetAcademicYears, useGetClasses, useGetSections } from "@/entities/academics/api/academics-service";
+import { useAreaBase, useCan } from "@/entities/session";
+import { useDebouncedValue } from "@/shared/lib/hooks";
+import { useGetAcademicYears, useGetClasses, useGetSections } from "@/entities/academics";
 import { IAPIError, SelectOption } from "@/shared/types";
 import { API_QUERY_KEY, EMAIL_REGEX_PATTERN, resizeImage } from "@/shared/lib";
-import { useAddStudent, useGetStudentById, useUpdateStudentDetail } from "@/entities/student/api/student-service";
-import { useGetParentByEmail } from "@/entities/student/api/student-service";
+import { useAddStudent, useGetStudentById, useUpdateStudentDetail } from "@/entities/student";
+import { useGetParentByEmail } from "@/entities/student";
 import {
   removeStudentPhoto,
   uploadStudentPhoto,
   useNextAdmissionNumber,
   useSetAdmissionPrefix,
-} from "@/entities/student/api/admission-service";
+} from "@/entities/student";
 import {
   StudentFormValues,
   emptyStudentForm,

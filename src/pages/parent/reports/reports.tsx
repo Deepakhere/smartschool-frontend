@@ -3,7 +3,7 @@ import EmptyState from "@/shared/ui/empty-state";
 import ErrorState from "@/shared/ui/error-state";
 import SectionHeader from "@/shared/ui/section-header";
 import Spinner from "@/shared/ui/spinner";
-import { IResultSubjectRow } from "@/entities/exam/model/types";
+import { IResultSubjectRow } from "@/entities/exam";
 import useParentReportsController from "./reports-controller";
 
 const columns: DataTableColumn<IResultSubjectRow>[] = [

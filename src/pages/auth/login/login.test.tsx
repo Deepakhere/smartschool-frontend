@@ -16,7 +16,7 @@ vi.mock("@/entities/session/model/auth-context", () => ({
   useAuth: () => ({ login: vi.fn() }),
 }));
 
-vi.mock("@/features/theme/theme-context", () => ({
+vi.mock("@/features/theme/model/theme-context", () => ({
   useTheme: () => ({ theme: "light" }),
 }));
 

@@ -6,7 +6,7 @@ import {
   IPromotionDecisionInput,
   processDecisions,
   refreshAfterPromotion,
-} from "@/entities/promotion/api/promotion-service";
+} from "@/entities/promotion";
 import { RunPlanRow, rollNumbersFor, startLane } from "./promotion.utils";
 
 export interface RunProgress {

@@ -10,7 +10,7 @@ import {
 
 import Avatar from "@/shared/ui/avatar";
 import LogoSpinner from "@/shared/ui/logo-spinner";
-import { IOrganization } from "@/entities/organization/model/types";
+import { IOrganization } from "@/entities/organization";
 import useOrganizationController from "./organization-controller";
 import EditOrganizationModal from "./edit-organization-modal";
 

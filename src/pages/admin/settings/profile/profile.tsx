@@ -1,6 +1,6 @@
 import { useLocation } from "react-router-dom";
 
-import { useCurrentRole } from "@/entities/session/model/tenant-context";
+import { useCurrentRole } from "@/entities/session";
 import SectionHeader from "@/shared/ui/section-header";
 import {
   UserIcon,

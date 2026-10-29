@@ -4,11 +4,11 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import toast from "react-hot-toast";
 
 import { countLabel } from "@/shared/ui/data-table";
-import { useError } from "@/shared/hooks";
-import { useGetSubjects } from "@/entities/academics/api/academics-service";
+import { useError } from "@/shared/lib/hooks";
+import { useGetSubjects } from "@/entities/academics";
 import { SelectOption } from "@/shared/types";
 import { defaultExamSubjectRow, examSubjectsSchema, ExamSubjectsFormValues } from "../../reports.schema";
-import { useAddExamSubjects } from "@/entities/exam/api/exams-service";
+import { useAddExamSubjects } from "@/entities/exam";
 
 interface AddSubjectsDialogControllerArgs {
   organizationId: string;

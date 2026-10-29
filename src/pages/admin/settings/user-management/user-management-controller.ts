@@ -10,7 +10,7 @@ import {
   UsersIcon,
 } from "@heroicons/react/24/outline";
 
-import { useAreaBase, useCan, useCurrentRole } from "@/entities/session/model/tenant-context";
+import { useAreaBase, useCan, useCurrentRole } from "@/entities/session";
 import { PermissionKey } from "@/shared/types";
 
 type SettingsTab = {

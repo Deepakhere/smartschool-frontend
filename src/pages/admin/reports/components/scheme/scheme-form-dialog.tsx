@@ -3,7 +3,7 @@ import { TrashIcon } from "@heroicons/react/24/outline";
 import FormDialog from "@/shared/ui/form-dialog";
 import { TextField } from "@/shared/ui/form-fields";
 import { Button } from "@/shared/ui/kit/button";
-import { IGradingScheme } from "@/entities/exam/model/types";
+import { IGradingScheme } from "@/entities/exam";
 import useSchemeFormDialogController from "./scheme-form-dialog-controller";
 
 interface SchemeFormDialogProps {

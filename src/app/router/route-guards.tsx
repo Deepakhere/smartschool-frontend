@@ -1,11 +1,11 @@
 import { ReactNode } from "react";
 import { Navigate } from "react-router-dom";
 
-import { useAuth } from "@/entities/session/model/auth-context";
-import { TenantProvider } from "@/entities/session/model/tenant-context";
-import useIsMobile from "@/shared/hooks/is-mobile/is-mobile";
-import MobileNotice from "@/widgets/mobile-notice";
-import { UserRole } from "@/entities/session/lib/access";
+import { useAuth } from "@/entities/session";
+import { TenantProvider } from "@/entities/session";
+import useIsMobile from "@/shared/lib/hooks/is-mobile/is-mobile";
+import { MobileNotice } from "@/widgets/mobile-notice";
+import { UserRole } from "@/entities/session";
 
 interface RouteGuardProps {
   children: ReactNode;

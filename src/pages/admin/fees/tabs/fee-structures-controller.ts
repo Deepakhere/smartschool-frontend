@@ -3,11 +3,11 @@ import { useFieldArray, useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import toast from "react-hot-toast";
 
-import { useError } from "@/shared/hooks";
-import { IFeeStructure } from "@/entities/fee/model/types";
+import { useError } from "@/shared/lib/hooks";
+import { IFeeStructure } from "@/entities/fee";
 import { SelectOption } from "@/shared/types";
 import { toPaise } from "@/shared/lib";
-import { useGetAcademicYears, useGetClasses, useGetYearSections } from "@/entities/academics/api/academics-service";
+import { useGetAcademicYears, useGetClasses, useGetYearSections } from "@/entities/academics";
 import { defaultFeeStructureValues, feeStructureSchema, FeeStructureFormValues } from "../fees.schema";
 import {
   useAssignFeeStructure,
@@ -15,7 +15,7 @@ import {
   useGetFeeHeads,
   useGetFeeStructures,
   useUpdateFeeStructure,
-} from "@/entities/fee/api/fees-service";
+} from "@/entities/fee";
 
 const sumPaise = (rows: { amount: string }[] = []) =>
   rows.reduce((sum, row) => sum + (toPaise(row.amount || 0) || 0), 0);

@@ -2,11 +2,11 @@ import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
-import { useMutationFeedback } from "@/shared/hooks";
-import { IAcademicYear } from "@/entities/academics/model/types";
+import { useMutationFeedback } from "@/shared/lib/hooks";
+import { IAcademicYear } from "@/entities/academics";
 import { rolloverFormSchema, RolloverFormValues } from "../classes.schema";
 import { suggestNextYear } from "../classes.helpers";
-import { useGetRolloverPreview, useRolloverAcademicYear } from "@/entities/academics/api/academics-service";
+import { useGetRolloverPreview, useRolloverAcademicYear } from "@/entities/academics";
 
 interface RolloverDialogControllerArgs {
   organizationId: string;

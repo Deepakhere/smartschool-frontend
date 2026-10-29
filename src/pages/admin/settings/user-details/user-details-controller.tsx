@@ -7,17 +7,12 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { UsersIcon } from "@heroicons/react/20/solid";
 
-import { IAllUserDetails, IRoleOptionDropDown } from "@/entities/user/model/types";
+import { IAllUserDetails, IRoleOptionDropDown } from "@/entities/user";
 import { ROLE_OPTIONS } from "../access";
-import {
-  useAddUserDetail,
-  useDeleteUser,
-  useGetAllUserDetails,
-  useUpdateUserDetail,
-} from "@/entities/user/api/user-service";
-import { useError, usePaging } from "@/shared/hooks";
-import { useAuth } from "@/entities/session/model/auth-context";
-import { useAreaBase } from "@/entities/session/model/tenant-context";
+import { useAddUserDetail, useDeleteUser, useGetAllUserDetails, useUpdateUserDetail } from "@/entities/user";
+import { useError, usePaging } from "@/shared/lib/hooks";
+import { useAuth } from "@/entities/session";
+import { useAreaBase } from "@/entities/session";
 import { userFormSchema, defaultUserFormValues, UserFormValues } from "./user-details.schema";
 
 const FILTER_OPTIONS: IRoleOptionDropDown[] = [

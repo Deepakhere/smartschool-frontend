@@ -3,9 +3,9 @@ import { PlusIcon } from "@heroicons/react/20/solid";
 import toast from "react-hot-toast";
 
 import { useHeaderActions } from "@/shared/ui/section-header";
-import { useError } from "@/shared/hooks";
-import { IExam } from "@/entities/exam/model/types";
-import { useDeleteExam, useGetExams, useGetGradingSchemes } from "@/entities/exam/api/exams-service";
+import { useError } from "@/shared/lib/hooks";
+import { IExam } from "@/entities/exam";
+import { useDeleteExam, useGetExams, useGetGradingSchemes } from "@/entities/exam";
 
 const useExamListController = (organizationId: string) => {
   const exams = useGetExams(organizationId);

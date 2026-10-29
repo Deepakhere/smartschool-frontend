@@ -1,7 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import apiClient from "@/shared/api";
-import { CalendarEntryType, ICalendarMonth, ICalendarRule } from "@/entities/calendar/model/types";
+import { CalendarEntryType, ICalendarMonth, ICalendarRule } from "../model/types";
 import { IAPIError, IAxiosResponse } from "@/shared/types";
 import { APIS_ROUTES, API_MUTATION_KEY, API_QUERY_KEY } from "@/shared/lib";
 

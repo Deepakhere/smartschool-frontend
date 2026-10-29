@@ -1,7 +1,7 @@
 import { ReactNode } from "react";
 
-import PermissionGate from "@/entities/session/ui/permission-gate";
-import ModuleGate from "@/widgets/module-gate";
+import { PermissionGate } from "@/entities/session";
+import { ModuleGate } from "@/widgets/module-gate";
 import { SHARED_PAGES } from "@/shared/config/shared-pages";
 import AdminDashboard from "@/pages/admin/dashboard";
 import AdminClasses from "@/pages/admin/classes";

@@ -2,17 +2,17 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 
-import { useModuleLock } from "@/widgets/module-gate";
-import { useAreaBase, useCan, useTenant } from "@/entities/session/model/tenant-context";
-import { useDebouncedValue, useError, useExportRows, usePaging } from "@/shared/hooks";
-import { CertificateType, ICertificate } from "@/entities/certificate/model/types";
+import { useModuleLock } from "@/shared/lib/module-lock";
+import { useAreaBase, useCan, useTenant } from "@/entities/session";
+import { useDebouncedValue, useError, useExportRows, usePaging } from "@/shared/lib/hooks";
+import { CertificateType, ICertificate } from "@/entities/certificate";
 import { IAPIError } from "@/shared/types";
 import {
   downloadCertificatePdf,
   downloadCertificatesCsv,
   useCertificates,
   useDuplicateCertificate,
-} from "@/entities/certificate/api/certificate-service";
+} from "@/entities/certificate";
 
 const ITEM_LABEL = { one: "certificate", other: "certificates" };
 

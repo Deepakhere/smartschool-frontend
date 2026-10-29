@@ -2,7 +2,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import apiClient from "@/shared/api";
 import { IAPIError, IAxiosResponse } from "@/shared/types";
-import { ITimetableSlot } from "@/entities/timetable/model/types";
+import { ITimetableSlot } from "../model/types";
 import { APIS_ROUTES, API_MUTATION_KEY, API_QUERY_KEY } from "@/shared/lib";
 
 const base = (organizationId: string) => `${APIS_ROUTES.STAFF_SERVICE}/${organizationId}/timetable-slot`;

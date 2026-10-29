@@ -1,11 +1,11 @@
-import AcademicFilter from "@/features/academic-filter";
+import { AcademicFilter } from "@/features/academic-filter";
 import DataTable, { DataTableColumn } from "@/shared/ui/data-table";
 import DatePicker from "@/shared/ui/date-picker";
 import ErrorState from "@/shared/ui/error-state";
-import ExportDialog from "@/features/export-dialog";
+import { ExportDialog } from "@/features/export-dialog";
 import { Badge } from "@/shared/ui/kit/badge";
 import { Card, CardTitle } from "@/shared/ui/kit/card";
-import { IFeeDefaulter } from "@/entities/fee/model/types";
+import { IFeeDefaulter } from "@/entities/fee";
 import { formatMoney } from "@/shared/lib";
 import useDefaultersController from "./defaulters-controller";
 

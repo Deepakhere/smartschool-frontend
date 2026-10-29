@@ -2,8 +2,8 @@ import { PlusIcon } from "@heroicons/react/20/solid";
 
 import DataTable from "@/shared/ui/data-table";
 import DeleteConfirmationDialog from "@/shared/ui/delete-confirmation-dialog";
-import NoticeModal from "@/features/notice-modal";
-import NoticePreviewModal from "@/features/notice-modal/notice-preview-modal/notice-preview-modal";
+import { NoticeModalWrapper as NoticeModal } from "@/features/notice-modal";
+import { NoticePreviewModal } from "@/features/notice-modal";
 import SectionHeader from "@/shared/ui/section-header";
 import { noticeColumns } from "./notice-columns";
 import useNoticeController from "./notice-controller";

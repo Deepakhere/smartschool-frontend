@@ -2,8 +2,8 @@ import { useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 
 import { SelectOption } from "@/shared/types";
-import { useGetSections } from "@/entities/academics/api/academics-service";
-import { useGetExams, useGetExamSubjects } from "@/entities/exam/api/exams-service";
+import { useGetSections } from "@/entities/academics";
+import { useGetExams, useGetExamSubjects } from "@/entities/exam";
 
 const useMarksEntryTabController = (organizationId: string) => {
   // the picks live in the address, so a refresh, Back or a link from an exam's page opens the same sheet

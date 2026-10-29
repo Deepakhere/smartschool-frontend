@@ -1,7 +1,8 @@
 import ErrorState from "@/shared/ui/error-state";
 import PageLoader from "@/shared/ui/page-loader";
 import { Button } from "@/shared/ui/kit/button";
-import { AccessCatalog, PermissionList } from "../access";
+import { type AccessCatalog } from "@/entities/access";
+import { PermissionList } from "../access";
 import useRoleDefaultsController, { useRoleCardController } from "./role-defaults-controller";
 
 const RoleCard = ({

@@ -1,7 +1,7 @@
 import { XMarkIcon } from "@heroicons/react/24/outline";
 
 import { DataTableColumn } from "@/shared/ui/data-table";
-import { ITimetableSlot } from "@/entities/timetable/model/types";
+import { ITimetableSlot } from "@/entities/timetable";
 import { DAY_NAMES, formatTime } from "../timetable.utils";
 
 interface WeekGridColumnProps {

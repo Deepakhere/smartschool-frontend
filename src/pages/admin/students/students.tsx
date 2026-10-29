@@ -1,6 +1,6 @@
 import { Navigate, Routes, Route } from "react-router-dom";
 
-import { useCan } from "@/entities/session/model/tenant-context";
+import { useCan } from "@/entities/session";
 import StudentsList from "./student-list";
 import StudentDetails from "./student-details";
 import StudentForm from "./student-form";

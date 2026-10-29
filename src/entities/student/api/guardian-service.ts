@@ -2,7 +2,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 import apiClient from "@/shared/api";
 import { IAPIError, IAxiosResponse } from "@/shared/types";
-import { IAddGuardianValue } from "@/entities/student/model/types";
+import { IAddGuardianValue } from "../model/types";
 import { API_QUERY_KEY, APIS_ROUTES } from "@/shared/lib";
 
 const base = (organizationId: string, studentId: string) =>

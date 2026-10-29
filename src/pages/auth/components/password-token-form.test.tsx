@@ -15,7 +15,7 @@ vi.mock("@/entities/session/api/auth-service", () => ({
   useSetUserPassword: () => hook(),
   useResetUserPassword: () => hook(),
 }));
-vi.mock("@/features/theme/theme-context", () => ({ useTheme: () => ({ theme: "light" }) }));
+vi.mock("@/features/theme/model/theme-context", () => ({ useTheme: () => ({ theme: "light" }) }));
 vi.mock("@/entities/session/model/auth-context", () => ({ useAuth: () => ({ endSession }) }));
 vi.mock("react-hot-toast", () => ({ default: { success: vi.fn(), error: vi.fn() } }));
 

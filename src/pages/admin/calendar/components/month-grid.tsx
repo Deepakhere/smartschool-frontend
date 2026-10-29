@@ -1,5 +1,5 @@
 import { cn } from "@/shared/lib/utils";
-import { ICalendarEntry } from "@/entities/calendar/model/types";
+import { ICalendarEntry } from "@/entities/calendar";
 import { buildMonthWeeks, CalendarItemKind, GridItem, KIND_STYLES } from "../calendar.utils";
 
 const DAY_HEADERS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];

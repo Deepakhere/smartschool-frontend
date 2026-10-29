@@ -1,2 +1,1 @@
-export { default } from "./export-dialog";
-export type { ExportDialogProps } from "./export-dialog";
+export { default as ExportDialog } from "./ui/export-dialog";

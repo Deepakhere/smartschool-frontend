@@ -1,9 +1,9 @@
 import { useParams } from "react-router-dom";
 
-import useGetMyTeachingLoad from "@/entities/dashboard/api/get-my-teaching-load";
-import { useAuth } from "@/entities/session/model/auth-context";
-import { useHasModule } from "@/entities/session/model/tenant-context";
-import { useGetCalendarMonth } from "@/entities/calendar/api/calendar-service";
+import { useGetMyTeachingLoad } from "@/entities/dashboard";
+import { useAuth } from "@/entities/session";
+import { useHasModule } from "@/entities/session";
+import { useGetCalendarMonth } from "@/entities/calendar";
 import { localDateString } from "@/shared/lib";
 
 const DAY_NAMES = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];

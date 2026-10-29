@@ -3,9 +3,9 @@ import { useParams } from "react-router-dom";
 import toast from "react-hot-toast";
 import { useTranslation } from "react-i18next";
 
-import { useCreateNotice, useGetNoticeList, useDeleteNotice } from "@/entities/notice/api/notice-service";
-import { ICreateNoticeRequest, INotice } from "@/entities/notice/model/types";
-import { useError, usePaging } from "@/shared/hooks";
+import { useCreateNotice, useGetNoticeList, useDeleteNotice } from "@/entities/notice";
+import { ICreateNoticeRequest, INotice } from "@/entities/notice";
+import { useError, usePaging } from "@/shared/lib/hooks";
 
 const useNoticeController = () => {
   const { t } = useTranslation();

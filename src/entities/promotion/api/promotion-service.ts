@@ -2,12 +2,7 @@ import { useQuery, useMutation, useQueryClient, QueryClient } from "@tanstack/re
 
 import apiClient from "@/shared/api";
 import { IAPIError, IAxiosResponse } from "@/shared/types";
-import {
-  IPromotionCandidate,
-  IPromotionDecisionResult,
-  IPromotionSectionStats,
-  PromotionAction,
-} from "@/entities/promotion/model/types";
+import { IPromotionCandidate, IPromotionDecisionResult, IPromotionSectionStats, PromotionAction } from "../model/types";
 import { APIS_ROUTES, API_QUERY_KEY } from "@/shared/lib";
 
 const base = (organizationId: string) => `${APIS_ROUTES.STUDENT_PROFILE}/${organizationId}`;

@@ -1,7 +1,7 @@
 import { CheckIcon } from "@heroicons/react/20/solid";
 
 import { cn } from "@/shared/lib/utils";
-import { ExamStage } from "@/entities/exam/model/types";
+import { ExamStage } from "@/entities/exam";
 import { EXAM_STAGES } from "../../exam-ui";
 
 // the four steps of an exam, with the done ones ticked and the current one marked

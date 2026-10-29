@@ -1,7 +1,7 @@
 import { keepPreviousData, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import apiClient from "@/shared/api";
-import { CertificateType, ICertificate, ICertificateDraft } from "@/entities/certificate/model/types";
+import { CertificateType, ICertificate, ICertificateDraft } from "../model/types";
 import { IAPIError, IAxiosResponse, Paged } from "@/shared/types";
 import { API_MUTATION_KEY, API_QUERY_KEY, APIS_ROUTES, saveFile } from "@/shared/lib";
 

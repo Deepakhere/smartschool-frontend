@@ -2,8 +2,8 @@ import { useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
-import { useMutationFeedback } from "@/shared/hooks";
-import { ITeacherAssignment } from "@/entities/academics/model/types";
+import { useMutationFeedback } from "@/shared/lib/hooks";
+import { ITeacherAssignment } from "@/entities/academics";
 import {
   useAssignTeacher,
   useGetClasses,
@@ -11,8 +11,8 @@ import {
   useGetSubjects,
   useGetTeacherAssignments,
   useRemoveTeacherAssignment,
-} from "@/entities/academics/api/academics-service";
-import { useGetAllTeachers } from "@/entities/academics/api/teachers-service";
+} from "@/entities/academics";
+import { useGetAllTeachers } from "@/entities/academics";
 import { assignFormSchema, AssignFormValues, defaultAssignFormValues } from "../classes.schema";
 
 const useAssignmentsTabController = (organizationId: string, yearId: string) => {

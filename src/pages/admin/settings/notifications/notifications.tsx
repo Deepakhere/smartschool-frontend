@@ -1,6 +1,6 @@
 import DataTable, { DataTableColumn } from "@/shared/ui/data-table";
 import { Switch } from "@/shared/ui/kit/switch";
-import { IEmailLog } from "@/entities/notification/model/types";
+import { IEmailLog } from "@/entities/notification";
 import useNotificationsController from "./notifications-controller";
 
 const statusColors: Record<string, string> = {

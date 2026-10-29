@@ -1,6 +1,6 @@
 import FormDialog from "@/shared/ui/form-dialog";
 import { ChipsField, SelectField, TextField } from "@/shared/ui/form-fields";
-import { ISubject, ITeacherAssignment } from "@/entities/academics/model/types";
+import { ISubject, ITeacherAssignment } from "@/entities/academics";
 import { SelectOption } from "@/shared/types";
 import { DAY_NAMES } from "../timetable.utils";
 import usePeriodDialogController from "./period-dialog-controller";

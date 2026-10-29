@@ -9,9 +9,9 @@ import {
   IPayment,
   IFeeDefaultersResult,
   IFeeCollectionSummary,
-} from "@/entities/fee/model/types";
+} from "../model/types";
 import { APIS_ROUTES, API_QUERY_KEY, API_MUTATION_KEY, saveFile } from "@/shared/lib";
-import { useIdempotencyKey } from "@/shared/hooks";
+import { useIdempotencyKey } from "@/shared/lib/hooks";
 
 const base = (organizationId: string) => `${APIS_ROUTES.FEE_SERVICE}/${organizationId}`;
 

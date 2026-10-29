@@ -1,7 +1,7 @@
 import { useParams } from "react-router-dom";
 
-import { useTabParam } from "@/shared/hooks";
-import { useGetAcademicYears, useGetClasses } from "@/entities/academics/api/academics-service";
+import { useTabParam } from "@/shared/lib/hooks";
+import { useGetAcademicYears, useGetClasses } from "@/entities/academics";
 
 const REPORTS_TABS = ["exams", "marks", "schemes"] as const;
 export type ReportsTabKey = (typeof REPORTS_TABS)[number];

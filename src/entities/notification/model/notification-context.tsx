@@ -3,13 +3,13 @@ import { useParams } from "react-router-dom";
 import Cookies from "js-cookie";
 import { io, Socket } from "socket.io-client";
 
-import { useAuth } from "@/entities/session/model/auth-context";
+import { useAuth } from "@/entities/session";
 import {
   useGetMyNotifications,
   useMarkNotificationRead,
   useMarkAllNotificationsRead,
 } from "../api/notifications-service";
-import { INotification } from "@/entities/notification/model/types";
+import { INotification } from "./types";
 import { USER_ACCESS_KEY } from "@/shared/lib";
 
 interface NotificationContextType {

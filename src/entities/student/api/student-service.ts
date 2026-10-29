@@ -1,12 +1,7 @@
 import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
 import apiClient from "@/shared/api";
 import { IAPIError, IAxiosResponse, Paged } from "@/shared/types";
-import {
-  IStudentFormData,
-  IStudentAdmissionDetails,
-  IStudentEnrollment,
-  IGuardian,
-} from "@/entities/student/model/types";
+import { IStudentFormData, IStudentAdmissionDetails, IStudentEnrollment, IGuardian } from "../model/types";
 import { API_MUTATION_KEY, API_QUERY_KEY, APIS_ROUTES, saveFile } from "@/shared/lib";
 
 interface IAddStudentResponse {

@@ -4,7 +4,7 @@ import FormDialog from "@/shared/ui/form-dialog";
 import { TextField } from "@/shared/ui/form-fields";
 import { Label } from "@/shared/ui/kit/label";
 import { cn } from "@/shared/lib/utils";
-import { ICreateUpdateUserModalProps } from "@/entities/user/model/types";
+import { ICreateUpdateUserModalProps } from "@/entities/user";
 
 const CreateUpdateUserModal = ({
   t,

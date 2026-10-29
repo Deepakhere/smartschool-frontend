@@ -2,7 +2,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
 import apiClient from "@/shared/api";
 import { IAPIError, IAxiosResponse } from "@/shared/types";
-import { IAttendanceRecord, IAttendanceSession, AttendanceStatus } from "@/entities/attendance/model/types";
+import { IAttendanceRecord, IAttendanceSession, AttendanceStatus } from "../model/types";
 import { APIS_ROUTES, API_QUERY_KEY } from "@/shared/lib";
 
 const base = (organizationId: string) => `${APIS_ROUTES.ATTENDANCE_SERVICE}/${organizationId}`;

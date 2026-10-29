@@ -2,7 +2,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import apiClient from "@/shared/api";
 import { IAPIError, IAxiosResponse } from "@/shared/types";
-import { INotice } from "@/entities/notice/model/types";
+import { INotice } from "../model/types";
 import { APIS_ROUTES, API_QUERY_KEY, API_MUTATION_KEY } from "@/shared/lib";
 
 export const useGetMyNotices = (organizationId: string) =>

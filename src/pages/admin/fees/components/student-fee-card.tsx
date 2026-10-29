@@ -4,7 +4,7 @@ import { Badge } from "@/shared/ui/kit/badge";
 import { Button } from "@/shared/ui/kit/button";
 import { Card } from "@/shared/ui/kit/card";
 import { Form } from "@/shared/ui/kit/form";
-import { IStudentFeeSummary } from "@/entities/fee/model/types";
+import { IStudentFeeSummary } from "@/entities/fee";
 import { SelectOption } from "@/shared/types";
 import { formatMoney } from "@/shared/lib";
 import { concessionColumns, installmentColumns, paymentColumns } from "./student-fee-card-columns";

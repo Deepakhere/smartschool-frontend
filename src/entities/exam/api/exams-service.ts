@@ -2,14 +2,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import apiClient from "@/shared/api";
 import { IAPIError, IAxiosResponse } from "@/shared/types";
-import {
-  IGradingScheme,
-  IExam,
-  IExamOverview,
-  IExamSubject,
-  IMarksSheetItem,
-  IResult,
-} from "@/entities/exam/model/types";
+import { IGradingScheme, IExam, IExamOverview, IExamSubject, IMarksSheetItem, IResult } from "../model/types";
 import { APIS_ROUTES, API_QUERY_KEY, API_MUTATION_KEY, saveFile } from "@/shared/lib";
 
 const base = (organizationId: string) => `${APIS_ROUTES.EXAM_SERVICE}/${organizationId}`;

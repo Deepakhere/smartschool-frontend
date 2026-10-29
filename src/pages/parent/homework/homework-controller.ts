@@ -2,8 +2,8 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 
-import { useGetMyChildren } from "@/entities/student/api/my-children-service";
-import { useGetHomeworkForStudent } from "@/entities/homework/api/parent-homework-service";
+import { useGetMyChildren } from "@/entities/student";
+import { useGetHomeworkForStudent } from "@/entities/homework";
 
 export const useHomeworkController = () => {
   const { t } = useTranslation();

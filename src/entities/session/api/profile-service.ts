@@ -2,7 +2,7 @@ import { useMutation } from "@tanstack/react-query";
 import apiClient from "@/shared/api";
 import { IAPIError, IAxiosResponse } from "@/shared/types";
 import { API_MUTATION_KEY, APIS_ROUTES } from "@/shared/lib";
-import { IUserPreferences, IUserAvatar } from "@/entities/session/model/types";
+import { IUserPreferences, IUserAvatar } from "../model/types";
 
 interface IChangeMyPasswordPayload {
   currentPassword: string;

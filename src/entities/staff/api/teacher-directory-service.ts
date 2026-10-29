@@ -2,7 +2,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
 import apiClient from "@/shared/api";
 import { IAPIError, IAxiosResponse } from "@/shared/types";
-import { ITeacherDirectoryEntry, IStaffProfile } from "@/entities/staff/model/types";
+import { ITeacherDirectoryEntry, IStaffProfile } from "../model/types";
 import { APIS_ROUTES, API_QUERY_KEY } from "@/shared/lib";
 
 export const useGetTeacherDirectory = (organizationId: string) =>

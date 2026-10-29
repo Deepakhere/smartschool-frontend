@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 
 import apiClient from "@/shared/api";
 import { IAPIError, IAxiosResponse } from "@/shared/types";
-import { IAttendanceRecord } from "@/entities/attendance/model/types";
+import { IAttendanceRecord } from "@/entities/attendance";
 import { APIS_ROUTES } from "@/shared/lib";
 
 interface IAttendanceHistoryResponse {

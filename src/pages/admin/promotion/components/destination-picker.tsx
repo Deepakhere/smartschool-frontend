@@ -1,6 +1,6 @@
 import CustomSelectDropdown from "@/shared/ui/custom-select";
 import { cn } from "@/shared/lib/utils";
-import { IClass, ISection } from "@/entities/academics/model/types";
+import { IClass, ISection } from "@/entities/academics";
 
 interface DestinationPickerProps {
   label: string;

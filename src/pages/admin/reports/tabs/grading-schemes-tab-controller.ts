@@ -3,9 +3,9 @@ import { PlusIcon } from "@heroicons/react/20/solid";
 import toast from "react-hot-toast";
 
 import { useHeaderActions } from "@/shared/ui/section-header";
-import { useError } from "@/shared/hooks";
-import { IGradingScheme } from "@/entities/exam/model/types";
-import { useDeleteGradingScheme, useGetGradingSchemes } from "@/entities/exam/api/exams-service";
+import { useError } from "@/shared/lib/hooks";
+import { IGradingScheme } from "@/entities/exam";
+import { useDeleteGradingScheme, useGetGradingSchemes } from "@/entities/exam";
 
 const useGradingSchemesTabController = (organizationId: string) => {
   const schemes = useGetGradingSchemes(organizationId);

@@ -1,7 +1,7 @@
 import { DataTableColumn } from "@/shared/ui/data-table";
 import RowMenu, { RowMenuItem } from "@/shared/ui/row-menu";
 import StatusBadge from "@/shared/ui/status-badge";
-import { IAcademicYear } from "@/entities/academics/model/types";
+import { IAcademicYear } from "@/entities/academics";
 
 const formatDate = (value: string) => new Date(value).toLocaleDateString();
 

@@ -1,6 +1,6 @@
 import { DataTableColumn } from "@/shared/ui/data-table";
 import RowMenu from "@/shared/ui/row-menu";
-import { IGradingScheme } from "@/entities/exam/model/types";
+import { IGradingScheme } from "@/entities/exam";
 
 interface SchemeActions {
   edit: (scheme: IGradingScheme) => void;

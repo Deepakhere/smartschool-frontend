@@ -1,9 +1,9 @@
 import { useCallback, useMemo, useState } from "react";
 
-import { AcademicFilterValue } from "@/features/academic-filter";
-import { useExportRows, usePaging } from "@/shared/hooks";
+import type { AcademicFilterValue } from "@/features/academic-filter";
+import { useExportRows, usePaging } from "@/shared/lib/hooks";
 import { todayInIndia } from "@/shared/lib";
-import { downloadDefaultersCsv, useGetFeeDefaulters } from "@/entities/fee/api/fees-service";
+import { downloadDefaultersCsv, useGetFeeDefaulters } from "@/entities/fee";
 
 const useDefaultersController = (organizationId: string) => {
   const [scope, setScope] = useState<AcademicFilterValue>({ academicYearId: "", classId: "", sectionId: "" });

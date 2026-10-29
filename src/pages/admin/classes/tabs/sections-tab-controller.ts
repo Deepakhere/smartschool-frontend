@@ -3,16 +3,16 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import { RowMenuItem } from "@/shared/ui/row-menu";
-import { useMutationFeedback } from "@/shared/hooks";
-import { ISection } from "@/entities/academics/model/types";
+import { useMutationFeedback } from "@/shared/lib/hooks";
+import { ISection } from "@/entities/academics";
 import {
   useCreateSection,
   useDeactivateSection,
   useGetClasses,
   useGetSections,
   useUpdateSection,
-} from "@/entities/academics/api/academics-service";
-import { useGetAllTeachers } from "@/entities/academics/api/teachers-service";
+} from "@/entities/academics";
+import { useGetAllTeachers } from "@/entities/academics";
 import { defaultSectionFormValues, sectionFormSchema, SectionFormValues } from "../classes.schema";
 
 const NO_TEACHER = "none";

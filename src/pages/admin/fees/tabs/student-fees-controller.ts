@@ -1,9 +1,9 @@
 import { useState } from "react";
 import toast from "react-hot-toast";
 
-import { useDebouncedValue, useError } from "@/shared/hooks";
-import { useGetStudentDetails } from "@/entities/student/api/student-service";
-import { useGetStudentFeeSummary, useReversePayment } from "@/entities/fee/api/fees-service";
+import { useDebouncedValue, useError } from "@/shared/lib/hooks";
+import { useGetStudentDetails } from "@/entities/student";
+import { useGetStudentFeeSummary, useReversePayment } from "@/entities/fee";
 
 const useStudentFeesController = (organizationId: string) => {
   const [search, setSearch] = useState("");

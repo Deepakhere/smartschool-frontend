@@ -1,6 +1,6 @@
 import FormDialog from "@/shared/ui/form-dialog";
 import { CheckboxField, SelectField, TextField } from "@/shared/ui/form-fields";
-import { IAddGuardianValue } from "@/entities/student/model/types";
+import { IAddGuardianValue } from "@/entities/student";
 import { SelectOption } from "@/shared/types";
 import useGuardianModalController from "./guardian-modal-controller";
 

@@ -4,9 +4,9 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 
-import { useTenant } from "@/entities/session/model/tenant-context";
-import { useError } from "@/shared/hooks";
-import { useUpdateOrganization, useUploadOrganizationLogo } from "@/entities/organization/api/organization-service";
+import { useTenant } from "@/entities/session";
+import { useError } from "@/shared/lib/hooks";
+import { useUpdateOrganization, useUploadOrganizationLogo } from "@/entities/organization";
 import { API_QUERY_KEY } from "@/shared/lib";
 import { schoolDetailsSchema, SchoolDetailsFormValues } from "./school.schema";
 

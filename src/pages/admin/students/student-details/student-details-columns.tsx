@@ -1,7 +1,7 @@
 import { DataTableColumn } from "@/shared/ui/data-table";
 import { Badge } from "@/shared/ui/kit/badge";
-import { IAttendanceRecord } from "@/entities/attendance/model/types";
-import { IResult } from "@/entities/exam/model/types";
+import { IAttendanceRecord } from "@/entities/attendance";
+import { IResult } from "@/entities/exam";
 
 const examOf = (result: IResult) => (typeof result.examId === "object" ? result.examId : null);
 

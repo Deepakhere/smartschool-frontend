@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react";
 
 import { exportToCsv } from "@/shared/lib";
-import { useGetMonthRegister } from "@/entities/attendance/api/attendance-service";
+import { useGetMonthRegister } from "@/entities/attendance";
 import { MARKS, SUMMARY_COLUMNS } from "./monthly-register-columns";
 
 const useMonthlyRegisterController = (

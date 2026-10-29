@@ -14,7 +14,7 @@ vi.mock("@/entities/academics/api/academics-service", () => ({
   useGetRolloverPreview: () => state.preview,
   useRolloverAcademicYear: () => ({ mutate, isPending: false }),
 }));
-vi.mock("@/shared/hooks", () => ({ useMutationFeedback: vi.fn() }));
+vi.mock("@/shared/lib/hooks", () => ({ useMutationFeedback: vi.fn() }));
 
 const years = [
   {

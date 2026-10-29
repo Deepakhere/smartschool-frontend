@@ -1,7 +1,7 @@
 import { countLabel } from "@/shared/ui/data-table";
 import FormDialog from "@/shared/ui/form-dialog";
 import { Switch } from "@/shared/ui/kit/switch";
-import { IAcademicYear } from "@/entities/academics/model/types";
+import { IAcademicYear } from "@/entities/academics";
 import { SelectField, TextField, DateField } from "@/shared/ui/form-fields";
 import useRolloverDialogController from "./rollover-dialog-controller";
 

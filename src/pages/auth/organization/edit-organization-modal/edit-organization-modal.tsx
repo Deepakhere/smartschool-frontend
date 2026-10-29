@@ -4,7 +4,7 @@ import FormDialog from "@/shared/ui/form-dialog";
 import { TextField, TextareaField } from "@/shared/ui/form-fields";
 import ButtonSpinner from "@/shared/ui/icons/button-spinner";
 import useEditOrganizationModalController from "./edit-organization-modal-controller";
-import { IOrganization } from "@/entities/organization/model/types";
+import { IOrganization } from "@/entities/organization";
 
 interface EditOrganizationModalProps {
   isOpen: boolean;

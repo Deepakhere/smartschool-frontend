@@ -8,7 +8,7 @@ import { Badge } from "@/shared/ui/kit/badge";
 import { Button } from "@/shared/ui/kit/button";
 import { Form } from "@/shared/ui/kit/form";
 import { cn } from "@/shared/lib/utils";
-import { STATUS } from "@/entities/support/model/support-labels";
+import { STATUS } from "@/entities/support";
 import useSupportThreadController from "./support-thread-controller";
 
 const SupportThread = () => {

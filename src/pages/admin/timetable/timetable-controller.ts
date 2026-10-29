@@ -2,11 +2,11 @@ import { useState } from "react";
 import { useParams } from "react-router-dom";
 import toast from "react-hot-toast";
 
-import { useError } from "@/shared/hooks";
-import { ITimetableSlot } from "@/entities/timetable/model/types";
-import { useGetSubjects, useGetTeacherAssignments } from "@/entities/academics/api/academics-service";
-import { useSectionPicker } from "@/features/section-picker/use-section-picker";
-import { useDeleteTimetableSlot, useGetTimetable } from "@/entities/timetable/api/timetable-service";
+import { useError } from "@/shared/lib/hooks";
+import { ITimetableSlot } from "@/entities/timetable";
+import { useGetSubjects, useGetTeacherAssignments } from "@/entities/academics";
+import { useSectionPicker } from "@/features/section-picker";
+import { useDeleteTimetableSlot, useGetTimetable } from "@/entities/timetable";
 
 // admins build each section's week; a teacher sees their own week across every class they teach
 const useTimetableController = () => {

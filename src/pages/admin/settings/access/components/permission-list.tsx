@@ -1,7 +1,7 @@
 import { Badge } from "@/shared/ui/kit/badge";
 import { Switch } from "@/shared/ui/kit/switch";
 import { PermissionKey } from "@/shared/types";
-import { AccessCatalog } from "@/entities/access/api/access-service";
+import { AccessCatalog } from "@/entities/access";
 
 interface PermissionListProps {
   permissions: AccessCatalog["permissions"];

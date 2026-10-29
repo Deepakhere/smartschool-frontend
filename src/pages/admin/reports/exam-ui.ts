@@ -1,5 +1,5 @@
 import { BadgeTone } from "@/shared/ui/kit/badge";
-import { ExamStage } from "@/entities/exam/model/types";
+import { ExamStage } from "@/entities/exam";
 import { SelectOption } from "@/shared/types";
 
 export const EXAM_TYPE_OPTIONS: SelectOption[] = [

@@ -1,6 +1,6 @@
 import { DataTableColumn } from "@/shared/ui/data-table";
 import { Button } from "@/shared/ui/kit/button";
-import { ITeacherDirectoryEntry } from "@/entities/staff/model/types";
+import { ITeacherDirectoryEntry } from "@/entities/staff";
 
 export const teacherColumns = (
   edit: (teacher: ITeacherDirectoryEntry) => void

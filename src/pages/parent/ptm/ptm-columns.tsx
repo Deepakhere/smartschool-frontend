@@ -1,6 +1,6 @@
 import { DataTableColumn } from "@/shared/ui/data-table";
 import { Button } from "@/shared/ui/kit/button";
-import { IPTMBooking } from "@/entities/ptm/model/types";
+import { IPTMBooking } from "@/entities/ptm";
 
 const slotOf = (booking: IPTMBooking) => (typeof booking.slotId === "object" ? booking.slotId : null);
 

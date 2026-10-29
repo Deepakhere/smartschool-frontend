@@ -2,8 +2,8 @@ import { SelectField, DateTimeField } from "@/shared/ui/form-fields";
 import Spinner from "@/shared/ui/spinner";
 import { Button } from "@/shared/ui/kit/button";
 import { Form } from "@/shared/ui/kit/form";
-import { IPTMEvent } from "@/entities/ptm/model/types";
-import { ITeacherAssignment } from "@/entities/academics/model/types";
+import { IPTMEvent } from "@/entities/ptm";
+import { ITeacherAssignment } from "@/entities/academics";
 import useEventSlotsPanelController from "./event-slots-panel-controller";
 
 interface EventSlotsPanelProps {

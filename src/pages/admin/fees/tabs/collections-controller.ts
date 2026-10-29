@@ -1,7 +1,7 @@
 import { useState } from "react";
 
 import { exportToCsv, paymentMethodLabel, todayInIndia } from "@/shared/lib";
-import { useGetFeeCollections } from "@/entities/fee/api/fees-service";
+import { useGetFeeCollections } from "@/entities/fee";
 
 const useCollectionsController = (organizationId: string) => {
   const [from, setFrom] = useState(() => `${todayInIndia().slice(0, 7)}-01`);

@@ -1,18 +1,18 @@
 import { useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
-import { useTabParam } from "@/shared/hooks";
+import { useTabParam } from "@/shared/lib/hooks";
 import toast from "react-hot-toast";
 
-import { useSectionPicker } from "@/features/section-picker/use-section-picker";
+import { useSectionPicker } from "@/features/section-picker";
 import {
   useGetSectionRoster,
   useGetSectionAttendance,
   useMarkAttendance,
   useGetSectionAttendanceReport,
   ISectionAttendanceReportRow,
-} from "@/entities/attendance/api/attendance-service";
-import { useGetCalendarMonth } from "@/entities/calendar/api/calendar-service";
-import { AttendanceStatus } from "@/entities/attendance/model/types";
+} from "@/entities/attendance";
+import { useGetCalendarMonth } from "@/entities/calendar";
+import { AttendanceStatus } from "@/entities/attendance";
 import { exportToCsv, localDateString } from "@/shared/lib";
 
 const today = () => localDateString();

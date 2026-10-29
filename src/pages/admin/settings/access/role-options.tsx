@@ -7,7 +7,7 @@ import {
   UsersIcon,
 } from "@heroicons/react/20/solid";
 
-import { RoleOption } from "@/entities/user/model/types";
+import { RoleOption } from "@/entities/user";
 
 const icon = (Icon: typeof UsersIcon) => <Icon className="h-5 w-5 text-primary-500" />;
 

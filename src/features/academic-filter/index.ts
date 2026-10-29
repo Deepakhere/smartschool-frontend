@@ -1,2 +1,2 @@
-export { default } from "./academic-filter";
-export type { AcademicFilterValue } from "./academic-filter";
+export { default as AcademicFilter } from "./ui/academic-filter";
+export type { AcademicFilterValue } from "./ui/academic-filter";

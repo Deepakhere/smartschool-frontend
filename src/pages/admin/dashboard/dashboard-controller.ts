@@ -16,15 +16,15 @@ import {
   UserPlusIcon,
 } from "@heroicons/react/24/outline";
 
-import { ICreateNoticeRequest } from "@/entities/notice/model/types";
+import { ICreateNoticeRequest } from "@/entities/notice";
 import { ModuleKey } from "@/shared/types";
-import { useGetNoticeList, useCreateNotice } from "@/entities/notice/api/notice-service";
-import { useError } from "@/shared/hooks";
-import { useTheme } from "@/features/theme/theme-context";
-import { useAuth } from "@/entities/session/model/auth-context";
-import useGetDashboardStats from "@/entities/dashboard/api/get-dashboard-stats";
-import useGetDashboardCharts from "@/entities/dashboard/api/get-dashboard-charts";
-import { useAreaBase, useHasModule } from "@/entities/session/model/tenant-context";
+import { useGetNoticeList, useCreateNotice } from "@/entities/notice";
+import { useError } from "@/shared/lib/hooks";
+import { useTheme } from "@/features/theme";
+import { useAuth } from "@/entities/session";
+import { useGetDashboardStats } from "@/entities/dashboard";
+import { useGetDashboardCharts } from "@/entities/dashboard";
+import { useAreaBase, useHasModule } from "@/entities/session";
 
 export const useDashboardController = () => {
   const navigate = useNavigate();

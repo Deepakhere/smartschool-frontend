@@ -1,7 +1,7 @@
 import CustomSelectDropdown from "@/shared/ui/custom-select";
 import { Card } from "@/shared/ui/kit/card";
 import { Label } from "@/shared/ui/kit/label";
-import MarksSheetCard from "@/features/marks-entry/marks-sheet-card";
+import { MarksSheetCard } from "@/features/marks-entry";
 import EmptyState from "@/shared/ui/empty-state";
 import useMarksEntryTabController from "./marks-entry-tab-controller";
 

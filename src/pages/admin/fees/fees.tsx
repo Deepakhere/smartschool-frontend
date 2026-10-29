@@ -10,8 +10,8 @@ import {
 
 import PageTabs, { PageTab } from "@/shared/ui/page-tabs";
 import SectionHeader from "@/shared/ui/section-header";
-import { useCan } from "@/entities/session/model/tenant-context";
-import { useTabParam } from "@/shared/hooks";
+import { useCan } from "@/entities/session";
+import { useTabParam } from "@/shared/lib/hooks";
 import { PermissionKey } from "@/shared/types";
 import FeeHeadsTab from "./tabs/fee-heads-tab";
 import FeeStructuresTab from "./tabs/fee-structures-tab";

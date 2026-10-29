@@ -4,13 +4,9 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useParams } from "react-router-dom";
 import toast from "react-hot-toast";
 
-import { useError } from "@/shared/hooks";
-import { useGetMyChildren } from "@/entities/student/api/my-children-service";
-import {
-  useGetMyLeaveRequests,
-  useCreateLeaveRequest,
-  useCancelLeaveRequest,
-} from "@/entities/leave-request/api/parent-leave-request-service";
+import { useError } from "@/shared/lib/hooks";
+import { useGetMyChildren } from "@/entities/student";
+import { useGetMyLeaveRequests, useCreateLeaveRequest, useCancelLeaveRequest } from "@/entities/leave-request";
 import { leaveRequestFormSchema, defaultLeaveRequestFormValues } from "./leave-requests.schema";
 
 export const useLeaveRequestsController = () => {

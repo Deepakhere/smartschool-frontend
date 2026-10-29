@@ -1,7 +1,7 @@
 import { DataTableColumn } from "@/shared/ui/data-table";
 import RowMenu from "@/shared/ui/row-menu";
 import { Button } from "@/shared/ui/kit/button";
-import { IFeeStructure } from "@/entities/fee/model/types";
+import { IFeeStructure } from "@/entities/fee";
 import { formatMoney } from "@/shared/lib";
 
 interface FeeStructureColumnActions {

@@ -2,7 +2,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 import apiClient from "@/shared/api";
 import { IAPIError, IAxiosResponse } from "@/shared/types";
-import { ILetterhead } from "@/entities/organization/model/types";
+import { ILetterhead } from "../model/types";
 import { API_MUTATION_KEY, API_QUERY_KEY, APIS_ROUTES } from "@/shared/lib";
 
 // the school's letterhead lines; certificates issued after this print them

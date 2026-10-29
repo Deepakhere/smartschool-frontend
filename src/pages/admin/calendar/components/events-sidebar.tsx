@@ -1,7 +1,7 @@
 import { Tabs, TabsList, TabsTrigger } from "@/shared/ui/kit/tabs";
 import RowMenu from "@/shared/ui/row-menu";
 import { cn } from "@/shared/lib/utils";
-import { ICalendarEntry } from "@/entities/calendar/model/types";
+import { ICalendarEntry } from "@/entities/calendar";
 import { formatDay, KIND_STYLES, WEEKDAYS } from "../calendar.utils";
 import EmptyState from "@/shared/ui/empty-state";
 

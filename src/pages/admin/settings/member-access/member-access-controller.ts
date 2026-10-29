@@ -4,21 +4,19 @@ import { useParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
-import { useAuth } from "@/entities/session/model/auth-context";
-import { useAreaBase, useCurrentRole } from "@/entities/session/model/tenant-context";
-import { useError } from "@/shared/hooks";
+import { useAuth } from "@/entities/session";
+import { useAreaBase, useCurrentRole } from "@/entities/session";
+import { useError } from "@/shared/lib/hooks";
 import { AccountRole, PermissionKey } from "@/shared/types";
 import {
-  MemberAccessValues,
-  ROLE_OPTIONS,
-  StaffRole,
-  memberAccessSchema,
+  type StaffRole,
   useAccessCatalog,
   useMemberAccess,
   useReinviteMember,
   useSetMemberStatus,
   useUpdateMemberAccess,
-} from "../access";
+} from "@/entities/access";
+import { MemberAccessValues, ROLE_OPTIONS, memberAccessSchema } from "../access";
 
 const STAFF: MemberAccessValues["role"][] = ["teacher", "accountant", "staff"];
 

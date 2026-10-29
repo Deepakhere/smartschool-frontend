@@ -2,9 +2,9 @@ import { useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import toast from "react-hot-toast";
 
-import { downloadFeeReceipt, useEmailFeeReceipt, useGetMyFees } from "@/entities/fee/api/fees-service";
+import { downloadFeeReceipt, useEmailFeeReceipt, useGetMyFees } from "@/entities/fee";
 import { IAPIError } from "@/shared/types";
-import { usePayFeesOnline } from "@/entities/online-payment/api/parent-online-payment-service";
+import { usePayFeesOnline } from "@/entities/online-payment";
 
 const useParentFeesController = () => {
   const { t } = useTranslation();

@@ -9,7 +9,7 @@ import { Button } from "@/shared/ui/kit/button";
 import { Card } from "@/shared/ui/kit/card";
 import { Skeleton } from "@/shared/ui/kit/skeleton";
 import { Tabs, TabsList, TabsTrigger } from "@/shared/ui/kit/tabs";
-import { IExamOverviewSubject } from "@/entities/exam/model/types";
+import { IExamOverviewSubject } from "@/entities/exam";
 import { dateRange, examTypeLabel, stageOf } from "../../exam-ui";
 import AddSubjectsDialog from "./add-subjects-dialog";
 import EditSubjectDialog from "./edit-subject-dialog";

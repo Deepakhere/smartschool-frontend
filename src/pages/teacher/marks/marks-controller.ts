@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { useParams } from "react-router-dom";
 
-import { useGetExams, useGetExamSubjects } from "@/entities/exam/api/exams-service";
-import { useGetMyTeacherAssignments } from "@/entities/academics/api/academics-service";
+import { useGetExams, useGetExamSubjects } from "@/entities/exam";
+import { useGetMyTeacherAssignments } from "@/entities/academics";
 import { SelectOption } from "@/shared/types";
 
 // mirrors backend assertCanEnterMarks: a class teacher may enter any subject, a subject teacher only theirs

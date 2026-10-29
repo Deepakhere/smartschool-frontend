@@ -1,4 +1,4 @@
-import { IPromotionSectionStats } from "@/entities/promotion/model/types";
+import { IPromotionSectionStats } from "@/entities/promotion";
 
 interface MapSummaryProps {
   rows: { sections: { stats?: IPromotionSectionStats }[] }[];

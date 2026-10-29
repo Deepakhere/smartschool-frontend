@@ -1,8 +1,8 @@
 import { z } from "zod";
 
-import { IPostalAddress, IStudentFormData } from "@/entities/student/model/types";
+import { IPostalAddress, IStudentFormData } from "@/entities/student";
 import { SelectOption } from "@/shared/types";
-import { IStudentDetailResponse } from "@/entities/student/api/student-service";
+import { IStudentDetailResponse } from "@/entities/student";
 import { localDateString } from "@/shared/lib";
 
 export const GENDER_OPTIONS: SelectOption[] = [

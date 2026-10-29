@@ -1,1 +1,1 @@
-export { default } from "./mobile-notice";
+export { default as MobileNotice } from "./ui/mobile-notice";

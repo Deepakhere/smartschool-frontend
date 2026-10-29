@@ -3,13 +3,9 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import { RowMenuItem } from "@/shared/ui/row-menu";
-import { useMutationFeedback } from "@/shared/hooks";
-import { IAcademicYear } from "@/entities/academics/model/types";
-import {
-  useCreateAcademicYear,
-  useGetAcademicYears,
-  useUpdateAcademicYear,
-} from "@/entities/academics/api/academics-service";
+import { useMutationFeedback } from "@/shared/lib/hooks";
+import { IAcademicYear } from "@/entities/academics";
+import { useCreateAcademicYear, useGetAcademicYears, useUpdateAcademicYear } from "@/entities/academics";
 import { defaultYearFormValues, yearFormSchema, YearFormValues } from "../classes.schema";
 
 export type YearAction = "current" | "close" | "reopen";

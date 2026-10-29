@@ -5,7 +5,7 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import toast from "react-hot-toast";
 import type { UseMutationResult } from "@tanstack/react-query";
 
-import { useAuth } from "@/entities/session/model/auth-context";
+import { useAuth } from "@/entities/session";
 import { IAPIError } from "@/shared/types";
 import { passwordSchema, PasswordFormValues } from "./password.schema";
 

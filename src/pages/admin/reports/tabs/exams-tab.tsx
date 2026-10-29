@@ -1,6 +1,6 @@
 import { useNavigate, useSearchParams } from "react-router-dom";
 
-import { useAreaBase } from "@/entities/session/model/tenant-context";
+import { useAreaBase } from "@/entities/session";
 import { SelectOption } from "@/shared/types";
 import ExamList from "../components/exam/exam-list";
 

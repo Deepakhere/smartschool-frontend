@@ -19,8 +19,8 @@ vi.mock("@/entities/session/model/tenant-context", () => ({
     return children;
   },
 }));
-vi.mock("@/features/theme/theme-context", () => ({ useTheme: () => ({ theme: "light" }) }));
-vi.mock("@/shared/hooks/is-mobile/is-mobile", () => ({ default: () => mockIsMobile }));
+vi.mock("@/features/theme/model/theme-context", () => ({ useTheme: () => ({ theme: "light" }) }));
+vi.mock("@/shared/lib/hooks/is-mobile/is-mobile", () => ({ default: () => mockIsMobile }));
 
 const renderAt = (path: string, element: React.ReactNode) =>
   render(

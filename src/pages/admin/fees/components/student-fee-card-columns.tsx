@@ -1,7 +1,7 @@
 import { DataTableColumn } from "@/shared/ui/data-table";
 import { Badge } from "@/shared/ui/kit/badge";
 import { Button } from "@/shared/ui/kit/button";
-import { IFeeConcession, IFeeInstallmentBalance, IPayment } from "@/entities/fee/model/types";
+import { IFeeConcession, IFeeInstallmentBalance, IPayment } from "@/entities/fee";
 import { formatMoney, paymentMethodLabel } from "@/shared/lib";
 
 export const installmentColumns: DataTableColumn<IFeeInstallmentBalance>[] = [

@@ -5,10 +5,10 @@ import toast from "react-hot-toast";
 
 import FormDialog from "@/shared/ui/form-dialog";
 import { CheckboxField, TextField } from "@/shared/ui/form-fields";
-import { useError } from "@/shared/hooks";
-import { IExamOverviewSubject } from "@/entities/exam/model/types";
+import { useError } from "@/shared/lib/hooks";
+import { IExamOverviewSubject } from "@/entities/exam";
 import { subjectMarksSchema, SubjectMarksFormValues } from "../../reports.schema";
-import { useUpdateExamSubject } from "@/entities/exam/api/exams-service";
+import { useUpdateExamSubject } from "@/entities/exam";
 
 interface EditSubjectDialogProps {
   organizationId: string;

@@ -1,8 +1,8 @@
 import { createContext, useContext, useState, ReactNode, useEffect } from "react";
 import Cookies from "js-cookie";
-import { useGetUserDetails } from "@/entities/session/api/user-details-service";
+import { useGetUserDetails } from "../api/user-details-service";
 import { APIS_ROUTES, USER_ACCESS_KEY, authCookieOptions } from "@/shared/lib";
-import { ILoginResponse, IUserAvatar, IUserPreferences } from "@/entities/session/model/types";
+import { ILoginResponse, IUserAvatar, IUserPreferences } from "./types";
 import LogoSpinner from "@/shared/ui/logo-spinner";
 import apiClient from "@/shared/api/api-client";
 import { isAuthPage } from "@/shared/config/auth-pages";

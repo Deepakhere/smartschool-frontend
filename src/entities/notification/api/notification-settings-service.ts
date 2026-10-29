@@ -2,7 +2,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import apiClient from "@/shared/api";
 import { IAPIError, IAxiosResponse, Paged } from "@/shared/types";
-import { IEmailLog } from "@/entities/notification/model/types";
+import { IEmailLog } from "../model/types";
 import { APIS_ROUTES, API_QUERY_KEY, API_MUTATION_KEY } from "@/shared/lib";
 
 const base = (organizationId: string) => `${APIS_ROUTES.ORGANIZATION_SERVICE}/${organizationId}`;

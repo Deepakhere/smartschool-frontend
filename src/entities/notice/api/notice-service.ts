@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
 import apiClient from "@/shared/api";
 import { IAPIError, IAxiosResponse, Paged } from "@/shared/types";
-import { ICreateNoticeRequest } from "@/entities/notice/model/types";
+import { ICreateNoticeRequest } from "../model/types";
 import { API_MUTATION_KEY, API_QUERY_KEY, APIS_ROUTES } from "@/shared/lib";
 
 interface ICreatNoticeResponse {

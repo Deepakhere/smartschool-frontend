@@ -2,10 +2,7 @@ import { useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import toast from "react-hot-toast";
 
-import {
-  useGetEmailNotificationLog,
-  useUpdateEmailNotificationSettings,
-} from "@/entities/notification/api/notification-settings-service";
+import { useGetEmailNotificationLog, useUpdateEmailNotificationSettings } from "@/entities/notification";
 
 const useNotificationsController = () => {
   const { t } = useTranslation();

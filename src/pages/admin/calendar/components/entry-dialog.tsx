@@ -1,6 +1,6 @@
 import FormDialog from "@/shared/ui/form-dialog";
 import { DateField, SelectField, TextField } from "@/shared/ui/form-fields";
-import { ICalendarEntry } from "@/entities/calendar/model/types";
+import { ICalendarEntry } from "@/entities/calendar";
 import { SelectOption } from "@/shared/types";
 import useEntryDialogController from "./entry-dialog-controller";
 

@@ -4,7 +4,7 @@ import { TextareaField, TextField } from "@/shared/ui/form-fields";
 import { Button } from "@/shared/ui/kit/button";
 import { Card, CardTitle } from "@/shared/ui/kit/card";
 import { Form } from "@/shared/ui/kit/form";
-import LetterheadForm from "./components/letterhead-form";
+import { LetterheadForm } from "@/features/letterhead";
 import useSchoolSettingsController from "./school-controller";
 
 // the school's name, logo and registration details, as printed on certificates

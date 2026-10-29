@@ -4,16 +4,10 @@ import { useParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
-import { useError } from "@/shared/hooks";
+import { useError } from "@/shared/lib/hooks";
 import { PermissionKey } from "@/shared/types";
-import {
-  AccessCatalog,
-  RoleDefaultsValues,
-  StaffRole,
-  roleDefaultsSchema,
-  useAccessCatalog,
-  useSetRoleDefaults,
-} from "../access";
+import { type AccessCatalog, type StaffRole, useAccessCatalog, useSetRoleDefaults } from "@/entities/access";
+import { RoleDefaultsValues, roleDefaultsSchema } from "../access";
 
 export const ROLE_TITLES: Record<StaffRole, { title: string; hint: string }> = {
   teacher: { title: "Teachers", hint: "Daily classroom work is on by default." },

@@ -1,7 +1,7 @@
 import { DataTableColumn } from "@/shared/ui/data-table";
 import RowMenu, { RowMenuItem } from "@/shared/ui/row-menu";
 import StatusBadge from "@/shared/ui/status-badge";
-import { ISubject } from "@/entities/academics/model/types";
+import { ISubject } from "@/entities/academics";
 
 export const TYPE_LABELS: Record<string, string> = {
   core: "Core",

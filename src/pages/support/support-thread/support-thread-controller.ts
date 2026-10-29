@@ -3,14 +3,10 @@ import { useParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
-import { useAreaBase } from "@/entities/session/model/tenant-context";
-import { useError } from "@/shared/hooks";
-import {
-  openSupportAttachment,
-  useReplyToSupportRequest,
-  useSupportThread,
-} from "@/entities/support/api/support-service";
-import { defaultSupportReply, SupportReplyValues, supportReplySchema } from "@/entities/support/model/support.schema";
+import { useAreaBase } from "@/entities/session";
+import { useError } from "@/shared/lib/hooks";
+import { openSupportAttachment, useReplyToSupportRequest, useSupportThread } from "@/entities/support";
+import { defaultSupportReply, SupportReplyValues, supportReplySchema } from "@/entities/support";
 
 const useSupportThreadController = () => {
   const { organizationId = "", requestId = "" } = useParams();

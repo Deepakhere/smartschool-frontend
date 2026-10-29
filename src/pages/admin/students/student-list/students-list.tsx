@@ -3,7 +3,7 @@ import { PlusIcon } from "@heroicons/react/20/solid";
 import CustomSelectDropdown from "@/shared/ui/custom-select";
 import DataTable from "@/shared/ui/data-table";
 import DeleteConfirmationDialog from "@/shared/ui/delete-confirmation-dialog";
-import ExportDialog from "@/features/export-dialog";
+import { ExportDialog } from "@/features/export-dialog";
 import SectionHeader from "@/shared/ui/section-header";
 import { Button } from "@/shared/ui/kit/button";
 import { Label } from "@/shared/ui/kit/label";

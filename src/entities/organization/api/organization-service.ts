@@ -1,7 +1,7 @@
 import { useMutation } from "@tanstack/react-query";
 import apiClient from "@/shared/api";
 import { IAPIError, IAxiosResponse } from "@/shared/types";
-import { IOrganization } from "@/entities/organization/model/types";
+import { IOrganization } from "../model/types";
 import { API_MUTATION_KEY, APIS_ROUTES } from "@/shared/lib";
 
 export interface IUpdateOrganizationValue {

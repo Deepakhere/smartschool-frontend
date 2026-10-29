@@ -44,7 +44,7 @@ vi.mock("@/entities/academics/api/academics-service", () => ({
   useDeactivateSection: () => hooks.deactivateSection,
 }));
 vi.mock("@/entities/academics/api/teachers-service", () => ({ useGetAllTeachers: () => ({ data: { items: [] } }) }));
-vi.mock("@/shared/hooks", () => ({ useMutationFeedback: vi.fn() }));
+vi.mock("@/shared/lib/hooks", () => ({ useMutationFeedback: vi.fn() }));
 
 const year = (overrides: object) => ({
   id: "y",

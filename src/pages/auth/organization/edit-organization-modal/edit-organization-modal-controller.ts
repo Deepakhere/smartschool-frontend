@@ -4,9 +4,9 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import toast from "react-hot-toast";
 import { useTranslation } from "react-i18next";
 
-import { useUpdateOrganization, useUploadOrganizationLogo } from "@/entities/organization/api/organization-service";
-import { useError } from "@/shared/hooks";
-import { IOrganization } from "@/entities/organization/model/types";
+import { useUpdateOrganization, useUploadOrganizationLogo } from "@/entities/organization";
+import { useError } from "@/shared/lib/hooks";
+import { IOrganization } from "@/entities/organization";
 import { organizationFormSchema, OrganizationFormValues } from "./edit-organization-modal.schema";
 
 const useEditOrganizationModalController = (

@@ -1,6 +1,6 @@
 import { Route, Routes } from "react-router-dom";
 
-import PermissionGate from "@/entities/session/ui/permission-gate";
+import { PermissionGate } from "@/entities/session";
 import CertificateRegister from "./register/certificate-register";
 import IssueCertificate from "./issue/issue-certificate";
 

@@ -2,7 +2,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
 import apiClient from "@/shared/api";
 import { IAPIError, IAxiosResponse } from "@/shared/types";
-import { IAcademicYear, IClass, ISection, ISubject, ITeacherAssignment } from "@/entities/academics/model/types";
+import { IAcademicYear, IClass, ISection, ISubject, ITeacherAssignment } from "../model/types";
 import { APIS_ROUTES, API_QUERY_KEY, API_MUTATION_KEY } from "@/shared/lib";
 
 type RecordStatus = "active" | "inactive";

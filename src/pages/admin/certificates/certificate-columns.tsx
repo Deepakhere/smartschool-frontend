@@ -1,7 +1,7 @@
 import { DataTableColumn } from "@/shared/ui/data-table";
 import { Badge } from "@/shared/ui/kit/badge";
 import { Button } from "@/shared/ui/kit/button";
-import { ICertificate } from "@/entities/certificate/model/types";
+import { ICertificate } from "@/entities/certificate";
 import { formatDate } from "@/shared/lib";
 
 export const CERTIFICATE_TYPE_LABEL = { bonafide: "Bonafide", transfer: "Transfer certificate" } as const;

@@ -2,7 +2,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
 import apiClient from "@/shared/api";
 import { IAPIError, IAxiosResponse, Paged } from "@/shared/types";
-import { IHomework } from "@/entities/homework/model/types";
+import { IHomework } from "../model/types";
 import { APIS_ROUTES, API_QUERY_KEY, API_MUTATION_KEY } from "@/shared/lib";
 
 const base = (organizationId: string) => `${APIS_ROUTES.HOMEWORK_SERVICE}/${organizationId}`;

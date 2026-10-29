@@ -2,7 +2,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import apiClient from "@/shared/api/api-client";
 import { IAPIError, IAxiosResponse } from "@/shared/types";
-import { INotification } from "@/entities/notification/model/types";
+import { INotification } from "../model/types";
 import { APIS_ROUTES, API_QUERY_KEY, API_MUTATION_KEY } from "@/shared/lib";
 
 type MyNotificationsResponse = { items: INotification[]; unread_count: number };

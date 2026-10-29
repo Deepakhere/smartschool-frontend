@@ -3,11 +3,11 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import toast from "react-hot-toast";
 
-import { useError } from "@/shared/hooks";
-import { IExam, IGradingScheme } from "@/entities/exam/model/types";
+import { useError } from "@/shared/lib/hooks";
+import { IExam, IGradingScheme } from "@/entities/exam";
 import { SelectOption } from "@/shared/types";
 import { defaultExamValues, examSchema, ExamFormValues } from "../../reports.schema";
-import { useCreateExam, useUpdateExam } from "@/entities/exam/api/exams-service";
+import { useCreateExam, useUpdateExam } from "@/entities/exam";
 
 interface ExamFormDialogControllerArgs {
   organizationId: string;

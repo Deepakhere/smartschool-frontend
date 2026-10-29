@@ -3,7 +3,7 @@ import { TFunction } from "i18next";
 import { DataTableColumn } from "@/shared/ui/data-table";
 import { Badge, BadgeTone } from "@/shared/ui/kit/badge";
 import { Button } from "@/shared/ui/kit/button";
-import { IAllUserDetails } from "@/entities/user/model/types";
+import { IAllUserDetails } from "@/entities/user";
 
 const STATUS_TONE: Record<string, BadgeTone> = { active: "green", pending: "yellow", suspended: "red" };
 

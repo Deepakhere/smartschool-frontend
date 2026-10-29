@@ -10,10 +10,10 @@ import {
   useBookPTMSlot,
   useCancelPTMBooking,
   useGetMyPTMBookings,
-} from "@/entities/ptm/api/ptm-service";
-import { useGetMyChildren } from "@/entities/student/api/my-children-service";
-import { useError } from "@/shared/hooks";
-import { IPTMSlot } from "@/entities/ptm/model/types";
+} from "@/entities/ptm";
+import { useGetMyChildren } from "@/entities/student";
+import { useError } from "@/shared/lib/hooks";
+import { IPTMSlot } from "@/entities/ptm";
 import { SelectOption } from "@/shared/types";
 import { bookingSchema, BookingFormValues, defaultBookingValues } from "./ptm.schema";
 

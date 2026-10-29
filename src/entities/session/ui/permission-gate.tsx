@@ -1,7 +1,7 @@
 import { ReactNode } from "react";
 import { Navigate } from "react-router-dom";
 
-import { useCan } from "@/entities/session/model/tenant-context";
+import { useCan } from "../model/tenant-context";
 import { PermissionKey } from "@/shared/types";
 import { SHARED_PAGES } from "@/shared/config/shared-pages";
 

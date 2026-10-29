@@ -1,4 +1,4 @@
-import type { ILetterhead } from "@/entities/organization/model/types";
+import type { ILetterhead } from "@/entities/organization";
 
 export type CertificateType = "bonafide" | "transfer";
 

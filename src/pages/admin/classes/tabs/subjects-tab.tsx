@@ -6,7 +6,7 @@ import DataTable from "@/shared/ui/data-table";
 import DeleteConfirmationDialog from "@/shared/ui/delete-confirmation-dialog";
 import FormDialog from "@/shared/ui/form-dialog";
 import { SelectField, TextField } from "@/shared/ui/form-fields";
-import { IAcademicYear } from "@/entities/academics/model/types";
+import { IAcademicYear } from "@/entities/academics";
 import { SUBJECT_TYPES } from "../classes.schema";
 import ShowInactiveToggle from "../components/show-inactive-toggle";
 import YearPicker from "../components/year-picker";

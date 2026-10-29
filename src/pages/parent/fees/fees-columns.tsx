@@ -1,6 +1,6 @@
 import { DataTableColumn } from "@/shared/ui/data-table";
 import { Button } from "@/shared/ui/kit/button";
-import { IFeeInstallmentBalance, IPayment } from "@/entities/fee/model/types";
+import { IFeeInstallmentBalance, IPayment } from "@/entities/fee";
 import { formatMoney, paymentMethodLabel } from "@/shared/lib";
 
 interface InstallmentColumnActions {

@@ -4,8 +4,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslation } from "react-i18next";
 import ReCAPTCHA from "react-google-recaptcha";
 
-import { useForgotPassword } from "@/entities/session/api/auth-service";
-import useError from "@/shared/hooks/error/error";
+import { useForgotPassword } from "@/entities/session";
+import useError from "@/shared/lib/hooks/error/error";
 import { forgotPasswordSchema, ForgotPasswordFormValues } from "./forgot-password.schema";
 import { GOOGLE_CAPTCHA_KEY } from "@/shared/lib";
 

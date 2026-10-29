@@ -3,7 +3,7 @@ import { useDraggable } from "@dnd-kit/core";
 import Avatar from "@/shared/ui/avatar";
 import RowMenu from "@/shared/ui/row-menu";
 import { cn } from "@/shared/lib/utils";
-import { IPromotionCandidate } from "@/entities/promotion/model/types";
+import { IPromotionCandidate } from "@/entities/promotion";
 import { Lane } from "../promotion.utils";
 
 const RESULT_TONE: Record<string, string> = {

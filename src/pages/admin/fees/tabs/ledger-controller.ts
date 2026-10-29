@@ -1,11 +1,11 @@
-import { useCan } from "@/entities/session/model/tenant-context";
-import { useError, useExportRows, usePaging } from "@/shared/hooks";
+import { useCan } from "@/entities/session";
+import { useError, useExportRows, usePaging } from "@/shared/lib/hooks";
 import {
   downloadLedgerCsv,
   useDownloadFeeReceipt,
   useGetOnlinePaymentsForReview,
   useGetPaymentLedger,
-} from "@/entities/fee/api/fees-service";
+} from "@/entities/fee";
 
 const useLedgerController = (organizationId: string) => {
   const { page, pageSize, setPage, setPageSize } = usePaging();

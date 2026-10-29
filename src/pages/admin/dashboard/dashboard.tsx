@@ -4,10 +4,10 @@ import HighchartsReact from "highcharts-react-official";
 import { Link } from "react-router-dom";
 import { BellIcon } from "@heroicons/react/24/outline";
 
-import NoticeModal from "@/features/notice-modal";
+import { NoticeModalWrapper as NoticeModal } from "@/features/notice-modal";
 import SectionHeader from "@/shared/ui/section-header";
 import { useDashboardController } from "./dashboard-controller";
-import UserTypeSelectionModal from "@/features/user-type-selection-modal";
+import { UserTypeSelectionModal } from "@/features/user-type-selection-modal";
 import StatCard from "./stat-card";
 import ChartEmptyState from "./chart-empty-state";
 import { ChartSkeleton, StatCardSkeleton, UpdatesSkeleton } from "./dashboard-skeletons";

@@ -1,12 +1,12 @@
 import DataTable, { DataTableColumn } from "@/shared/ui/data-table";
 import ErrorState from "@/shared/ui/error-state";
-import ExportDialog from "@/features/export-dialog";
+import { ExportDialog } from "@/features/export-dialog";
 import { Badge } from "@/shared/ui/kit/badge";
 import { Button } from "@/shared/ui/kit/button";
 import { Card, CardTitle } from "@/shared/ui/kit/card";
-import { IPayment } from "@/entities/fee/model/types";
+import { IPayment } from "@/entities/fee";
 import { formatMoney, paymentMethodLabel } from "@/shared/lib";
-import { IOnlinePaymentForReview } from "@/entities/fee/api/fees-service";
+import { IOnlinePaymentForReview } from "@/entities/fee";
 import useLedgerController from "./ledger-controller";
 
 const reviewColumns: DataTableColumn<IOnlinePaymentForReview>[] = [

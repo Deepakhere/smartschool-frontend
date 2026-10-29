@@ -4,9 +4,9 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useParams } from "react-router-dom";
 import toast from "react-hot-toast";
 
-import { useGetSubjects } from "@/entities/academics/api/academics-service";
-import { useSectionPicker } from "@/features/section-picker/use-section-picker";
-import { useGetHomeworkList, useCreateHomework, useDeleteHomework } from "@/entities/homework/api/homework-service";
+import { useGetSubjects } from "@/entities/academics";
+import { useSectionPicker } from "@/features/section-picker";
+import { useGetHomeworkList, useCreateHomework, useDeleteHomework } from "@/entities/homework";
 import { homeworkFormSchema, defaultHomeworkFormValues } from "./homework.schema";
 
 // shared by admins and teachers: the pickers offer a teacher only the sections they teach

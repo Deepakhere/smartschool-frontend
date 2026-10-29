@@ -1,7 +1,7 @@
 import { DataTableColumn } from "@/shared/ui/data-table";
 import RowMenu, { RowMenuItem } from "@/shared/ui/row-menu";
 import StatusBadge from "@/shared/ui/status-badge";
-import { ISection } from "@/entities/academics/model/types";
+import { ISection } from "@/entities/academics";
 
 const seats = (section: ISection) => {
   const students = section.studentCount ?? 0;

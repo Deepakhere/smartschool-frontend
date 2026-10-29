@@ -1,5 +1,5 @@
 import { BadgeTone } from "@/shared/ui/kit/badge";
-import { SupportStatus, SupportTopic } from "@/entities/support/api/support-service";
+import { SupportStatus, SupportTopic } from "../api/support-service";
 
 export const TOPIC_OPTIONS: { id: SupportTopic; name: string }[] = [
   { id: "bug", name: "Something isn't working" },

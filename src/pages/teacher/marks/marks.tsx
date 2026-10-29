@@ -2,7 +2,7 @@ import { useParams } from "react-router-dom";
 
 import CustomSelectDropdown from "@/shared/ui/custom-select";
 import SectionHeader from "@/shared/ui/section-header";
-import MarksSheetCard from "@/features/marks-entry/marks-sheet-card";
+import { MarksSheetCard } from "@/features/marks-entry";
 import { Card, CardTitle } from "@/shared/ui/kit/card";
 import useTeacherMarksController from "./marks-controller";
 import EmptyState from "@/shared/ui/empty-state";

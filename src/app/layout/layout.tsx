@@ -1,10 +1,10 @@
 import { Outlet } from "react-router-dom";
 
-import Header from "@/widgets/header";
-import Sidebar from "@/widgets/sidebar";
-import BillingBanner from "@/widgets/billing-banner";
-import { PageHeaderProvider } from "@/shared/hooks/page-header/page-header-context";
-import { NotificationProvider } from "@/entities/notification/model/notification-context";
+import { Header } from "@/widgets/header";
+import { Sidebar } from "@/widgets/sidebar";
+import { BillingBanner } from "@/widgets/billing-banner";
+import { PageHeaderProvider } from "@/shared/lib/hooks/page-header/page-header-context";
+import { NotificationProvider } from "@/entities/notification";
 import { useLayoutController } from "./layout-controller";
 
 const Layout = () => {

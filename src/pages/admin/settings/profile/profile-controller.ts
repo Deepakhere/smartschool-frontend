@@ -5,15 +5,10 @@ import { useTranslation } from "react-i18next";
 import toast from "react-hot-toast";
 import Cookies from "js-cookie";
 
-import { useAuth } from "@/entities/session/model/auth-context";
-import { useTheme } from "@/features/theme/theme-context";
-import {
-  useUpdateUserPreferences,
-  useUploadAvatar,
-  useUpdateMyProfile,
-  useChangeMyPassword,
-} from "@/entities/session/api/profile-service";
-import { useError } from "@/shared/hooks";
+import { useAuth } from "@/entities/session";
+import { useTheme } from "@/features/theme";
+import { useUpdateUserPreferences, useUploadAvatar, useUpdateMyProfile, useChangeMyPassword } from "@/entities/session";
+import { useError } from "@/shared/lib/hooks";
 import { IAPIError } from "@/shared/types";
 import { editProfileSchema, changePasswordSchema, defaultChangePasswordValues } from "./profile.schema";
 

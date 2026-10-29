@@ -16,7 +16,7 @@ vi.mock("./auth-context", () => ({
 
 let mockIsLoading = false;
 let mockOrganizations: { id: string; name: string; myRole?: string | null }[] = [{ id: "org-1", name: "School One" }];
-vi.mock("@/entities/session/api/auth-service", () => ({
+vi.mock("../api/auth-service", () => ({
   useGetAllOrganizations: () => ({ isLoading: mockIsLoading, data: { items: mockOrganizations } }),
 }));
 

@@ -1,17 +1,13 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
-import { useDeleteStudent, useGetStudentById } from "@/entities/student/api/student-service";
-import { useAddGuardian, useSetPrimaryGuardian, useRemoveGuardian } from "@/entities/student/api/guardian-service";
-import {
-  useGetEnrollmentHistory,
-  useTransferStudent,
-  useWithdrawStudent,
-} from "@/entities/student/api/lifecycle-service";
-import { useGetStudentAttendanceHistory } from "@/entities/student/api/attendance-history-service";
-import { useGetResultsForStudent } from "@/entities/exam/api/exams-service";
-import { useError } from "@/shared/hooks";
-import { useAreaBase, useCan } from "@/entities/session/model/tenant-context";
+import { useDeleteStudent, useGetStudentById } from "@/entities/student";
+import { useAddGuardian, useSetPrimaryGuardian, useRemoveGuardian } from "@/entities/student";
+import { useGetEnrollmentHistory, useTransferStudent, useWithdrawStudent } from "@/entities/student";
+import { useGetStudentAttendanceHistory } from "@/entities/student";
+import { useGetResultsForStudent } from "@/entities/exam";
+import { useError } from "@/shared/lib/hooks";
+import { useAreaBase, useCan } from "@/entities/session";
 
 const useStudentDetailController = () => {
   const navigate = useNavigate();

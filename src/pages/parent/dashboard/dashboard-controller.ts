@@ -1,10 +1,10 @@
 import { useParams } from "react-router-dom";
 import { UserGroupIcon, BookOpenIcon, CurrencyDollarIcon, BellIcon } from "@heroicons/react/24/outline";
 
-import { useHasModule } from "@/entities/session/model/tenant-context";
+import { useHasModule } from "@/entities/session";
 import { ModuleKey } from "@/shared/types";
 import { formatMoney } from "@/shared/lib";
-import useGetParentDashboard from "@/entities/dashboard/api/get-parent-dashboard";
+import { useGetParentDashboard } from "@/entities/dashboard";
 
 const useParentDashboardController = () => {
   const { organizationId } = useParams();

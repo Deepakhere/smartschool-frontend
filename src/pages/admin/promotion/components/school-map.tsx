@@ -1,8 +1,8 @@
 import { CheckCircleIcon } from "@heroicons/react/20/solid";
 
 import { cn } from "@/shared/lib/utils";
-import { IClass, ISection } from "@/entities/academics/model/types";
-import { IPromotionSectionStats } from "@/entities/promotion/model/types";
+import { IClass, ISection } from "@/entities/academics";
+import { IPromotionSectionStats } from "@/entities/promotion";
 
 interface SchoolMapProps {
   rows: { klass: IClass; sections: { section: ISection; stats?: IPromotionSectionStats }[] }[];

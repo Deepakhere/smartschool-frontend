@@ -3,12 +3,12 @@ import { useTranslation } from "react-i18next";
 import debounce from "lodash.debounce";
 import toast from "react-hot-toast";
 
-import { useDeleteStudent, useGetStudentDetails, useReinviteParent } from "@/entities/student/api/student-service";
+import { useDeleteStudent, useGetStudentDetails, useReinviteParent } from "@/entities/student";
 import { useNavigate, useParams } from "react-router-dom";
-import { downloadStudentsCsv } from "@/entities/student/api/student-service";
-import { useError, useExportRows, usePaging } from "@/shared/hooks";
-import { useGetAcademicYears, useGetClasses } from "@/entities/academics/api/academics-service";
-import { useAreaBase, useCan, useHasModule } from "@/entities/session/model/tenant-context";
+import { downloadStudentsCsv } from "@/entities/student";
+import { useError, useExportRows, usePaging } from "@/shared/lib/hooks";
+import { useGetAcademicYears, useGetClasses } from "@/entities/academics";
+import { useAreaBase, useCan, useHasModule } from "@/entities/session";
 
 export type StudentListRow = NonNullable<ReturnType<typeof useGetStudentDetails>["data"]>["rows"][number];
 

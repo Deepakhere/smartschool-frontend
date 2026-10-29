@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 
 import { IAPIError, IAxiosResponse } from "@/shared/types";
-import { IUserDetailResponse } from "@/entities/session/model/types";
+import { IUserDetailResponse } from "../model/types";
 
 import Cookies from "js-cookie";
 import { APIS_ROUTES, API_QUERY_KEY, USER_ACCESS_KEY } from "@/shared/lib";

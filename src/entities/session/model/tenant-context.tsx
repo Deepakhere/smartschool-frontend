@@ -2,12 +2,12 @@ import { createContext, useContext, ReactNode } from "react";
 import { useParams, Navigate } from "react-router-dom";
 
 import { useAuth } from "./auth-context";
-import { useGetAllOrganizations } from "@/entities/session/api/auth-service";
+import { useGetAllOrganizations } from "../api/auth-service";
 import LogoSpinner from "@/shared/ui/logo-spinner";
-import { IOrganization } from "@/entities/organization/model/types";
+import { IOrganization } from "@/entities/organization";
 import { ModuleKey, PermissionKey } from "@/shared/types";
 import { ALL_MODULES } from "@/shared/lib/modules";
-import { homePathFor, UserRole } from "@/entities/session/lib/access";
+import { homePathFor, UserRole } from "../lib/access";
 
 interface ITenantContext {
   organizationId: string;

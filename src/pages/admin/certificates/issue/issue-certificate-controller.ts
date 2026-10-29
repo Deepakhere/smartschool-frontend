@@ -4,10 +4,10 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import toast from "react-hot-toast";
 
-import { useModuleLock } from "@/widgets/module-gate";
-import { useAreaBase, useCan, useTenant } from "@/entities/session/model/tenant-context";
-import { useError } from "@/shared/hooks";
-import { CertificateType, ICertificate } from "@/entities/certificate/model/types";
+import { useModuleLock } from "@/shared/lib/module-lock";
+import { useAreaBase, useCan, useTenant } from "@/entities/session";
+import { useError } from "@/shared/lib/hooks";
+import { CertificateType, ICertificate } from "@/entities/certificate";
 import { IAPIError } from "@/shared/types";
 import {
   downloadCertificatePdf,
@@ -15,7 +15,7 @@ import {
   useCertificates,
   useDuplicateCertificate,
   useIssueCertificate,
-} from "@/entities/certificate/api/certificate-service";
+} from "@/entities/certificate";
 import {
   bonafideDefaults,
   bonafideSchema,

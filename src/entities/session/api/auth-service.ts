@@ -1,9 +1,9 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 import apiClient from "@/shared/api";
 import { IAPIError, IAxiosResponse } from "@/shared/types";
-import { IForgetPasswordRequest, ILoginResponse } from "@/entities/session/model/types";
+import { IForgetPasswordRequest, ILoginResponse } from "../model/types";
 import { API_MUTATION_KEY, APIS_ROUTES, API_QUERY_KEY } from "@/shared/lib";
-import { IOrganization } from "@/entities/organization/model/types";
+import { IOrganization } from "@/entities/organization";
 
 const forgotPassword = async (forgotPasswordData: IForgetPasswordRequest) => {
   await apiClient.post(APIS_ROUTES.FORGOT_PASSWORD, forgotPasswordData);
