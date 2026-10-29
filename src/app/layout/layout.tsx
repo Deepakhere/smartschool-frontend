@@ -1,4 +1,6 @@
+import { Suspense } from "react";
 import { Outlet } from "react-router-dom";
+import PageLoader from "@/shared/ui/page-loader";
 
 import { Header } from "@/widgets/header";
 import { Sidebar } from "@/widgets/sidebar";
@@ -24,7 +26,9 @@ const Layout = () => {
             <Sidebar isCollapsed={isCollapsed} isMobileOpen={isSidebarOpen} />
             <main className="app-main-surface relative flex-1 overflow-y-auto bg-gray-50">
               <div className="p-6">
-                <Outlet />
+                <Suspense fallback={<PageLoader />}>
+                  <Outlet />
+                </Suspense>
               </div>
             </main>
           </div>

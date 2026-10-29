@@ -1,56 +1,56 @@
-import { ReactNode } from "react";
+import { lazy, ReactNode } from "react";
 import { createBrowserRouter, Navigate } from "react-router-dom";
 
 import Layout from "@/app/layout/layout";
 
-import AdminDashboard from "@/pages/admin/dashboard";
-import AdminNotices from "@/pages/admin/notices";
-import AdminHomework from "@/pages/admin/homework";
-import AdminReports from "@/pages/admin/reports";
-import AdminFees from "@/pages/admin/fees";
-import AdminStudents from "@/pages/admin/students";
-import StudentForm from "@/pages/admin/students/student-form";
 import { PermissionGate } from "@/entities/session";
-import AdminClasses from "@/pages/admin/classes";
-import AdminTeachers from "@/pages/admin/teachers";
-import AdminAttendance from "@/pages/admin/attendance";
-import AdminSettings from "@/pages/admin/settings";
-import AdminPTM from "@/pages/admin/ptm";
-import AdminCalendar from "@/pages/admin/calendar";
-import Timetable from "@/pages/admin/timetable";
-import AdminLeaveRequests from "@/pages/admin/leave-requests";
-import AdminPromotion from "@/pages/admin/promotion";
-import AdminCertificates from "@/pages/admin/certificates";
-
-import TeacherDashboard from "@/pages/teacher/dashboard";
-import TeacherPTM from "@/pages/teacher/ptm";
-import TeacherMarks from "@/pages/teacher/marks";
-
-import ParentDashboard from "@/pages/parent/dashboard";
-import ParentNotices from "@/pages/parent/notices";
-import ParentHomework from "@/pages/parent/homework";
-import ParentAttendance from "@/pages/parent/attendance";
-import ParentReports from "@/pages/parent/reports";
-import ParentFees from "@/pages/parent/fees";
-import ParentPTM from "@/pages/parent/ptm";
-import ParentLeaveRequests from "@/pages/parent/leave-requests";
 
 // same profile page for every role, mounted under each role's own path
-import Profile from "@/pages/admin/settings/profile";
 
-import Login from "@/pages/auth/login";
-import ForgotPassword from "@/pages/auth/forgot-password";
-import SetPassword from "@/pages/auth/set-password";
-import ResetPassword from "@/pages/auth/reset-password";
 import NotAccess from "@/shared/ui/not-access";
 import { AuthenticatedRoute, FallbackRoute, ProtectedRoute, PublicRoute } from "./route-guards";
 import { sharedRoutes } from "./shared-pages";
 import { FirstPermittedPage } from "@/entities/session";
 import { ModuleGate } from "@/widgets/module-gate";
 import { ModuleKey } from "@/shared/types";
-import SupportList from "@/pages/support/support-list";
-import SupportThread from "@/pages/support/support-thread";
-import Organization from "@/pages/auth/organization";
+
+// each page loads only when it is opened, so the first visit doesn't download every screen
+const AdminDashboard = lazy(() => import("@/pages/admin/dashboard"));
+const AdminNotices = lazy(() => import("@/pages/admin/notices"));
+const AdminHomework = lazy(() => import("@/pages/admin/homework"));
+const AdminReports = lazy(() => import("@/pages/admin/reports"));
+const AdminFees = lazy(() => import("@/pages/admin/fees"));
+const AdminStudents = lazy(() => import("@/pages/admin/students"));
+const StudentForm = lazy(() => import("@/pages/admin/students/student-form"));
+const AdminClasses = lazy(() => import("@/pages/admin/classes"));
+const AdminTeachers = lazy(() => import("@/pages/admin/teachers"));
+const AdminAttendance = lazy(() => import("@/pages/admin/attendance"));
+const AdminSettings = lazy(() => import("@/pages/admin/settings"));
+const AdminPTM = lazy(() => import("@/pages/admin/ptm"));
+const AdminCalendar = lazy(() => import("@/pages/admin/calendar"));
+const Timetable = lazy(() => import("@/pages/admin/timetable"));
+const AdminLeaveRequests = lazy(() => import("@/pages/admin/leave-requests"));
+const AdminPromotion = lazy(() => import("@/pages/admin/promotion"));
+const AdminCertificates = lazy(() => import("@/pages/admin/certificates"));
+const TeacherDashboard = lazy(() => import("@/pages/teacher/dashboard"));
+const TeacherPTM = lazy(() => import("@/pages/teacher/ptm"));
+const TeacherMarks = lazy(() => import("@/pages/teacher/marks"));
+const ParentDashboard = lazy(() => import("@/pages/parent/dashboard"));
+const ParentNotices = lazy(() => import("@/pages/parent/notices"));
+const ParentHomework = lazy(() => import("@/pages/parent/homework"));
+const ParentAttendance = lazy(() => import("@/pages/parent/attendance"));
+const ParentReports = lazy(() => import("@/pages/parent/reports"));
+const ParentFees = lazy(() => import("@/pages/parent/fees"));
+const ParentPTM = lazy(() => import("@/pages/parent/ptm"));
+const ParentLeaveRequests = lazy(() => import("@/pages/parent/leave-requests"));
+const Profile = lazy(() => import("@/pages/admin/settings/profile"));
+const Login = lazy(() => import("@/pages/auth/login"));
+const ForgotPassword = lazy(() => import("@/pages/auth/forgot-password"));
+const SetPassword = lazy(() => import("@/pages/auth/set-password"));
+const ResetPassword = lazy(() => import("@/pages/auth/reset-password"));
+const SupportList = lazy(() => import("@/pages/support/support-list"));
+const SupportThread = lazy(() => import("@/pages/support/support-thread"));
+const Organization = lazy(() => import("@/pages/auth/organization"));
 
 // a module the school's package leaves out opens read-only for staff
 const gate = (module: ModuleKey, element: ReactNode) => <ModuleGate module={module}>{element}</ModuleGate>;

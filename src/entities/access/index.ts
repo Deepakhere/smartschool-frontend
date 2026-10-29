@@ -6,4 +6,4 @@ export {
   useSetRoleDefaults,
   useReinviteMember,
 } from "./api/access-service";
-export type { StaffRole, AccessCatalog, MemberAccess } from "./api/access-service";
+export type { StaffRole, AccessCatalog } from "./api/access-service";
