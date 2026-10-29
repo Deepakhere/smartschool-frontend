@@ -18,7 +18,8 @@ const CustomSelectDropdown = ({
     <div className={className}>
       {label && <label className="block text-sm font-medium text-gray-700 mb-1">{label}</label>}
       <Select
-        value={value ? String(value.id) : undefined}
+        // always controlled: an empty string shows the placeholder
+        value={value ? String(value.id) : ""}
         onValueChange={(id) => {
           const option = options.find((o) => String(o.id) === id);
           if (option) onChange(option);

@@ -1,8 +1,6 @@
-import { useNavigate, useSearchParams } from "react-router-dom";
-
-import { useAreaBase } from "@/entities/session";
 import { SelectOption } from "@/shared/types";
 import ExamList from "../components/exam/exam-list";
+import useExamsTabController from "./exams-tab-controller";
 
 interface ExamsTabProps {
   organizationId: string;
@@ -10,19 +8,15 @@ interface ExamsTabProps {
   classOptions: SelectOption[];
 }
 
-// the exam list; an exam opens on its own page
 const ExamsTab = ({ organizationId, academicYearId, classOptions }: ExamsTabProps) => {
-  const navigate = useNavigate();
-  const areaBase = useAreaBase();
-  const [, setParams] = useSearchParams();
-
+  const c = useExamsTabController();
   return (
     <ExamList
       organizationId={organizationId}
       academicYearId={academicYearId}
       classOptions={classOptions}
-      openExam={(examId) => navigate(`${areaBase}/results/exams/${examId}`)}
-      openSchemes={() => setParams({ tab: "schemes" })}
+      openExam={c.openExam}
+      openSchemes={c.openSchemes}
     />
   );
 };

@@ -1,38 +1,17 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
 
-const COLLAPSE_STORAGE_KEY = "sidebar_collapsed";
+import { useLayoutStore } from "@/shared/model/layout-store";
 
 export const useLayoutController = () => {
-  // mobile drawer state only; on lg+ the sidebar is always visible via CSS
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const [isCollapsed, setIsCollapsed] = useState(() => localStorage.getItem(COLLAPSE_STORAGE_KEY) === "true");
+  const isSidebarOpen = useLayoutStore((state) => state.isSidebarOpen);
+  const closeSidebar = useLayoutStore((state) => state.closeSidebar);
   const { pathname } = useLocation();
-
-  const toggleSidebar = () => {
-    setIsSidebarOpen((prev) => !prev);
-  };
-
-  const closeSidebar = () => setIsSidebarOpen(false);
-
-  const toggleCollapse = () => {
-    setIsCollapsed((prev) => !prev);
-  };
-
-  useEffect(() => {
-    localStorage.setItem(COLLAPSE_STORAGE_KEY, String(isCollapsed));
-  }, [isCollapsed]);
 
   // close the mobile drawer on nav; a no-op on desktop
   useEffect(() => {
-    setIsSidebarOpen(false);
-  }, [pathname]);
+    closeSidebar();
+  }, [pathname, closeSidebar]);
 
-  return {
-    isSidebarOpen,
-    toggleSidebar,
-    closeSidebar,
-    isCollapsed,
-    toggleCollapse,
-  };
+  return { isSidebarOpen, closeSidebar };
 };

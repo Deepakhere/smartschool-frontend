@@ -28,7 +28,6 @@ export default tseslint.config(
             "useFormField",
             "useAuth",
             "useNotifications",
-            "usePageHeaderContext",
             "useTenant",
             "useCurrentRole",
             "useAreaBase",

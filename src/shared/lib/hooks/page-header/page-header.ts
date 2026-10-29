@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
 
-import { usePageHeaderContext } from "@/shared/lib/hooks/page-header/page-header-context";
+import { usePageHeaderStore } from "@/shared/model/page-header-store";
 
 interface UsePageHeaderOptions {
   title?: string;
@@ -9,7 +9,7 @@ interface UsePageHeaderOptions {
 
 // pages call this to put their title and optional back button in the top bar
 const usePageHeader = ({ title, onBack }: UsePageHeaderOptions) => {
-  const { setConfig } = usePageHeaderContext();
+  const setConfig = usePageHeaderStore((state) => state.setConfig);
   // the latest handler runs on click; re-registering on each new function would re-render the page and loop
   const latestBack = useRef(onBack);
   latestBack.current = onBack;

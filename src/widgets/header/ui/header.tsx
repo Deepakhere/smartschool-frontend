@@ -8,14 +8,17 @@ import NotificationBell from "./notification-bell";
 import { SupportDialog } from "@/features/support-dialog";
 import { useHeaderController } from "../model/header-controller";
 
-interface HeaderProps {
-  onToggleSidebar: () => void;
-  isCollapsed: boolean;
-  onToggleCollapse: () => void;
-}
-
-const Header = ({ onToggleSidebar, isCollapsed, onToggleCollapse }: HeaderProps) => {
-  const { homePath, pageHeaderConfig, canAskSupport, isAskingSupport, setIsAskingSupport } = useHeaderController();
+const Header = () => {
+  const {
+    isCollapsed,
+    onToggleSidebar,
+    onToggleCollapse,
+    homePath,
+    pageHeaderConfig,
+    canAskSupport,
+    isAskingSupport,
+    setIsAskingSupport,
+  } = useHeaderController();
 
   return (
     <header className="app-shell-surface bg-white z-40">

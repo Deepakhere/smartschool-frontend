@@ -1,6 +1,8 @@
 import ErrorState from "@/shared/ui/error-state";
 import Highcharts from "highcharts";
 import HighchartsReact from "highcharts-react-official";
+// screen readers can describe the charts
+import "highcharts/modules/accessibility";
 import { Link } from "react-router-dom";
 import { BellIcon } from "@heroicons/react/24/outline";
 

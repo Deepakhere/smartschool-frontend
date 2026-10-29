@@ -1,3 +1,4 @@
+import { useLayoutStore } from "@/shared/model/layout-store";
 import { useParams } from "react-router-dom";
 
 import { useAuth } from "@/entities/session";
@@ -24,6 +25,7 @@ export const useSidebarUserMenuController = () => {
   };
 
   return {
+    isCollapsed: useLayoutStore((state) => state.isCollapsed),
     user,
     role,
     theme,

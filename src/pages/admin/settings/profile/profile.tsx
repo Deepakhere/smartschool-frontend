@@ -1,6 +1,3 @@
-import { useLocation } from "react-router-dom";
-
-import { useCurrentRole } from "@/entities/session";
 import SectionHeader from "@/shared/ui/section-header";
 import {
   UserIcon,
@@ -48,10 +45,9 @@ const AdminProfile = () => {
     passwordForm,
     onSubmitPasswordChange,
     isChangingPassword,
+    standalone,
+    currentRole,
   } = useProfileController();
-  const currentRole = useCurrentRole();
-  // inside Settings the page header is already there; teachers and parents open Profile on its own
-  const standalone = !useLocation().pathname.includes("/settings/");
 
   const languageOptions: SelectOption[] = [
     { id: "en", name: t("common.languages.english") },

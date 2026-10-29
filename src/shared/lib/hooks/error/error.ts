@@ -8,14 +8,10 @@ import { IAPIError } from "@/shared/types";
 
 const useError = ({
   mutation,
-  entity,
-  dependentEntities,
   cb,
 }: {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   mutation: UseMutationResult<any, IAPIError, any, any>;
-  entity?: string;
-  dependentEntities?: string;
   cb?: () => void;
 }) => {
   const navigate = useNavigate();
@@ -39,7 +35,7 @@ const useError = ({
       cb && cb();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [dependentEntities, entity, history, mutation.error, mutation.isError, t]);
+  }, [mutation.error, mutation.isError]);
 };
 
 export default useError;

@@ -1,3 +1,5 @@
+import { useLocation } from "react-router-dom";
+import { useCurrentRole } from "@/entities/session";
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -116,8 +118,14 @@ const useProfileController = () => {
     updateServerPreferences.mutate({ smsNotifications: checked });
   };
 
+  const location = useLocation();
+  // inside Settings the page header is already there; teachers and parents open Profile on its own
+  const standalone = !location.pathname.includes("/settings/");
+
   return {
     t,
+    standalone,
+    currentRole: useCurrentRole(),
     user,
     editMode,
     imageUrl,

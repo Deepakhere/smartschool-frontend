@@ -41,8 +41,8 @@ const useForgotPasswordController = () => {
         email: values.email,
         captcha_token: captchaToken,
       });
-    } catch (submitError) {
-      console.log(submitError);
+    } catch {
+      // the error toast comes from useError above
     }
   });
 

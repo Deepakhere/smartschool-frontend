@@ -17,10 +17,6 @@ import { useIsMobile } from "@/shared/lib/hooks";
 import { useSidebarUserMenuController } from "../model/sidebar-user-menu-controller";
 import { revealMotion } from "@/shared/lib/sidebar-motion";
 
-interface SidebarUserMenuProps {
-  isCollapsed: boolean;
-}
-
 // shared by the desktop popover and the mobile bottom sheet; only the container changes
 const UserMenuBody = ({
   user,
@@ -30,7 +26,7 @@ const UserMenuBody = ({
   supportPath,
   isPlatformAdmin,
   handleLogout,
-}: ReturnType<typeof useSidebarUserMenuController>) => {
+}: Omit<ReturnType<typeof useSidebarUserMenuController>, "isCollapsed">) => {
   const { t } = useTranslation();
   if (!user?.name) return null;
 
@@ -131,8 +127,8 @@ const UserMenuBody = ({
   );
 };
 
-const SidebarUserMenu = ({ isCollapsed }: SidebarUserMenuProps) => {
-  const { user, role, ...rest } = useSidebarUserMenuController();
+const SidebarUserMenu = () => {
+  const { isCollapsed, user, role, ...rest } = useSidebarUserMenuController();
   const isMobile = useIsMobile();
 
   if (!user?.name) return null;

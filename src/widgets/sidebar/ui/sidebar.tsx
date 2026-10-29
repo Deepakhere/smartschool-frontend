@@ -7,14 +7,10 @@ import { SidebarSection, useSidebarController } from "../model/sidebar-controlle
 import SidebarEntry from "./sidebar-entry";
 import { revealMotion } from "@/shared/lib/sidebar-motion";
 
-interface SidebarProps {
-  isCollapsed: boolean;
-  isMobileOpen: boolean;
-}
-
 // main list and one section's panel, sliding side by side
-const Sidebar = ({ isCollapsed, isMobileOpen }: SidebarProps) => {
+const Sidebar = () => {
   const c = useSidebarController();
+  const { isCollapsed, isMobileOpen } = c;
   // one card at a time, and only while collapsed: hovers while expanded are ignored
   const [openHint, setOpenHint] = useState<string | null>(null);
   const entry = { isCollapsed, openHint, setOpenHint };
@@ -110,7 +106,7 @@ const Sidebar = ({ isCollapsed, isMobileOpen }: SidebarProps) => {
         </div>
       </div>
 
-      <SidebarUserMenu isCollapsed={isCollapsed} />
+      <SidebarUserMenu />
     </div>
   );
 };
