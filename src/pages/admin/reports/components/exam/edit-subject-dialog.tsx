@@ -1,14 +1,7 @@
-import { useEffect } from "react";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import toast from "react-hot-toast";
-
 import FormDialog from "@/shared/ui/form-dialog";
 import { CheckboxField, TextField } from "@/shared/ui/form-fields";
-import { useError } from "@/shared/lib/hooks";
 import { IExamOverviewSubject } from "@/entities/exam";
-import { subjectMarksSchema, SubjectMarksFormValues } from "../../reports.schema";
-import { useUpdateExamSubject } from "@/entities/exam";
+import useEditSubjectDialogController from "./edit-subject-dialog-controller";
 
 interface EditSubjectDialogProps {
   organizationId: string;
@@ -22,43 +15,11 @@ const subjectName = (subject: IExamOverviewSubject | null) =>
 
 // a subject's marks; the server keeps any maximum from dropping below marks already given
 const EditSubjectDialog = ({ organizationId, subject, onClose }: EditSubjectDialogProps) => {
-  const updateSubject = useUpdateExamSubject(organizationId);
-  useError({ mutation: updateSubject });
-  const form = useForm<SubjectMarksFormValues>({ resolver: zodResolver(subjectMarksSchema) });
-
-  useEffect(() => {
-    if (subject) {
-      form.reset({
-        maxMarks: String(subject.maxMarks),
-        passMarks: String(subject.passMarks),
-        hasPractical: subject.hasPractical,
-        practicalMaxMarks: subject.hasPractical ? String(subject.practicalMaxMarks) : "",
-      });
-    }
-  }, [subject, form]);
-
-  const onSubmit = form.handleSubmit((values) => {
-    if (!subject) return;
-    updateSubject.mutate(
-      {
-        examSubjectId: subject.id,
-        maxMarks: Number(values.maxMarks),
-        passMarks: Number(values.passMarks),
-        hasPractical: values.hasPractical,
-        practicalMaxMarks: values.hasPractical ? Number(values.practicalMaxMarks) : 0,
-      },
-      {
-        onSuccess: () => {
-          toast.success("Subject updated.");
-          onClose();
-        },
-      }
-    );
-  });
+  const c = useEditSubjectDialogController(organizationId, subject, onClose);
 
   return (
     <FormDialog
-      form={form}
+      form={c.form}
       open={!!subject}
       onClose={onClose}
       title={`Edit ${subjectName(subject)}`}
@@ -68,17 +29,17 @@ const EditSubjectDialog = ({ organizationId, subject, onClose }: EditSubjectDial
           : "Change the maximum and pass marks for this paper."
       }
       submitLabel="Save changes"
-      isSubmitting={updateSubject.isPending}
-      onSubmit={onSubmit}
+      isSubmitting={c.isSaving}
+      onSubmit={c.onSubmit}
       className="max-w-md"
     >
       <div className="grid grid-cols-2 gap-4">
-        <TextField form={form} name="maxMarks" label="Max marks" type="number" min={1} autoFocus />
-        <TextField form={form} name="passMarks" label="Pass marks" type="number" min={0} />
+        <TextField form={c.form} name="maxMarks" label="Max marks" type="number" min={1} autoFocus />
+        <TextField form={c.form} name="passMarks" label="Pass marks" type="number" min={0} />
       </div>
-      <CheckboxField form={form} name="hasPractical" label="Has a practical" />
-      {form.watch("hasPractical") && (
-        <TextField form={form} name="practicalMaxMarks" label="Practical max marks" type="number" min={1} />
+      <CheckboxField form={c.form} name="hasPractical" label="Has a practical" />
+      {c.form.watch("hasPractical") && (
+        <TextField form={c.form} name="practicalMaxMarks" label="Practical max marks" type="number" min={1} />
       )}
     </FormDialog>
   );
