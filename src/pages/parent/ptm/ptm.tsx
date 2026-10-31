@@ -97,16 +97,17 @@ const ParentPTM = () => {
                       <button
                         type="button"
                         key={slot.id}
-                        disabled={slot.full}
+                        disabled={slot.full || slot.alreadyBooked}
                         onClick={() => openBookingFor(slot.id)}
                         className={`px-3 py-2 rounded-md text-xs border text-left ${
-                          slot.full
+                          slot.full || slot.alreadyBooked
                             ? "bg-gray-100 text-gray-400 border-gray-200 cursor-not-allowed"
                             : "bg-white text-gray-700 border-gray-300 hover:bg-primary-50"
                         }`}
                       >
                         <div className="font-medium">{slot.teacherName}</div>
                         <div>{slot.time}</div>
+                        {slot.alreadyBooked && <div>Already booked</div>}
                       </button>
                     ))}
                   </div>

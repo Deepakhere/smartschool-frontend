@@ -32,9 +32,12 @@ const StudentFeeCard = ({ organizationId, summary, onReverse }: StudentFeeCardPr
   return (
     <Card>
       <div className="mb-4 flex items-center justify-between">
-        <h3 className="text-base font-medium text-gray-900">
-          Balance: {formatMoney(summary.totalBalance)} of {formatMoney(summary.totalNet)}
-        </h3>
+        <div>
+          {summary.feeStructureName && <p className="text-sm text-gray-500">{summary.feeStructureName}</p>}
+          <h3 className="text-base font-medium text-gray-900">
+            Balance: {formatMoney(summary.totalBalance)} of {formatMoney(summary.totalNet)}
+          </h3>
+        </div>
         <Badge tone={summary.totalBalance > 0 ? "red" : "green"}>
           {summary.totalBalance > 0 ? "Due" : "Fully paid"}
         </Badge>

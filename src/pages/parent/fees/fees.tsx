@@ -34,7 +34,10 @@ const ParentFees = () => {
             return (
               <div key={fee.studentFeeId} className="bg-white rounded-lg shadow p-6">
                 <div className="flex justify-between items-center mb-4">
-                  <h2 className="text-lg font-semibold text-gray-900">{fee.studentName}</h2>
+                  <div>
+                    <h2 className="text-lg font-semibold text-gray-900">{fee.studentName}</h2>
+                    {fee.feeStructureName && <p className="text-sm text-gray-500">{fee.feeStructureName}</p>}
+                  </div>
                   <div className="flex items-center gap-3">
                     <span
                       className={`px-3 py-1 rounded-full text-xs font-medium ${

@@ -59,6 +59,8 @@ export interface IFeeConcession {
 
 export interface IStudentFeeSummary {
   studentFeeId: string;
+  // the structure this record bills, e.g. "Grade 6 fees" or "Transport"
+  feeStructureName: string;
   academicYearId: string;
   studentId?: string;
   studentName?: string;
@@ -73,7 +75,7 @@ export interface IStudentFeeSummary {
 // fee desk reports (amounts in paise)
 export interface IFeeDefaulter {
   studentId: string;
-  studentFeeId: string;
+  studentFeeIds: string[];
   overdueAmount: number;
   outstandingAmount: number;
   overdueInstallments: { label: string; dueDate: string; balance: number }[];

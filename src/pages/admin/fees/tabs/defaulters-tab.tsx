@@ -116,7 +116,7 @@ const DefaultersTab = ({ organizationId }: { organizationId: string }) => {
         <DataTable
           columns={columns}
           data={c.rows}
-          getRowId={(row) => row.studentFeeId}
+          getRowId={(row) => row.studentId}
           isLoading={c.isLoading}
           pagination={c.pagination}
           itemLabel={{ one: "defaulter", other: "defaulters" }}
