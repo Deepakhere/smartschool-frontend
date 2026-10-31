@@ -33,6 +33,12 @@ const useFeeHeadsController = (organizationId: string) => {
   });
   const [editing, setEditing] = useState<IFeeHead | null>(null);
   const [retiring, setRetiring] = useState<IFeeHead | null>(null);
+  const [isCreateOpen, setIsCreateOpen] = useState(false);
+
+  const closeCreate = () => {
+    setIsCreateOpen(false);
+    form.reset(defaultFeeHeadValues);
+  };
 
   const openEdit = (head: IFeeHead) => {
     editForm.reset({ name: head.name, category: head.category || "misc", isRefundable: head.isRefundable });
@@ -66,7 +72,7 @@ const useFeeHeadsController = (organizationId: string) => {
     createFeeHead.mutate(values, {
       onSuccess: () => {
         toast.success("Fee head created.");
-        form.reset(defaultFeeHeadValues);
+        closeCreate();
       },
     })
   );
@@ -85,6 +91,9 @@ const useFeeHeadsController = (organizationId: string) => {
     isCreating: createFeeHead.isPending,
     isUpdating: updateFeeHead.isPending,
     isRetiring: deactivateFeeHead.isPending,
+    isCreateOpen,
+    openCreate: () => setIsCreateOpen(true),
+    closeCreate,
     editing,
     closeEdit: () => setEditing(null),
     openEdit,

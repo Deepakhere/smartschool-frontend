@@ -1,11 +1,10 @@
+import { PlusIcon } from "@heroicons/react/20/solid";
+
 import DataTable from "@/shared/ui/data-table";
 import DeleteConfirmationDialog from "@/shared/ui/delete-confirmation-dialog";
 import ErrorState from "@/shared/ui/error-state";
 import FormDialog from "@/shared/ui/form-dialog";
 import { CheckboxField, SelectField, TextField } from "@/shared/ui/form-fields";
-import { Button } from "@/shared/ui/kit/button";
-import { Card, CardTitle } from "@/shared/ui/kit/card";
-import { Form } from "@/shared/ui/kit/form";
 import { SelectOption } from "@/shared/types";
 import { feeHeadColumns } from "./fee-heads-columns";
 import useFeeHeadsController from "./fee-heads-controller";
@@ -25,23 +24,6 @@ const FeeHeadsTab = ({ organizationId }: { organizationId: string }) => {
 
   return (
     <div className="space-y-6">
-      <Card>
-        <CardTitle className="mb-4 font-medium">Create Fee Head</CardTitle>
-        <Form {...form}>
-          <form onSubmit={c.onSubmit} noValidate className="grid grid-cols-1 items-start gap-3 sm:grid-cols-4">
-            <TextField form={form} name="name" label="Name" placeholder="Tuition fee" />
-            <TextField form={form} name="code" label="Code" placeholder="TUI" />
-            <SelectField form={form} name="category" label="Category" options={categoryOptions} />
-            <div className="flex items-center justify-between gap-3 sm:mt-6">
-              <CheckboxField form={form} name="isRefundable" label="Refundable" />
-              <Button type="submit" loading={c.isCreating}>
-                Add
-              </Button>
-            </div>
-          </form>
-        </Form>
-      </Card>
-
       <div>
         {c.isError ? (
           <ErrorState error={c.error} onRetry={c.retry} />
@@ -53,13 +35,30 @@ const FeeHeadsTab = ({ organizationId }: { organizationId: string }) => {
             isLoading={c.isLoading}
             itemLabel={{ one: "fee head", other: "fee heads" }}
             pagination={{ pageSize: 20 }}
+            actions={[{ label: "New fee head", icon: PlusIcon, variant: "primary", onClick: c.openCreate }]}
             empty={{
               title: "No fee heads yet",
-              description: "Add one above, such as Tuition or Transport, to build fee structures from.",
+              description: "Add one, such as Tuition or Transport, to build fee structures from.",
             }}
           />
         )}
       </div>
+
+      <FormDialog
+        form={form}
+        open={c.isCreateOpen}
+        onClose={c.closeCreate}
+        title="New fee head"
+        description="A charge such as Tuition or Transport. Fee structures are built from these."
+        submitLabel="Create"
+        isSubmitting={c.isCreating}
+        onSubmit={c.onSubmit}
+      >
+        <TextField form={form} name="name" label="Name" placeholder="Tuition fee" />
+        <TextField form={form} name="code" label="Code" placeholder="TUI" />
+        <SelectField form={form} name="category" label="Category" options={categoryOptions} />
+        <CheckboxField form={form} name="isRefundable" label="Refundable" />
+      </FormDialog>
 
       <FormDialog
         form={editForm}

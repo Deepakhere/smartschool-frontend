@@ -67,12 +67,7 @@ const Chip = ({ outcome, children }: { outcome: Outcome; children: React.ReactNo
 const StatusIcon = ({ progress }: { progress?: RunProgress }) => {
   if (!progress) return null;
   if (progress.state === "running")
-    return (
-      <span
-        className="h-5 w-5 animate-spin rounded-full border-2 border-gray-200 border-t-gray-800"
-        aria-label="Running"
-      />
-    );
+    return <span className="h-5 w-5 animate-spin rounded-full border-2 spinner-ring" aria-label="Running" />;
   if (progress.state === "done") return <CheckCircleIcon className="h-5 w-5 text-green-600" aria-label="Done" />;
   return <ExclamationCircleIcon className="h-5 w-5 text-red-600" aria-label="Some failed" />;
 };

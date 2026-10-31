@@ -434,3 +434,14 @@
 .dark .data-\[highlighted\]\:text-primary-900[data-highlighted] {
   @apply text-primary-200;
 }
+
+/* loading ring: a faint track with one dark arc, flipped to a white arc on dark surfaces */
+.spinner-ring {
+  border-color: #e5e5e5;
+  border-top-color: #262626;
+}
+
+.dark .spinner-ring {
+  border-color: rgb(255 255 255 / 0.15);
+  border-top-color: #ffffff;
+}

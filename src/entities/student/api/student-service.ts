@@ -202,12 +202,13 @@ export const useGetStudentDetails = (
   classId: string,
   searchTerm: string,
   limit: number,
-  page: number
+  page: number,
+  enabled = true
 ) =>
   useQuery<Paged<IStudentResponse>, IAPIError>({
     queryKey: [API_QUERY_KEY.GET_STUDENT_PROFILE, organizationId, classId, searchTerm, limit, page],
     queryFn: () => getStudentDetails(organizationId, classId, searchTerm, limit, page),
-    enabled: !!organizationId,
+    enabled: !!organizationId && enabled,
   });
 
 // emails a parent who has not set a password yet a fresh set-password link

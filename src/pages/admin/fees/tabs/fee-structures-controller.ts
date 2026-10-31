@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useFieldArray, useForm, useWatch } from "react-hook-form";
+import { FieldErrors, FieldPath, useFieldArray, useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import toast from "react-hot-toast";
 
@@ -16,6 +16,13 @@ import {
   useGetFeeStructures,
   useUpdateFeeStructure,
 } from "@/entities/fee";
+
+// the drawer walks through these in order; Next checks only the open step's fields
+export const STRUCTURE_STEPS = [
+  { title: "Classes", fields: ["name", "classIds", "sectionIds"] },
+  { title: "Charges", fields: ["items"] },
+  { title: "Instalments", fields: ["installments", "lateFeeAmount", "lateFeeGraceDays"] },
+] as const satisfies { title: string; fields: FieldPath<FeeStructureFormValues>[] }[];
 
 const sumPaise = (rows: { amount: string }[] = []) =>
   rows.reduce((sum, row) => sum + (toPaise(row.amount || 0) || 0), 0);
@@ -39,8 +46,11 @@ const useFeeStructuresController = (organizationId: string) => {
   useError({ mutation: createStructure });
   useError({ mutation: assignStructure });
   useError({ mutation: updateStructure });
-  // the structure being edited in the form above, if any
+  // the form opens in a dialog: empty to create, filled to edit
+  const [isFormOpen, setIsFormOpen] = useState(false);
   const [editing, setEditing] = useState<IFeeStructure | null>(null);
+  const [step, setStep] = useState(0);
+  const isLastStep = step === STRUCTURE_STEPS.length - 1;
   const [applyToUnpaid, setApplyToUnpaid] = useState(false);
 
   const form = useForm<FeeStructureFormValues>({
@@ -105,12 +115,38 @@ const useFeeStructuresController = (organizationId: string) => {
     });
     setApplyToUnpaid(false);
     setEditing(structure);
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    setStep(0);
+    setIsFormOpen(true);
   };
 
-  const stopEdit = () => {
+  const openCreate = () => {
     setEditing(null);
     form.reset(defaultFeeStructureValues());
+    setStep(0);
+    setIsFormOpen(true);
+  };
+
+  const closeForm = () => {
+    setIsFormOpen(false);
+    setEditing(null);
+    form.reset(defaultFeeStructureValues());
+  };
+
+  const goNext = async () => {
+    if (await form.trigger([...STRUCTURE_STEPS[step].fields])) setStep(step + 1);
+  };
+
+  // any step can be opened; jumping ahead checks only the steps in between
+  const goToStep = async (index: number) => {
+    if (index <= step) return setStep(index);
+    const fields = STRUCTURE_STEPS.slice(step, index).flatMap((s) => [...s.fields]);
+    if (await form.trigger(fields)) setStep(index);
+  };
+
+  // a save the schema refuses opens the first step that has a problem
+  const showFirstProblem = (errors: FieldErrors<FeeStructureFormValues>) => {
+    const index = STRUCTURE_STEPS.findIndex((s) => s.fields.some((field) => field in errors));
+    if (index >= 0) setStep(index);
   };
 
   const onSubmit = form.handleSubmit((values) => {
@@ -141,7 +177,7 @@ const useFeeStructuresController = (organizationId: string) => {
                   ? `Saved as a new version. ${result.moved_count} student(s) moved to the new amounts; ${result.kept_count} keep what they were billed.`
                   : `Saved as a new version. ${result.kept_count} student(s) already billed keep their amounts.`
             );
-            stopEdit();
+            closeForm();
           },
         }
       );
@@ -157,11 +193,11 @@ const useFeeStructuresController = (organizationId: string) => {
       {
         onSuccess: () => {
           toast.success("Fee structure created.");
-          form.reset(defaultFeeStructureValues());
+          closeForm();
         },
       }
     );
-  });
+  }, showFirstProblem);
 
   const onAssign = (feeStructureId: string) =>
     assignStructure.mutate(feeStructureId, {
@@ -182,11 +218,18 @@ const useFeeStructuresController = (organizationId: string) => {
     itemsTotal: sumPaise(itemRows),
     installmentsTotal: sumPaise(installmentRows),
     installmentsError: form.formState.errors.installments?.root?.message,
+    isFormOpen,
+    step,
+    isLastStep,
+    goNext,
+    goBack: () => setStep((current) => Math.max(0, current - 1)),
+    goToStep,
+    openCreate,
+    closeForm,
     editing,
     applyToUnpaid,
     setApplyToUnpaid,
     startEdit,
-    stopEdit,
     onSubmit,
     isSaving: createStructure.isPending || updateStructure.isPending,
     structures: structures.data?.items ?? [],

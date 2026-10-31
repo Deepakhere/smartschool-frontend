@@ -7,8 +7,11 @@ import { TooltipProvider } from "../shared/ui/kit/tooltip";
 import AppToaster from "../shared/ui/app-toaster";
 import router from "./router";
 import LogoSpinner from "../shared/ui/logo-spinner";
+import { useNetworkToast } from "@/shared/lib/hooks";
 
 function App() {
+  useNetworkToast();
+
   return (
     <AuthProvider>
       <ThemeProvider>

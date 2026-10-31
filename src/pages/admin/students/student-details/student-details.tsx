@@ -103,7 +103,7 @@ const StudentDetails = () => {
           </button>
         </div>
       ) : (
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="max-w-7xl mx-auto">
           <div className="mb-6 flex flex-wrap items-center justify-between gap-4 rounded-lg bg-white p-5 shadow">
             <div className="flex items-center gap-4">
               {studentDetails?.photoUrl ? (

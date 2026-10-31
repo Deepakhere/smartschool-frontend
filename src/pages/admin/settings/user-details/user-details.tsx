@@ -57,7 +57,7 @@ const UserDetails = () => {
   const columns = userColumns({ t, isSelf, manageAccess, edit: handleEditUserDetails, remove: onClickDeleteUser });
 
   return (
-    <div className="px-4 sm:px-6 lg:px-8">
+    <div>
       <DataTable
         columns={columns}
         data={users}

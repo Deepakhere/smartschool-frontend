@@ -7,6 +7,7 @@ import { Sidebar } from "@/widgets/sidebar";
 import { BillingBanner } from "@/widgets/billing-banner";
 import { NotificationProvider } from "@/entities/notification";
 import { useLayoutController } from "./layout-controller";
+import ContentErrorBoundary from "./content-error-boundary";
 
 const Layout = () => {
   const { isSidebarOpen, closeSidebar } = useLayoutController();
@@ -24,9 +25,11 @@ const Layout = () => {
           <Sidebar />
           <main className="app-main-surface relative flex-1 overflow-y-auto bg-gray-50">
             <div className="p-6">
-              <Suspense fallback={<PageLoader />}>
-                <Outlet />
-              </Suspense>
+              <ContentErrorBoundary>
+                <Suspense fallback={<PageLoader />}>
+                  <Outlet />
+                </Suspense>
+              </ContentErrorBoundary>
             </div>
           </main>
         </div>

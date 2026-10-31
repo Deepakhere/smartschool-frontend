@@ -10,6 +10,7 @@ import { PermissionGate } from "@/entities/session";
 import NotAccess from "@/shared/ui/not-access";
 import { AuthenticatedRoute, FallbackRoute, ProtectedRoute, PublicRoute } from "./route-guards";
 import { sharedRoutes } from "./shared-pages";
+import RouteError from "./route-error";
 import { FirstPermittedPage } from "@/entities/session";
 import { ModuleGate } from "@/widgets/module-gate";
 import { ModuleKey } from "@/shared/types";
@@ -55,266 +56,271 @@ const Organization = lazy(() => import("@/pages/auth/organization"));
 // a module the school's package leaves out opens read-only for staff
 const gate = (module: ModuleKey, element: ReactNode) => <ModuleGate module={module}>{element}</ModuleGate>;
 
-// built once at module load: re-creating the router on a re-render would reset navigation state
+// built once at module load; one parent route sends any page error to RouteError, not the router's bare default
 const router = createBrowserRouter([
   {
-    path: "/",
-    element: (
-      <PublicRoute>
-        <Navigate to="/login" replace />
-      </PublicRoute>
-    ),
-  },
-  {
-    path: "/login",
-    element: (
-      <PublicRoute>
-        <Login />
-      </PublicRoute>
-    ),
-  },
-  {
-    path: "/forgot-password",
-    element: (
-      <PublicRoute>
-        <ForgotPassword />
-      </PublicRoute>
-    ),
-  },
-  {
-    path: "/organization",
-    element: (
-      <AuthenticatedRoute>
-        <Organization />
-      </AuthenticatedRoute>
-    ),
-  },
-  {
-    path: "/set-password",
-    element: <SetPassword />,
-  },
-  {
-    path: "/reset-password",
-    element: <ResetPassword />,
-  },
-  {
-    path: "/not-access",
-    element: <NotAccess />,
-  },
-  {
-    path: "/:organizationId/admin",
-    element: (
-      <ProtectedRoute role="admin">
-        <Layout />
-      </ProtectedRoute>
-    ),
+    errorElement: <RouteError />,
     children: [
       {
-        index: true,
-        element: <Navigate to="dashboard" replace />,
-      },
-      {
-        path: "dashboard",
-        element: <AdminDashboard />,
-      },
-      {
-        path: "notices",
-        element: gate("notices", <AdminNotices />),
-      },
-      {
-        path: "homework",
-        element: gate("homework", <AdminHomework />),
-      },
-      {
-        path: "results/*",
-        element: gate("exams", <AdminReports />),
-      },
-      {
-        path: "fees",
-        element: gate("fees", <AdminFees />),
-      },
-      {
-        path: "students/*",
-        element: <AdminStudents />,
-      },
-      {
-        path: "admissions",
+        path: "/",
         element: (
-          <PermissionGate anyOf={["students.manage"]}>
-            <StudentForm />
-          </PermissionGate>
+          <PublicRoute>
+            <Navigate to="/login" replace />
+          </PublicRoute>
         ),
       },
       {
-        path: "classes",
-        element: <AdminClasses />,
+        path: "/login",
+        element: (
+          <PublicRoute>
+            <Login />
+          </PublicRoute>
+        ),
       },
       {
-        path: "teachers",
-        element: <AdminTeachers />,
+        path: "/forgot-password",
+        element: (
+          <PublicRoute>
+            <ForgotPassword />
+          </PublicRoute>
+        ),
       },
       {
-        path: "attendance",
-        element: gate("attendance", <AdminAttendance />),
+        path: "/organization",
+        element: (
+          <AuthenticatedRoute>
+            <Organization />
+          </AuthenticatedRoute>
+        ),
       },
       {
-        path: "ptm",
-        element: gate("ptm", <AdminPTM />),
+        path: "/set-password",
+        element: <SetPassword />,
       },
       {
-        path: "calendar",
-        element: gate("calendar", <AdminCalendar />),
+        path: "/reset-password",
+        element: <ResetPassword />,
       },
       {
-        path: "timetable",
-        element: gate("timetable", <Timetable />),
+        path: "/not-access",
+        element: <NotAccess />,
       },
       {
-        path: "leave-requests",
-        element: gate("leave", <AdminLeaveRequests />),
+        path: "/:organizationId/admin",
+        element: (
+          <ProtectedRoute role="admin">
+            <Layout />
+          </ProtectedRoute>
+        ),
+        children: [
+          {
+            index: true,
+            element: <Navigate to="dashboard" replace />,
+          },
+          {
+            path: "dashboard",
+            element: <AdminDashboard />,
+          },
+          {
+            path: "notices",
+            element: gate("notices", <AdminNotices />),
+          },
+          {
+            path: "homework",
+            element: gate("homework", <AdminHomework />),
+          },
+          {
+            path: "results/*",
+            element: gate("exams", <AdminReports />),
+          },
+          {
+            path: "fees",
+            element: gate("fees", <AdminFees />),
+          },
+          {
+            path: "students/*",
+            element: <AdminStudents />,
+          },
+          {
+            path: "admissions",
+            element: (
+              <PermissionGate anyOf={["students.manage"]}>
+                <StudentForm />
+              </PermissionGate>
+            ),
+          },
+          {
+            path: "classes",
+            element: <AdminClasses />,
+          },
+          {
+            path: "teachers",
+            element: <AdminTeachers />,
+          },
+          {
+            path: "attendance",
+            element: gate("attendance", <AdminAttendance />),
+          },
+          {
+            path: "ptm",
+            element: gate("ptm", <AdminPTM />),
+          },
+          {
+            path: "calendar",
+            element: gate("calendar", <AdminCalendar />),
+          },
+          {
+            path: "timetable",
+            element: gate("timetable", <Timetable />),
+          },
+          {
+            path: "leave-requests",
+            element: gate("leave", <AdminLeaveRequests />),
+          },
+          {
+            path: "promotion",
+            element: <AdminPromotion />,
+          },
+          {
+            path: "certificates/*",
+            element: gate("certificates", <AdminCertificates />),
+          },
+          {
+            path: "settings/*",
+            element: <AdminSettings />,
+          },
+          { path: "support", element: <SupportList /> },
+          { path: "support/:requestId", element: <SupportThread /> },
+        ],
       },
       {
-        path: "promotion",
-        element: <AdminPromotion />,
+        path: "/:organizationId/teacher",
+        element: (
+          <ProtectedRoute role="teacher">
+            <Layout />
+          </ProtectedRoute>
+        ),
+        children: [
+          {
+            index: true,
+            element: <Navigate to="dashboard" replace />,
+          },
+          {
+            path: "dashboard",
+            element: <TeacherDashboard />,
+          },
+          {
+            path: "attendance",
+            element: gate("attendance", <AdminAttendance />),
+          },
+          {
+            path: "homework",
+            element: gate("homework", <AdminHomework />),
+          },
+          {
+            path: "ptm",
+            element: gate("ptm", <TeacherPTM />),
+          },
+          {
+            path: "marks",
+            element: gate("exams", <TeacherMarks />),
+          },
+          {
+            path: "timetable",
+            element: gate("timetable", <Timetable />),
+          },
+          {
+            path: "calendar",
+            element: gate("calendar", <AdminCalendar />),
+          },
+          {
+            path: "leave-requests",
+            element: gate("leave", <AdminLeaveRequests />),
+          },
+          {
+            path: "profile",
+            element: <Profile />,
+          },
+          { path: "support", element: <SupportList /> },
+          { path: "support/:requestId", element: <SupportThread /> },
+          ...sharedRoutes(),
+        ],
+      },
+      ...(["accountant", "staff"] as const).map((role) => ({
+        path: `/:organizationId/${role}`,
+        element: (
+          <ProtectedRoute role={role}>
+            <Layout />
+          </ProtectedRoute>
+        ),
+        children: [
+          { index: true, element: <FirstPermittedPage /> },
+          { path: "calendar", element: gate("calendar", <AdminCalendar />) },
+          { path: "profile", element: <Profile /> },
+          { path: "support", element: <SupportList /> },
+          { path: "support/:requestId", element: <SupportThread /> },
+          ...sharedRoutes(),
+        ],
+      })),
+      {
+        path: "/:organizationId/parent",
+        element: (
+          <ProtectedRoute role="parent">
+            <Layout />
+          </ProtectedRoute>
+        ),
+        children: [
+          {
+            index: true,
+            element: <Navigate to="dashboard" replace />,
+          },
+          {
+            path: "dashboard",
+            element: <ParentDashboard />,
+          },
+          {
+            path: "notices",
+            element: gate("notices", <ParentNotices />),
+          },
+          {
+            path: "homework",
+            element: gate("homework", <ParentHomework />),
+          },
+          {
+            path: "attendance",
+            element: gate("attendance", <ParentAttendance />),
+          },
+          {
+            path: "reports",
+            element: gate("exams", <ParentReports />),
+          },
+          {
+            path: "fees",
+            element: gate("fees", <ParentFees />),
+          },
+          {
+            path: "ptm",
+            element: gate("ptm", <ParentPTM />),
+          },
+          {
+            path: "calendar",
+            element: gate("calendar", <AdminCalendar />),
+          },
+          {
+            path: "leave-requests",
+            element: gate("leave", <ParentLeaveRequests />),
+          },
+          {
+            path: "profile",
+            element: <Profile />,
+          },
+        ],
       },
       {
-        path: "certificates/*",
-        element: gate("certificates", <AdminCertificates />),
+        path: "*",
+        element: <FallbackRoute />,
       },
-      {
-        path: "settings/*",
-        element: <AdminSettings />,
-      },
-      { path: "support", element: <SupportList /> },
-      { path: "support/:requestId", element: <SupportThread /> },
     ],
-  },
-  {
-    path: "/:organizationId/teacher",
-    element: (
-      <ProtectedRoute role="teacher">
-        <Layout />
-      </ProtectedRoute>
-    ),
-    children: [
-      {
-        index: true,
-        element: <Navigate to="dashboard" replace />,
-      },
-      {
-        path: "dashboard",
-        element: <TeacherDashboard />,
-      },
-      {
-        path: "attendance",
-        element: gate("attendance", <AdminAttendance />),
-      },
-      {
-        path: "homework",
-        element: gate("homework", <AdminHomework />),
-      },
-      {
-        path: "ptm",
-        element: gate("ptm", <TeacherPTM />),
-      },
-      {
-        path: "marks",
-        element: gate("exams", <TeacherMarks />),
-      },
-      {
-        path: "timetable",
-        element: gate("timetable", <Timetable />),
-      },
-      {
-        path: "calendar",
-        element: gate("calendar", <AdminCalendar />),
-      },
-      {
-        path: "leave-requests",
-        element: gate("leave", <AdminLeaveRequests />),
-      },
-      {
-        path: "profile",
-        element: <Profile />,
-      },
-      { path: "support", element: <SupportList /> },
-      { path: "support/:requestId", element: <SupportThread /> },
-      ...sharedRoutes(),
-    ],
-  },
-  ...(["accountant", "staff"] as const).map((role) => ({
-    path: `/:organizationId/${role}`,
-    element: (
-      <ProtectedRoute role={role}>
-        <Layout />
-      </ProtectedRoute>
-    ),
-    children: [
-      { index: true, element: <FirstPermittedPage /> },
-      { path: "calendar", element: gate("calendar", <AdminCalendar />) },
-      { path: "profile", element: <Profile /> },
-      { path: "support", element: <SupportList /> },
-      { path: "support/:requestId", element: <SupportThread /> },
-      ...sharedRoutes(),
-    ],
-  })),
-  {
-    path: "/:organizationId/parent",
-    element: (
-      <ProtectedRoute role="parent">
-        <Layout />
-      </ProtectedRoute>
-    ),
-    children: [
-      {
-        index: true,
-        element: <Navigate to="dashboard" replace />,
-      },
-      {
-        path: "dashboard",
-        element: <ParentDashboard />,
-      },
-      {
-        path: "notices",
-        element: gate("notices", <ParentNotices />),
-      },
-      {
-        path: "homework",
-        element: gate("homework", <ParentHomework />),
-      },
-      {
-        path: "attendance",
-        element: gate("attendance", <ParentAttendance />),
-      },
-      {
-        path: "reports",
-        element: gate("exams", <ParentReports />),
-      },
-      {
-        path: "fees",
-        element: gate("fees", <ParentFees />),
-      },
-      {
-        path: "ptm",
-        element: gate("ptm", <ParentPTM />),
-      },
-      {
-        path: "calendar",
-        element: gate("calendar", <AdminCalendar />),
-      },
-      {
-        path: "leave-requests",
-        element: gate("leave", <ParentLeaveRequests />),
-      },
-      {
-        path: "profile",
-        element: <Profile />,
-      },
-    ],
-  },
-  {
-    path: "*",
-    element: <FallbackRoute />,
   },
 ]);
 

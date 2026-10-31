@@ -18,6 +18,8 @@ interface FieldProps<T extends FieldValues> {
   description?: string;
   disabled?: boolean;
   className?: string;
+  // keeps the label for screen readers only, e.g. on repeated rows under one heading
+  hideLabel?: boolean;
 }
 
 export const TextField = <T extends FieldValues>({
@@ -27,6 +29,7 @@ export const TextField = <T extends FieldValues>({
   description,
   disabled,
   className,
+  hideLabel,
   type = "text",
   placeholder,
   autoFocus,
@@ -46,7 +49,7 @@ export const TextField = <T extends FieldValues>({
     name={name}
     render={({ field }) => (
       <FormItem className={className}>
-        <FormLabel>{label}</FormLabel>
+        <FormLabel className={cn(hideLabel && "sr-only")}>{label}</FormLabel>
         <FormControl>
           <Input
             {...field}
@@ -100,6 +103,7 @@ export const SelectField = <T extends FieldValues>({
   description,
   disabled,
   className,
+  hideLabel,
   options,
   placeholder = "Select",
   onValueChange,
@@ -114,7 +118,7 @@ export const SelectField = <T extends FieldValues>({
     name={name}
     render={({ field }) => (
       <FormItem className={className}>
-        <FormLabel>{label}</FormLabel>
+        <FormLabel className={cn(hideLabel && "sr-only")}>{label}</FormLabel>
         <FormControl>
           <CustomSelectDropdown
             placeholder={placeholder}
@@ -142,6 +146,7 @@ export const DateField = <T extends FieldValues>({
   description,
   disabled,
   className,
+  hideLabel,
   min,
   max,
   placeholder,
@@ -151,7 +156,7 @@ export const DateField = <T extends FieldValues>({
     name={name}
     render={({ field }) => (
       <FormItem className={className}>
-        <FormLabel>{label}</FormLabel>
+        <FormLabel className={cn(hideLabel && "sr-only")}>{label}</FormLabel>
         <FormControl>
           <DatePicker
             name={field.name}

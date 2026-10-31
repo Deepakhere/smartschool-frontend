@@ -5,7 +5,6 @@ import PageLoader from "@/shared/ui/page-loader";
 import SectionHeader from "@/shared/ui/section-header";
 import { Button } from "@/shared/ui/kit/button";
 import { Form } from "@/shared/ui/kit/form";
-import { usePageHeader } from "@/shared/lib/hooks";
 import { localDateString } from "@/shared/lib";
 import FormSection from "./components/form-section";
 import PersonFields from "./components/person-fields";
@@ -17,8 +16,6 @@ import { BLOOD_GROUP_OPTIONS, CATEGORY_OPTIONS, GENDER_OPTIONS, LOGIN_CONTACT_OP
 const StudentForm = () => {
   const c = useStudentFormController();
   const { form } = c;
-  const title = c.isEdit ? "Edit Student" : "New Admission";
-  usePageHeader({ title, onBack: c.cancel });
 
   if (c.isLoading) return <PageLoader />;
   if (c.notFound) return <EmptyState title="Student not found" description="This student may have been removed." />;

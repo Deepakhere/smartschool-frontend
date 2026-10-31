@@ -37,7 +37,16 @@ const useAcademicFilterController = (
   const classOptions = [{ id: ALL, name: "All classes" }, ...(classes.data?.items ?? []).map(toOption)];
   const sectionOptions = [{ id: ALL, name: "All sections" }, ...(sections.data?.items ?? []).map(toOption)];
 
-  return { yearOptions, classOptions, sectionOptions, selected };
+  // one line for the filter button, e.g. "2026-27 · Grade 8 · A"
+  const summary = [
+    selected(yearOptions, value.academicYearId)?.name,
+    value.classId ? selected(classOptions, value.classId)?.name : "All classes",
+    value.sectionId ? selected(sectionOptions, value.sectionId)?.name : null,
+  ]
+    .filter(Boolean)
+    .join(" · ");
+
+  return { yearOptions, classOptions, sectionOptions, selected, summary };
 };
 
 export default useAcademicFilterController;
