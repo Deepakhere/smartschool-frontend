@@ -105,13 +105,22 @@ const LedgerTab = ({ organizationId }: { organizationId: string }) => {
             isLoading={c.isLoading}
             pagination={c.pagination}
             itemLabel={{ one: "payment", other: "payments" }}
+            search={{
+              placeholder: "Search receipt, student or admission no.",
+              value: c.search,
+              onChange: c.setSearch,
+            }}
             actions={[
               { label: "Export CSV", readOnlySafe: true, onClick: c.openExport, disabled: c.pagination.total === 0 },
             ]}
-            empty={{
-              title: "No payments recorded yet",
-              description: "Payments you record on Student Fees & Payments show up here, newest first.",
-            }}
+            empty={
+              c.isSearching
+                ? { title: "No payments match this search", description: "Try a receipt number, name or admission no." }
+                : {
+                    title: "No payments recorded yet",
+                    description: "Payments you record on Student Fees & Payments show up here, newest first.",
+                  }
+            }
           />
         )}
       </div>

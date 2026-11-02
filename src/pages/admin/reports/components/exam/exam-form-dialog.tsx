@@ -1,5 +1,5 @@
 import FormDialog from "@/shared/ui/form-dialog";
-import { ChipsField, DateField, SelectField, TextField } from "@/shared/ui/form-fields";
+import { MultiSelectField, DateField, SelectField, TextField } from "@/shared/ui/form-fields";
 import { IExam, IGradingScheme } from "@/entities/exam";
 import { SelectOption } from "@/shared/types";
 import { EXAM_TYPE_OPTIONS } from "../../exam-ui";
@@ -60,10 +60,11 @@ const ExamFormDialog = ({ classOptions, ...props }: ExamFormDialogProps) => {
           className="sm:col-span-2"
         />
       </div>
-      <ChipsField
+      <MultiSelectField
         form={form}
         name="classIds"
         label="Classes taking this exam"
+        placeholder="Pick classes"
         options={classOptions}
         emptyText="No classes in the current academic year yet."
       />

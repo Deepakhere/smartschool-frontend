@@ -228,26 +228,27 @@ export const useReversePayment = (organizationId: string) => {
   });
 };
 
-const fetchLedgerPage = async (organizationId: string, page: number, limit: number) => {
+// search matches a receipt number, or a student's name or admission number
+const fetchLedgerPage = async (organizationId: string, page: number, limit: number, search: string) => {
   const result = await apiClient.get<null, IAxiosResponse<Paged<IPayment>>>(`${base(organizationId)}/payment`, {
-    params: { page, limit },
+    params: { page, limit, search: search || undefined },
   });
   return result.data.Data;
 };
 
-export const useGetPaymentLedger = (organizationId: string, page: number, pageSize: number) =>
+export const useGetPaymentLedger = (organizationId: string, page: number, pageSize: number, search = "") =>
   useQuery<Paged<IPayment>, IAPIError>({
-    queryKey: [API_QUERY_KEY.GET_PAYMENT_LEDGER, organizationId, page, pageSize],
-    queryFn: () => fetchLedgerPage(organizationId, page, pageSize),
+    queryKey: [API_QUERY_KEY.GET_PAYMENT_LEDGER, organizationId, page, pageSize, search],
+    queryFn: () => fetchLedgerPage(organizationId, page, pageSize, search),
     enabled: !!organizationId,
     // the current page stays on screen while the next one loads
     placeholderData: keepPreviousData,
   });
 
 // the ledger as a CSV built and capped by the server, newest first
-export const downloadLedgerCsv = async (organizationId: string, limit: number) => {
+export const downloadLedgerCsv = async (organizationId: string, limit: number, search = "") => {
   const result = await apiClient.get(`${base(organizationId)}/payment/export`, {
-    params: { limit },
+    params: { limit, search: search || undefined },
     responseType: "blob",
   });
   saveFile(result.data, "payment-ledger.csv");

@@ -2,7 +2,7 @@ import { TFunction } from "i18next";
 
 import { DataTableColumn } from "@/shared/ui/data-table";
 import { Badge, BadgeTone } from "@/shared/ui/kit/badge";
-import { Button } from "@/shared/ui/kit/button";
+import RowMenu, { type RowMenuItem } from "@/shared/ui/row-menu";
 import { IAllUserDetails } from "@/entities/user";
 
 const STATUS_TONE: Record<string, BadgeTone> = { active: "green", pending: "yellow", suspended: "red" };
@@ -54,23 +54,12 @@ export const userColumns = ({
     meta: { align: "center" },
     cell: ({ row }) => {
       const user = row.original;
-      return (
-        <>
-          {user.role !== "parent" && (
-            <Button variant="link" className="mr-4" onClick={() => manageAccess(user.id)}>
-              Manage access
-            </Button>
-          )}
-          <Button variant="link" className="mr-4" onClick={() => edit(user.id)}>
-            {t("labels.edit")}
-          </Button>
-          {!isSelf(user.id) && (
-            <Button variant="link" className="text-red-600 hover:text-red-800" onClick={() => remove(user.id)}>
-              Remove
-            </Button>
-          )}
-        </>
-      );
+      const items: RowMenuItem[] = [
+        ...(user.role !== "parent" ? [{ label: "Manage access", onSelect: () => manageAccess(user.id) }] : []),
+        { label: t("labels.edit"), onSelect: () => edit(user.id) },
+        ...(!isSelf(user.id) ? [{ label: "Remove", danger: true, onSelect: () => remove(user.id) }] : []),
+      ];
+      return <RowMenu items={items} />;
     },
   },
 ];

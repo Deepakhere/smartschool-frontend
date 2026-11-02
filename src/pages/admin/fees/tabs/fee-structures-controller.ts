@@ -6,6 +6,7 @@ import toast from "react-hot-toast";
 import { useError } from "@/shared/lib/hooks";
 import { IFeeStructure } from "@/entities/fee";
 import { SelectOption } from "@/shared/types";
+import type { MultiOption } from "@/shared/ui/multi-select";
 import { toPaise } from "@/shared/lib";
 import { useGetAcademicYears, useGetClasses, useGetYearSections } from "@/entities/academics";
 import { defaultFeeStructureValues, feeStructureSchema, FeeStructureFormValues } from "../fees.schema";
@@ -28,7 +29,7 @@ const sumPaise = (rows: { amount: string }[] = []) =>
   rows.reduce((sum, row) => sum + (toPaise(row.amount || 0) || 0), 0);
 
 // an edited structure may use a removed head or another year's classes; keep those listed so they show
-const withEditing = (options: SelectOption[], extra: SelectOption[] = []) => [
+const withEditing = (options: MultiOption[], extra: SelectOption[] = []): MultiOption[] => [
   ...options,
   ...extra.filter((option) => !options.some((known) => known.id === option.id)),
 ];
@@ -72,10 +73,10 @@ const useFeeStructuresController = (organizationId: string) => {
   const sectionOptions = withEditing(
     (sections.data?.items ?? [])
       .filter((section) => classIds.includes(section.classId))
-      .map((section) => ({
-        id: section.id,
-        name: `${classOptions.find((klass) => klass.id === section.classId)?.name ?? ""} - ${section.name}`,
-      })),
+      .map((section) => {
+        const className = classOptions.find((klass) => klass.id === section.classId)?.name ?? "";
+        return { id: section.id, name: `${className} - ${section.name}`, group: className, short: section.name };
+      }),
     editing?.sectionIds
   );
   const feeHeadOptions = withEditing(

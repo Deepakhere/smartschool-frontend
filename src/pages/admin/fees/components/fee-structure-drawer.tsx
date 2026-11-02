@@ -1,6 +1,6 @@
 import { CheckIcon, PlusIcon, TrashIcon } from "@heroicons/react/20/solid";
 
-import { ChipsField, DateField, SelectField, TextField } from "@/shared/ui/form-fields";
+import { DateField, MultiSelectField, SelectField, TextField } from "@/shared/ui/form-fields";
 import { Button } from "@/shared/ui/kit/button";
 import { Checkbox } from "@/shared/ui/kit/checkbox";
 import { Form } from "@/shared/ui/kit/form";
@@ -93,19 +93,21 @@ const FeeStructureDrawer = ({ c }: { c: Controller }) => {
                     placeholder="Class 9 Annual Fee"
                     autoFocus
                   />
-                  <ChipsField
+                  <MultiSelectField
                     form={form}
                     name="classIds"
                     label="Classes"
+                    placeholder="Pick classes"
                     options={c.classOptions}
                     emptyText="No active classes in the current year yet."
-                    onToggle={c.onClassesChange}
+                    onChange={c.onClassesChange}
                   />
-                  <ChipsField
+                  <MultiSelectField
                     form={form}
                     name="sectionIds"
                     label="Sections (optional)"
-                    description="Leave empty to bill every section of the classes above."
+                    placeholder="Every section of the classes above"
+                    description="Leave empty to bill every section of the chosen classes."
                     options={c.sectionOptions}
                     emptyText={classIds.length ? "These classes have no sections yet." : "Pick a class first."}
                   />

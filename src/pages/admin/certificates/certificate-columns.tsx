@@ -1,6 +1,6 @@
 import { DataTableColumn } from "@/shared/ui/data-table";
 import { Badge } from "@/shared/ui/kit/badge";
-import { Button } from "@/shared/ui/kit/button";
+import RowMenu from "@/shared/ui/row-menu";
 import { ICertificate } from "@/entities/certificate";
 import { formatDate } from "@/shared/lib";
 
@@ -68,16 +68,19 @@ export const certificateColumns = ({
     header: "Action",
     meta: { align: "center" },
     cell: ({ row }) => (
-      <div className="flex items-center justify-center gap-3">
-        <Button variant="link" onClick={() => download(row.original)}>
-          Download
-        </Button>
-        {duplicate && (
-          <Button variant="link" loading={busyId === row.original.id} onClick={() => duplicate(row.original)}>
-            Duplicate
-          </Button>
-        )}
-      </div>
+      <RowMenu
+        items={[
+          { label: "Download", readOnlySafe: true, onSelect: () => download(row.original) },
+          ...(duplicate
+            ? [
+                {
+                  label: busyId === row.original.id ? "Duplicating..." : "Duplicate",
+                  onSelect: () => duplicate(row.original),
+                },
+              ]
+            : []),
+        ]}
+      />
     ),
   },
 ];

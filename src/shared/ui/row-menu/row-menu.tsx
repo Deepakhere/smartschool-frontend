@@ -10,6 +10,8 @@ export interface RowMenuItem {
   onSelect: () => void;
   // red text, for actions that switch something off or remove it
   danger?: boolean;
+  // still offered in a locked, read-only module, e.g. a download
+  readOnlySafe?: boolean;
 }
 
 interface RowMenuProps {
@@ -22,9 +24,10 @@ interface RowMenuProps {
 const RowMenu = ({ items, label = "Actions", className }: RowMenuProps) => {
   const [open, setOpen] = useState(false);
 
-  // a locked module's rows can't be changed
+  // a locked module's rows can't be changed, but they can still be viewed and downloaded
   const { readOnly } = useModuleLock();
-  if (!items.length || readOnly) return null;
+  const shown = readOnly ? items.filter((item) => item.readOnlySafe) : items;
+  if (!shown.length) return null;
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -41,7 +44,7 @@ const RowMenu = ({ items, label = "Actions", className }: RowMenuProps) => {
         </button>
       </PopoverTrigger>
       <PopoverContent align="end" sideOffset={4} className="w-48 overflow-hidden p-0" role="menu">
-        {items.map((item) => (
+        {shown.map((item) => (
           <button
             key={item.label}
             type="button"

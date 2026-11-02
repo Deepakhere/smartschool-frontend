@@ -7,4 +7,5 @@ export {
   CheckboxField,
   FileField,
   ChipsField,
+  MultiSelectField,
 } from "./form-fields";

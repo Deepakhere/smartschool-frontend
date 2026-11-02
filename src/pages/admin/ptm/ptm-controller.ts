@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useParams } from "react-router-dom";
 
-import { SelectOption } from "@/shared/types";
+import type { MultiOption } from "@/shared/ui/multi-select";
 import { useGetAcademicYears, useGetClasses, useGetTeacherAssignments, useGetYearSections } from "@/entities/academics";
 import { useGetPTMEvents } from "@/entities/ptm";
 
@@ -17,10 +17,10 @@ const useAdminPTMController = () => {
   const assignments = useGetTeacherAssignments(organizationId, currentYearId);
   const events = useGetPTMEvents(organizationId);
 
-  const sectionOptions: SelectOption[] = (sections.data?.items ?? []).map((section) => ({
-    id: section.id,
-    name: `${classes.data?.items.find((klass) => klass.id === section.classId)?.name ?? ""} - ${section.name}`,
-  }));
+  const sectionOptions: MultiOption[] = (sections.data?.items ?? []).map((section) => {
+    const className = classes.data?.items.find((klass) => klass.id === section.classId)?.name ?? "";
+    return { id: section.id, name: `${className} - ${section.name}`, group: className, short: section.name };
+  });
 
   return {
     organizationId,

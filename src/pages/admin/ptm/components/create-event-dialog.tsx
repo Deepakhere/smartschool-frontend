@@ -1,5 +1,6 @@
 import FormDialog from "@/shared/ui/form-dialog";
-import { ChipsField, DateField, SelectField, TextField } from "@/shared/ui/form-fields";
+import { MultiSelectField, DateField, SelectField, TextField } from "@/shared/ui/form-fields";
+import type { MultiOption } from "@/shared/ui/multi-select";
 import { SelectOption } from "@/shared/types";
 import { localDateString } from "@/shared/lib";
 import useCreateEventDialogController from "./create-event-dialog-controller";
@@ -12,7 +13,7 @@ const modeOptions: SelectOption[] = [
 interface CreateEventDialogProps {
   organizationId: string;
   academicYearId?: string;
-  sectionOptions: SelectOption[];
+  sectionOptions: MultiOption[];
   open: boolean;
   onClose: () => void;
 }
@@ -60,10 +61,11 @@ const CreateEventDialog = ({
           />
         )}
       </div>
-      <ChipsField
+      <MultiSelectField
         form={form}
         name="sectionIds"
         label="Sections"
+        placeholder="Pick sections"
         options={sectionOptions}
         emptyText="No sections found."
       />

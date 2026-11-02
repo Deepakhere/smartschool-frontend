@@ -4,6 +4,7 @@ import CustomSelectDropdown from "@/shared/ui/custom-select";
 import DatePicker from "@/shared/ui/date-picker";
 import DateTimePicker from "@/shared/ui/date-time-picker";
 import FileDropzone from "@/shared/ui/file-dropzone";
+import MultiSelect, { type MultiOption } from "@/shared/ui/multi-select";
 import { Checkbox } from "@/shared/ui/kit/checkbox";
 import { FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/shared/ui/kit/form";
 import { Input } from "@/shared/ui/kit/input";
@@ -326,5 +327,49 @@ export const ChipsField = <T extends FieldValues>({
         </FormItem>
       );
     }}
+  />
+);
+
+// many picks from a list that can grow long (classes, sections); grouped options list under their group
+export const MultiSelectField = <T extends FieldValues>({
+  form,
+  name,
+  label,
+  description,
+  disabled,
+  className,
+  options,
+  placeholder,
+  emptyText,
+  onChange,
+}: FieldProps<T> & {
+  options: MultiOption[];
+  placeholder?: string;
+  emptyText?: string;
+  // called with the next list, after the form value has been updated
+  onChange?: (next: string[]) => void;
+}) => (
+  <FormField
+    control={form.control}
+    name={name}
+    render={({ field, fieldState }) => (
+      <FormItem className={className}>
+        <FormLabel>{label}</FormLabel>
+        <MultiSelect
+          options={options}
+          value={field.value ?? []}
+          onChange={(next) => {
+            field.onChange(next);
+            onChange?.(next);
+          }}
+          placeholder={placeholder}
+          emptyText={emptyText}
+          disabled={disabled}
+          invalid={fieldState.invalid}
+        />
+        {description && <FormDescription>{description}</FormDescription>}
+        <FormMessage />
+      </FormItem>
+    )}
   />
 );
