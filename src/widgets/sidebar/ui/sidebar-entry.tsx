@@ -4,7 +4,7 @@ import { LockClosedIcon } from "@heroicons/react/20/solid";
 
 import { cn } from "@/shared/lib/utils";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/shared/ui/kit/tooltip";
-import { panelMotion, revealMotion } from "@/shared/lib/sidebar-motion";
+import { PANEL_MOTION, revealMotion } from "@/shared/lib/sidebar-motion";
 
 interface SidebarEntryProps {
   name: string;
@@ -30,12 +30,13 @@ interface SidebarEntryProps {
   setOpenHint: (name: string | null) => void;
 }
 
-// collapsed rows are a 36px square around the icon, the same size as the logo tile above
+// collapsed rows are a 36px square around the icon, the same size as the logo tile above; the row keeps its
+// layout and only its margin and padding change, so the icon glides into place as the panel narrows
 const rowClass = (isCollapsed: boolean, active: boolean) =>
   cn(
-    "group flex items-center rounded-md text-sm font-medium transition-[padding]",
-    panelMotion(isCollapsed),
-    isCollapsed ? "mx-auto h-9 w-9 justify-center p-0" : "w-full py-2 pl-3 pr-3",
+    "group flex items-center rounded-md py-2 text-sm font-medium transition-[margin,padding]",
+    PANEL_MOTION,
+    isCollapsed ? "mx-1.5 pl-2 pr-0" : "mx-0 pl-3 pr-3",
     active ? "bg-gray-100 text-primary-600" : "text-gray-600 hover:bg-gray-50 hover:text-primary-600"
   );
 
@@ -74,25 +75,32 @@ const SidebarEntry = ({
         className={cn(
           "min-w-0 overflow-hidden whitespace-nowrap text-left",
           revealMotion(isCollapsed),
-          isCollapsed ? "ml-0 hidden max-w-0" : "ml-3 max-w-[10rem]"
+          isCollapsed ? "ml-0 max-w-0" : "ml-3 max-w-[10rem]"
         )}
       >
         <span className="block truncate">{name}</span>
       </span>
-      {!isCollapsed && count > 0 && (
-        <span
-          className="ml-auto rounded-full bg-red-50 px-1.5 py-0.5 text-xs font-semibold text-red-600"
-          aria-label={`${count} waiting`}
-        >
-          {count > 99 ? "99+" : count}
-        </span>
-      )}
-      {!isCollapsed && locked && (
-        <LockClosedIcon className="ml-auto h-3.5 w-3.5 text-gray-400" aria-label="Not in your package" />
-      )}
-      {!isCollapsed && !count && !locked && trailing && (
-        <span className="ml-auto opacity-60 transition-transform group-hover:translate-x-0.5">{trailing}</span>
-      )}
+      {/* count, lock or arrow: fades out and gives its room back as the panel narrows */}
+      <span
+        className={cn(
+          "ml-auto flex items-center overflow-hidden transition-[max-width,opacity]",
+          PANEL_MOTION,
+          isCollapsed ? "max-w-0 opacity-0" : "max-w-[3rem] opacity-100"
+        )}
+      >
+        {count > 0 && (
+          <span
+            className="rounded-full bg-red-50 px-1.5 py-0.5 text-xs font-semibold text-red-600"
+            aria-label={`${count} waiting`}
+          >
+            {count > 99 ? "99+" : count}
+          </span>
+        )}
+        {locked && <LockClosedIcon className="h-3.5 w-3.5 text-gray-400" aria-label="Not in your package" />}
+        {!count && !locked && trailing && (
+          <span className="opacity-60 transition-transform group-hover:translate-x-0.5">{trailing}</span>
+        )}
+      </span>
     </>
   );
 

@@ -1,9 +1,9 @@
-// opening glides out quickly and lands softly; closing takes a little longer with an even ease-in-out
-export const panelMotion = (isCollapsed: boolean) =>
-  isCollapsed ? "duration-400 ease-settle" : "duration-350 ease-glide";
+// one glide for the sidebar and everything inside it, in both directions: quick start, soft landing
+export const PANEL_MOTION = "duration-[280ms] ease-glide";
 
-export const PANEL_MOTION = "transition-[width]";
+// the panel's own width, and the header's brand segment above it, move together
+export const panelWidth = `transition-[width] ${PANEL_MOTION}`;
 
-// labels slide in just after the panel opens; on close they fade first, then their space closes (see index.css)
+// labels fade while the panel's width does the real work (see index.css), so nothing waits for anything else
 export const revealMotion = (isCollapsed: boolean) =>
-  isCollapsed ? "sidebar-reveal-out -translate-x-3 opacity-0" : "sidebar-reveal-in translate-x-0 opacity-100";
+  isCollapsed ? "sidebar-reveal-out -translate-x-2 opacity-0" : "sidebar-reveal-in translate-x-0 opacity-100";

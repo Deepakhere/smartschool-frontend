@@ -368,22 +368,26 @@
   }
 }
 
-/* Sidebar labels: on the way out the text fades first, then its space closes, so it never runs into the icon */
+/* Sidebar labels glide with the panel: fading out at once on close, and appearing once there is room on open */
+.sidebar-reveal-in,
+.sidebar-reveal-out {
+  transition-property: max-width, margin, padding, width, transform, opacity;
+  transition-duration: 280ms, 280ms, 280ms, 280ms, 280ms, 160ms;
+  transition-timing-function:
+    cubic-bezier(0.3, 0.5, 0.2, 1), cubic-bezier(0.3, 0.5, 0.2, 1), cubic-bezier(0.3, 0.5, 0.2, 1),
+    cubic-bezier(0.3, 0.5, 0.2, 1), cubic-bezier(0.3, 0.5, 0.2, 1), ease-out;
+}
 .sidebar-reveal-in {
-  transition-property: max-width, max-height, opacity, transform, margin, padding, width;
-  transition-duration: 320ms;
-  transition-timing-function: cubic-bezier(0.32, 0.72, 0, 1);
-  transition-delay: 60ms;
+  transition-delay: 0ms, 0ms, 0ms, 0ms, 0ms, 90ms;
 }
 .sidebar-reveal-out {
-  transition:
-    opacity 100ms ease-out,
-    transform 0s linear 100ms,
-    max-width 250ms cubic-bezier(0.65, 0, 0.35, 1) 80ms,
-    max-height 250ms cubic-bezier(0.65, 0, 0.35, 1) 80ms,
-    margin 250ms cubic-bezier(0.65, 0, 0.35, 1) 80ms,
-    padding 250ms cubic-bezier(0.65, 0, 0.35, 1) 80ms,
-    width 250ms cubic-bezier(0.65, 0, 0.35, 1) 80ms;
+  transition-duration: 280ms, 280ms, 280ms, 280ms, 280ms, 110ms;
+}
+@media (prefers-reduced-motion: reduce) {
+  .sidebar-reveal-in,
+  .sidebar-reveal-out {
+    transition: none;
+  }
 }
 
 /* hover, selected and highlighted states: without these, text turns near-black on hover and

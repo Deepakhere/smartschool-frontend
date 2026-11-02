@@ -5,7 +5,7 @@ import { cn } from "@/shared/lib/utils";
 import SidebarUserMenu from "./sidebar-user-menu";
 import { SidebarSection, useSidebarController } from "../model/sidebar-controller";
 import SidebarEntry from "./sidebar-entry";
-import { revealMotion } from "@/shared/lib/sidebar-motion";
+import { PANEL_MOTION, revealMotion } from "@/shared/lib/sidebar-motion";
 
 // main list and one section's panel, sliding side by side
 const Sidebar = () => {
@@ -23,9 +23,9 @@ const Sidebar = () => {
   return (
     <div
       className={`
-        fixed inset-y-0 left-0 z-50 w-64 transform transition-transform duration-350 ease-glide
+        fixed inset-y-0 left-0 z-50 w-64 transform transition-transform duration-[300ms] ease-glide
         ${isMobileOpen ? "translate-x-0" : "-translate-x-full"}
-        lg:relative lg:z-10 lg:translate-x-0 lg:transition-[width] ${isCollapsed ? "lg:duration-400 lg:ease-settle" : "lg:duration-350 lg:ease-glide"}
+        lg:relative lg:z-10 lg:translate-x-0 lg:transition-[width] lg:duration-[280ms] lg:ease-glide
         ${isCollapsed ? "lg:w-16" : "lg:w-60"}
         app-shell-surface bg-white border-r border-gray-200 shrink-0 flex flex-col h-full
       `}
@@ -33,14 +33,18 @@ const Sidebar = () => {
       <div className="relative flex-1 overflow-hidden">
         <div
           className={cn(
-            "flex h-full w-[200%] transition-transform duration-200 ease-out motion-reduce:transition-none",
+            "flex h-full w-[200%] transition-transform duration-[280ms] ease-glide motion-reduce:transition-none",
             isOpen && "-translate-x-1/2"
           )}
         >
           <nav
             aria-label="Main menu"
             aria-hidden={isOpen}
-            className="h-full w-1/2 space-y-1 overflow-y-auto overflow-x-hidden px-2 pb-4 pt-3"
+            className={cn(
+              "h-full w-1/2 space-y-1 overflow-y-auto overflow-x-hidden px-2 pb-4 pt-3",
+              "transition-opacity duration-200 ease-out motion-reduce:transition-none",
+              isOpen && "opacity-0"
+            )}
           >
             {c.main.map((item) =>
               item.kind === "divider" ? (
@@ -67,12 +71,17 @@ const Sidebar = () => {
           <nav
             aria-label={panel?.label ?? "Section"}
             aria-hidden={!isOpen}
-            className="h-full w-1/2 overflow-y-auto overflow-x-hidden px-2 pb-4 pt-3"
+            className={cn(
+              "h-full w-1/2 overflow-y-auto overflow-x-hidden px-2 pb-4 pt-3",
+              "transition-opacity duration-200 ease-out motion-reduce:transition-none",
+              !isOpen && "opacity-0"
+            )}
           >
             <div
               className={cn(
-                "flex items-center gap-3 border-b border-gray-100 pb-3",
-                isCollapsed ? "justify-center" : "px-1"
+                "flex items-center border-b border-gray-100 pb-3 transition-[gap,padding]",
+                PANEL_MOTION,
+                isCollapsed ? "gap-0 px-2" : "gap-3 px-1"
               )}
             >
               <button
@@ -89,7 +98,7 @@ const Sidebar = () => {
                 className={cn(
                   "min-w-0 flex-1 overflow-hidden whitespace-nowrap",
                   revealMotion(isCollapsed),
-                  isCollapsed && "hidden"
+                  isCollapsed ? "max-w-0" : "max-w-[11rem]"
                 )}
               >
                 <p className="truncate text-sm font-semibold text-gray-900">{panel?.label}</p>

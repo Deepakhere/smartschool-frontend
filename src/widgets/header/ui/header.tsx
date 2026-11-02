@@ -3,7 +3,7 @@ import { Bars3Icon, ArrowLeftIcon, QuestionMarkCircleIcon } from "@heroicons/rea
 
 import PanelLeftIcon from "@/shared/ui/icons/panel-left-icon";
 import { BrandLogo } from "@/features/theme";
-import { PANEL_MOTION, panelMotion, revealMotion } from "@/shared/lib/sidebar-motion";
+import { panelWidth, revealMotion } from "@/shared/lib/sidebar-motion";
 import NotificationBell from "./notification-bell";
 import { SupportDialog } from "@/features/support-dialog";
 import { useHeaderController } from "../model/header-controller";
@@ -25,7 +25,7 @@ const Header = () => {
       <div className="flex h-16">
         {/* brand segment: width matches the sidebar so the divider lines up */}
         <div
-          className={`flex items-center ${isCollapsed ? "justify-center" : "justify-between"} shrink-0 px-3 border-r border-gray-200 ${PANEL_MOTION} ${panelMotion(isCollapsed)} ${
+          className={`flex items-center ${isCollapsed ? "justify-center" : "justify-between"} shrink-0 px-3 border-r border-gray-200 ${panelWidth} ${
             isCollapsed ? "lg:w-16" : "lg:w-60"
           } w-auto`}
         >
