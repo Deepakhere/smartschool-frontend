@@ -21,7 +21,7 @@ const TeacherDashboard = () => {
 
       <div className={`grid grid-cols-1 gap-6 ${c.showTimetable && c.showNotices ? "lg:grid-cols-2" : ""}`}>
         {c.showTimetable && (
-          <div className="bg-white shadow rounded-lg">
+          <div className="bg-white border border-gray-200 rounded-lg">
             <div className="px-4 py-4 border-b border-gray-200">
               <h2 className="text-lg font-medium text-gray-900">Today's Timetable ({c.todayName})</h2>
             </div>
@@ -54,7 +54,7 @@ const TeacherDashboard = () => {
         )}
 
         {c.showNotices && (
-          <div className="bg-white shadow rounded-lg">
+          <div className="bg-white border border-gray-200 rounded-lg">
             <div className="px-4 py-4 border-b border-gray-200">
               <h2 className="text-lg font-medium text-gray-900">Recent Notices</h2>
             </div>
@@ -74,7 +74,7 @@ const TeacherDashboard = () => {
         )}
       </div>
 
-      <div className="bg-white shadow rounded-lg">
+      <div className="bg-white border border-gray-200 rounded-lg">
         <div className="px-4 py-4 border-b border-gray-200">
           <h2 className="text-lg font-medium text-gray-900">Assigned Classes</h2>
         </div>

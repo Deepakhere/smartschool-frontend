@@ -30,7 +30,7 @@ const StatCard = ({ title, value, icon: Icon, to, currency, index }: StatCardPro
       to={to}
       aria-label={`${title}: ${value === null ? "not available" : display}. Open`}
       style={{ animationDelay: `${index * 50}ms` }}
-      className="fade-up group relative bg-white rounded-xl shadow-xl p-6 flex items-center space-x-4 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500"
+      className="fade-up group relative bg-white rounded-xl border border-gray-200 p-6 flex items-center space-x-4 transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500"
     >
       <div className="p-3 bg-primary-50 rounded-lg">
         <Icon className="h-6 w-6 text-primary-600" />

@@ -49,7 +49,7 @@ const Dashboard = () => {
   const chartCard = (
     options: typeof studentPerformanceOptions | typeof teacherStudentRatioOptions | typeof monthlyAttendanceOptions
   ) => (
-    <div className="flex h-full flex-col justify-center bg-white rounded-xl shadow-xl p-6">
+    <div className="flex h-full flex-col justify-center bg-white rounded-xl border border-gray-200 p-6">
       {isChartsLoading ? <ChartSkeleton /> : <HighchartsReact highcharts={Highcharts} options={options} />}
     </div>
   );
@@ -75,7 +75,7 @@ const Dashboard = () => {
             ))}
       </div>
 
-      <div className="bg-white rounded-xl shadow-xl p-6">
+      <div className="bg-white rounded-xl border border-gray-200 p-6">
         <h2 className="text-xl font-semibold text-gray-900 mb-6">{t("labels.quick_actions")}</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {quickActions.map((action, index) => {
@@ -84,7 +84,7 @@ const Dashboard = () => {
               <button
                 key={index}
                 onClick={action.action}
-                className="flex items-center justify-center space-x-3 p-4 bg-primary-50 rounded-lg hover:bg-primary-100 transition-all hover:shadow-sm group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500"
+                className="flex items-center justify-center space-x-3 p-4 bg-primary-50 rounded-lg hover:bg-primary-100 transition-all group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500"
               >
                 <Icon className="h-6 w-6 text-primary-600 group-hover:scale-110 transition-transform" />
                 <span className="text-sm font-semibold text-primary-700">{action.title}</span>
@@ -101,7 +101,7 @@ const Dashboard = () => {
 
         {showNotices && (
           <div
-            className={`${showAttendanceChart ? "md:col-span-3" : "md:col-span-10"} bg-white rounded-xl shadow-xl p-6 flex flex-col`}
+            className={`${showAttendanceChart ? "md:col-span-3" : "md:col-span-10"} bg-white rounded-xl border border-gray-200 p-6 flex flex-col`}
           >
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-xl font-semibold text-gray-900">{t("labels.recent_updates")}</h2>
@@ -149,7 +149,7 @@ const Dashboard = () => {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-10 gap-8">
-        <div className="md:col-span-3 bg-white rounded-xl shadow-xl p-6">
+        <div className="md:col-span-3 bg-white rounded-xl border border-gray-200 p-6">
           {isChartsLoading ? (
             <ChartSkeleton />
           ) : hasTeacherStudentData ? (
