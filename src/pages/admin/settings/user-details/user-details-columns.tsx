@@ -1,9 +1,9 @@
 import { TFunction } from "i18next";
 
-import { DataTableColumn } from "@/components/data-table";
-import { Badge, BadgeTone } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { IAllUserDetails } from "@/types";
+import { DataTableColumn } from "@/shared/ui/data-table";
+import { Badge, BadgeTone } from "@/shared/ui/kit/badge";
+import RowMenu, { type RowMenuItem } from "@/shared/ui/row-menu";
+import { IAllUserDetails } from "@/entities/user";
 
 const STATUS_TONE: Record<string, BadgeTone> = { active: "green", pending: "yellow", suspended: "red" };
 
@@ -15,8 +15,18 @@ interface UserColumnActions {
   remove: (userId: string) => void;
 }
 
-export const userColumns = ({ t, isSelf, manageAccess, edit, remove }: UserColumnActions): DataTableColumn<IAllUserDetails>[] => [
-  { id: "name", header: t("labels.username"), cell: ({ row }) => <span className="text-gray-900">{row.original.name}</span> },
+export const userColumns = ({
+  t,
+  isSelf,
+  manageAccess,
+  edit,
+  remove,
+}: UserColumnActions): DataTableColumn<IAllUserDetails>[] => [
+  {
+    id: "name",
+    header: t("labels.username"),
+    cell: ({ row }) => <span className="text-gray-900">{row.original.name}</span>,
+  },
   { id: "email", header: t("labels.email"), meta: { align: "center" }, cell: ({ row }) => row.original.email },
   {
     id: "role",
@@ -44,23 +54,12 @@ export const userColumns = ({ t, isSelf, manageAccess, edit, remove }: UserColum
     meta: { align: "center" },
     cell: ({ row }) => {
       const user = row.original;
-      return (
-        <>
-          {user.role !== "parent" && (
-            <Button variant="link" className="mr-4" onClick={() => manageAccess(user.id)}>
-              Manage access
-            </Button>
-          )}
-          <Button variant="link" className="mr-4" onClick={() => edit(user.id)}>
-            {t("labels.edit")}
-          </Button>
-          {!isSelf(user.id) && (
-            <Button variant="link" className="text-red-600 hover:text-red-800" onClick={() => remove(user.id)}>
-              Remove
-            </Button>
-          )}
-        </>
-      );
+      const items: RowMenuItem[] = [
+        ...(user.role !== "parent" ? [{ label: "Manage access", onSelect: () => manageAccess(user.id) }] : []),
+        { label: t("labels.edit"), onSelect: () => edit(user.id) },
+        ...(!isSelf(user.id) ? [{ label: "Remove", danger: true, onSelect: () => remove(user.id) }] : []),
+      ];
+      return <RowMenu items={items} />;
     },
   },
 ];

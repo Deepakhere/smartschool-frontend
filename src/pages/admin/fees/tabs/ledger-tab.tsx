@@ -1,12 +1,12 @@
-import DataTable, { DataTableColumn } from "@/components/data-table";
-import ErrorState from "@/components/error-state";
-import ExportDialog from "@/components/export-dialog";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Card, CardTitle } from "@/components/ui/card";
-import { IPayment } from "@/types";
-import { formatMoney, paymentMethodLabel } from "@/utils";
-import { IOnlinePaymentForReview } from "../service/fees-service";
+import DataTable, { DataTableColumn } from "@/shared/ui/data-table";
+import ErrorState from "@/shared/ui/error-state";
+import { ExportDialog } from "@/features/export-dialog";
+import { Badge } from "@/shared/ui/kit/badge";
+import { Button } from "@/shared/ui/kit/button";
+import { Card, CardTitle } from "@/shared/ui/kit/card";
+import { IPayment } from "@/entities/fee";
+import { formatMoney, paymentMethodLabel } from "@/shared/lib";
+import { IOnlinePaymentForReview } from "@/entities/fee";
 import useLedgerController from "./ledger-controller";
 
 const reviewColumns: DataTableColumn<IOnlinePaymentForReview>[] = [
@@ -105,13 +105,22 @@ const LedgerTab = ({ organizationId }: { organizationId: string }) => {
             isLoading={c.isLoading}
             pagination={c.pagination}
             itemLabel={{ one: "payment", other: "payments" }}
+            search={{
+              placeholder: "Search receipt, student or admission no.",
+              value: c.search,
+              onChange: c.setSearch,
+            }}
             actions={[
               { label: "Export CSV", readOnlySafe: true, onClick: c.openExport, disabled: c.pagination.total === 0 },
             ]}
-            empty={{
-              title: "No payments recorded yet",
-              description: "Payments you record on Student Fees & Payments show up here, newest first.",
-            }}
+            empty={
+              c.isSearching
+                ? { title: "No payments match this search", description: "Try a receipt number, name or admission no." }
+                : {
+                    title: "No payments recorded yet",
+                    description: "Payments you record on Student Fees & Payments show up here, newest first.",
+                  }
+            }
           />
         )}
       </div>

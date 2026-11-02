@@ -1,7 +1,7 @@
 const pulse = "animate-pulse bg-gray-200";
 
 export const StatCardSkeleton = () => (
-  <div className="bg-white rounded-xl shadow-xl p-6 flex items-center space-x-4" aria-hidden="true">
+  <div className="bg-white rounded-xl border border-gray-200 p-6 flex items-center space-x-4" aria-hidden="true">
     <div className={`h-12 w-12 rounded-lg ${pulse}`} />
     <div className="space-y-2 flex-1">
       <div className={`h-3 w-24 rounded ${pulse}`} />

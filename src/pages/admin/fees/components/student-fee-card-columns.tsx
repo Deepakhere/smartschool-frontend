@@ -1,8 +1,8 @@
-import { DataTableColumn } from "@/components/data-table";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { IFeeConcession, IFeeInstallmentBalance, IPayment } from "@/types";
-import { formatMoney, paymentMethodLabel } from "@/utils";
+import { DataTableColumn } from "@/shared/ui/data-table";
+import { Badge } from "@/shared/ui/kit/badge";
+import RowMenu from "@/shared/ui/row-menu";
+import { IFeeConcession, IFeeInstallmentBalance, IPayment } from "@/entities/fee";
+import { formatMoney, paymentMethodLabel } from "@/shared/lib";
 
 export const installmentColumns: DataTableColumn<IFeeInstallmentBalance>[] = [
   {
@@ -89,16 +89,18 @@ export const paymentColumns = ({
     header: "Action",
     meta: { align: "center" },
     cell: ({ row }) => (
-      <div className="flex items-center justify-center gap-3">
-        <Button variant="link" loading={downloadingId === row.original.id} onClick={() => download(row.original.id)}>
-          Receipt
-        </Button>
-        {row.original.entryType === "payment" && canReverse(row.original.id) && (
-          <Button variant="link" className="text-red-600 hover:text-red-800" onClick={() => reverse(row.original.id)}>
-            Reverse
-          </Button>
-        )}
-      </div>
+      <RowMenu
+        items={[
+          {
+            label: downloadingId === row.original.id ? "Downloading..." : "Download receipt",
+            readOnlySafe: true,
+            onSelect: () => download(row.original.id),
+          },
+          ...(row.original.entryType === "payment" && canReverse(row.original.id)
+            ? [{ label: "Reverse payment", danger: true, onSelect: () => reverse(row.original.id) }]
+            : []),
+        ]}
+      />
     ),
   },
 ];

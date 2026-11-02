@@ -1,10 +1,9 @@
-import ActionButtons from "@/components/action-buttons";
-import DataTable, { DataTableColumn } from "@/components/data-table";
-import DatePicker from "@/components/date-picker";
-import ErrorState from "@/components/error-state";
-import Spinner from "@/components/spinner";
-import { Card, CardTitle } from "@/components/ui/card";
-import { formatMoney, paymentMethodLabel, todayInIndia } from "@/utils";
+import ActionButtons from "@/shared/ui/action-buttons";
+import DataTable, { DataTableColumn } from "@/shared/ui/data-table";
+import DatePicker from "@/shared/ui/date-picker";
+import ErrorState from "@/shared/ui/error-state";
+import Spinner from "@/shared/ui/spinner";
+import { formatMoney, paymentMethodLabel, todayInIndia } from "@/shared/lib";
 import useCollectionsController from "./collections-controller";
 
 type BreakdownRow = [string, string, string];
@@ -50,25 +49,31 @@ const CollectionsTab = ({ organizationId }: { organizationId: string }) => {
 
   return (
     <div className="space-y-6">
-      <Card>
-        <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
-          <CardTitle className="font-medium">Fee Collections</CardTitle>
-          <ActionButtons
-            actions={[
-              {
-                label: "Export CSV",
-                readOnlySafe: true,
-                onClick: c.onExport,
-                disabled: !data || data.totals.payments === 0,
-              },
-            ]}
+      <div className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-gray-200 bg-white p-3">
+        <div className="flex flex-wrap items-center gap-2">
+          <span className="text-sm text-gray-500">From</span>
+          <DatePicker clearable={false} value={c.from} max={c.to} onChange={c.setFrom} className="w-40" />
+          <span className="text-sm text-gray-500">to</span>
+          <DatePicker
+            clearable={false}
+            value={c.to}
+            min={c.from}
+            max={todayInIndia()}
+            onChange={c.setTo}
+            className="w-40"
           />
         </div>
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-4">
-          <DatePicker label="From" value={c.from} max={c.to} onChange={c.setFrom} />
-          <DatePicker label="To" value={c.to} min={c.from} max={todayInIndia()} onChange={c.setTo} />
-        </div>
-      </Card>
+        <ActionButtons
+          actions={[
+            {
+              label: "Export CSV",
+              readOnlySafe: true,
+              onClick: c.onExport,
+              disabled: !data || data.totals.payments === 0,
+            },
+          ]}
+        />
+      </div>
 
       {c.rangeIssue ? (
         <p className="py-12 text-center text-sm text-gray-500">{c.rangeIssue}</p>

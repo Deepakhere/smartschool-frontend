@@ -1,11 +1,10 @@
-import DeleteConfirmationDialog from "@/components/delete-confirmation-dialog";
-import EmptyState from "@/components/empty-state";
-import ErrorState from "@/components/error-state";
-import Spinner from "@/components/spinner";
-import { Card, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { cn } from "@/lib/utils";
+import DeleteConfirmationDialog from "@/shared/ui/delete-confirmation-dialog";
+import EmptyState from "@/shared/ui/empty-state";
+import ErrorState from "@/shared/ui/error-state";
+import Spinner from "@/shared/ui/spinner";
+import { Card } from "@/shared/ui/kit/card";
 import StudentFeeCard from "../components/student-fee-card";
+import StudentSearch from "../components/student-search";
 import useStudentFeesController from "./student-fees-controller";
 
 const StudentFeesTab = ({ organizationId }: { organizationId: string }) => {
@@ -13,59 +12,50 @@ const StudentFeesTab = ({ organizationId }: { organizationId: string }) => {
 
   return (
     <div className="space-y-6">
-      <Card>
-        <CardTitle className="mb-4 font-medium">Find a student</CardTitle>
-        <Input
-          aria-label="Search students"
-          placeholder="Search by name or admission number"
-          value={c.search}
-          onChange={(e) => c.setSearch(e.target.value)}
-        />
-        <div className="mt-3 flex flex-wrap gap-2">
-          {c.students.map((student) => (
-            <button
-              key={student.id}
-              type="button"
-              aria-pressed={c.studentId === student.id}
-              onClick={() => c.setStudentId(student.id)}
-              className={cn(
-                "rounded-full border px-3 py-1 text-xs focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500",
-                c.studentId === student.id
-                  ? "border-primary-300 bg-primary-100 text-primary-800"
-                  : "border-gray-300 bg-white text-gray-600 hover:bg-gray-50"
-              )}
-            >
-              {student.name}
-            </button>
-          ))}
-        </div>
-      </Card>
+      <StudentSearch
+        search={c.search}
+        onSearchChange={c.setSearch}
+        matches={c.matches}
+        isSearching={c.isSearching}
+        hasQuery={!!c.debouncedSearch}
+        selected={c.selected}
+        onPick={c.pick}
+        onClear={c.clearPick}
+      />
 
-      {!c.studentId && !c.isLoadingStudents && (
+      {!c.studentId && (
         <Card>
-          {c.students.length || c.debouncedSearch ? (
-            <EmptyState
-              title={c.students.length ? "Pick a student" : "No matching students"}
-              description={c.students.length ? "Search above and choose a student to see their fees and record payments." : `No student matches "${c.debouncedSearch}".`}
-            />
-          ) : (
-            <EmptyState title="No students yet" description="Add students first; their fees and payments are managed here." />
-          )}
+          <EmptyState
+            title="Pick a student"
+            description="Search by name or admission number to see their fees and record payments."
+          />
         </Card>
       )}
 
       {c.studentId &&
         (c.summaryError ? (
-          <ErrorState error={c.summaryError} title="This student's fees could not be loaded." onRetry={c.retrySummary} />
+          <ErrorState
+            error={c.summaryError}
+            title="This student's fees could not be loaded."
+            onRetry={c.retrySummary}
+          />
         ) : c.isLoadingSummary ? (
           <Spinner />
         ) : c.summaries.length === 0 ? (
           <Card>
-            <EmptyState title="No fees assigned yet" description="Assign a fee structure to this student's class from the Fee Structures tab." />
+            <EmptyState
+              title="No fees assigned yet"
+              description="Assign a fee structure to this student's class from the Fee Structures tab."
+            />
           </Card>
         ) : (
           c.summaries.map((summary) => (
-            <StudentFeeCard key={summary.studentFeeId} organizationId={organizationId} summary={summary} onReverse={c.setPaymentToReverse} />
+            <StudentFeeCard
+              key={summary.studentFeeId}
+              organizationId={organizationId}
+              summary={summary}
+              onReverse={c.setPaymentToReverse}
+            />
           ))
         ))}
 

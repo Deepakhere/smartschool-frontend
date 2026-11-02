@@ -1,8 +1,8 @@
-import ErrorState from "@/components/error-state";
-import PageLoader from "@/components/page-loader";
-import SectionHeader from "@/components/section-header";
+import ErrorState from "@/shared/ui/error-state";
+import PageLoader from "@/shared/ui/page-loader";
+import SectionHeader from "@/shared/ui/section-header";
 import useTeacherDashboardController from "./dashboard-controller";
-import EmptyState from "@/components/empty-state";
+import EmptyState from "@/shared/ui/empty-state";
 
 const TeacherDashboard = () => {
   const c = useTeacherDashboardController();
@@ -20,9 +20,8 @@ const TeacherDashboard = () => {
       <SectionHeader title={`Welcome, ${c.name}`} description="Here's your teaching overview for today" />
 
       <div className={`grid grid-cols-1 gap-6 ${c.showTimetable && c.showNotices ? "lg:grid-cols-2" : ""}`}>
-        {/* Today's Timetable */}
         {c.showTimetable && (
-          <div className="bg-white shadow rounded-lg">
+          <div className="bg-white border border-gray-200 rounded-lg">
             <div className="px-4 py-4 border-b border-gray-200">
               <h2 className="text-lg font-medium text-gray-900">Today's Timetable ({c.todayName})</h2>
             </div>
@@ -54,9 +53,8 @@ const TeacherDashboard = () => {
           </div>
         )}
 
-        {/* Recent Notices */}
         {c.showNotices && (
-          <div className="bg-white shadow rounded-lg">
+          <div className="bg-white border border-gray-200 rounded-lg">
             <div className="px-4 py-4 border-b border-gray-200">
               <h2 className="text-lg font-medium text-gray-900">Recent Notices</h2>
             </div>
@@ -76,8 +74,7 @@ const TeacherDashboard = () => {
         )}
       </div>
 
-      {/* Assigned Classes */}
-      <div className="bg-white shadow rounded-lg">
+      <div className="bg-white border border-gray-200 rounded-lg">
         <div className="px-4 py-4 border-b border-gray-200">
           <h2 className="text-lg font-medium text-gray-900">Assigned Classes</h2>
         </div>

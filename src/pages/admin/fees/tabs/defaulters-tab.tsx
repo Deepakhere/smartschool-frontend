@@ -1,12 +1,11 @@
-import AcademicFilter from "@/components/academic-filter";
-import DataTable, { DataTableColumn } from "@/components/data-table";
-import DatePicker from "@/components/date-picker";
-import ErrorState from "@/components/error-state";
-import ExportDialog from "@/components/export-dialog";
-import { Badge } from "@/components/ui/badge";
-import { Card, CardTitle } from "@/components/ui/card";
-import { IFeeDefaulter } from "@/types";
-import { formatMoney } from "@/utils";
+import { AcademicFilter } from "@/features/academic-filter";
+import DataTable, { DataTableColumn } from "@/shared/ui/data-table";
+import DatePicker from "@/shared/ui/date-picker";
+import ErrorState from "@/shared/ui/error-state";
+import { ExportDialog } from "@/features/export-dialog";
+import { Badge } from "@/shared/ui/kit/badge";
+import { IFeeDefaulter } from "@/entities/fee";
+import { formatMoney } from "@/shared/lib";
 import useDefaultersController from "./defaulters-controller";
 
 const formatDay = (iso: string) =>
@@ -94,14 +93,6 @@ const DefaultersTab = ({ organizationId }: { organizationId: string }) => {
 
   return (
     <div className="space-y-4">
-      <Card>
-        <CardTitle className="mb-4 font-medium">Fee Defaulters</CardTitle>
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-4">
-          <AcademicFilter organizationId={organizationId} value={c.scope} onChange={c.onScopeChange} />
-          <DatePicker label="Overdue as of" value={c.asOf} onChange={c.onAsOfChange} />
-        </div>
-      </Card>
-
       {c.summary && (
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
           <SummaryTile label="Students overdue" value={String(c.summary.students)} />
@@ -116,10 +107,19 @@ const DefaultersTab = ({ organizationId }: { organizationId: string }) => {
         <DataTable
           columns={columns}
           data={c.rows}
-          getRowId={(row) => row.studentFeeId}
+          getRowId={(row) => row.studentId}
           isLoading={c.isLoading}
           pagination={c.pagination}
           itemLabel={{ one: "defaulter", other: "defaulters" }}
+          toolbar={
+            <AcademicFilter
+              organizationId={organizationId}
+              value={c.scope}
+              onChange={c.onScopeChange}
+              extra={<DatePicker clearable={false} label="Overdue as of" value={c.asOf} onChange={c.onAsOfChange} />}
+              extraSummary={`overdue as of ${formatDay(c.asOf)}`}
+            />
+          }
           actions={[
             { label: "Export CSV", readOnlySafe: true, onClick: c.openExport, disabled: c.pagination.total === 0 },
           ]}
