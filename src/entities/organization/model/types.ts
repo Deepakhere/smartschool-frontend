@@ -33,7 +33,7 @@ export interface IOrganization {
   name: string;
   description: string;
   country: string;
-  users: string[];
+  userCount: number;
   address: string;
   pincode: string;
   status: string;
