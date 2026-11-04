@@ -163,7 +163,7 @@ function Organization() {
 
                     <div className="bg-gray-50 px-6 py-4 flex justify-between items-center">
                       <span className="bg-primary-100 text-primary-800 text-xs font-medium px-2.5 py-1 rounded-full">
-                        {workspace.users.length} Users
+                        {workspace.userCount} {workspace.userCount === 1 ? "User" : "Users"}
                       </span>
                       <span className="flex items-center gap-1 text-xs font-medium text-primary-600 group-hover:text-primary-700">
                         Manage
