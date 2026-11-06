@@ -4,6 +4,7 @@ import { Bars3Icon, ArrowLeftIcon, QuestionMarkCircleIcon } from "@heroicons/rea
 import PanelLeftIcon from "@/shared/ui/icons/panel-left-icon";
 import { BrandLogo } from "@/features/theme";
 import { panelWidth, revealMotion } from "@/shared/lib/sidebar-motion";
+import HeaderIconButton from "./header-icon-button";
 import NotificationBell from "./notification-bell";
 import { SupportDialog } from "@/features/support-dialog";
 import { useHeaderController } from "../model/header-controller";
@@ -91,14 +92,9 @@ const Header = () => {
 
           <div className="flex items-center gap-3 shrink-0">
             {canAskSupport && (
-              <button
-                type="button"
-                onClick={() => setIsAskingSupport(true)}
-                className="rounded-md p-1.5 text-gray-500 hover:bg-gray-100 hover:text-gray-700"
-                title="Contact Opscul support"
-              >
-                <QuestionMarkCircleIcon className="h-6 w-6" aria-hidden="true" />
-              </button>
+              <HeaderIconButton onClick={() => setIsAskingSupport(true)} title="Contact Opscul support">
+                <QuestionMarkCircleIcon aria-hidden="true" />
+              </HeaderIconButton>
             )}
             <NotificationBell variant="header" />
           </div>

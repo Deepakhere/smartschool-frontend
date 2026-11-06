@@ -2,6 +2,7 @@ import { useTranslation } from "react-i18next";
 import { BellIcon } from "@heroicons/react/24/outline";
 
 import { useNotifications } from "@/entities/notification";
+import HeaderIconButton from "./header-icon-button";
 import NotificationSheet from "./notification-sheet";
 
 interface NotificationBellProps {
@@ -23,15 +24,10 @@ const NotificationBell = ({ variant = "sidebar", isCollapsed = false }: Notifica
   if (variant === "header") {
     return (
       <>
-        <button
-          type="button"
-          onClick={openSheet}
-          title={t("labels.notifications")}
-          className="relative flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-gray-500 hover:bg-gray-100 hover:text-primary-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500"
-        >
-          <BellIcon className="h-5 w-5" aria-hidden="true" />
+        <HeaderIconButton onClick={openSheet} title={t("labels.notifications")}>
+          <BellIcon aria-hidden="true" />
           {badge}
-        </button>
+        </HeaderIconButton>
         <NotificationSheet />
       </>
     );
