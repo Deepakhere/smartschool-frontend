@@ -1,5 +1,6 @@
 import DataTable from "@/shared/ui/data-table";
 import ErrorState from "@/shared/ui/error-state";
+import { useIsDesktop } from "@/shared/lib/hooks/is-desktop";
 import useMarksSheetCardController from "../model/marks-sheet-card-controller";
 import { marksSheetColumns } from "./marks-sheet-columns";
 
@@ -23,6 +24,7 @@ const MarksSheetCard = ({
 }: MarksSheetCardProps) => {
   const c = useMarksSheetCardController(organizationId, examSubjectId, sectionId);
   const columns = marksSheetColumns({
+    compact: !useIsDesktop(),
     form: c.form,
     draftRows: c.draftRows,
     examSubject: c.examSubject,

@@ -4,6 +4,7 @@ import { Navigate } from "react-router-dom";
 import { useAuth } from "@/entities/session";
 import { TenantProvider } from "@/entities/session";
 import useIsMobile from "@/shared/lib/hooks/is-mobile/is-mobile";
+import { SHOW_SMALL_SCREEN_NOTICE } from "@/shared/config/small-screen";
 import { MobileNotice } from "@/widgets/mobile-notice";
 import { UserRole } from "@/entities/session";
 
@@ -43,8 +44,8 @@ export const ProtectedRoute = ({ children, role }: ProtectedRouteProps) => {
 
   if (!user) return <Navigate to="/login" replace />;
 
-  // the signed-in app is not responsive yet, so phones get a notice for now
-  if (isMobile) return <MobileNotice />;
+  // the app is responsive; the notice only comes back once the mobile app is out (see small-screen.ts)
+  if (SHOW_SMALL_SCREEN_NOTICE && isMobile) return <MobileNotice />;
 
   // the role is per school, so TenantProvider checks it once it knows which school the URL is for
   return <TenantProvider requiredRole={role}>{children}</TenantProvider>;

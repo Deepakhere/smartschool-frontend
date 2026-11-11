@@ -13,7 +13,9 @@ import {
   TableSkeletonRows,
 } from "@/shared/ui/data-table/table-parts";
 import { Input } from "@/shared/ui/kit/input";
+import EmptyState from "@/shared/ui/empty-state";
 import { cn } from "@/shared/lib/utils";
+import { useIsDesktop } from "@/shared/lib/hooks/is-desktop";
 import useFitHeight from "./use-fit-height";
 import DataTableFooter from "./data-table-footer";
 import { DataTableProps } from "./data-table.types";
@@ -30,6 +32,9 @@ const DataTable = <T,>(props: DataTableProps<T>) => {
   const fit = useFitHeight<HTMLDivElement>();
   const columnCount = table.getVisibleLeafColumns().length;
   const rows = table.getRowModel().rows;
+  // below the desktop width the table is wider than its card, so the empty message sits under it at card width
+  const isDesktop = useIsDesktop();
+  const emptyBelow = !isDesktop && !isLoading && rows.length === 0;
 
   return (
     // toolbar, column headers and footer stay put; only the rows scroll
@@ -96,12 +101,14 @@ const DataTable = <T,>(props: DataTableProps<T>) => {
           {isLoading ? (
             <TableSkeletonRows columns={columnCount} />
           ) : rows.length === 0 ? (
-            <TableEmpty
-              colSpan={columnCount}
-              title={empty.title}
-              description={empty.description}
-              action={empty.action}
-            />
+            emptyBelow ? null : (
+              <TableEmpty
+                colSpan={columnCount}
+                title={empty.title}
+                description={empty.description}
+                action={empty.action}
+              />
+            )
           ) : (
             rows.map((row) => (
               <TableRow
@@ -122,6 +129,8 @@ const DataTable = <T,>(props: DataTableProps<T>) => {
           )}
         </TableBody>
       </Table>
+
+      {emptyBelow && <EmptyState title={empty.title} description={empty.description} action={empty.action} />}
 
       {pager && pager.total > 0 && <DataTableFooter {...pager} itemLabel={itemLabel} />}
     </div>

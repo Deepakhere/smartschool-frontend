@@ -9,6 +9,7 @@ type MockUser = { role?: "admin" | "teacher" | "parent"; isPlatformAdmin?: boole
 
 let mockUser: MockUser = null;
 let mockIsMobile = false;
+let mockShowNotice = false;
 
 vi.mock("@/entities/session/model/auth-context", () => ({ useAuth: () => ({ user: mockUser }) }));
 // role checks are tested with TenantProvider itself; here it only has to receive it
@@ -21,6 +22,11 @@ vi.mock("@/entities/session/model/tenant-context", () => ({
 }));
 vi.mock("@/features/theme/model/theme-context", () => ({ useTheme: () => ({ theme: "light" }) }));
 vi.mock("@/shared/lib/hooks/is-mobile/is-mobile", () => ({ default: () => mockIsMobile }));
+vi.mock("@/shared/config/small-screen", () => ({
+  get SHOW_SMALL_SCREEN_NOTICE() {
+    return mockShowNotice;
+  },
+}));
 
 const renderAt = (path: string, element: React.ReactNode) =>
   render(
@@ -39,6 +45,7 @@ const renderAt = (path: string, element: React.ReactNode) =>
 beforeEach(() => {
   mockUser = null;
   mockIsMobile = false;
+  mockShowNotice = false;
   Cookies.remove("kidSightOrganizationId");
 });
 
@@ -66,12 +73,28 @@ describe("ProtectedRoute", () => {
     expect(screen.getByText("secret page")).toBeInTheDocument();
   });
 
-  it("shows the larger-screen notice instead of the page on phones", () => {
+  it("renders the page on phones, since the app is responsive", () => {
     mockUser = { role: "admin" };
     mockIsMobile = true;
     renderAt("/page", page("admin"));
+    expect(screen.getByText("secret page")).toBeInTheDocument();
+    expect(screen.queryByText("Best viewed on a larger screen")).not.toBeInTheDocument();
+  });
+
+  it("shows the larger-screen notice instead of the page on phones once the notice is switched on", () => {
+    mockUser = { role: "admin" };
+    mockIsMobile = true;
+    mockShowNotice = true;
+    renderAt("/page", page("admin"));
     expect(screen.queryByText("secret page")).not.toBeInTheDocument();
     expect(screen.getByText("Best viewed on a larger screen")).toBeInTheDocument();
+  });
+
+  it("keeps showing the page on larger screens when the notice is switched on", () => {
+    mockUser = { role: "admin" };
+    mockShowNotice = true;
+    renderAt("/page", page("admin"));
+    expect(screen.getByText("secret page")).toBeInTheDocument();
   });
 });
 

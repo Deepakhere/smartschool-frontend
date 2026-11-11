@@ -1,4 +1,3 @@
-import { useLayoutStore } from "@/shared/model/layout-store";
 import { useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import type { ComponentType, SVGProps } from "react";
@@ -156,11 +155,11 @@ export const useSidebarController = () => {
   };
 
   return {
-    isCollapsed: useLayoutStore((state) => state.isCollapsed),
-    isMobileOpen: useLayoutStore((state) => state.isSidebarOpen),
     main,
     openSection,
     open,
     back: () => setOpenLabel(null),
   };
 };
+
+export type SidebarController = ReturnType<typeof useSidebarController>;

@@ -1,18 +1,44 @@
 import { DataTableColumn } from "@/shared/ui/data-table";
-import { Button } from "@/shared/ui/kit/button";
 import { IPTMBooking } from "@/entities/ptm";
+import { CancelCell, JoinLink } from "./components/booking-cells";
+import { slotOf } from "./ptm.utils";
 
-const slotOf = (booking: IPTMBooking) => (typeof booking.slotId === "object" ? booking.slotId : null);
+const shortTime = (value: string) => new Date(value).toLocaleString([], { dateStyle: "medium", timeStyle: "short" });
 
-export const bookingColumns = (cancel: (bookingId: string) => void): DataTableColumn<IPTMBooking>[] => [
+const studentName = (booking: IPTMBooking) => (typeof booking.studentId === "object" ? booking.studentId.name : "");
+
+export const bookingColumns = (cancel: (bookingId: string) => void, compact = false): DataTableColumn<IPTMBooking>[] =>
+  compact ? compactBookingColumns(cancel) : wideBookingColumns(cancel);
+
+// below the desktop width a booking is one cell (student, time, join link) and the action beside it
+const compactBookingColumns = (cancel: (bookingId: string) => void): DataTableColumn<IPTMBooking>[] => [
+  {
+    id: "booking",
+    header: "Booking",
+    cell: ({ row: { original: booking } }) => {
+      const slot = slotOf(booking);
+      return (
+        <div className="space-y-0.5">
+          <p className="font-medium text-gray-900">{studentName(booking)}</p>
+          {slot && <p className="text-xs text-gray-500">{shortTime(slot.startAt)}</p>}
+          {slot?.meetingLink && <JoinLink booking={booking} />}
+        </div>
+      );
+    },
+  },
+  {
+    id: "action",
+    header: "Action",
+    meta: { align: "right" },
+    cell: ({ row }) => <CancelCell booking={row.original} cancel={cancel} />,
+  },
+];
+
+const wideBookingColumns = (cancel: (bookingId: string) => void): DataTableColumn<IPTMBooking>[] => [
   {
     id: "student",
     header: "Student",
-    cell: ({ row }) => (
-      <span className="font-medium text-gray-900">
-        {typeof row.original.studentId === "object" ? row.original.studentId.name : ""}
-      </span>
-    ),
+    cell: ({ row }) => <span className="font-medium text-gray-900">{studentName(row.original)}</span>,
   },
   {
     id: "time",
@@ -20,37 +46,19 @@ export const bookingColumns = (cancel: (bookingId: string) => void): DataTableCo
     meta: { align: "center" },
     cell: ({ row }) => {
       const slot = slotOf(row.original);
-      return slot ? new Date(slot.startAt).toLocaleString() : "";
+      return slot ? shortTime(slot.startAt) : "";
     },
   },
   {
     id: "join",
     header: "Join",
     meta: { align: "center" },
-    cell: ({ row }) => {
-      const slot = slotOf(row.original);
-      return slot?.meetingLink ? (
-        <a href={slot.meetingLink} target="_blank" rel="noreferrer" className="text-primary-600 hover:underline">
-          Join link
-        </a>
-      ) : (
-        "-"
-      );
-    },
+    cell: ({ row }) => <JoinLink booking={row.original} />,
   },
   {
     id: "action",
     header: "Action",
     meta: { align: "center" },
-    cell: ({ row }) => {
-      const slot = slotOf(row.original);
-      return slot && new Date(slot.startAt) > new Date() ? (
-        <Button variant="link" onClick={() => cancel(row.original.id)} className="text-red-600 hover:text-red-800">
-          Cancel
-        </Button>
-      ) : (
-        <span className="text-sm text-gray-400">Past</span>
-      );
-    },
+    cell: ({ row }) => <CancelCell booking={row.original} cancel={cancel} />,
   },
 ];

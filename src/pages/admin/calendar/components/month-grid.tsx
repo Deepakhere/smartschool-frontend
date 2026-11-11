@@ -34,7 +34,7 @@ const MonthGrid = ({ year, month, today, itemsByDate, onPickDay, onPickEntry }: 
               key={date}
               onClick={() => onPickDay?.(date)}
               className={cn(
-                "min-h-[104px] border-b border-r border-gray-100 p-1.5 transition-colors",
+                "min-h-[104px] max-md:min-h-[64px] border-b border-r border-gray-100 p-1.5 transition-colors",
                 onPickDay && "cursor-pointer hover:bg-gray-50",
                 !inMonth && "bg-gray-50/60 text-gray-300 dark:bg-white/[0.02] dark:text-gray-600",
                 inMonth && isHoliday && "bg-red-50/50 dark:bg-red-500/10"
@@ -54,7 +54,12 @@ const MonthGrid = ({ year, month, today, itemsByDate, onPickDay, onPickEntry }: 
                   {Number(date.slice(8))}
                 </span>
               </div>
-              <div className="mt-1 space-y-1">
+              <div className="mt-1 flex flex-wrap justify-center gap-1 md:hidden" aria-hidden="true">
+                {items.slice(0, 4).map((item) => (
+                  <span key={item.key} className={cn("h-1.5 w-1.5 rounded-full", KIND_STYLES[item.kind].dot)} />
+                ))}
+              </div>
+              <div className="mt-1 space-y-1 max-md:hidden">
                 {shown.map((item) => (
                   <button
                     key={item.key}

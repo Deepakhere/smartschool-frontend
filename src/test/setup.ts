@@ -17,3 +17,11 @@ class ResizeObserverStub {
   disconnect() {}
 }
 vi.stubGlobal("ResizeObserver", ResizeObserverStub);
+
+// jsdom has no matchMedia; tests behave like a desktop screen (min-width queries match, max-width and motion ones don't)
+vi.stubGlobal("matchMedia", (query: string) => ({
+  matches: /min-width/.test(query),
+  media: query,
+  addEventListener: () => {},
+  removeEventListener: () => {},
+}));

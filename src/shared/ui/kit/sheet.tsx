@@ -25,6 +25,10 @@ const SheetOverlay = React.forwardRef<
 SheetOverlay.displayName = DialogPrimitive.Overlay.displayName;
 
 const sheetSideClasses = {
+  left: cn(
+    "inset-y-0 left-0 h-full w-full max-w-xs border-r",
+    "data-[state=closed]:slide-out-to-left data-[state=open]:slide-in-from-left"
+  ),
   right: cn(
     "inset-y-0 right-0 h-full w-full max-w-sm border-l",
     "data-[state=closed]:slide-out-to-right data-[state=open]:slide-in-from-right"

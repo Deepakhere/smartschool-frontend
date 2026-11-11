@@ -6,11 +6,13 @@ import ErrorState from "@/shared/ui/error-state";
 import FormDialog from "@/shared/ui/form-dialog";
 import { SelectField } from "@/shared/ui/form-fields";
 import SectionHeader from "@/shared/ui/section-header";
+import { useIsDesktop } from "@/shared/lib/hooks/is-desktop";
 import Spinner from "@/shared/ui/spinner";
 import { bookingColumns } from "./ptm-columns";
 import useParentPTMController from "./ptm-controller";
 
 const ParentPTM = () => {
+  const isDesktop = useIsDesktop();
   const {
     events,
     slotItems,
@@ -39,7 +41,7 @@ const ParentPTM = () => {
     isCancelling,
   } = useParentPTMController();
 
-  const columns = bookingColumns(setBookingToCancel);
+  const columns = bookingColumns(setBookingToCancel, !isDesktop);
 
   return (
     <div className="max-w-7xl mx-auto">

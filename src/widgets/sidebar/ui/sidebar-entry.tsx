@@ -31,12 +31,15 @@ interface SidebarEntryProps {
 }
 
 // collapsed rows are a 36px square around the icon, the same size as the logo tile above; the row keeps its
-// layout and only its margin and padding change, so the icon glides into place as the panel narrows
-const rowClass = (isCollapsed: boolean, active: boolean) =>
+// layout and only its margin and padding change, so the icon glides into place as the panel narrows.
+// `fill` is for buttons: unlike a link they size to their content, so the arrow would sit right after the label
+// instead of at the edge; the collapsed width allows for the side margins
+const rowClass = (isCollapsed: boolean, active: boolean, fill = false) =>
   cn(
-    "group flex items-center rounded-md py-2 text-sm font-medium transition-[margin,padding]",
+    "group flex items-center rounded-md py-2 text-sm font-medium transition-[margin,padding,width]",
     PANEL_MOTION,
     isCollapsed ? "mx-1.5 pl-2 pr-0" : "mx-0 pl-3 pr-3",
+    fill && (isCollapsed ? "w-[calc(100%-0.75rem)]" : "w-full"),
     active ? "bg-gray-100 text-primary-600" : "text-gray-600 hover:bg-gray-50 hover:text-primary-600"
   );
 
@@ -136,7 +139,7 @@ const SidebarEntry = ({
               onClick={onClick}
               tabIndex={inactive ? -1 : undefined}
               aria-current={active ? "true" : undefined}
-              className={rowClass(isCollapsed, active)}
+              className={rowClass(isCollapsed, active, true)}
             >
               {body(active)}
             </button>

@@ -4,29 +4,49 @@ import { IPTMBooking, IPTMSlot } from "@/entities/ptm";
 
 export type AgendaItem = { slot: IPTMSlot; booking: IPTMBooking | null };
 
-export const agendaColumns: DataTableColumn<AgendaItem>[] = [
+const shortTime = (value: string) => new Date(value).toLocaleString([], { dateStyle: "medium", timeStyle: "short" });
+
+const studentOf = ({ booking }: AgendaItem) =>
+  booking && typeof booking.studentId === "object" ? booking.studentId.name : "-";
+
+const statusBadge = ({ booking }: AgendaItem) => (
+  <Badge tone={booking ? "green" : "gray"}>{booking ? "Booked" : "Open"}</Badge>
+);
+
+// below the desktop width the student sits under the time so the status stays on screen
+export const agendaColumns = (compact: boolean): DataTableColumn<AgendaItem>[] =>
+  compact
+    ? [
+        {
+          id: "time",
+          header: "Time",
+          cell: ({ row }) => (
+            <div>
+              <p className="font-medium text-gray-900">{shortTime(row.original.slot.startAt)}</p>
+              <p className="text-xs text-gray-500">{studentOf(row.original)}</p>
+            </div>
+          ),
+        },
+        { id: "status", header: "Status", meta: { align: "right" }, cell: ({ row }) => statusBadge(row.original) },
+      ]
+    : wideAgendaColumns;
+
+const wideAgendaColumns: DataTableColumn<AgendaItem>[] = [
   {
     id: "time",
     header: "Time",
-    cell: ({ row }) => (
-      <span className="font-medium text-gray-900">{new Date(row.original.slot.startAt).toLocaleString()}</span>
-    ),
+    cell: ({ row }) => <span className="font-medium text-gray-900">{shortTime(row.original.slot.startAt)}</span>,
   },
   {
     id: "student",
     header: "Student",
     meta: { align: "center" },
-    cell: ({ row }) => {
-      const { booking } = row.original;
-      return booking && typeof booking.studentId === "object" ? booking.studentId.name : "-";
-    },
+    cell: ({ row }) => studentOf(row.original),
   },
   {
     id: "status",
     header: "Status",
     meta: { align: "center" },
-    cell: ({ row }) => (
-      <Badge tone={row.original.booking ? "green" : "gray"}>{row.original.booking ? "Booked" : "Open"}</Badge>
-    ),
+    cell: ({ row }) => statusBadge(row.original),
   },
 ];
