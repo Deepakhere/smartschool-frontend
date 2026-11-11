@@ -3,6 +3,7 @@ import EmptyState from "@/shared/ui/empty-state";
 import ErrorState from "@/shared/ui/error-state";
 import { SelectField, DateTimeField } from "@/shared/ui/form-fields";
 import SectionHeader from "@/shared/ui/section-header";
+import { useIsDesktop } from "@/shared/lib/hooks/is-desktop";
 import { Button } from "@/shared/ui/kit/button";
 import { Card, CardTitle } from "@/shared/ui/kit/card";
 import { Form } from "@/shared/ui/kit/form";
@@ -10,6 +11,7 @@ import { agendaColumns } from "./ptm-columns";
 import useTeacherPTMController from "./ptm-controller";
 
 const TeacherPTM = () => {
+  const isDesktop = useIsDesktop();
   const {
     form,
     agenda,
@@ -67,7 +69,7 @@ const TeacherPTM = () => {
           <ErrorState error={agendaError} onRetry={retryAgenda} />
         ) : (
           <DataTable
-            columns={agendaColumns}
+            columns={agendaColumns(!isDesktop)}
             data={agenda}
             getRowId={(item) => item.slot.id}
             isLoading={isLoadingAgenda}

@@ -11,7 +11,9 @@ import SectionHeader from "@/shared/ui/section-header";
 import { Label } from "@/shared/ui/kit/label";
 import { SelectOption } from "@/shared/types";
 import { formatDate } from "@/shared/lib";
+import { useIsDesktop } from "@/shared/lib/hooks/is-desktop";
 import { reportColumns, rosterColumns } from "./attendance-columns";
+import MobileSaveBar from "./components/mobile-save-bar";
 import RegisterStatus from "./components/register-status";
 import useAttendanceController, { AttendanceTabKey } from "./attendance-controller";
 import MonthlyRegister from "./components/monthly-register";
@@ -21,6 +23,7 @@ type AttendanceTab = PageTab<AttendanceTabKey> & { dateField: () => ReactNode };
 
 const AdminAttendance = () => {
   const c = useAttendanceController();
+  const isDesktop = useIsDesktop();
   const yearOptions = c.academicYears.map((y): SelectOption => ({ id: y.id, name: y.name }));
   const classOptions = c.classes.map((k): SelectOption => ({ id: k.id, name: k.name }));
   const sectionOptions = c.sections.map((s): SelectOption => ({ id: s.id, name: s.name }));
@@ -48,7 +51,7 @@ const AdminAttendance = () => {
               </p>
             )}
             <DataTable
-              columns={rosterColumns(c)}
+              columns={rosterColumns({ ...c, compact: !isDesktop })}
               data={c.visibleStudents}
               getRowId={(student) => student.id}
               isLoading={c.isLoadingRoster}
@@ -61,7 +64,11 @@ const AdminAttendance = () => {
                 { label: "Mark all absent", onClick: () => c.markAll("absent"), menu: true },
                 { label: "Export CSV", readOnlySafe: true, onClick: c.exportRoster, menu: true },
                 { label: "Save attendance", onClick: c.submit, loading: c.isSaving, variant: "primary" as const },
-              ].map((action) => ({ ...action, hidden: c.students.length === 0 }))}
+              ].map((action) => ({
+                ...action,
+                // phones and tablets save from the bar pinned below the list
+                hidden: c.students.length === 0 || (action.variant === "primary" && !isDesktop),
+              }))}
               empty={
                 c.rosterSearch
                   ? { title: "No matching students", description: `No student matches "${c.rosterSearch}".` }
@@ -71,6 +78,9 @@ const AdminAttendance = () => {
                     }
               }
             />
+            {!isDesktop && c.students.length > 0 && (
+              <MobileSaveBar counts={c.counts} isDirty={c.isDirty} isSaving={c.isSaving} onSave={c.submit} />
+            )}
           </div>
         ),
     },
@@ -159,8 +169,8 @@ const AdminAttendance = () => {
 
       <PageTabs tabs={TABS} value={c.activeTab} onChange={c.setActiveTab} label="Attendance sections">
         <div className="bg-white shadow rounded-lg p-4">
-          <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
-            <div>
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+            <div className="col-span-2 sm:col-span-1">
               <Label>Academic Year</Label>
               <CustomSelectDropdown
                 placeholder="Select"
@@ -189,7 +199,7 @@ const AdminAttendance = () => {
                 onChange={(o) => c.setSectionId(String(o.id))}
               />
             </div>
-            {activeTab?.dateField()}
+            <div className="col-span-2 sm:col-span-1">{activeTab?.dateField()}</div>
           </div>
         </div>
 

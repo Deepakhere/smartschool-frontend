@@ -5,12 +5,15 @@ import PageLoader from "@/shared/ui/page-loader";
 import SectionHeader from "@/shared/ui/section-header";
 import { Button } from "@/shared/ui/kit/button";
 import { formatMoney } from "@/shared/lib";
+import { useIsDesktop } from "@/shared/lib/hooks/is-desktop";
 import { installmentColumns, paymentColumns } from "./fees-columns";
 import useParentFeesController from "./fees-controller";
 
 const ParentFees = () => {
   const c = useParentFeesController();
+  const compact = !useIsDesktop();
   const receiptColumns = paymentColumns({
+    compact,
     isEmailing: c.isEmailing,
     download: c.downloadReceipt,
     email: c.emailReceipt,
@@ -62,6 +65,7 @@ const ParentFees = () => {
                 <div className="mb-4">
                   <DataTable
                     columns={installmentColumns({
+                      compact,
                       canPayOnline: c.canPayOnline,
                       isBusy: !!c.paying,
                       isPaying: (label) => c.isPaying(fee.studentFeeId, label),

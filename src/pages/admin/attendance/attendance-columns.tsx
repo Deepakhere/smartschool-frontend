@@ -1,94 +1,82 @@
 import { DataTableColumn } from "@/shared/ui/data-table";
-import { Input } from "@/shared/ui/kit/input";
-import { cn } from "@/shared/lib/utils";
 import { AttendanceStatus } from "@/entities/attendance";
+import { ReasonInput, StatusButtons } from "./components/roster-controls";
 import { percent } from "./attendance-controller";
 import { ISectionAttendanceReportRow, ISectionRosterStudent } from "@/entities/attendance";
 
-const STATUSES: AttendanceStatus[] = ["present", "absent", "late", "excused"];
-
-const STATUS_STYLES: Record<AttendanceStatus, string> = {
-  present: "bg-green-100 text-green-800 border-green-300",
-  absent: "bg-red-100 text-red-800 border-red-300",
-  late: "bg-amber-100 text-amber-800 border-amber-300",
-  excused: "bg-gray-100 text-gray-800 border-gray-300",
-};
-
-interface RosterColumnProps {
+export interface RosterColumnProps {
   statuses: Record<string, AttendanceStatus>;
   reasons: Record<string, string>;
   setStatus: (studentId: string, status: AttendanceStatus) => void;
   setReason: (studentId: string, reason: string) => void;
+  compact?: boolean;
 }
 
-// a register row: roll, name, one tap to change the mark, and a reason only when it isn't present
-export const rosterColumns = ({
-  statuses,
-  reasons,
-  setStatus,
-  setReason,
-}: RosterColumnProps): DataTableColumn<ISectionRosterStudent>[] => [
-  {
-    id: "roll",
-    header: "Roll",
-    meta: { className: "w-16 text-gray-500" },
-    cell: ({ row }) => row.original.currentEnrollment?.rollNumber || "-",
-  },
-  {
-    id: "student",
-    header: "Student",
-    cell: ({ row }) => <span className="font-medium text-gray-900">{row.original.name}</span>,
-  },
-  {
-    id: "status",
-    header: "Attendance",
-    meta: { align: "center" },
-    cell: ({ row: { original: student } }) => {
-      const current = statuses[student.id] || "present";
-      return (
-        <div
-          role="radiogroup"
-          aria-label={`Attendance for ${student.name}`}
-          className="inline-flex rounded-lg border border-gray-200 bg-gray-50 p-0.5"
-        >
-          {STATUSES.map((status) => (
-            <button
-              key={status}
-              type="button"
-              role="radio"
-              aria-checked={current === status}
-              onClick={() => setStatus(student.id, status)}
-              className={cn(
-                "rounded-md border px-3 py-1 text-xs font-medium capitalize transition-colors",
-                current === status ? STATUS_STYLES[status] : "border-transparent text-gray-500 hover:text-gray-800"
+// a register row: roll, name, one tap to change the mark, and a reason only when it isn't present.
+// Below the desktop width the row stacks into a single cell so every status button stays on screen
+export const rosterColumns = ({ compact, ...marks }: RosterColumnProps): DataTableColumn<ISectionRosterStudent>[] => {
+  const { statuses } = marks;
+  if (compact) {
+    return [
+      {
+        id: "student",
+        header: "Student",
+        meta: { className: "w-full" },
+        cell: ({ row: { original: student } }) => (
+          <div className="space-y-2">
+            <p className="font-medium text-gray-900">
+              {student.currentEnrollment?.rollNumber && (
+                <span className="mr-2 font-normal text-gray-500">{student.currentEnrollment.rollNumber}.</span>
               )}
-            >
-              {status}
-            </button>
-          ))}
-        </div>
-      );
+              {student.name}
+            </p>
+            <StatusButtons student={student} statuses={statuses} setStatus={marks.setStatus} className="flex w-full" />
+            {(statuses[student.id] || "present") !== "present" && (
+              <ReasonInput student={student} reasons={marks.reasons} setReason={marks.setReason} className="w-full" />
+            )}
+          </div>
+        ),
+      },
+    ];
+  }
+  return [
+    {
+      id: "roll",
+      header: "Roll",
+      meta: { className: "w-16 text-gray-500" },
+      cell: ({ row }) => row.original.currentEnrollment?.rollNumber || "-",
     },
-  },
-  {
-    id: "reason",
-    header: "Reason",
-    meta: { align: "center", className: "w-64" },
-    cell: ({ row: { original: student } }) =>
-      (statuses[student.id] || "present") === "present" ? (
-        <span className="text-gray-300">-</span>
-      ) : (
-        <Input
-          type="text"
-          placeholder="Reason (optional)"
-          aria-label={`Reason for ${student.name}`}
-          className="mx-auto h-8 max-w-56 px-2 py-1 text-xs"
-          value={reasons[student.id] || ""}
-          onChange={(e) => setReason(student.id, e.target.value)}
-        />
+    {
+      id: "student",
+      header: "Student",
+      cell: ({ row }) => <span className="font-medium text-gray-900">{row.original.name}</span>,
+    },
+    {
+      id: "status",
+      header: "Attendance",
+      meta: { align: "center" },
+      cell: ({ row: { original: student } }) => (
+        <StatusButtons student={student} statuses={statuses} setStatus={marks.setStatus} />
       ),
-  },
-];
+    },
+    {
+      id: "reason",
+      header: "Reason",
+      meta: { align: "center", className: "w-64" },
+      cell: ({ row: { original: student } }) =>
+        (statuses[student.id] || "present") === "present" ? (
+          <span className="text-gray-300">-</span>
+        ) : (
+          <ReasonInput
+            student={student}
+            reasons={marks.reasons}
+            setReason={marks.setReason}
+            className="mx-auto max-w-56"
+          />
+        ),
+    },
+  ];
+};
 
 export const reportColumns: DataTableColumn<ISectionAttendanceReportRow>[] = [
   {

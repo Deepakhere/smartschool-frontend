@@ -44,19 +44,19 @@ const FeeStructureDrawer = ({ c }: { c: Controller }) => {
               c.goNext();
             }}
           >
-            <div className="border-b border-gray-200 px-6 py-5 pr-12">
+            <div className="border-b border-gray-200 px-4 py-5 pr-12 sm:px-6">
               <SheetTitle className="text-lg">{editing ? `Edit ${editing.name}` : "New fee structure"}</SheetTitle>
               {editing && (
                 <p className="mt-1 text-sm text-gray-500">
                   Students already billed keep their amounts unless you move the ones who haven&apos;t paid yet.
                 </p>
               )}
-              <ol className="mt-5 flex items-center justify-center gap-3">
+              <ol className="mt-5 flex items-center justify-center gap-2 sm:gap-3">
                 {STRUCTURE_STEPS.map((s, index) => {
                   const done = index < c.step;
                   const current = index === c.step;
                   return (
-                    <li key={s.title} className="flex items-center gap-3">
+                    <li key={s.title} className="flex items-center gap-2 sm:gap-3">
                       <button
                         type="button"
                         onClick={() => c.goToStep(index)}
@@ -73,16 +73,18 @@ const FeeStructureDrawer = ({ c }: { c: Controller }) => {
                         >
                           {done ? <CheckIcon className="h-3.5 w-3.5" /> : index + 1}
                         </span>
-                        <span className={cn(current ? "font-medium text-gray-900" : "text-gray-500")}>{s.title}</span>
+                        <span className={cn(current ? "font-medium text-gray-900" : "text-gray-500 max-sm:hidden")}>
+                          {s.title}
+                        </span>
                       </button>
-                      {index < STRUCTURE_STEPS.length - 1 && <span className="h-px w-10 bg-gray-200" />}
+                      {index < STRUCTURE_STEPS.length - 1 && <span className="h-px w-6 bg-gray-200 sm:w-10" />}
                     </li>
                   );
                 })}
               </ol>
             </div>
 
-            <div className="flex-1 space-y-5 overflow-y-auto px-6 py-5">
+            <div className="flex-1 space-y-5 overflow-y-auto px-4 py-5 sm:px-6">
               {c.step === 0 && (
                 <>
                   <StepHeading title="Who it bills" hint="Name the structure and pick the classes it applies to." />
@@ -261,7 +263,7 @@ const FeeStructureDrawer = ({ c }: { c: Controller }) => {
               )}
             </div>
 
-            <div className="flex items-center justify-between gap-3 border-t border-gray-200 bg-gray-50 px-6 py-3">
+            <div className="flex items-center justify-between gap-3 border-t border-gray-200 bg-gray-50 px-4 py-3 sm:px-6">
               <Button variant="secondary" onClick={c.step === 0 ? c.closeForm : c.goBack} disabled={c.isSaving}>
                 {c.step === 0 ? "Cancel" : "Back"}
               </Button>
