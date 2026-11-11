@@ -5,7 +5,7 @@ import { useAuth } from "@/entities/session";
 import { useCurrentRole } from "@/entities/session";
 import { useTheme } from "@/features/theme";
 
-export const useSidebarUserMenuController = () => {
+export const useUserMenuController = () => {
   const { organizationId } = useParams();
   const { user, logout } = useAuth();
   // the role in the current school decides the menus and links

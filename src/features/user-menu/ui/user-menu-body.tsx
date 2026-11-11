@@ -5,19 +5,14 @@ import {
   QuestionMarkCircleIcon,
   BuildingOffice2Icon,
   ArrowRightOnRectangleIcon,
-  ChevronUpDownIcon,
   SunIcon,
   MoonIcon,
 } from "@heroicons/react/24/outline";
 
 import Avatar from "@/shared/ui/avatar";
-import { Popover, PopoverTrigger, PopoverContent } from "@/shared/ui/kit/popover";
-import { Sheet, SheetTrigger, SheetContent } from "@/shared/ui/kit/sheet";
-import { useIsMobile } from "@/shared/lib/hooks";
-import { useSidebarUserMenuController } from "../model/sidebar-user-menu-controller";
-import { revealMotion } from "@/shared/lib/sidebar-motion";
+import { useUserMenuController } from "../model/user-menu-controller";
 
-// shared by the desktop popover and the mobile bottom sheet; only the container changes
+// the account menu, shared by the sidebar popover and the header bottom sheet; only the container changes
 const UserMenuBody = ({
   user,
   theme,
@@ -26,7 +21,7 @@ const UserMenuBody = ({
   supportPath,
   isPlatformAdmin,
   handleLogout,
-}: Omit<ReturnType<typeof useSidebarUserMenuController>, "isCollapsed">) => {
+}: Omit<ReturnType<typeof useUserMenuController>, "isCollapsed">) => {
   const { t } = useTranslation();
   if (!user?.name) return null;
 
@@ -127,56 +122,4 @@ const UserMenuBody = ({
   );
 };
 
-const SidebarUserMenu = () => {
-  const { isCollapsed, user, role, ...rest } = useSidebarUserMenuController();
-  const isMobile = useIsMobile();
-
-  if (!user?.name) return null;
-
-  const trigger = (
-    <button
-      type="button"
-      className="group flex w-full items-center justify-between rounded-xl border border-gray-200 bg-white px-2 py-2 shadow-sm transition-all duration-300 ease-in-out hover:-translate-y-0.5 hover:border-primary-200 hover:shadow-md"
-    >
-      <span className="flex items-center min-w-0 -ml-0.5">
-        <Avatar name={user.name} src={user.avatar?.url} size={32} />
-        <span
-          className={`min-w-0 overflow-hidden text-left ${revealMotion(isCollapsed)} ${
-            isCollapsed ? "max-w-0 ml-0" : "max-w-[9rem] ml-2.5"
-          }`}
-        >
-          <span className="block truncate text-sm font-medium text-gray-900">{user.name}</span>
-          <span className="block truncate text-xs text-gray-500 capitalize">{role}</span>
-        </span>
-      </span>
-      <ChevronUpDownIcon
-        className={`text-gray-400 shrink-0 overflow-hidden ${revealMotion(isCollapsed)} ${
-          isCollapsed ? "h-4 w-0" : "h-4 w-4"
-        }`}
-        aria-hidden="true"
-      />
-    </button>
-  );
-
-  return (
-    <div className="border-t border-gray-100 p-2">
-      {isMobile ? (
-        <Sheet>
-          <SheetTrigger asChild>{trigger}</SheetTrigger>
-          <SheetContent side="bottom" className="p-2">
-            <UserMenuBody user={user} role={role} {...rest} />
-          </SheetContent>
-        </Sheet>
-      ) : (
-        <Popover>
-          <PopoverTrigger asChild>{trigger}</PopoverTrigger>
-          <PopoverContent side="top" align={isCollapsed ? "center" : "start"}>
-            <UserMenuBody user={user} role={role} {...rest} />
-          </PopoverContent>
-        </Popover>
-      )}
-    </div>
-  );
-};
-
-export default SidebarUserMenu;
+export default UserMenuBody;

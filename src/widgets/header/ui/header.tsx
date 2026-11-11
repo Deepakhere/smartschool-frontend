@@ -7,6 +7,7 @@ import { panelWidth, revealMotion } from "@/shared/lib/sidebar-motion";
 import HeaderIconButton from "./header-icon-button";
 import NotificationBell from "./notification-bell";
 import { SupportDialog } from "@/features/support-dialog";
+import { UserMenu } from "@/features/user-menu";
 import { useHeaderController } from "../model/header-controller";
 
 const Header = () => {
@@ -26,7 +27,7 @@ const Header = () => {
       <div className="flex h-16">
         {/* brand segment: width matches the sidebar so the divider lines up */}
         <div
-          className={`flex items-center ${isCollapsed ? "justify-center" : "justify-between"} shrink-0 px-3 border-r border-gray-200 ${panelWidth} ${
+          className={`flex items-center ${isCollapsed ? "justify-center" : "justify-between"} shrink-0 border-b border-gray-200 px-2 lg:border-b-0 lg:border-r lg:px-3 ${panelWidth} ${
             isCollapsed ? "lg:w-16" : "lg:w-60"
           } w-auto`}
         >
@@ -75,7 +76,7 @@ const Header = () => {
         </div>
 
         {/* title and back button, set by each page via usePageHeader() */}
-        <div className="flex-1 flex items-center justify-between px-4 min-w-0 border-b border-gray-200">
+        <div className="flex-1 flex items-center justify-between px-3 sm:px-4 min-w-0 border-b border-gray-200">
           <div className="flex items-center gap-2 min-w-0">
             {pageHeaderConfig?.onBack && (
               <button
@@ -90,13 +91,17 @@ const Header = () => {
             <h1 className="text-base font-semibold text-gray-900 truncate">{pageHeaderConfig?.title || ""}</h1>
           </div>
 
-          <div className="flex items-center gap-3 shrink-0">
+          <div className="flex items-center gap-1 sm:gap-3 shrink-0">
             {canAskSupport && (
               <HeaderIconButton onClick={() => setIsAskingSupport(true)} title="Contact Opscul support">
                 <QuestionMarkCircleIcon aria-hidden="true" />
               </HeaderIconButton>
             )}
             <NotificationBell variant="header" />
+            {/* below 1024px the account menu moves here from the foot of the sidebar */}
+            <div className="lg:hidden">
+              <UserMenu variant="header" />
+            </div>
           </div>
         </div>
       </div>

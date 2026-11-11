@@ -2,11 +2,12 @@ import * as React from "react";
 
 import { cn } from "@/shared/lib/utils";
 
-// the shared table primitives; every data table in the app is built from these
+// the shared table primitives; every data table in the app is built from these. Below 1024px a table keeps its natural
+// width (no squashed, wrapping columns) and scrolls sideways inside its card instead
 const Table = React.forwardRef<HTMLTableElement, React.HTMLAttributes<HTMLTableElement> & { scrollClassName?: string }>(
   ({ className, scrollClassName, ...props }, ref) => (
     <div className={cn("overflow-x-auto", scrollClassName)}>
-      <table ref={ref} className={cn("min-w-full divide-y divide-gray-200", className)} {...props} />
+      <table ref={ref} className={cn("min-w-full max-lg:w-max divide-y divide-gray-200", className)} {...props} />
     </div>
   )
 );
